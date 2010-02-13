@@ -332,20 +332,13 @@ GList *get_trump_list(GList *list, gint trump)
 
 GList *get_possible_cards(app *app, GList *list)
 {
-    GList *ptr = NULL, *possible = NULL;
+    GList *ptr = NULL;
     card *card = NULL;
 
     /* all cards are possible if there is no card on the table
      * copy the list because the returned list will be freed after usage */
     if (app->table == NULL || g_list_length(app->table) == 0)
-    {
-        for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
-        {
-            card = ptr->data;
-            possible = g_list_prepend(possible, card);
-        }
-        return possible;
-    }
+        return g_list_copy(list);
     else
     {
         card = g_list_nth_data(app->table, 0);
@@ -358,14 +351,7 @@ GList *get_possible_cards(app *app, GList *list)
         if (ptr)
             return ptr;
         else
-        {
-            for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
-            {
-                card = ptr->data;
-                possible = g_list_prepend(possible, card);
-            }
-            return possible;
-        }
+            return g_list_copy(list);
     }
     return NULL;
 }
