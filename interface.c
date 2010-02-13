@@ -1,0 +1,687 @@
+#include <string.h>
+#include <glib.h>
+#include <glib/gprintf.h>
+#include <gtk/gtk.h>
+#include "mask.xbm"
+#include "def.h"
+#include "utils.h"
+#include "callback.h"
+
+player *init_player(gint id, gchar *name, gboolean human)
+{
+    player *new = (player *) g_malloc(sizeof(player));
+
+    if (new)
+    {
+        new->id = id;
+        new->name = name;
+        new->human = human;
+        new->re = FALSE;
+        new->points = 0;
+        new->gereizt = 0;
+        new->cards = NULL;
+    }
+    else
+        g_printerr("Could not create new player %s\n", name);
+
+    return new;
+}
+
+void alloc_target(app *app)
+{
+    if (app->target != NULL)
+    {
+        g_object_unref(app->target);
+        app->target = NULL;
+    }
+
+    if (app->area)
+    {
+        app->target = gdk_pixmap_new(
+                app->area->window,
+                app->area->allocation.width,
+                app->area->allocation.height,
+                -1);
+    }
+}
+
+void load_icons(app *app)
+{
+    gint i;
+    gchar *suits[] = { "diamond", "heart", "spade", "club" };
+    gchar *filename;
+
+    filename = (gchar *) g_malloc(sizeof(gchar) * (strlen(DATA_DIR) + 20));
+
+    if (filename)
+    {
+        app->icons = (GdkPixbuf **) g_malloc(sizeof(GdkPixbuf *) * 4);
+
+        for (i=0; i<4; i++)
+        {
+            g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
+
+            DPRINT(("Loading %s ... ", filename));
+
+            if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
+            {
+                DPRINT(("OK\n"));
+                app->icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
+            }
+            else
+            {
+                DPRINT(("FAIL\n"));
+                app->icons[i] = NULL;
+            }
+        }
+
+        g_free(filename);
+    }
+}
+
+void alloc_app(app *app)
+{
+    gint i;
+
+    /* initialize players */
+    app->players = (player **) g_malloc(sizeof(player *) * 3);
+
+    if (app->players)
+    {
+        for (i=0; i<3; ++i)
+            app->players[i] = init_player(i, app->player_names[i],
+                    i ? FALSE : TRUE);
+    }
+    else
+        g_printerr("Could not create players.\n");
+
+    /* initialize suit icons */
+    load_icons(app);
+}
+
+void load_config(app *app)
+{
+    gchar *filename;
+
+    /* get home directory */
+    const gchar *home_dir = g_getenv("HOME");
+    if (!home_dir)
+        home_dir = g_get_home_dir();
+
+    filename = g_strconcat(home_dir, "/.gskat/conf", NULL);
+
+    app->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
+
+    /* try to find config file */
+    if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
+    {
+        DPRINT(("Found config file '%s'\n", filename));
+
+        /* read config
+         * set player names */
+    }
+    /* set default values */
+    else
+    {
+        const gchar *user_name = g_getenv("USER");
+
+        DPRINT(("Failed to load config from '%s'\n", filename));
+        DPRINT(("Using default settings instead.\n"));
+
+        app->player_names[0] = g_strdup(user_name ? user_name : "Player");
+        app->player_names[1] = g_strdup("Cuyo");
+        app->player_names[2] = g_strdup("Dozo");
+    }
+
+    g_free(filename);
+}
+
+void create_interface(app *app)
+{
+    GtkWidget *window;
+    GtkWidget *vboxmenu;
+    GtkWidget *hbox;
+    GtkWidget *vbox;
+    GtkWidget *area;
+    GtkWidget *frame_game;
+    GtkWidget *table_game;
+    GtkWidget *lb_game_stich_left;
+    GtkWidget *lb_game_re_left;
+    GtkWidget *lb_game_spiel_left;
+    GtkWidget *lb_game_stich_right;
+    GtkWidget *lb_game_re_right;
+    GtkWidget *lb_game_spiel_right;
+    GtkWidget *frame_rank;
+    GtkWidget *table_rank;
+    GtkWidget *lb_rank_p1_left;
+    GtkWidget *lb_rank_p2_left;
+    GtkWidget *lb_rank_p3_left;
+    GtkWidget *lb_rank_p1_right;
+    GtkWidget *lb_rank_p2_right;
+    GtkWidget *lb_rank_p3_right;
+    GtkWidget *button;
+
+    gchar *iconfile = (gchar *) g_malloc(sizeof(gchar) * strlen(DATA_DIR)+20);
+
+    if (iconfile)
+        g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
+
+    app->allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 9);
+
+    if (app->allwidgets != NULL)
+    {
+        window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_title(GTK_WINDOW(window), "gskat");
+
+        if (g_file_test(iconfile, G_FILE_TEST_EXISTS))
+            gtk_window_set_icon_from_file(GTK_WINDOW(window), iconfile, NULL);
+
+        g_free(iconfile);
+
+        vboxmenu = gtk_vbox_new(FALSE, 0);
+        gtk_container_add(GTK_CONTAINER(window), vboxmenu);
+
+        hbox = gtk_hbox_new(FALSE, 0);
+        /* gtk_box_pack_start(child, expand, fill, padding) */
+        gtk_box_pack_start(GTK_BOX(vboxmenu), hbox, TRUE, TRUE, 0);
+
+        area = gtk_drawing_area_new();
+        gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
+        gtk_widget_set_size_request(area, 450, 420);
+
+        vbox = gtk_vbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+
+        frame_game = gtk_frame_new("Runde 1");
+        gtk_frame_set_label_align(GTK_FRAME(frame_game), 0.5, 0.5);
+        gtk_box_pack_start(GTK_BOX(vbox), frame_game, FALSE, TRUE, 2);
+        gtk_frame_set_shadow_type(GTK_FRAME(frame_game), GTK_SHADOW_ETCHED_IN);
+
+        /* gtk_table_new(rows, columns, homogeneous) */
+        table_game = gtk_table_new(3, 2, FALSE);
+        gtk_container_add(GTK_CONTAINER(frame_game), table_game);
+        gtk_container_set_border_width(GTK_CONTAINER(table_game), 20);
+        gtk_table_set_col_spacings(GTK_TABLE(table_game), 20);
+        gtk_table_set_row_spacings(GTK_TABLE(table_game), 5);
+
+        lb_game_stich_left = gtk_label_new("Stich:");
+        lb_game_re_left = gtk_label_new("Re:");
+        lb_game_spiel_left = gtk_label_new("Spiel:");
+
+        /* gtk_misc_set_alignment(misc, xalign, yalign)
+         * xalign: 0 (left) to 1 (right)
+         * yalign: 0 (top) to 1 (bottom) */
+        gtk_misc_set_alignment(GTK_MISC(lb_game_stich_left), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_game_re_left), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_left), 1, 0.5);
+
+        /* gtk_table_attach_defaults(parent, child, left, right, top, bottom) */
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_stich_left,
+                0, 1, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_re_left,
+                0, 1, 1, 2);
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_spiel_left,
+                0, 1, 2, 3);
+
+        lb_game_stich_right = gtk_label_new("1");
+        lb_game_re_right = gtk_label_new("-");
+        lb_game_spiel_right = gtk_label_new("-");
+
+        gtk_misc_set_alignment(GTK_MISC(lb_game_stich_right), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_game_re_right), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_right), 1, 0.5);
+
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_stich_right,
+                1, 2, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_re_right,
+                1, 2, 1, 2);
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_spiel_right,
+                1, 2, 2, 3);
+
+        frame_rank = gtk_frame_new("Spielstand");
+        gtk_frame_set_label_align(GTK_FRAME(frame_rank), 0.5, 0.5);
+        gtk_box_pack_start(GTK_BOX(vbox), frame_rank, TRUE, TRUE, 2);
+        gtk_frame_set_shadow_type(GTK_FRAME(frame_rank), GTK_SHADOW_ETCHED_IN);
+
+        table_rank = gtk_table_new(3, 2, TRUE);
+        gtk_container_add(GTK_CONTAINER(frame_rank), table_rank);
+        gtk_container_set_border_width(GTK_CONTAINER(table_rank), 20);
+        gtk_table_set_col_spacings(GTK_TABLE(table_rank), 20);
+        gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
+
+        lb_rank_p1_left = gtk_label_new(app->player_names[0]);
+        lb_rank_p2_left = gtk_label_new(app->player_names[1]);
+        lb_rank_p3_left = gtk_label_new(app->player_names[2]);
+
+        gtk_misc_set_alignment(GTK_MISC(lb_rank_p1_left), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_rank_p2_left), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_rank_p3_left), 1, 0.5);
+
+        gtk_table_attach_defaults(GTK_TABLE(table_rank),
+                lb_rank_p1_left,
+                0, 1, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(table_rank),
+                lb_rank_p2_left,
+                0, 1, 1, 2);
+        gtk_table_attach_defaults(GTK_TABLE(table_rank),
+                lb_rank_p3_left,
+                0, 1, 2, 3);
+
+        lb_rank_p1_right = gtk_label_new("0");
+        lb_rank_p2_right = gtk_label_new("0");
+        lb_rank_p3_right = gtk_label_new("0");
+
+        gtk_misc_set_alignment(GTK_MISC(lb_rank_p1_right), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_rank_p2_right), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_rank_p3_right), 1, 0.5);
+
+        gtk_table_attach_defaults(GTK_TABLE(table_rank),
+                lb_rank_p1_right,
+                1, 2, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(table_rank),
+                lb_rank_p2_right,
+                1, 2, 1, 2);
+        gtk_table_attach_defaults(GTK_TABLE(table_rank),
+                lb_rank_p3_right,
+                1, 2, 2, 3);
+
+        button = gtk_button_new_with_label("Neue Runde");
+        gtk_widget_set_sensitive(button, FALSE);
+        gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, TRUE, 2);
+
+        /* set game object pointers */
+        app->area = area;
+
+        app->allwidgets[0] = window;
+        app->allwidgets[1] = button;
+        app->allwidgets[2] = lb_game_stich_right;
+        app->allwidgets[3] = lb_game_re_right;
+        app->allwidgets[4] = lb_game_spiel_right;
+        app->allwidgets[5] = lb_rank_p1_right;
+        app->allwidgets[6] = lb_rank_p2_right;
+        app->allwidgets[7] = lb_rank_p3_right;
+        app->allwidgets[8] = frame_game;
+
+        /* attach signals */
+        g_signal_connect(G_OBJECT(window), "destroy",
+                G_CALLBACK(quit), app);
+        g_signal_connect(G_OBJECT(area), "realize",
+                G_CALLBACK(realization), app);
+        g_signal_connect(G_OBJECT(area), "configure_event",
+                G_CALLBACK(configure), app);
+        g_signal_connect(G_OBJECT(area), "expose_event",
+                G_CALLBACK(refresh), app);
+        g_signal_connect(G_OBJECT(button), "clicked",
+                G_CALLBACK(next_round), app);
+
+        gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK);
+        g_signal_connect(G_OBJECT(area), "button_press_event",
+                G_CALLBACK(button_press), app);
+    }
+}
+
+void load_card(GList **list,
+        const gchar *file,
+        gint rank,
+        gint suit,
+        GtkWidget *widget)
+{
+    card *tcard = (card *) g_malloc(sizeof(card));
+
+    if (tcard != NULL)
+    {
+        tcard->rank = rank;
+        tcard->suit = suit;
+        tcard->owner = -1;
+
+        tcard->points = get_card_points(rank);
+
+        tcard->dim.x = 0;
+        tcard->dim.y = 0;
+
+        tcard->draw = FALSE;
+        tcard->blink = FALSE;
+
+        tcard->img = gdk_pixmap_create_from_xpm(widget->window,
+                NULL, NULL, file);
+        gdk_drawable_get_size(tcard->img, &(tcard->dim.w), &(tcard->dim.h));
+
+        *list = g_list_prepend(*list, (gpointer) tcard);
+    }
+}
+
+gboolean load_cards(const gchar *path, app *app, GtkWidget *widget)
+{
+    GList **list = &(app->cards);
+
+    gint suits[] = { 40, 60, 80, 100 };
+    gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
+
+    gint i, j, id, max = strlen(path)+30;
+    gboolean error = FALSE;
+
+    gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
+    gchar *suit = (gchar *) g_malloc(sizeof(gchar) * 10);
+    gchar *rank = (gchar *) g_malloc(sizeof(gchar) * 10);
+
+    /* create all 32 cards */
+    if (cname != NULL)
+    {
+        for (i=0; i<4; ++i)
+        {
+            for (j=0; j<8; ++j)
+            {
+                id = suits[i] + ranks[j];
+                g_sprintf(cname, "%s/%s%s.xpm", path,
+                        get_card_rank(id, rank),
+                        get_card_suit(id, suit));
+
+                if (g_file_test(cname, G_FILE_TEST_EXISTS))
+                    load_card(list, cname, ranks[j], suits[i], widget);
+                else
+                    error = TRUE;
+            }
+        }
+    }
+
+    g_free(suit);
+    g_free(rank);
+
+    /* create cardmask */
+    if (app->cardmask == NULL)
+        app->cardmask = gdk_bitmap_create_from_data(widget->window,
+                mask_bits, mask_width, mask_height);
+
+    /* create back of cards */
+    g_sprintf(cname, "%s/back.xpm", path);
+
+    if (g_file_test(cname, G_FILE_TEST_EXISTS))
+    {
+        app->back = gdk_pixmap_create_from_xpm(widget->window,
+                &(app->backmask),
+                &(app->area->style->black),
+                cname);
+    }
+    else
+        error = TRUE;
+
+    g_free(cname);
+
+    return !error;
+}
+
+void pos_player_cards(player *player, gint x, gint y, gint step)
+{
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    if (player->cards)
+    {
+        for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
+        {
+            card = ptr->data;
+            card->dim.y = y;
+            card->dim.x = x;
+            x += step;
+        }
+    }
+}
+
+void calc_card_positions(app *app)
+{
+    gint x, y, win_w, win_h, card_w, card_h, step;
+    GList *ptr = NULL;
+    card *card = NULL;
+    player *player = NULL;
+
+    if ((ptr = g_list_first(app->cards)) && app->players)
+    {
+        card = ptr->data;
+        card_w = card->dim.w;
+        card_h = card->dim.h;
+
+        win_w = app->area->allocation.width;
+        win_h = app->area->allocation.height;
+
+        /* player 0 */
+        if ((player = app->players[0]))
+        {
+            if (player->cards && g_list_length(player->cards) > 0)
+            {
+                step = (win_w - card_w*1.5) / g_list_length(player->cards);
+                y = win_h - (card_h + 5);
+                x = card_w / 2;
+
+                pos_player_cards(player, x, y, step);
+            }
+        }
+
+        /* player 1 */
+        if ((player = app->players[1]))
+        {
+            step = 10;
+            y = 5;
+            x = 5;
+
+            pos_player_cards(player, x, y, step);
+        }
+
+        /* player 2 */
+        if ((player = app->players[2]))
+        {
+            step = -10;
+            y = 5;
+            x = win_w - (card_w + 5);
+
+            pos_player_cards(player, x, y, step);
+        }
+
+        /* cards in skat */
+        if (app->skat && g_list_length(app->skat) > 0)
+        {
+            y = win_h / 2 - card_h / 2;
+            x = win_w / 2 - card_w;
+            step = card_w + 5;
+
+            ptr = g_list_first(app->skat);
+            card = ptr->data;
+            card->dim.x = x;
+            card->dim.y = y;
+            x += step;
+
+            ptr = g_list_last(app->skat);
+            card = ptr->data;
+            card->dim.x = x;
+            card->dim.y = y;
+        }
+
+        /* cards on the table */
+        if (app->table && g_list_length(app->table) > 0)
+        {
+            y = win_h / 2 - card_h / 2;
+            x = win_w / 2 - card_w;
+
+            for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
+            {
+                card = ptr->data;
+                if (card->owner == 0)
+                {
+                    card->dim.x = x;
+                    card->dim.y = y + card_h / 2;
+                }
+                else if (card->owner == 1)
+                {
+                    card->dim.x = x - card_w / 2;
+                    card->dim.y = y;
+                }
+                else if (card->owner == 2)
+                {
+                    card->dim.x = x + card_w / 2;
+                    card->dim.y = y - card_h / 2;
+                }
+            }
+
+        }
+    }
+}
+
+/* draw cards from last to first */
+void draw_cards(app *app, GList *cards, GdkPixmap *target)
+{
+    gint i = 10;
+    card *card;
+    GList *ptr;
+    GdkPixmap *img = NULL;
+    GtkStateType state = GTK_WIDGET_STATE(app->area);
+    GdkGC *gc = app->area->style->fg_gc[state];
+
+    for (ptr = g_list_first(cards); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        if (card && card->draw)
+        {
+            if (!card->draw_face)
+            {
+                img = app->back;
+                gdk_gc_set_clip_mask(gc, app->backmask);
+            }
+            else
+            {
+                img = card->img;
+                gdk_gc_set_clip_mask(gc, app->cardmask);
+            }
+        }
+
+        if (img)
+        {
+            gdk_gc_set_clip_origin(gc, card->dim.x, card->dim.y);
+            gdk_draw_drawable(target, app->area->style->fg_gc[state],
+                    img, 0, 0,
+                    card->dim.x, card->dim.y, -1, -1);
+            gdk_gc_set_clip_mask(gc, NULL);
+            i += 10;
+        }
+    }
+}
+
+void draw_area(app *app)
+{
+    gint i;
+    player *player;
+
+    if (app->target == NULL)
+        alloc_target(app);
+
+    if (app->target)
+    {
+        /* paint black background */
+        gdk_draw_rectangle(app->target,
+                app->area->style->black_gc, TRUE, 0, 0,
+                app->area->allocation.width,
+                app->area->allocation.height);
+
+        /* draw cards in skat */
+        if (app->skat)
+            draw_cards(app, app->skat, app->target);
+
+        /* draw cards on the table */
+        if (app->table)
+            draw_cards(app, app->table, app->target);
+
+        /* draw all player cards */
+        if (app->players)
+        {
+            for (i=0; i<3; ++i)
+            {
+                player = app->players[i];
+                draw_cards(app, player->cards, app->target);
+            }
+        }
+
+        gdk_draw_drawable(app->area->window,
+                app->area->style->fg_gc[GTK_WIDGET_STATE(app->area)],
+                app->target, 0, 0, 0, 0, -1, -1);
+    }
+}
+
+void free_app(app *app)
+{
+    GList *ptr;
+    gint i;
+    card *card;
+
+    /* free players */
+    for (i=0; i<3; ++i)
+    {
+        g_list_free(app->players[i]->cards);
+        g_free(app->players[i]);
+        app->players[i] = NULL;
+    }
+    g_free(app->players);
+    app->players = NULL;
+
+    /* free cards */
+    for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+        if (card && card->img)
+            g_object_unref(card->img);
+        g_free(card);
+        card = NULL;
+    }
+    g_list_free(app->cards);
+    app->cards = NULL;
+    g_list_free(app->skat);
+    app->cards = NULL;
+
+    /* free player names */
+    for (i=0; i<3; ++i)
+    {
+        g_free(app->player_names[i]);
+        app->player_names[i] = NULL;
+    }
+    g_free(app->player_names);
+    app->player_names = NULL;
+
+    /* free icons */
+    if (app->icons)
+    {
+        for (i=0; i<4; i++)
+        {
+            g_object_unref(app->icons[i]);
+            app->icons[i] = NULL;
+        }
+        g_free(app->icons);
+    }
+
+    /* free remaining objects */
+    if (app->target)
+        g_object_unref(app->target);
+    app->target = NULL;
+
+    if (app->back)
+        g_object_unref(app->back);
+    app->back = NULL;
+
+    if (app->backmask)
+        g_object_unref(app->backmask);
+    app->backmask = NULL;
+
+    if (app->cardmask)
+        g_object_unref(app->cardmask);
+    app->cardmask = NULL;
+
+    g_free(app->allwidgets);
+
+    DPRINT(("Quit gskat\n"));
+}
+
+/* vim:set et sw=4 ts=4 tw=80: */
