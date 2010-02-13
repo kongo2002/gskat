@@ -1,0 +1,8 @@
+gskat is a gtk skat game written in c
+
+The current state cannot even be considered as alpha stadium because it
+is not playable. The main reason for me to program gskat is to improve
+my c skills and to become familiar with glib/gtk.
+
+So maybe in the future this small game will be playable but until then
+it is a long way to go.
