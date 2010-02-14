@@ -72,6 +72,13 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
             found = click_skat(app, event);
         else if (app->state == PLAYING)
             found = play_card(app, event);
+        else if (app->state == READY)
+        {
+            calculate_stich(app);
+            app->state = PLAYING;
+            play_stich(app);
+            return TRUE;
+        }
     }
 
     return found;

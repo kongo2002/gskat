@@ -1101,15 +1101,12 @@ void play_stich(app *app)
         }
         else
         {
-            calculate_stich(app);
-            play_stich(app);
+            /* wait for the user to press button */
+            app->state = READY;
         }
     }
     else
-    {
-        /* end of round */
         end_round(app);
-    }
 }
 
 void reset_game(app *app)
