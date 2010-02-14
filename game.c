@@ -590,7 +590,21 @@ void start_provoke(app *app)
         do_hoeren(app, app->players[sager], 18);
 
     /* TODO: Ramsch */
-    if (app->players[sager]->gereizt == 0)
+    if (app->players[sager]->gereizt)
+    {
+        DPRINT(("%s won 2. reizen with %d\n", app->player_names[sager],
+                    app->players[sager]->gereizt));
+
+        app->re = app->players[sager];
+
+        /* update interface */
+        gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
+        gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Spiel ansagen");
+        gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), app->re->name);
+
+        take_skat(app);
+    }
+    else
     {
         DPRINT(("All players have passed -> Ramsch.\n"));
 
@@ -606,18 +620,6 @@ void start_provoke(app *app)
         reset_game(app);
         game_start(app);
     }
-    else
-    {
-        DPRINT(("%s won 2. reizen with %d\n", app->player_names[sager],
-                    app->players[sager]->gereizt));
-
-        app->re = app->players[sager];
-    }
-
-    /* update interface */
-    gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
-    gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Spiel ansagen");
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), app->re->name);
 }
 
 /* TODO: select cards to be put in skat
@@ -765,7 +767,12 @@ void take_skat(app *app)
     }
 
     if (!app->re->human)
+    {
         druecke_skat(app);
+        spiel_ansagen(app);
+
+        app->state = PLAYING;
+    }
 
     /* update screen */
     draw_area(app);

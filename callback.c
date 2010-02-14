@@ -41,22 +41,6 @@ void next_round(GtkButton *button, gpointer data)
         app->state = PROVOKE;
 
         start_provoke(app);
-
-        app->state = TAKESKAT;
-
-        /* check if game was aborted
-         * i.e. all players have passed */
-        if (app->re)
-        {
-            take_skat(app);
-
-            if (!app->re->human)
-            {
-                spiel_ansagen(app);
-
-                app->state = PLAYING;
-            }
-        }
     }
     else if (app->state == TAKESKAT)
     {
