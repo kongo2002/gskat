@@ -628,7 +628,6 @@ void druecke_skat(app *app)
 {
     gint suits[] = { 40, 60, 80, 100 };
     gint count = 0;
-    gint blocked = 0;
     gint i, best;
     GList *ptr = NULL;
     card *card = NULL;
@@ -670,7 +669,7 @@ void druecke_skat(app *app)
     }
 
     /* search for a suit with only 2 cards left
-     * if these cards are neither ASS nor 10 -> take 'em */
+     * if none of them is an ace -> take 'em */
     if (count == 0)
     {
         for (i=0; i<4; ++i)
@@ -704,18 +703,29 @@ void druecke_skat(app *app)
     /* select remaining amount of cards to be added to skat */
     while (count < 2)
     {
+        gint len = 0;
         gint min = 10;
         GList *minimum = NULL;
 
         for (i=0; i<4; ++i)
         {
-            if (suits[i] != best && suits[i] != blocked)
+            if (suits[i] != best)
             {
                 ptr = get_suit_list(player->cards, suits[i]);
 
-                if (g_list_length(ptr) < min && g_list_length(ptr) > 0)
+                len = g_list_length(ptr);
+                if (len < min && len > 0)
                 {
-                    min = g_list_length(ptr);
+                    if (len == 1)
+                    {
+                        card = g_list_nth_data(ptr, 0);
+                        if (card->rank == ASS)
+                        {
+                            g_list_free(ptr);
+                            continue;
+                        }
+                    }
+                    min = len;
                     minimum = ptr;
                 }
                 else if (ptr)
@@ -723,17 +733,12 @@ void druecke_skat(app *app)
             }
         }
 
-        /* TODO: prevent infinite loop here */
         ptr = g_list_last(minimum);
         card = ptr->data;
-        if (card->rank != ASS)
-        {
-            app->skat = g_list_prepend(app->skat, card);
-            player->cards = g_list_remove(player->cards, card);
-            ++count;
-        }
-        else
-            blocked = card->suit;
+
+        app->skat = g_list_prepend(app->skat, card);
+        player->cards = g_list_remove(player->cards, card);
+        ++count;
 
         if (minimum)
             g_list_free(minimum);
