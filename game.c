@@ -1110,7 +1110,8 @@ void reset_game(app *app)
     app->re = NULL;
     app->forehand = (app->forehand + 1) % 3;
     app->state = ENDGAME;
-    app->player = -1;
+    app->player = app->forehand;
+    app->trump = -1;
 
     /* remove cards from players if necessary */
     if (app->players)
