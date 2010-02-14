@@ -652,6 +652,9 @@ void free_app(app *app)
     if (app->back)
         cairo_surface_destroy(app->back);
     app->back = NULL;
+    if (app->bg)
+        cairo_surface_destroy(app->bg);
+    app->bg = NULL;
 
     g_free(app->allwidgets);
 
