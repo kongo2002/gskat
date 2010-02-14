@@ -181,10 +181,10 @@ gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
     {
         /* top = trump */
         if ((top->suit == trump || top->rank == BUBE) &&
-                (bottom->suit != trump || bottom->rank != BUBE))
+                (bottom->suit != trump && bottom->rank != BUBE))
             return TRUE;
         /* bottom = trump */
-        else if ((top->suit != trump || top->rank != BUBE) &&
+        else if ((top->suit != trump && top->rank != BUBE) &&
                 (bottom->suit == trump || bottom->rank == BUBE))
             return FALSE;
         /* both trump */
