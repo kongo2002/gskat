@@ -507,7 +507,7 @@ void calc_card_positions(app *app)
         if (app->table && g_list_length(app->table) > 0)
         {
             y = win_h / 2 - card_h / 2;
-            x = win_w / 2 - card_w;
+            x = win_w / 2 - card_w / 2;
 
             for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
             {
@@ -515,17 +515,17 @@ void calc_card_positions(app *app)
                 if (card->owner == 0)
                 {
                     card->dim.x = x;
-                    card->dim.y = y + card_h / 2;
+                    card->dim.y = y + card_h / 3;
                 }
                 else if (card->owner == 1)
                 {
-                    card->dim.x = x - card_w / 2;
+                    card->dim.x = x - card_w / 3;
                     card->dim.y = y;
                 }
                 else if (card->owner == 2)
                 {
-                    card->dim.x = x + card_w / 2;
-                    card->dim.y = y - card_h / 2;
+                    card->dim.x = x + card_w / 3;
+                    card->dim.y = y - card_h / 3;
                 }
             }
 
