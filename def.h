@@ -76,6 +76,7 @@ typedef struct _player {
     gboolean re;
     gint gereizt;
     gint points;
+    gint sum_points;
     GList *cards;
 } player;
 

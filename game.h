@@ -57,6 +57,8 @@ void ai_play_card(app *, player *);
 
 void spiel_ansagen(app *);
 
+void reset_game(app *);
+
 void end_round(app *);
 
 void play_stich(app *);

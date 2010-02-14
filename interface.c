@@ -18,6 +18,7 @@ player *init_player(gint id, gchar *name, gboolean human)
         new->human = human;
         new->re = FALSE;
         new->points = 0;
+        new->sum_points = 0;
         new->gereizt = 0;
         new->cards = NULL;
     }

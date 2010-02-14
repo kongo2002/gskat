@@ -602,6 +602,7 @@ void start_provoke(app *app)
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
 
+        reset_game(app);
         game_start(app);
     }
     else
@@ -1021,6 +1022,8 @@ void end_round(app *app)
                     game);
         }
 
+        player->sum_points += game;
+
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->allwidgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
@@ -1035,6 +1038,8 @@ void end_round(app *app)
         /* TODO: implement null game */
         game = 23;
     }
+
+    reset_game(app);
 }
 
 void play_stich(app *app)
@@ -1067,11 +1072,16 @@ void play_stich(app *app)
     }
 }
 
-void game_start(app *app)
+void reset_game(app *app)
 {
     gint i;
+    GList *ptr = NULL;
+    card *card = NULL;
 
     app->stich = 1;
+    app->round += 1;
+    app->re = NULL;
+    app->forehand = (app->forehand + 1) % 3;
 
     /* remove cards from players if necessary */
     if (app->players)
@@ -1082,6 +1092,7 @@ void game_start(app *app)
                 g_list_free(app->players[i]->cards);
             app->players[i]->cards = NULL;
             app->players[i]->gereizt = 0;
+            app->players[i]->points = 0;
         }
     }
 
@@ -1090,8 +1101,26 @@ void game_start(app *app)
         g_list_free(app->skat);
     app->skat = NULL;
 
-    app->re = NULL;
+    /* empty table if necessary */
+    if (app->table)
+        g_list_free(app->table);
+    app->table = NULL;
 
+    /* reset all cards */
+    for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        card->owner = -1;
+        card->draw = FALSE;
+        card->draw_face = FALSE;
+        card->status = CS_AVAILABLE;
+    }
+
+}
+
+void game_start(app *app)
+{
     /* give cards */
     app->state = GIVE_CARDS;
     give_cards(app);
