@@ -19,19 +19,19 @@ gint compare_jacks(gconstpointer, gconstpointer);
 
 gint compare_family(gconstpointer, gconstpointer);
 
-gboolean is_trump(card *, gint);
+gboolean is_trump(app *, card *);
 
 GList *get_jack_list(GList *);
 
-GList *get_suit_list(GList *, gint);
+GList *get_suit_list(app *, GList *, gint);
 
-GList *get_trump_list(GList *, gint);
+GList *get_trump_list(app *, GList *);
 
 GList *get_possible_cards(app *, GList *);
 
 gint get_best_suit(GList *);
 
-gint rate_cards(GList *);
+gint rate_cards(app *, GList *);
 
 gint get_spitzen(GList *);
 

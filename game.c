@@ -284,7 +284,7 @@ GList *get_jack_list(GList *list)
     return jacks;
 }
 
-GList *get_suit_list(GList *list, gint suit)
+GList *get_suit_list(app *app, GList *list, gint suit)
 {
     GList *ptr = NULL, *family = NULL;
     card *card = NULL;
@@ -292,8 +292,17 @@ GList *get_suit_list(GList *list, gint suit)
     for (ptr = g_list_first(list); ptr; ptr = ptr->next)
     {
         card = ptr->data;
-        if (card->suit == suit && card->rank != BUBE)
-            family = g_list_prepend(family, (gpointer) card);
+
+        if (!app->null)
+        {
+            if (card->suit == suit && card->rank != BUBE)
+                family = g_list_prepend(family, (gpointer) card);
+        }
+        else
+        {
+            if (card->suit == suit)
+                family = g_list_prepend(family, (gpointer) card);
+        }
     }
 
     if (family)
@@ -301,21 +310,37 @@ GList *get_suit_list(GList *list, gint suit)
     return family;
 }
 
-gboolean is_trump(card *card, gint trump)
+gboolean is_trump(app *app, card *card)
 {
-    if (card->suit == trump || card->rank == BUBE)
-        return TRUE;
+    if (app->null)
+        return FALSE;
+    if (!app->trump)
+    {
+        if (card->rank == BUBE)
+            return TRUE;
+    }
+    else
+    {
+        if (card->suit == app->trump || card->rank == BUBE)
+            return TRUE;
+    }
     return FALSE;
 }
 
-GList *get_trump_list(GList *list, gint trump)
+GList *get_trump_list(app *app, GList *list)
 {
     GList *ptr = NULL, *family = NULL, *jacks = NULL;
     card *card = NULL;
 
-    family = get_suit_list(list, trump);
+    if (app->null)
+        return NULL;
 
     jacks = get_jack_list(list);
+
+    if (!app->trump)
+        return jacks;
+
+    family = get_suit_list(app, list, app->trump);
 
     if (jacks)
     {
@@ -344,10 +369,10 @@ GList *get_possible_cards(app *app, GList *list)
     {
         card = g_list_nth_data(app->table, 0);
 
-        if (is_trump(card, app->trump))
-            ptr = get_trump_list(list, app->trump);
+        if (is_trump(app, card))
+            ptr = get_trump_list(app, list);
         else
-            ptr = get_suit_list(list, card->suit);
+            ptr = get_suit_list(app, list, card->suit);
 
         if (ptr)
             return ptr;
@@ -357,7 +382,7 @@ GList *get_possible_cards(app *app, GList *list)
     return NULL;
 }
 
-gint rate_cards(GList *list)
+gint rate_cards(app *app, GList *list)
 {
     gint jacks = 0, rate = 0, best = 0;
     GList *ptr = NULL;
@@ -366,13 +391,13 @@ gint rate_cards(GList *list)
     best = get_best_suit(list);
 
     /* no cards of one suit? */
-    if (!get_suit_list(list, KARO))
+    if (!get_suit_list(app, list, KARO))
         rate++;
-    if (!get_suit_list(list, HERZ))
+    if (!get_suit_list(app, list, HERZ))
         rate++;
-    if (!get_suit_list(list, PIK))
+    if (!get_suit_list(app, list, PIK))
         rate++;
-    if (!get_suit_list(list, KREUZ))
+    if (!get_suit_list(app, list, KREUZ))
         rate++;
 
     for (ptr = g_list_first(list); ptr; ptr = ptr->next)
@@ -493,7 +518,7 @@ gint do_hoeren(app *app, player *player, gint value)
     {
         max = get_max_reizwert(player->cards);
 
-        if (rate_cards(player->cards) >= 6 && value <= max)
+        if (rate_cards(app, player->cards) >= 6 && value <= max)
         {
             player->gereizt = value;
             return value;
@@ -523,7 +548,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         {
             max = get_max_reizwert(player->cards);
 
-            if (rate_cards(player->cards) >= 6 && value <= max)
+            if (rate_cards(app, player->cards) >= 6 && value <= max)
                 gereizt = value;
             else
                 gereizt = 0;
@@ -574,7 +599,7 @@ void start_provoke(app *app)
         DPRINT(("MaxReizwert of %s: %d\n", app->player_names[i],
                     get_max_reizwert(app->players[i]->cards)));
         DPRINT(("CardRating of %s: %d\n", app->player_names[i],
-                    rate_cards(app->players[i]->cards)));
+                    rate_cards(app, app->players[i]->cards)));
     }
 
     /* sagen */
@@ -651,7 +676,7 @@ void druecke_skat(app *app)
     {
         if (suits[i] != best && count < 2)
         {
-            ptr = get_suit_list(player->cards, suits[i]);
+            ptr = get_suit_list(app, player->cards, suits[i]);
 
             if (g_list_length(ptr) == 1)
             {
@@ -676,7 +701,7 @@ void druecke_skat(app *app)
         {
             if (suits[i] != best)
             {
-                ptr = get_suit_list(player->cards, suits[i]);
+                ptr = get_suit_list(app, player->cards, suits[i]);
     
                 if (g_list_length(ptr) == 2)
                 {
@@ -711,7 +736,7 @@ void druecke_skat(app *app)
         {
             if (suits[i] != best)
             {
-                ptr = get_suit_list(player->cards, suits[i]);
+                ptr = get_suit_list(app, player->cards, suits[i]);
 
                 len = g_list_length(ptr);
                 if (len < min && len > 0)
