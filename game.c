@@ -800,6 +800,7 @@ void spiel_ansagen(app *app)
                     "Herz", HERZ,
                     "Karo", KARO,
                     "Grand", 200,
+                    "Null", 0,
                     NULL);
 
             result = gtk_dialog_run(GTK_DIALOG(dialog));
@@ -940,7 +941,6 @@ void calculate_stich(app *app)
         points += card->points;
 
         card->draw = FALSE;
-        card->owner = -1;
     }
 
     app->players[winner]->points += points;
@@ -1001,7 +1001,12 @@ void end_round(app *app)
         {
             card = ptr->data;
             if (card->owner == player->id)
+            {
                 list = g_list_prepend(list, card);
+#ifdef DEBUG
+                print_card(card);
+#endif
+            }
         }
 
         game = get_spitzen(list);
