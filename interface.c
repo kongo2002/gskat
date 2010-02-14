@@ -390,6 +390,22 @@ gboolean load_cards(const gchar *path, app *app)
         DPRINT(("FAIL\n"));
     }
 
+    /* load back of cards */
+    g_sprintf(cname, "%s/bg.png", path);
+
+    DPRINT(("Loading '%s' ... ", cname));
+
+    if (g_file_test(cname, G_FILE_TEST_EXISTS))
+    {
+        app->bg = cairo_image_surface_create_from_png(cname);
+        DPRINT(("OK\n"));
+    }
+    else
+    {
+        error = TRUE;
+        DPRINT(("FAIL\n"));
+    }
+
     g_free(cname);
 
     return !error;
@@ -541,11 +557,22 @@ void draw_area(app *app)
 {
     gint i;
     cairo_t *cr;
+    cairo_pattern_t *pat;
     player *player;
 
     cr = gdk_cairo_create(app->area->window);
 
-    cairo_set_source_rgb(cr, 0, 0, 0);
+    if (app->bg)
+    {
+        pat = cairo_pattern_create_for_surface(app->bg);
+        cairo_pattern_set_extend (pat, CAIRO_EXTEND_REPEAT);
+
+        cairo_set_source(cr, pat);
+
+    }
+    else
+        cairo_set_source_rgb(cr, 0, 0, 0);
+
     cairo_rectangle(cr, 0, 0,
             app->area->allocation.width,
             app->area->allocation.height);
@@ -566,6 +593,8 @@ void draw_area(app *app)
         }
     }
 
+    if (pat)
+        cairo_pattern_destroy(pat);
     cairo_destroy(cr);
 }
 

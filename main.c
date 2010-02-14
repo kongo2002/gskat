@@ -29,7 +29,7 @@ int main(int argc, const char *argv[])
         /* lists */
         NULL, NULL, NULL, NULL,
         /* pixmaps and widgets */
-        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
         /* game state */
         LOADING,
         /* re player */

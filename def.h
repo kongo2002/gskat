@@ -94,6 +94,8 @@ typedef struct _app
     GdkPixbuf **icons;
     /* image of the back of the cards */
     cairo_surface_t *back;
+    /* background image */
+    cairo_surface_t *bg;
     /* game area, is replaced by allwidgets */
     GtkWidget *area;
     /* array of all gtk widgets used */
