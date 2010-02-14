@@ -19,7 +19,7 @@ gboolean realization(GtkWidget *area, gpointer data)
     /* allocate memory for app lists */
     alloc_app(app);
 
-    if (load_cards(DATA_DIR, app, area))
+    if (load_cards(DATA_DIR, app))
         game_start(app);
 
     return FALSE;
@@ -55,8 +55,6 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     struct _app *app = (struct _app *) data;
 
-    alloc_target(app);
-
     calc_card_positions(app);
 
     return TRUE;
@@ -89,7 +87,7 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     struct _app *app = (struct _app *) data;
 
-    if (app->target && app->area && app->area->window)
+    if (app->area && app->area->window)
         draw_area(app);
 }
 

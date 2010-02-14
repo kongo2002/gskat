@@ -57,7 +57,7 @@ enum gstate
 
 typedef struct _card
 {
-    GdkPixmap *img;
+    cairo_surface_t *img;
     dim dim;
     gint suit;
     gint rank;
@@ -93,15 +93,9 @@ typedef struct _app
     /* array of 4 cells for icons */
     GdkPixbuf **icons;
     /* image of the back of the cards */
-    GdkPixmap *back;
-    /* mask corresponding to back image */
-    GdkBitmap *backmask;
-    /* mask correspondig to card image */
-    GdkBitmap *cardmask;
+    cairo_surface_t *back;
     /* game area, is replaced by allwidgets */
     GtkWidget *area;
-    /* target pixmap on which all elements are drawn */
-    GdkPixmap *target;
     /* array of all gtk widgets used */
     GtkWidget **allwidgets;
     /* current game state */

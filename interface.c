@@ -3,7 +3,6 @@
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include "interface.h"
-#include "mask.xbm"
 #include "def.h"
 #include "utils.h"
 #include "callback.h"
@@ -27,24 +26,6 @@ player *init_player(gint id, gchar *name, gboolean human)
         g_printerr("Could not create new player %s\n", name);
 
     return new;
-}
-
-void alloc_target(app *app)
-{
-    if (app->target != NULL)
-    {
-        g_object_unref(app->target);
-        app->target = NULL;
-    }
-
-    if (app->area)
-    {
-        app->target = gdk_pixmap_new(
-                app->area->window,
-                app->area->allocation.width,
-                app->area->allocation.height,
-                -1);
-    }
 }
 
 void load_icons(app *app)
@@ -329,11 +310,7 @@ void create_interface(app *app)
     }
 }
 
-void load_card(GList **list,
-        const gchar *file,
-        gint rank,
-        gint suit,
-        GtkWidget *widget)
+void load_card(GList **list, const gchar *file, gint rank, gint suit)
 {
     card *tcard = (card *) g_malloc(sizeof(card));
 
@@ -351,15 +328,15 @@ void load_card(GList **list,
         tcard->draw = FALSE;
         tcard->blink = FALSE;
 
-        tcard->img = gdk_pixmap_create_from_xpm(widget->window,
-                NULL, NULL, file);
-        gdk_drawable_get_size(tcard->img, &(tcard->dim.w), &(tcard->dim.h));
+        tcard->img = cairo_image_surface_create_from_png(file);
+        tcard->dim.w = cairo_image_surface_get_width(tcard->img);
+        tcard->dim.h = cairo_image_surface_get_height(tcard->img);
 
         *list = g_list_prepend(*list, (gpointer) tcard);
     }
 }
 
-gboolean load_cards(const gchar *path, app *app, GtkWidget *widget)
+gboolean load_cards(const gchar *path, app *app)
 {
     GList **list = &(app->cards);
 
@@ -370,8 +347,6 @@ gboolean load_cards(const gchar *path, app *app, GtkWidget *widget)
     gboolean error = FALSE;
 
     gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
-    gchar *suit = (gchar *) g_malloc(sizeof(gchar) * 10);
-    gchar *rank = (gchar *) g_malloc(sizeof(gchar) * 10);
 
     /* create all 32 cards */
     if (cname != NULL)
@@ -381,38 +356,39 @@ gboolean load_cards(const gchar *path, app *app, GtkWidget *widget)
             for (j=0; j<8; ++j)
             {
                 id = suits[i] + ranks[j];
-                g_sprintf(cname, "%s/%s%s.xpm", path,
-                        get_card_rank(id, rank),
-                        get_card_suit(id, suit));
+                g_sprintf(cname, "%s/%d.png", path, id);
+
+                DPRINT(("Loading '%s' ... ", cname));
 
                 if (g_file_test(cname, G_FILE_TEST_EXISTS))
-                    load_card(list, cname, ranks[j], suits[i], widget);
+                {
+                    load_card(list, cname, ranks[j], suits[i]);
+                    DPRINT(("OK\n"));
+                }
                 else
+                {
                     error = TRUE;
+                    DPRINT(("FAIL\n"));
+                }
             }
         }
     }
 
-    g_free(suit);
-    g_free(rank);
+    /* load back of cards */
+    g_sprintf(cname, "%s/back.png", path);
 
-    /* create cardmask */
-    if (app->cardmask == NULL)
-        app->cardmask = gdk_bitmap_create_from_data(widget->window,
-                mask_bits, mask_width, mask_height);
-
-    /* create back of cards */
-    g_sprintf(cname, "%s/back.xpm", path);
+    DPRINT(("Loading '%s' ... ", cname));
 
     if (g_file_test(cname, G_FILE_TEST_EXISTS))
     {
-        app->back = gdk_pixmap_create_from_xpm(widget->window,
-                &(app->backmask),
-                &(app->area->style->black),
-                cname);
+        app->back = cairo_image_surface_create_from_png(cname);
+        DPRINT(("OK\n"));
     }
     else
+    {
         error = TRUE;
+        DPRINT(("FAIL\n"));
+    }
 
     g_free(cname);
 
@@ -535,14 +511,11 @@ void calc_card_positions(app *app)
 }
 
 /* draw cards from last to first */
-void draw_cards(app *app, GList *cards, GdkPixmap *target)
+void draw_cards(app *app, GList *cards, cairo_t *target)
 {
-    gint i = 10;
     card *card;
     GList *ptr;
-    GdkPixmap *img = NULL;
-    GtkStateType state = GTK_WIDGET_STATE(app->area);
-    GdkGC *gc = app->area->style->fg_gc[state];
+    cairo_surface_t *img = NULL;
 
     for (ptr = g_list_first(cards); ptr; ptr = ptr->next)
     {
@@ -551,25 +524,15 @@ void draw_cards(app *app, GList *cards, GdkPixmap *target)
         if (card && card->draw)
         {
             if (!card->draw_face)
-            {
                 img = app->back;
-                gdk_gc_set_clip_mask(gc, app->backmask);
-            }
             else
-            {
                 img = card->img;
-                gdk_gc_set_clip_mask(gc, app->cardmask);
-            }
         }
 
         if (img)
         {
-            gdk_gc_set_clip_origin(gc, card->dim.x, card->dim.y);
-            gdk_draw_drawable(target, app->area->style->fg_gc[state],
-                    img, 0, 0,
-                    card->dim.x, card->dim.y, -1, -1);
-            gdk_gc_set_clip_mask(gc, NULL);
-            i += 10;
+            cairo_set_source_surface(target, img, card->dim.x, card->dim.y);
+            cairo_paint(target);
         }
     }
 }
@@ -577,41 +540,33 @@ void draw_cards(app *app, GList *cards, GdkPixmap *target)
 void draw_area(app *app)
 {
     gint i;
+    cairo_t *cr;
     player *player;
 
-    if (app->target == NULL)
-        alloc_target(app);
+    cr = gdk_cairo_create(app->area->window);
 
-    if (app->target)
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_rectangle(cr, 0, 0,
+            app->area->allocation.width,
+            app->area->allocation.height);
+    cairo_fill(cr);
+
+    if (app->skat)
+        draw_cards(app, app->skat, cr);
+
+    if (app->table)
+        draw_cards(app, app->table, cr);
+
+    if (app->players)
     {
-        /* paint black background */
-        gdk_draw_rectangle(app->target,
-                app->area->style->black_gc, TRUE, 0, 0,
-                app->area->allocation.width,
-                app->area->allocation.height);
-
-        /* draw cards in skat */
-        if (app->skat)
-            draw_cards(app, app->skat, app->target);
-
-        /* draw cards on the table */
-        if (app->table)
-            draw_cards(app, app->table, app->target);
-
-        /* draw all player cards */
-        if (app->players)
+        for (i=0; i<3; ++i)
         {
-            for (i=0; i<3; ++i)
-            {
-                player = app->players[i];
-                draw_cards(app, player->cards, app->target);
-            }
+            player = app->players[i];
+            draw_cards(app, player->cards, cr);
         }
-
-        gdk_draw_drawable(app->area->window,
-                app->area->style->fg_gc[GTK_WIDGET_STATE(app->area)],
-                app->target, 0, 0, 0, 0, -1, -1);
     }
+
+    cairo_destroy(cr);
 }
 
 void free_app(app *app)
@@ -635,7 +590,7 @@ void free_app(app *app)
     {
         card = ptr->data;
         if (card && card->img)
-            g_object_unref(card->img);
+            cairo_surface_destroy(card->img);
         g_free(card);
         card = NULL;
     }
@@ -665,21 +620,9 @@ void free_app(app *app)
     }
 
     /* free remaining objects */
-    if (app->target)
-        g_object_unref(app->target);
-    app->target = NULL;
-
     if (app->back)
-        g_object_unref(app->back);
+        cairo_surface_destroy(app->back);
     app->back = NULL;
-
-    if (app->backmask)
-        g_object_unref(app->backmask);
-    app->backmask = NULL;
-
-    if (app->cardmask)
-        g_object_unref(app->cardmask);
-    app->cardmask = NULL;
 
     g_free(app->allwidgets);
 

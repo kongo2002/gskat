@@ -28,10 +28,8 @@ int main(int argc, const char *argv[])
     {
         /* lists */
         NULL, NULL, NULL, NULL,
-        /* pixmaps and masks */
-        NULL, NULL, NULL, NULL, NULL,
-        /* widgets */
-        NULL, NULL,
+        /* pixmaps and widgets */
+        NULL, NULL, NULL, NULL,
         /* game state */
         LOADING,
         /* re player */
@@ -45,9 +43,6 @@ int main(int argc, const char *argv[])
         /* player names */
         NULL
     };
-
-    /* initialize glib environment */
-    /*g_type_init();*/
 
     /* parse command line arguments */
     context = g_option_context_new(" - GTK Skat");
