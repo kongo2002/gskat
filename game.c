@@ -613,9 +613,10 @@ void start_provoke(app *app)
         app->re = app->players[sager];
     }
 
-    /* enable button */
+    /* update interface */
     gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
     gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Spiel ansagen");
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), app->re->name);
 }
 
 /* TODO: select cards to be put in skat
@@ -887,6 +888,7 @@ void ai_play_card(app *app, player *player)
 
 void calculate_stich(app *app)
 {
+    gchar msg[6];
     gint points = 0;
     gint winner;
     GList *ptr = NULL;
@@ -942,6 +944,13 @@ void calculate_stich(app *app)
     app->table = NULL;
 
     ++app->stich;
+
+    /* update interface */
+    if (app->stich <= 10)
+    {
+        g_sprintf(msg, "%d", app->stich);
+        gtk_label_set_text(GTK_LABEL(app->allwidgets[2]), msg);
+    }
 }
 
 void end_round(app *app)
@@ -951,6 +960,8 @@ void end_round(app *app)
     GList *list = NULL, *ptr = NULL;
     card *card = NULL;
     player *player = app->re;
+
+    app->round += 1;
 
     if (!app->null)
     {
@@ -1015,7 +1026,7 @@ void end_round(app *app)
 
             game *= rank * -2;
 
-            g_sprintf(msg, "%s lost the game with %d to %d points\n\t-%d",
+            g_sprintf(msg, "%s lost the game with %d to %d points\n\t%d",
                     player->name,
                     player->points,
                     (120 - player->points),
@@ -1038,6 +1049,17 @@ void end_round(app *app)
         /* TODO: implement null game */
         game = 23;
     }
+
+    /* update interface */
+    g_sprintf(msg, "%d", app->players[0]->sum_points);
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[5]), msg);
+    g_sprintf(msg, "%d", app->players[1]->sum_points);
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[6]), msg);
+    g_sprintf(msg, "%d", app->players[2]->sum_points);
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[7]), msg);
+
+    g_sprintf(msg, "Runde %d", app->round);
+    gtk_frame_set_label(GTK_FRAME(app->allwidgets[8]), msg);
 
     reset_game(app);
 }
@@ -1079,7 +1101,6 @@ void reset_game(app *app)
     card *card = NULL;
 
     app->stich = 1;
-    app->round += 1;
     app->re = NULL;
     app->forehand = (app->forehand + 1) % 3;
 
@@ -1117,6 +1138,11 @@ void reset_game(app *app)
         card->status = CS_AVAILABLE;
     }
 
+    /* update interface */
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), "-");
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[4]), "-");
+    gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
+    gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Neue Runde");
 }
 
 void game_start(app *app)
