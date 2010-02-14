@@ -951,6 +951,9 @@ void calculate_stich(app *app)
         g_sprintf(msg, "%d", app->stich);
         gtk_label_set_text(GTK_LABEL(app->allwidgets[2]), msg);
     }
+
+    calc_card_positions(app);
+    draw_area(app);
 }
 
 void end_round(app *app)
@@ -1140,6 +1143,7 @@ void reset_game(app *app)
     }
 
     /* update interface */
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[2]), "1");
     gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), "-");
     gtk_label_set_text(GTK_LABEL(app->allwidgets[4]), "-");
     gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
