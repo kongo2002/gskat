@@ -19,9 +19,7 @@ gboolean realization(GtkWidget *area, gpointer data)
     alloc_app(app);
 
     if (load_cards(DATA_DIR, app, area))
-    {
         game_start(app);
-    }
 
     return FALSE;
 }
@@ -30,7 +28,15 @@ void next_round(GtkButton *button, gpointer data)
 {
     struct _app *app = (struct _app *) data;
 
-    if (app->state == WAITING)
+    if (app->state == ENDGAME)
+    {
+        game_start(app);
+
+        app->state = WAITING;
+
+        next_round(button, data);
+    }
+    else if (app->state == WAITING)
     {
         app->state = PROVOKE;
 
