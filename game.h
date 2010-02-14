@@ -33,6 +33,8 @@ gint get_best_suit(GList *);
 
 gint rate_cards(GList *);
 
+gint get_spitzen(GList *);
+
 gint get_max_reizwert(GList *);
 
 gint next_reizwert(gint);
@@ -54,6 +56,8 @@ void throw_card(app *, card *);
 void ai_play_card(app *, player *);
 
 void spiel_ansagen(app *);
+
+void end_round(app *);
 
 void play_stich(app *);
 

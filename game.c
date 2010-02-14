@@ -417,9 +417,8 @@ gint get_best_suit(GList *list)
     return ((ret+1)*20+20);
 }
 
-gint get_max_reizwert(GList *list)
+gint get_spitzen(GList *list)
 {
-    gint suit = 0;
     gint max = 0;
     GList *ptr = NULL, *jacks = NULL;
     card *card = NULL;
@@ -456,7 +455,16 @@ gint get_max_reizwert(GList *list)
         g_list_free(jacks);
     }
 
-    max += 1;
+    return (max + 1);
+}
+
+gint get_max_reizwert(GList *list)
+{
+    gint suit = 0;
+    gint max = 0;
+
+    max = get_spitzen(list);
+
     suit = get_best_suit(list);
 
     switch (suit)
@@ -935,6 +943,100 @@ void calculate_stich(app *app)
     ++app->stich;
 }
 
+void end_round(app *app)
+{
+    gint rank, game;
+    gchar msg[200];
+    GList *list = NULL, *ptr = NULL;
+    card *card = NULL;
+    player *player = app->re;
+
+    if (!app->null)
+    {
+        switch (app->trump)
+        {
+            case KARO:
+                rank = 9;
+                break;
+            case HERZ:
+                rank = 10;
+                break;
+            case PIK:
+                rank = 11;
+                break;
+            case KREUZ:
+                rank = 12;
+                break;
+            case 20:
+                rank = 24;
+                break;
+        }
+
+        /* get player's cards */
+        for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
+        {
+            card = ptr->data;
+            if (card->owner == player->id)
+                list = g_list_prepend(list, card);
+        }
+
+        game = get_spitzen(list);
+
+        g_list_free(list);
+
+        /* player has won */
+        if (player->points > 60)
+        {
+            /* player won 'schwarz' */
+            if (player->points == 120)
+                game += 2;
+            /* player won 'schneider' */
+            else if (player->points > 90)
+                game += 1;
+
+            game *= rank;
+
+            g_sprintf(msg, "%s won the game with %d to %d points\n\t+%d",
+                    player->name,
+                    player->points,
+                    (120 - player->points),
+                    game);
+        }
+        /* player has lost */
+        else
+        {
+            /* player lost 'schwarz' */
+            if (player->points == 0)
+                game += 2;
+            /* player lost 'schneider' */
+            else if (player->points < 30)
+                game += 1;
+
+            game *= rank * -2;
+
+            g_sprintf(msg, "%s lost the game with %d to %d points\n\t-%d",
+                    player->name,
+                    player->points,
+                    (120 - player->points),
+                    game);
+        }
+
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->allwidgets[0]),
+                GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_INFO,
+                GTK_BUTTONS_CLOSE,
+                msg);
+
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
+    else
+    {
+        /* TODO: implement null game */
+        game = 23;
+    }
+}
+
 void play_stich(app *app)
 {
     gint fh = app->forehand;
@@ -961,6 +1063,7 @@ void play_stich(app *app)
     else
     {
         /* end of round */
+        end_round(app);
     }
 }
 
