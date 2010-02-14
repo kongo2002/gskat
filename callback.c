@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "callback.h"
 #include "def.h"
 #include "utils.h"
 #include "game.h"

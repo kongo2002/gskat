@@ -1,6 +1,8 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
+#include "def.h"
+
 void swap(gint *, gint *);
 
 gint get_card_points(gint);

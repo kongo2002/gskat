@@ -5,13 +5,13 @@ gboolean quit(GtkWidget *, gpointer);
 
 void next_round(GtkButton *, gpointer);
 
-gboolean configure(GtkWidget *, gpointer);
+gboolean configure(GtkWidget *, GdkEventExpose *, gpointer);
 
 gboolean button_press(GtkWidget *, GdkEventButton *, gpointer);
 
 gboolean realization(GtkWidget *, gpointer);
 
-gboolean refresh(GtkWidget *, gpointer);
+void refresh(GtkWidget *, GdkEventExpose *, gpointer);
 
 #endif /* __CALLBACK_H__ */
 

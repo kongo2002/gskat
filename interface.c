@@ -2,6 +2,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
+#include "interface.h"
 #include "mask.xbm"
 #include "def.h"
 #include "utils.h"

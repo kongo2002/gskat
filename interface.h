@@ -1,6 +1,8 @@
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
+#include "def.h"
+
 player *init_player(gint, gchar *, gboolean);
 
 void load_icons(app *);
