@@ -40,7 +40,7 @@ card *ai_select_card(app *app, player *player, GList *list)
         /* player is the last to play */
         else
         {
-             /* do something */
+            card = ai_re_hinten(app, player, list);
         }
     }
     /* kontra player */
@@ -105,6 +105,23 @@ card *kurz_fehl_ass(app *app, GList *list)
     return ret;
 }
 
+card *knapp_trumpfen(app *app, player *player, GList *list)
+{
+    GList *ptr = NULL;
+    card *ret = NULL, *card = NULL, *high = highest_on_table(app);
+
+    DPRINT(("%s: try knapp_trumpfen()\n", player->name));
+
+    for (ptr = g_list_first(list); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        if (is_greater(card, high, app->trump, app->null))
+            ret = card;
+    }
+    return ret;
+}
+
 card *ai_re_kommt_raus(app *app, player *player, GList *list)
 {
     card *card = NULL;
@@ -129,6 +146,15 @@ card *ai_kontra_hinten(app *app, player *player, GList *list)
 {
     if (kontra_stich_sicher(app))
         return ai_kontra_schmieren(app, player, list);
+    return NULL;
+}
+
+card *ai_re_hinten(app *app, player *player, GList *list)
+{
+    card *card = NULL;
+    
+    if ((card = knapp_trumpfen(app, player, list)))
+        return card;
     return NULL;
 }
 
