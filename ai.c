@@ -199,6 +199,35 @@ gboolean hat_gestochen(app *app, player *player, gint suit)
     return FALSE;
 }
 
+gboolean truempfe_draussen(app *app, player *player)
+{
+    gint count = 0;
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    /* iterate through played cards */
+    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        if (is_trump(app, card))
+            ++count;
+    }
+
+    /* iterate through player's cards */
+    for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        if (is_trump(app, card))
+            ++count;
+    }
+
+    if (count == 11)
+        return TRUE;
+    return FALSE;
+}
+
 gboolean muss_bedienen(app *app, player *player)
 {
     card *card = NULL;
