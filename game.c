@@ -526,6 +526,9 @@ gint do_hoeren(app *app, player *player, gint value)
         else
             return 0;
     }
+
+    if (response)
+        player->gereizt = value;
     return response;
 }
 
@@ -1062,6 +1065,10 @@ void end_round(app *app)
 
         game = get_spitzen(list);
 
+        /* hand game */
+        if (app->hand)
+            game += 1;
+
         g_list_free(list);
 
         /* player has won */
@@ -1172,6 +1179,7 @@ void reset_game(app *app)
     app->state = ENDGAME;
     app->player = app->forehand;
     app->trump = -1;
+    app->hand = FALSE;
 
     /* remove cards from players if necessary */
     if (app->players)
