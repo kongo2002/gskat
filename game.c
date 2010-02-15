@@ -1083,11 +1083,22 @@ void end_round(app *app)
 
             game *= rank;
 
-            g_sprintf(msg, "%s won the game with %d to %d points\n\t+%d",
-                    player->name,
-                    player->points,
-                    (120 - player->points),
-                    game);
+            if (player->gereizt > game)
+            {
+                game *= -1;
+
+                g_sprintf(msg, "%s hat ueberreizt.\n\t%d",
+                        player->name,
+                        game);
+            }
+            else
+            {
+                g_sprintf(msg, "%s gewinnt mit %d zu %d Punkten\n\t+%d",
+                        player->name,
+                        player->points,
+                        (120 - player->points),
+                        game);
+            }
         }
         /* player has lost */
         else
@@ -1101,7 +1112,7 @@ void end_round(app *app)
 
             game *= rank * -2;
 
-            g_sprintf(msg, "%s lost the game with %d to %d points\n\t%d",
+            g_sprintf(msg, "%s verliert mit %d zu %d Punkten\n\t%d",
                     player->name,
                     player->points,
                     (120 - player->points),
