@@ -13,7 +13,11 @@ card *ai_kontra_hinten(app *, player *, GList *);
 
 card *ai_kontra_schmieren(app *, player *, GList *);
 
+gboolean muss_bedienen(app *, player *);
+
 gboolean kontra_stich_sicher(app *);
+
+gint num_of_trump(app *, GList *);
 
 gint num_of_suit(app *, GList *, gint);
 

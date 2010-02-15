@@ -16,7 +16,10 @@ card *ai_select_card(app *app, player *player, GList *list)
 
     /* return last card */
     if (g_list_length(list) == 1)
+    {
+        DPRINT(("%s: only 1 card possible\n", player->name));
         return g_list_nth_data(list, 0);
+    }
 
     /* determine position on table */
     position = (app->table) ? g_list_length(app->table) : 0;
@@ -163,6 +166,32 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
     return ret;
 }
 
+gboolean muss_bedienen(app *app, player *player)
+{
+    card *card = NULL;
+
+    if (app->table && g_list_length(app->table) > 0)
+    {
+        card = g_list_nth_data(app->table, 0);
+
+        if (is_trump(app, card))
+        {
+            if (num_of_trump(app, player->cards) > 0)
+                return TRUE;
+            else
+                return FALSE;
+        }
+        else
+        {
+            if (num_of_suit(app, player->cards, card->suit) > 0)
+                return TRUE;
+            else
+                return FALSE;
+        }
+    }
+    return FALSE;
+}
+
 gboolean kontra_stich_sicher(app *app)
 {
     card *card = NULL;
@@ -178,6 +207,19 @@ gboolean kontra_stich_sicher(app *app)
         return FALSE;
     else
         return TRUE;
+}
+
+gint num_of_trump(app *app, GList *list)
+{
+    int num = 0;
+    GList *ptr = NULL;
+
+    if ((ptr = get_trump_list(app, list)))
+    {
+        num = g_list_length(ptr);
+        g_list_free(ptr);
+    }
+    return num;
 }
 
 gint num_of_suit(app *app, GList *list, gint suit)
