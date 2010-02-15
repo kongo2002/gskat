@@ -44,7 +44,7 @@ void load_icons(app *app)
         {
             g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
 
-            DPRINT(("Loading %s ... ", filename));
+            DPRINT(("Loading '%s' ... ", filename));
 
             if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
             {
@@ -376,39 +376,31 @@ gboolean load_cards(const gchar *path, app *app)
 
     /* load back of cards */
     g_sprintf(cname, "%s/back.png", path);
-
-    DPRINT(("Loading '%s' ... ", cname));
-
-    if (g_file_test(cname, G_FILE_TEST_EXISTS))
-    {
-        app->back = cairo_image_surface_create_from_png(cname);
-        DPRINT(("OK\n"));
-    }
-    else
-    {
-        error = TRUE;
-        DPRINT(("FAIL\n"));
-    }
+    app->back = load_image(cname);
 
     /* load back of cards */
     g_sprintf(cname, "%s/bg.png", path);
-
-    DPRINT(("Loading '%s' ... ", cname));
-
-    if (g_file_test(cname, G_FILE_TEST_EXISTS))
-    {
-        app->bg = cairo_image_surface_create_from_png(cname);
-        DPRINT(("OK\n"));
-    }
-    else
-    {
-        error = TRUE;
-        DPRINT(("FAIL\n"));
-    }
+    app->bg = load_image(cname);
 
     g_free(cname);
 
     return !error;
+}
+
+cairo_surface_t *load_image(gchar *filename)
+{
+    DPRINT(("Loading '%s' ... ", filename));
+    
+    if (g_file_test(filename, G_FILE_TEST_EXISTS))
+    {
+        DPRINT(("OK\n"));
+        return cairo_image_surface_create_from_png(filename);
+    }
+    else
+    {
+        DPRINT(("FAIL\n"));
+        return NULL;
+    }
 }
 
 void pos_player_cards(player *player, gint x, gint y, gint step)

@@ -19,6 +19,8 @@ void calc_card_positions(app *);
 
 void load_card(GList **, const gchar *, gint, gint);
 
+cairo_surface_t *load_image(gchar *);
+
 gboolean load_cards(const gchar *, app *);
 
 void draw_cards(app *, GList *, cairo_t *);
