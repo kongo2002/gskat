@@ -166,6 +166,39 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
     return ret;
 }
 
+/* TODO: we need to consider grand and null games here */
+gboolean hat_gestochen(app *app, player *player, gint suit)
+{
+    gint i = 0;
+    gboolean found = FALSE;
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        if (++i > 3)
+        {
+            found = FALSE;
+            i = 1;
+        }
+
+        if (i == 1 && card->suit == suit && card->rank != BUBE &&
+                card->owner != player->id)
+        {
+            found = TRUE;
+            continue;
+        }
+
+        if (found == TRUE && card->owner == player->id &&
+                (card->suit != suit || card->rank == BUBE))
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
 gboolean muss_bedienen(app *app, player *player)
 {
     card *card = NULL;

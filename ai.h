@@ -15,6 +15,8 @@ card *ai_kontra_schmieren(app *, player *, GList *);
 
 card *highest_on_table(app *);
 
+gboolean hat_gestochen(app *, player *, gint);
+
 gboolean muss_bedienen(app *, player *);
 
 gboolean kontra_stich_sicher(app *);
