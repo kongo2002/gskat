@@ -777,8 +777,29 @@ void druecke_skat(app *app)
 
 void take_skat(app *app)
 {
+    gint result;
     GList *ptr = NULL;
     card *card = NULL;
+
+    if (app->re->human)
+    {
+        do
+        {
+            GtkWidget *dialog = gtk_dialog_new_with_buttons("Hand spielen?",
+                    GTK_WINDOW(app->allwidgets[0]),
+                    GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+                    "Ja", 1,
+                    "Nein", 0,
+                    NULL);
+
+            result = gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
+        while (result == GTK_RESPONSE_DELETE_EVENT);
+
+        if (result == 1)
+            app->hand = TRUE;
+    }
 
     app->state = TAKESKAT;
 
@@ -789,7 +810,7 @@ void take_skat(app *app)
         card->owner = app->re->id;
 
         /* show cards in skat */
-        if (app->re->human)
+        if (app->re->human && !app->hand)
         {
             card->draw = TRUE;
             card->draw_face = TRUE;

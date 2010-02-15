@@ -36,8 +36,8 @@ int main(int argc, const char *argv[])
         NULL,
         /* integers */
         2, -1 , -1, 1, 1,
-        /* null game */
-        FALSE,
+        /* hand/null game */
+        FALSE, FALSE,
         /* options */
         TRUE,
         /* player names */

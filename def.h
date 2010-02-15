@@ -114,6 +114,8 @@ typedef struct _app
     gint round;
     /* stich number */
     gint stich;
+    /* hand game */
+    gboolean hand;
     /* null game */
     gboolean null;
     /* gui mode */

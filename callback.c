@@ -67,7 +67,7 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 
     if (event->button == 1)
     {
-        if (app->state == TAKESKAT && app->re == app->players[0])
+        if (app->state == TAKESKAT && app->re == app->players[0] && !app->hand)
             found = click_skat(app, event);
         else if (app->state == PLAYING)
             found = play_card(app, event);
