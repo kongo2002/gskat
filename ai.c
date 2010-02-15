@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include "ai.h"
 #include "game.h"
@@ -83,6 +84,7 @@ card *kurz_fehl_ass(app *app, GList *list)
 
                 /* TODO: select suit of which the amount of played
                  * cards is minimum */
+                /* TODO: check if someone already took the trick */
                 if (card->rank == ASS && (!min || len < min))
                 {
                     min = len;

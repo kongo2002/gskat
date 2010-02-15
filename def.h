@@ -88,6 +88,8 @@ typedef struct _app
     GList *skat;
     /* cards on the table */
     GList *table;
+    /* played cards of current round */
+    GList *played;
     /* list of players */
     player **players;
     /* array of 4 cells for icons */

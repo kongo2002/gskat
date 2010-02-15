@@ -667,7 +667,9 @@ void free_app(app *app)
     g_list_free(app->cards);
     app->cards = NULL;
     g_list_free(app->skat);
-    app->cards = NULL;
+    app->skat = NULL;
+    g_list_free(app->played);
+    app->played = NULL;
 
     /* free player names */
     for (i=0; i<3; ++i)

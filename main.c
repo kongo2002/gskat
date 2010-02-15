@@ -27,7 +27,7 @@ int main(int argc, const char *argv[])
     app app =
     {
         /* lists */
-        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
         /* pixmaps and widgets */
         NULL, NULL, NULL, NULL, NULL,
         /* game state */

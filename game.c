@@ -926,6 +926,7 @@ void throw_card(app *app, card *card)
 #endif
 
     app->table = g_list_append(app->table, card);
+    app->played = g_list_append(app->played, card);
     player->cards = g_list_remove(player->cards, card);
 
     calc_card_positions(app);
@@ -1205,6 +1206,11 @@ void reset_game(app *app)
             app->players[i]->points = 0;
         }
     }
+
+    /* empty played cards if necessary */
+    if (app->played)
+        g_list_free(app->played);
+    app->played = NULL;
 
     /* empty skat if necessary */
     if (app->skat)
