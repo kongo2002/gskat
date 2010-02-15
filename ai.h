@@ -13,6 +13,8 @@ card *ai_kontra_hinten(app *, player *, GList *);
 
 card *ai_kontra_schmieren(app *, player *, GList *);
 
+card *highest_on_table(app *);
+
 gboolean muss_bedienen(app *, player *);
 
 gboolean kontra_stich_sicher(app *);

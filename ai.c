@@ -192,6 +192,35 @@ gboolean muss_bedienen(app *app, player *player)
     return FALSE;
 }
 
+card *highest_on_table(app *app)
+{
+    gint len = 0;
+
+    if (app->table && (len = g_list_length(app->table) > 0))
+    {
+        if (len == 1)
+            return g_list_nth_data(app->table, 0);
+        else if (len == 2)
+        {
+            if (is_greater(g_list_nth_data(app->table, 1),
+                        g_list_nth_data(app->table, 0), app->trump, app->null))
+                return g_list_nth_data(app->table, 1);
+            else
+                return g_list_nth_data(app->table, 0);
+        }
+    }
+    return NULL;
+}
+
+gboolean kommt_drueber(app *app, player *player, GList *list)
+{
+    card *card = highest_on_table(app);
+
+    if (is_greater(g_list_nth_data(list, 0), card, app->trump, app->null))
+        return TRUE;
+    return FALSE;
+}
+
 gboolean kontra_stich_sicher(app *app)
 {
     card *card = NULL;
