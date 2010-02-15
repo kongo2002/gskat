@@ -3,6 +3,7 @@
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include "def.h"
+#include "ai.h"
 #include "interface.h"
 #include "game.h"
 #include "utils.h"
@@ -933,16 +934,13 @@ void throw_card(app *app, card *card)
 
 void ai_play_card(app *app, player *player)
 {
-    gint sel;
     GList *ptr = NULL;
     card *card = NULL;
 
     ptr = get_possible_cards(app, player->cards);
 
-    /* TODO: implement AI logic here
-     * currently random card selection only */
-    sel = rand() % g_list_length(ptr);
-    card = g_list_nth_data(ptr, sel);
+    /* TODO: implement AI logic here */
+    card = ai_select_card(app, player, ptr);
 
     g_list_free(ptr);
 
@@ -1087,8 +1085,11 @@ void end_round(app *app)
             {
                 game *= -1;
 
-                g_sprintf(msg, "%s hat ueberreizt.\n\t%d",
+                g_sprintf(msg, "%s hat ueberreizt.\nGereizt: %d\n"
+                        "Spielwert: %d\n\t%d",
                         player->name,
+                        player->gereizt,
+                        game * -1,
                         game);
             }
             else

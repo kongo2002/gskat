@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -O0 -Wall `pkg-config --cflags gtk+-2.0` -g -DDEBUG
 LDFLAGS=`pkg-config --libs gtk+-2.0`
-SOURCES=main.c interface.c callback.c game.c utils.c
+SOURCES=main.c interface.c callback.c game.c utils.c ai.c
 OBJECTS=$(SOURCES:.c=.o)
 INCLUDES=
 EXECUTABLE=gskat
