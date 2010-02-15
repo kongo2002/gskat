@@ -25,6 +25,8 @@ gboolean load_cards(const gchar *, app *);
 
 void draw_cards(app *, GList *, cairo_t *);
 
+void draw_player(app *, player *, cairo_t *);
+
 void draw_area(app *);
 
 void free_app(app *);

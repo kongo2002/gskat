@@ -170,7 +170,7 @@ void create_interface(app *app)
 
         area = gtk_drawing_area_new();
         gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
-        gtk_widget_set_size_request(area, 450, 420);
+        gtk_widget_set_size_request(area, 450, 500);
 
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
@@ -545,6 +545,54 @@ void draw_cards(app *app, GList *cards, cairo_t *target)
     }
 }
 
+void draw_player(app *app, player *player, cairo_t *cr)
+{
+    gchar *name;
+    gint card_w, card_h, w, h;
+    card *card = NULL;
+
+    /* get screen dimensions */
+    w = app->area->allocation.width;
+    h = app->area->allocation.height;
+
+    /* get card dimensions */
+    card = g_list_nth_data(app->cards, 0);
+    card_w = card->dim.w;
+    card_h = card->dim.h;
+
+    /* set font color and size */
+    if (player->id == app->forehand)
+        cairo_set_source_rgb(cr, 1.0, 0.1, 0.1);
+    else
+        cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
+
+    cairo_select_font_face(cr, "sans-serif",
+            CAIRO_FONT_SLANT_NORMAL,
+            CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 12);
+
+    /* set name */
+    name = (gchar *) g_malloc(sizeof(gchar) * strlen(player->name) + 6);
+
+    if (player == app->re)
+        g_sprintf(name, "%s (Re)", player->name);
+    else
+        g_sprintf(name, "%s", player->name);
+
+    /* position text */
+    if (player->id == 0)
+        cairo_move_to(cr, w/2-strlen(name)*5, h-card_h-10);
+    else if (player->id == 1)
+        cairo_move_to(cr, 20, card_h+20);
+    else
+        cairo_move_to(cr, w-strlen(name)*10, card_h+20);
+
+    /* draw text */
+    cairo_show_text(cr, name);
+
+    g_free(name);
+}
+
 void draw_area(app *app)
 {
     gint i;
@@ -582,6 +630,7 @@ void draw_area(app *app)
         {
             player = app->players[i];
             draw_cards(app, player->cards, cr);
+            draw_player(app, player, cr);
         }
     }
 
