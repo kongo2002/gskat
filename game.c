@@ -625,6 +625,7 @@ void start_provoke(app *app)
                     app->players[sager]->gereizt));
 
         app->re = app->players[sager];
+        app->re->re = TRUE;
 
         /* update interface */
         gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
@@ -1084,14 +1085,14 @@ void end_round(app *app)
 
             if (player->gereizt > game)
             {
-                game *= -1;
-
                 g_sprintf(msg, "%s hat ueberreizt.\nGereizt: %d\n"
                         "Spielwert: %d\n\t%d",
                         player->name,
                         player->gereizt,
-                        game * -1,
-                        game);
+                        game,
+                        game * -2);
+
+                game *= -2;
             }
             else
             {
@@ -1202,6 +1203,7 @@ void reset_game(app *app)
             if (app->players[i]->cards)
                 g_list_free(app->players[i]->cards);
             app->players[i]->cards = NULL;
+            app->players[i]->re = FALSE;
             app->players[i]->gereizt = 0;
             app->players[i]->points = 0;
         }

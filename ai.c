@@ -1,7 +1,10 @@
 #include <stdlib.h>
+#include <glib.h>
+#include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include "ai.h"
 #include "game.h"
+#include "utils.h"
 
 static gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
 
@@ -53,7 +56,7 @@ card *ai_select_card(app *app, player *player, GList *list)
         /* player is the last to play */
         else
         {
-             /* do something */
+            card = ai_kontra_hinten(app, player, list);
         }
     }
 
@@ -117,6 +120,77 @@ card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
         return card;
 
     return NULL;
+}
+
+card *ai_kontra_hinten(app *app, player *player, GList *list)
+{
+    if (kontra_stich_sicher(app))
+        return ai_kontra_schmieren(app, player, list);
+    return NULL;
+}
+
+card *ai_kontra_schmieren(app *app, player *player, GList *list)
+{
+    gint i, max = 0;
+    GList *ptr = NULL, *suit = NULL;
+    card *card = NULL, *ret = NULL;
+
+    DPRINT(("%s: try ai_kontra_schmieren()\n", player->name));
+
+    for (i=0; i<4; ++i)
+    {
+        if (SUITS[i] != app->trump)
+        {
+            if ((suit = get_suit_list(app, list, SUITS[i])))
+            {
+                for (ptr = g_list_first(suit); ptr; ptr = ptr->next)
+                {
+                    card = ptr->data;
+                    if (card->rank != ASS)
+                    {
+                        if (card->points > max)
+                        {
+                            max = card->points;
+                            ret = card;
+                        }
+                        break;
+                    }
+                }
+                g_list_free(suit);
+            }
+        }
+    }
+    return ret;
+}
+
+gboolean kontra_stich_sicher(app *app)
+{
+    card *card = NULL;
+
+    /* TODO: try to check even when there is only one card on the table */
+    if (is_greater(g_list_nth_data(app->table, 1),
+                g_list_nth_data(app->table, 0), app->trump, app->null))
+        card = g_list_nth_data(app->table, 1);
+    else
+        card = g_list_nth_data(app->table, 0);
+
+    if (app->players[card->owner]->re)
+        return FALSE;
+    else
+        return TRUE;
+}
+
+gint num_of_suit(app *app, GList *list, gint suit)
+{
+    int num = 0;
+    GList *ptr = NULL;
+
+    if ((ptr = get_suit_list(app, list, suit)))
+    {
+        num = g_list_length(ptr);
+        g_list_free(ptr);
+    }
+    return num;
 }
 
 /* vim:set et sw=4 ts=4 tw=80: */
