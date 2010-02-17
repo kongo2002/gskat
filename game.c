@@ -955,7 +955,7 @@ void calculate_stich(app *app)
     gint i, winner;
     gint points = 0;
     GList *ptr = NULL;
-    card *card = NULL;
+    card *crd = NULL;
 
     /* calculate winner of stich */
     if (is_greater(g_list_nth_data(app->table, 1),
@@ -964,13 +964,13 @@ void calculate_stich(app *app)
         if (is_greater(g_list_nth_data(app->table, 2),
                     g_list_nth_data(app->table, 1), app->trump, app->null))
         {
-            card = g_list_nth_data(app->table, 2);
-            winner = card->owner;
+            crd = g_list_nth_data(app->table, 2);
+            winner = crd->owner;
         }
         else
         {
-            card = g_list_nth_data(app->table, 1);
-            winner = card->owner;
+            crd = g_list_nth_data(app->table, 1);
+            winner = crd->owner;
         }
     }
     else
@@ -978,23 +978,23 @@ void calculate_stich(app *app)
         if (is_greater(g_list_nth_data(app->table, 2),
                     g_list_nth_data(app->table, 0), app->trump, app->null))
         {
-            card = g_list_nth_data(app->table, 2);
-            winner = card->owner;
+            crd = g_list_nth_data(app->table, 2);
+            winner = crd->owner;
         }
         else
         {
-            card = g_list_nth_data(app->table, 0);
-            winner = card->owner;
+            crd = g_list_nth_data(app->table, 0);
+            winner = crd->owner;
         }
     }
 
     /* calculate points of stich */
     for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
     {
-        card = ptr->data;
-        points += card->points;
+        crd = ptr->data;
+        points += crd->points;
 
-        card->draw = FALSE;
+        crd->draw = FALSE;
     }
 
     app->players[winner]->points += points;
@@ -1003,7 +1003,7 @@ void calculate_stich(app *app)
     DPRINT(("%s won the stich (%d).\n", app->player_names[winner], points));
 
     /* add played cards to 'stiche' array */
-    app->stiche[app->stich-1] = (struct _card **) g_malloc(sizeof(struct _card *) * 3);
+    app->stiche[app->stich-1] = (card **) g_malloc(sizeof(card *) * 3);
     for (i=0; i<3; ++i)
         app->stiche[app->stich-1][i] = g_list_nth_data(app->table, i);
 

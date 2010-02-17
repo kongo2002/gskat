@@ -168,10 +168,14 @@ card *ai_kontra_mitte(app *app, player *player, GList *list)
 
 card *ai_kontra_hinten(app *app, player *player, GList *list)
 {
+    card *card = NULL;
+
     if (kontra_stich_sicher(app))
         return ai_kontra_schmieren(app, player, list);
+    else
+        card = knapp_trumpfen(app, player, list);
 
-    return NULL;
+    return card;
 }
 
 card *ai_re_hinten(app *app, player *player, GList *list)
