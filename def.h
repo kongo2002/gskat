@@ -90,6 +90,8 @@ typedef struct _app
     GList *table;
     /* played cards of current round */
     GList *played;
+    /* played stiche of current round */
+    card ***stiche;
     /* list of players */
     player **players;
     /* array of 4 cells for icons */

@@ -78,6 +78,9 @@ void alloc_app(app *app)
     else
         g_printerr("Could not create players.\n");
 
+    /* initialize played cards */
+    app->stiche = (card ***) g_malloc(sizeof(card **) * 10);
+
     /* initialize suit icons */
     load_icons(app);
 }
@@ -679,6 +682,16 @@ void free_app(app *app)
     }
     g_free(app->player_names);
     app->player_names = NULL;
+
+    /* free played stiche */
+    for (i=0; i<10; ++i)
+    {
+        if (app->stiche[i])
+            g_free(app->stiche[i]);
+        app->stiche[i] = NULL;
+    }
+    g_free(app->stiche);
+    app->stiche = NULL;
 
     /* free icons */
     if (app->icons)

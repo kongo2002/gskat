@@ -952,8 +952,8 @@ void ai_play_card(app *app, player *player)
 void calculate_stich(app *app)
 {
     gchar msg[6];
+    gint i, winner;
     gint points = 0;
-    gint winner;
     GList *ptr = NULL;
     card *card = NULL;
 
@@ -1001,6 +1001,11 @@ void calculate_stich(app *app)
     app->player = winner;
 
     DPRINT(("%s won the stich (%d).\n", app->player_names[winner], points));
+
+    /* add played cards to 'stiche' array */
+    app->stiche[app->stich-1] = (struct _card **) g_malloc(sizeof(struct _card *) * 3);
+    for (i=0; i<3; ++i)
+        app->stiche[app->stich-1][i] = g_list_nth_data(app->table, i);
 
     /* remove cards from table */
     g_list_free(app->table);
@@ -1206,6 +1211,17 @@ void reset_game(app *app)
             app->players[i]->re = FALSE;
             app->players[i]->gereizt = 0;
             app->players[i]->points = 0;
+        }
+    }
+
+    /* empty played stiche if necessary */
+    if (app->stiche)
+    {
+        for (i=0; i<10; ++i)
+        {
+            if (app->stiche[i])
+                g_free(app->stiche[i]);
+            app->stiche[i] = NULL;
         }
     }
 
