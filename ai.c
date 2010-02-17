@@ -133,7 +133,10 @@ card *ai_re_kommt_raus(app *app, player *player, GList *list)
     if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
-    return NULL;
+    if (!card)
+        card = kreuz_pik_bube(app, player, list);
+
+    return card;
 }
 
 card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
@@ -205,6 +208,39 @@ card *ai_re_hinten(app *app, player *player, GList *list)
         return card;
     else
         card = abwerfen(app, player, list);
+
+    return NULL;
+}
+
+card *kreuz_pik_bube(app *app, player *player, GList *list)
+{
+    gint prob;
+    GList *ptr = get_jack_list(list);
+    card *card = NULL;
+
+    DPRINT(("%s: try kreuz_pik_bube()\n", player->name));
+
+    if (ptr)
+    {
+        card = g_list_nth_data(ptr, 0);
+
+        if (card->suit == KREUZ && g_list_length(ptr) > 1)
+        {
+            card = g_list_nth_data(ptr, 1);
+
+            if (card->suit == PIK)
+            {
+                prob = rand() % 2;
+                card = g_list_nth_data(ptr, prob);
+
+                g_list_free(ptr);
+
+                return card;
+            }
+        }
+
+        g_list_free(ptr);
+    }
 
     return NULL;
 }
@@ -468,7 +504,7 @@ gdouble prob_stich_geht_durch(app *app, player *player)
     {
         played = num_of_suit(app, app->played, first->suit);
 
-        if (played == 0 && first->rank == ASS)
+        if (played == 1 && first->rank == ASS)
             poss = 0.9;
 
         else if (highest_rem_of_suit(app, first) &&

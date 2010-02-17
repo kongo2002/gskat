@@ -25,6 +25,8 @@ card *highest_on_table(app *);
 
 card *knapp_trumpfen(app *, player *, GList *);
 
+card *kreuz_pik_bube(app *, player *, GList *);
+
 card *abwerfen(app *, player *, GList *);
 
 GList *cards_out(app *);
