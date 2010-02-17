@@ -75,11 +75,13 @@ card *ai_select_card(app *app, player *player, GList *list)
     return card;
 }
 
-card *kurz_fehl_ass(app *app, GList *list)
+card *kurz_fehl_ass(app *app, player *player, GList *list)
 {
     gint i, len, min = 0;
     GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
+
+    DPRINT(("%s: try kurz_fehl_ass()\n", player->name));
 
     for (i=0; i<4; ++i)
     {
@@ -128,7 +130,7 @@ card *ai_re_kommt_raus(app *app, player *player, GList *list)
 {
     card *card = NULL;
 
-    if ((card = kurz_fehl_ass(app, list)))
+    if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
     return NULL;
@@ -138,7 +140,7 @@ card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
 {
     card *card = NULL;
 
-    if ((card = kurz_fehl_ass(app, list)))
+    if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
     return NULL;
