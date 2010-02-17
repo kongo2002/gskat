@@ -81,6 +81,9 @@ void alloc_app(app *app)
     /* initialize played cards */
     app->stiche = (card ***) g_malloc(sizeof(card **) * 10);
 
+    for (i=0; i<10; ++i)
+        app->stiche[i] = NULL;
+
     /* initialize suit icons */
     load_icons(app);
 }

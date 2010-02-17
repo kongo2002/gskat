@@ -206,29 +206,34 @@ gint compare_cards(gconstpointer a, gconstpointer b, gpointer data)
             return 1;
     }
 
-    /* no trump given, i.e. before provoking */
-    if (app->trump <= 0)
+    /* change default order when trump given */
+    if (app->trump > 0)
     {
-        if (card_a->suit > card_b->suit)
+        if (card_a->suit == app->trump && card_b->suit != app->trump)
             return -1;
-        else if (card_a->suit == card_b->suit)
-        {
-            if (card_a->rank == ASS)
-                return -1;
-            else if (card_b->rank == ASS)
-                return 1;
-            else if (card_a->rank == 10)
-                return -1;
-            else if (card_b->rank == 10)
-                return 1;
-            else if (card_a->rank > card_b->rank)
-                return -1;
-            else
-                return 1;
-        }
+        else if (card_a->suit != app->trump && card_b->suit == app->trump)
+            return 1;
+    }
+
+    if (card_a->suit > card_b->suit)
+        return -1;
+    else if (card_a->suit == card_b->suit)
+    {
+        if (card_a->rank == ASS)
+            return -1;
+        else if (card_b->rank == ASS)
+            return 1;
+        else if (card_a->rank == 10)
+            return -1;
+        else if (card_b->rank == 10)
+            return 1;
+        else if (card_a->rank > card_b->rank)
+            return -1;
         else
             return 1;
     }
+    else
+        return 1;
 
     return 0;
 }
@@ -906,6 +911,10 @@ void spiel_ansagen(app *app)
         card = list->data;
         card->draw = FALSE;
     }
+
+    /* reorder player's cards if necessary */
+    app->players[0]->cards = g_list_sort_with_data(app->players[0]->cards,
+            compare_cards, app);
 
     calc_card_positions(app);
     draw_area(app);

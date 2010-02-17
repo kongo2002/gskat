@@ -67,6 +67,8 @@ card *ai_select_card(app *app, player *player, GList *list)
      * all strategies are implemented yet */
     if (card == NULL)
     {
+        DPRINT(("%s: random card\n", player->name));
+
         selection = rand() % g_list_length(list);
         return g_list_nth_data(list, selection);
     }
@@ -202,6 +204,7 @@ card *ai_re_hinten(app *app, player *player, GList *list)
     return NULL;
 }
 
+/* TODO: should also work for trump */
 card *ai_kontra_schmieren(app *app, player *player, GList *list)
 {
     gint i, max = 0;
@@ -239,27 +242,20 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
 
 card *abwerfen(app *app, player *player, GList *list)
 {
-    gint i, min = 0;
-    GList *ptr = NULL, *suit = NULL;
+    gint min = 0;
+    GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
 
     DPRINT(("%s: try abwerfen()\n", player->name));
 
-    for (i=0; i<4; ++i)
+    for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
     {
-        if ((suit = get_suit_list(app, list, SUITS[i])))
-        {
-            for (ptr = g_list_last(suit); ptr; ptr = ptr->prev)
-            {
-                card = ptr->data;
+        card = ptr->data;
 
-                if (!min || card->points < min)
-                {
-                    min = card->points;
-                    ret = card;
-                }
-            }
-            g_list_free(suit);
+        if (!min || card->points < min)
+        {
+            min = card->points;
+            ret = card;
         }
     }
 
