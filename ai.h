@@ -27,7 +27,13 @@ card *abwerfen(app *, player *, GList *);
 
 GList *cards_out(app *);
 
+gdouble prob_stich_geht_durch(app *, player *);
+
 gint num_poss_higher_cards(app *, player *, card *);
+
+gint num_truempfe_draussen(app *);
+
+gboolean highest_rem_of_suit(app *, card *);
 
 gboolean truempfe_draussen(app *, player *);
 
@@ -35,7 +41,7 @@ gboolean hat_gestochen(app *, player *, gint);
 
 gboolean muss_bedienen(app *, player *);
 
-gboolean kontra_stich_sicher(app *);
+gboolean kontra_stich_sicher(app *, player *);
 
 gint num_of_trump(app *, GList *);
 

@@ -156,12 +156,24 @@ card *ai_re_mitte(app *app, player *player, GList *list)
 
 card *ai_kontra_mitte(app *app, player *player, GList *list)
 {
+    card *tmp = NULL;
     card *card = NULL;
 
-    if ((card = knapp_trumpfen(app, player, list)))
-        return card;
-    else
-        card = abwerfen(app, player, list);
+    tmp = g_list_nth_data(app->table, 0);
+
+    if (!app->players[tmp->owner]->re)
+    {
+        if (kontra_stich_sicher(app, player))
+            card = ai_kontra_schmieren(app, player, list);
+    }
+
+    if (!card)
+    {
+        if ((card = knapp_trumpfen(app, player, list)))
+            return card;
+        else
+            card = abwerfen(app, player, list);
+    }
 
     return card;
 }
@@ -170,7 +182,7 @@ card *ai_kontra_hinten(app *app, player *player, GList *list)
 {
     card *card = NULL;
 
-    if (kontra_stich_sicher(app))
+    if (kontra_stich_sicher(app, player))
         return ai_kontra_schmieren(app, player, list);
     else
         card = knapp_trumpfen(app, player, list);
@@ -287,7 +299,7 @@ gboolean hat_gestochen(app *app, player *player, gint suit)
     return FALSE;
 }
 
-gboolean truempfe_draussen(app *app, player *player)
+gint num_truempfe_draussen(app *app)
 {
     gint count = 0;
     GList *ptr = NULL;
@@ -301,6 +313,17 @@ gboolean truempfe_draussen(app *app, player *player)
         if (is_trump(app, card))
             ++count;
     }
+
+    return count;
+}
+
+gboolean truempfe_draussen(app *app, player *player)
+{
+    gint count = 0;
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    count += num_truempfe_draussen(app);
 
     /* iterate through player's cards */
     for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
@@ -371,7 +394,7 @@ gboolean kommt_drueber(app *app, player *player, GList *list)
     return FALSE;
 }
 
-gboolean kontra_stich_sicher(app *app)
+gboolean kontra_stich_sicher(app *app, player *player)
 {
     card *card = NULL;
 
@@ -391,10 +414,76 @@ gboolean kontra_stich_sicher(app *app)
     /* TODO: try to check even when there is only one card on the table */
     else
     {
-        /* to be implemented */
+        if (prob_stich_geht_durch(app, player) > 0.5)
+            return TRUE;
     }
 
     return FALSE;
+}
+
+gboolean highest_rem_of_suit(app *app, card *first)
+{
+    GList *out = cards_out(app);
+    GList *suit = NULL;
+    card *high = NULL;
+
+    if (is_trump(app, first))
+        suit = get_trump_list(app, out);
+    else
+        suit = get_suit_list(app, out, first->suit);
+
+    if (suit)
+    {
+        high = g_list_nth_data(suit, 0);
+        g_list_free(suit);
+    }
+
+    g_list_free(out);
+
+    if (high && high == first)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+gdouble prob_stich_geht_durch(app *app, player *player)
+{
+    gdouble poss;
+    gint played = 0;
+    gint poss_higher = 0;
+
+    card *first = g_list_nth_data(app->table, 0);
+
+    poss_higher = num_poss_higher_cards(app, player, first);
+
+    if (poss_higher == 0)
+        poss = 1.0;
+
+    else if (is_trump(app, first))
+        played = num_of_trump(app, app->played);
+
+    else
+    {
+        played = num_of_suit(app, app->played, first->suit);
+
+        if (played == 0 && first->rank == ASS)
+            poss = 0.9;
+
+        else if (highest_rem_of_suit(app, first) &&
+                !hat_gestochen(app, app->re, first->suit))
+            poss = 0.6;
+
+        else if (truempfe_draussen(app, player) && hat_gestochen(app, app->re,
+                    first->suit))
+            poss = 0.1;
+
+        else
+            poss = 0.25;
+    }
+
+    DPRINT(("%s: prob_stich_geht_durch() == %f\n", player->name, poss));
+
+    return poss;
 }
 
 gint num_poss_higher_cards(app *app, player *player, card *first)
