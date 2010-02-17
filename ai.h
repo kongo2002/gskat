@@ -9,6 +9,10 @@ card *ai_re_kommt_raus(app *, player *, GList *);
 
 card *ai_kontra_kommt_raus(app *, player *, GList *);
 
+card *ai_re_mitte(app *, player *, GList *);
+
+card *ai_kontra_mitte(app *, player *, GList *);
+
 card *ai_kontra_hinten(app *, player *, GList *);
 
 card *ai_kontra_schmieren(app *, player *, GList *);
@@ -18,6 +22,8 @@ card *ai_re_hinten(app *, player *, GList *);
 card *highest_on_table(app *);
 
 card *knapp_trumpfen(app *, player *, GList *);
+
+card *abwerfen(app *, player *, GList *);
 
 gboolean truempfe_draussen(app *, player *);
 

@@ -35,7 +35,7 @@ card *ai_select_card(app *app, player *player, GList *list)
         /* player is in the middle */
         else if (position == 1)
         {
-             /* do something */
+            card = ai_re_mitte(app, player, list);
         }
         /* player is the last to play */
         else
@@ -54,7 +54,7 @@ card *ai_select_card(app *app, player *player, GList *list)
         /* player is in the middle */
         else if (position == 1)
         {
-             /* do something */
+            card = ai_kontra_mitte(app, player, list);
         }
         /* player is the last to play */
         else
@@ -142,19 +142,47 @@ card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
     return NULL;
 }
 
+card *ai_re_mitte(app *app, player *player, GList *list)
+{
+    card *card = NULL;
+
+    if ((card = knapp_trumpfen(app, player, list)))
+        return card;
+    else
+        card = abwerfen(app, player, list);
+
+    return card;
+}
+
+card *ai_kontra_mitte(app *app, player *player, GList *list)
+{
+    card *card = NULL;
+
+    if ((card = knapp_trumpfen(app, player, list)))
+        return card;
+    else
+        card = abwerfen(app, player, list);
+
+    return card;
+}
+
 card *ai_kontra_hinten(app *app, player *player, GList *list)
 {
     if (kontra_stich_sicher(app))
         return ai_kontra_schmieren(app, player, list);
+
     return NULL;
 }
 
 card *ai_re_hinten(app *app, player *player, GList *list)
 {
     card *card = NULL;
-    
+
     if ((card = knapp_trumpfen(app, player, list)))
         return card;
+    else
+        card = abwerfen(app, player, list);
+
     return NULL;
 }
 
@@ -189,6 +217,36 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
             }
         }
     }
+
+    return ret;
+}
+
+card *abwerfen(app *app, player *player, GList *list)
+{
+    gint i, min = 0;
+    GList *ptr = NULL, *suit = NULL;
+    card *card = NULL, *ret = NULL;
+
+    DPRINT(("%s: try abwerfen()\n", player->name));
+
+    for (i=0; i<4; ++i)
+    {
+        if ((suit = get_suit_list(app, list, SUITS[i])))
+        {
+            for (ptr = g_list_last(suit); ptr; ptr = ptr->prev)
+            {
+                card = ptr->data;
+
+                if (!min || card->points < min)
+                {
+                    min = card->points;
+                    ret = card;
+                }
+            }
+            g_list_free(suit);
+        }
+    }
+
     return ret;
 }
 
