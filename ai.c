@@ -375,17 +375,68 @@ gboolean kontra_stich_sicher(app *app)
 {
     card *card = NULL;
 
-    /* TODO: try to check even when there is only one card on the table */
-    if (is_greater(g_list_nth_data(app->table, 1),
-                g_list_nth_data(app->table, 0), app->trump, app->null))
-        card = g_list_nth_data(app->table, 1);
-    else
-        card = g_list_nth_data(app->table, 0);
+    if (g_list_length(app->table) == 2)
+    {
+        if (is_greater(g_list_nth_data(app->table, 1),
+                    g_list_nth_data(app->table, 0), app->trump, app->null))
+            card = g_list_nth_data(app->table, 1);
+        else
+            card = g_list_nth_data(app->table, 0);
 
-    if (app->players[card->owner]->re)
-        return FALSE;
+        if (app->players[card->owner]->re)
+            return FALSE;
+        else
+            return TRUE;
+    }
+    /* TODO: try to check even when there is only one card on the table */
     else
-        return TRUE;
+    {
+        /* to be implemented */
+    }
+
+    return FALSE;
+}
+
+gint num_poss_higher_cards(app *app, player *player, card *first)
+{
+    gint len = 0;
+    GList *possible = cards_out(app);
+    GList *ptr = NULL;
+    card *new = NULL;
+
+    if (possible)
+    {
+        for (ptr = g_list_first(possible); ptr; ptr = ptr->next)
+        {
+            new = ptr->data;
+
+            if (is_greater(new, first, app->trump, app->null) &&
+                    new->owner != player->id)
+                ++len;
+        }
+
+        g_list_free(possible);
+    }
+
+    return len;
+}
+
+GList *cards_out(app *app)
+{
+    GList *ret = g_list_copy(app->cards);
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+        ret = g_list_remove(ret, card);
+    }
+
+    if (!ret || g_list_length(ret) == 0)
+        return NULL;
+
+    return ret;
 }
 
 gint num_of_trump(app *app, GList *list)

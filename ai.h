@@ -25,6 +25,10 @@ card *knapp_trumpfen(app *, player *, GList *);
 
 card *abwerfen(app *, player *, GList *);
 
+GList *cards_out(app *);
+
+gint num_poss_higher_cards(app *, player *, card *);
+
 gboolean truempfe_draussen(app *, player *);
 
 gboolean hat_gestochen(app *, player *, gint);
