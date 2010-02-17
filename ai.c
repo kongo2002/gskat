@@ -77,7 +77,7 @@ card *ai_select_card(app *app, player *player, GList *list)
 
 card *kurz_fehl_ass(app *app, player *player, GList *list)
 {
-    gint i, len, min = 0;
+    gint i, len, min = -1;
     GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
 
@@ -95,7 +95,7 @@ card *kurz_fehl_ass(app *app, player *player, GList *list)
                 /* TODO: select suit of which the amount of played
                  * cards is minimum */
                 /* TODO: check if someone already took the trick */
-                if (card->rank == ASS && (!min || len < min))
+                if (card->rank == ASS && (min == -1 || len < min))
                 {
                     min = len;
                     ret = card;
@@ -191,6 +191,9 @@ card *ai_kontra_hinten(app *app, player *player, GList *list)
     else
         card = knapp_trumpfen(app, player, list);
 
+    if (!card)
+        card = abwerfen(app, player, list);
+
     return card;
 }
 
@@ -244,7 +247,7 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
 
 card *abwerfen(app *app, player *player, GList *list)
 {
-    gint min = 0;
+    gint min = -1;
     GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
 
@@ -254,7 +257,8 @@ card *abwerfen(app *app, player *player, GList *list)
     {
         card = ptr->data;
 
-        if (!min || card->points < min)
+        if (min == -1 || card->points < min ||
+                (card->points == min && card->rank < ret->rank))
         {
             min = card->points;
             ret = card;
