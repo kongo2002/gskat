@@ -274,26 +274,46 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
 
     DPRINT(("%s: try ai_kontra_schmieren()\n", player->name));
 
-    for (i=0; i<4; ++i)
+    card = g_list_nth_data(list, 0);
+
+    /* player has to play trump */
+    if (is_trump(app, card))
     {
-        if (SUITS[i] != app->trump)
+        for (ptr = g_list_first(list); ptr; ptr = ptr->next)
         {
-            if ((suit = get_suit_list(app, list, SUITS[i])))
+            card = ptr->data;
+
+            if (card->points >= max && card->rank != BUBE)
             {
-                for (ptr = g_list_first(suit); ptr; ptr = ptr->next)
+                ret = card;
+                max = card->points;
+            }
+        }
+    }
+    /* select a non trump card */
+    else
+    {
+        for (i=0; i<4; ++i)
+        {
+            if (SUITS[i] != app->trump)
+            {
+                if ((suit = get_suit_list(app, list, SUITS[i])))
                 {
-                    card = ptr->data;
-                    if (card->rank != ASS)
+                    for (ptr = g_list_first(suit); ptr; ptr = ptr->next)
                     {
-                        if (card->points > max)
+                        card = ptr->data;
+                        if (card->rank != ASS)
                         {
-                            max = card->points;
-                            ret = card;
+                            if (card->points > max)
+                            {
+                                max = card->points;
+                                ret = card;
+                            }
+                            break;
                         }
-                        break;
                     }
+                    g_list_free(suit);
                 }
-                g_list_free(suit);
             }
         }
     }
