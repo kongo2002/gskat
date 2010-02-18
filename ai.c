@@ -166,6 +166,12 @@ card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
     if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
+    /* partner sits at the end */
+    if (app->players[(player->id+1)%3]->re)
+    {
+        card = kurz_aufspielen(app, player, list);
+    }
+
     return NULL;
 }
 
@@ -265,7 +271,44 @@ card *kreuz_pik_bube(app *app, player *player, GList *list)
     return NULL;
 }
 
-/* TODO: should also work for trump */
+card *kurz_aufspielen(app *app, player *player, GList *list)
+{
+    gint i, sel_suit = 0, min = -1, num = 0;
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    for (i=0; i<4; ++i)
+    {
+        if (SUITS[i] != app->trump)
+        {
+            ptr = get_suit_list(app, list, SUITS[i]);
+
+            if (ptr)
+            {
+                num = g_list_length(ptr);
+
+                if (min == -1 || num < min)
+                {
+                    min = num;
+                    sel_suit = SUITS[i];
+                }
+                g_list_free(ptr);
+            }
+        }
+    }
+
+    if (sel_suit)
+    {
+        ptr = get_suit_list(app, list, sel_suit);
+
+        /* TODO: implement more logic here */
+        i = rand() % g_list_length(ptr);
+        card = g_list_nth_data(ptr, i);
+    }
+
+    return card;
+}
+
 card *ai_kontra_schmieren(app *app, player *player, GList *list)
 {
     gint i, max = 0;
@@ -332,6 +375,12 @@ card *abwerfen(app *app, player *player, GList *list)
     for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
     {
         card = ptr->data;
+
+        /* skip jacks
+         * TODO: not always appropriate */
+        if (!app->null)
+            if (card->rank == BUBE)
+                continue;
 
         if (min == -1 || card->points < min ||
                 (card->points == min && card->rank < ret->rank))

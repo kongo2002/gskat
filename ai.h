@@ -35,6 +35,8 @@ card *ai_kontra_mitte(app *, player *, GList *);
 
 card *ai_kontra_hinten(app *, player *, GList *);
 
+card *kurz_aufspielen(app *, player *, GList *);
+
 card *ai_kontra_schmieren(app *, player *, GList *);
 
 card *ai_re_hinten(app *, player *, GList *);
