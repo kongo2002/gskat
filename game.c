@@ -789,6 +789,10 @@ void druecke_skat(app *app)
                             continue;
                         }
                     }
+
+                    if (minimum)
+                        g_list_free(minimum);
+
                     min = len;
                     minimum = ptr;
                 }
