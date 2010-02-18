@@ -284,6 +284,7 @@ card *kreuz_pik_bube(app *app, player *player, GList *list)
 
 card *kurz_aufspielen(app *app, player *player, GList *list)
 {
+    gint id = player->id;
     gint i, sel_suit = 0, min = -1, num = 0;
     GList *ptr = NULL;
     card *card = NULL;
@@ -294,6 +295,21 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
     {
         if (SUITS[i] != app->trump)
         {
+            /* skip suit if already gestochen */
+            if (player->re)
+            {
+                if (hat_gestochen(app, app->players[(id+1)%3], SUITS[i]))
+                    continue;
+                if (hat_gestochen(app, app->players[(id+2)%3], SUITS[i]))
+                    continue;
+            }
+            else
+            {
+                if (hat_gestochen(app, app->re, SUITS[i]))
+                    continue;
+            }
+
+
             ptr = get_suit_list(app, list, SUITS[i]);
 
             if (ptr)
@@ -336,6 +352,12 @@ card *lang_aufspielen(app *app, player *player, GList *list)
     {
         if (SUITS[i] != app->trump)
         {
+            if (!player->re)
+            {
+                if (hat_gestochen(app, app->re, SUITS[i]))
+                    continue;
+            }
+
             ptr = get_suit_list(app, list, SUITS[i]);
 
             if (ptr)
@@ -499,7 +521,10 @@ gboolean hat_gestochen(app *app, player *player, gint suit)
 
         if (found == TRUE && card->owner == player->id &&
                 (card->suit != suit || card->rank == BUBE))
+        {
+            DPRINT(("%s hat %d gestochen\n", player->name, suit));
             return TRUE;
+        }
     }
 
     return FALSE;
