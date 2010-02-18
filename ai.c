@@ -156,8 +156,11 @@ card *ai_re_kommt_raus(app *app, player *player, GList *list)
     if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
-    if (!card)
-        card = kreuz_pik_bube(app, player, list);
+    if ((card = kreuz_pik_bube(app, player, list)))
+        return card;
+
+    if ((card = truempfe_ziehen(app, player, list)))
+        return card;
 
     return card;
 }
@@ -228,7 +231,8 @@ card *ai_kontra_hinten(app *app, player *player, GList *list)
 
     if (kontra_stich_sicher(app, player))
         return ai_kontra_schmieren(app, player, list);
-    else
+    /* trump only if enough points on the table */
+    else if (muss_bedienen(app, player) || punkte_auf_tisch(app) > 2)
         card = knapp_trumpfen(app, player, list);
 
     if (!card)
@@ -280,6 +284,41 @@ card *kreuz_pik_bube(app *app, player *player, GList *list)
     }
 
     return NULL;
+}
+
+card *truempfe_ziehen(app *app, player *player, GList *list)
+{
+    GList *trump = get_trump_list(app, list);
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    DPRINT(("%s: try truempfe_ziehen()\n", player->name));
+
+    if (trump)
+    {
+        for (ptr = g_list_first(trump); ptr; ptr = ptr->next)
+        {
+            card = ptr->data;
+
+            /* TODO: play best jack or a random one
+             * play out the jacks first */
+            if (card->rank == BUBE)
+            {
+                g_list_free(trump);
+                return card;
+            }
+            /* play the big trumps if nothing better out there */
+            else if (highest_rem_of_suit(app, card))
+            {
+                g_list_free(trump);
+                return card;
+            }
+        }
+
+        g_list_free(trump);
+    }
+
+    return card;
 }
 
 card *kurz_aufspielen(app *app, player *player, GList *list)
@@ -654,6 +693,7 @@ gboolean kontra_stich_sicher(app *app, player *player)
     return FALSE;
 }
 
+/* TODO: substract player's cards */
 gboolean highest_rem_of_suit(app *app, card *first)
 {
     GList *out = cards_out(app);
@@ -763,9 +803,25 @@ GList *cards_out(app *app)
     return ret;
 }
 
+gint punkte_auf_tisch(app *app)
+{
+    gint points = 0;
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        points += card->points;
+    }
+
+    return points;
+}
+
 gint num_of_trump(app *app, GList *list)
 {
-    int num = 0;
+    gint num = 0;
     GList *ptr = NULL;
 
     if ((ptr = get_trump_list(app, list)))
@@ -778,7 +834,7 @@ gint num_of_trump(app *app, GList *list)
 
 gint num_of_suit(app *app, GList *list, gint suit)
 {
-    int num = 0;
+    gint num = 0;
     GList *ptr = NULL;
 
     if ((ptr = get_suit_list(app, list, suit)))

@@ -53,6 +53,8 @@ card *knapp_trumpfen(app *, player *, GList *);
 
 card *kreuz_pik_bube(app *, player *, GList *);
 
+card *truempfe_ziehen(app *, player *, GList *);
+
 card *abwerfen(app *, player *, GList *);
 
 GList *cards_out(app *);
@@ -72,6 +74,8 @@ gboolean hat_gestochen(app *, player *, gint);
 gboolean muss_bedienen(app *, player *);
 
 gboolean kontra_stich_sicher(app *, player *);
+
+gint punkte_auf_tisch(app *);
 
 gint num_of_trump(app *, GList *);
 
