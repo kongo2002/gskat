@@ -150,6 +150,9 @@ card *ai_re_kommt_raus(app *app, player *player, GList *list)
 {
     card *card = NULL;
 
+    if ((card = highest_fehl(app, player, list)))
+        return card;
+
     if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
@@ -162,6 +165,9 @@ card *ai_re_kommt_raus(app *app, player *player, GList *list)
 card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
 {
     card *card = NULL;
+
+    if ((card = highest_fehl(app, player, list)))
+        return card;
 
     if ((card = kurz_fehl_ass(app, player, list)))
         return card;
@@ -282,7 +288,7 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
-    DPRINT(("%s: kurz_aufspielen()\n", player->name));
+    DPRINT(("%s: try kurz_aufspielen()\n", player->name));
 
     for (i=0; i<4; ++i)
     {
@@ -324,7 +330,7 @@ card *lang_aufspielen(app *app, player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
-    DPRINT(("%s: lang_aufspielen()\n", player->name));
+    DPRINT(("%s: try lang_aufspielen()\n", player->name));
 
     for (i=0; i<4; ++i)
     {
@@ -413,6 +419,28 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
     }
 
     return ret;
+}
+
+card *highest_fehl(app *app, player *player, GList *list)
+{
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    DPRINT(("%s: try highest_fehl()\n", player->name));
+
+    /* play only if there is no trump left */
+    if (truempfe_draussen(app, player))
+    {
+        for (ptr = g_list_first(list); ptr; ptr = ptr->next)
+        {
+            card = ptr->data;
+
+            if (highest_rem_of_suit(app, card))
+                return card;
+        }
+    }
+
+    return NULL;
 }
 
 card *abwerfen(app *app, player *player, GList *list)
@@ -617,6 +645,8 @@ gboolean highest_rem_of_suit(app *app, card *first)
         high = g_list_nth_data(suit, 0);
         g_list_free(suit);
     }
+    else
+        return TRUE;
 
     g_list_free(out);
 
@@ -628,7 +658,7 @@ gboolean highest_rem_of_suit(app *app, card *first)
 
 gdouble prob_stich_geht_durch(app *app, player *player)
 {
-    gdouble poss;
+    gdouble poss = 0.25;
     gint played = 0;
     gint poss_higher = 0;
 

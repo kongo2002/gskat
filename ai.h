@@ -43,6 +43,8 @@ card *ai_kontra_schmieren(app *, player *, GList *);
 
 card *ai_re_hinten(app *, player *, GList *);
 
+card *highest_fehl(app *, player *, GList *);
+
 card *kurz_fehl_ass(app *, player *, GList *);
 
 card *highest_on_table(app *);
