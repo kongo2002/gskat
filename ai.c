@@ -171,8 +171,13 @@ card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
     {
         card = kurz_aufspielen(app, player, list);
     }
+    /* re player sits at the end */
+    else
+    {
+        card = lang_aufspielen(app, player, list);
+    }
 
-    return NULL;
+    return card;
 }
 
 card *ai_re_mitte(app *app, player *player, GList *list)
@@ -235,7 +240,7 @@ card *ai_re_hinten(app *app, player *player, GList *list)
     else
         card = abwerfen(app, player, list);
 
-    return NULL;
+    return card;
 }
 
 card *kreuz_pik_bube(app *app, player *player, GList *list)
@@ -277,6 +282,8 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
+    DPRINT(("%s: kurz_aufspielen()\n", player->name));
+
     for (i=0; i<4; ++i)
     {
         if (SUITS[i] != app->trump)
@@ -304,6 +311,50 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
         /* TODO: implement more logic here */
         i = rand() % g_list_length(ptr);
         card = g_list_nth_data(ptr, i);
+
+        g_list_free(ptr);
+    }
+
+    return card;
+}
+
+card *lang_aufspielen(app *app, player *player, GList *list)
+{
+    gint i, sel_suit = 0, max = 0, num = 0;
+    GList *ptr = NULL;
+    card *card = NULL;
+
+    DPRINT(("%s: lang_aufspielen()\n", player->name));
+
+    for (i=0; i<4; ++i)
+    {
+        if (SUITS[i] != app->trump)
+        {
+            ptr = get_suit_list(app, list, SUITS[i]);
+
+            if (ptr)
+            {
+                num = g_list_length(ptr);
+
+                if (num > max)
+                {
+                    max = num;
+                    sel_suit = SUITS[i];
+                }
+                g_list_free(ptr);
+            }
+        }
+    }
+
+    if (sel_suit)
+    {
+        ptr = get_suit_list(app, list, sel_suit);
+
+        /* TODO: implement more logic here */
+        i = rand() % g_list_length(ptr);
+        card = g_list_nth_data(ptr, i);
+
+        g_list_free(ptr);
     }
 
     return card;
@@ -440,6 +491,8 @@ gint num_truempfe_draussen(app *app)
         if (is_trump(app, card))
             ++count;
     }
+
+    DPRINT(("num_truempfe_draussen = %d\n", count));
 
     return count;
 }
