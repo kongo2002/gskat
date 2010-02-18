@@ -26,8 +26,6 @@
 #include "game.h"
 #include "utils.h"
 
-static gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
-
 card *ai_select_card(app *app, player *player, GList *list)
 {
     gint selection;

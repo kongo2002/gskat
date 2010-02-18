@@ -51,7 +51,7 @@ GList *get_possible_cards(app *, GList *);
 
 gint get_best_suit(GList *);
 
-gint rate_cards(app *, GList *);
+gint rate_cards(app *, player *, GList *);
 
 gint get_spitzen(GList *);
 

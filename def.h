@@ -41,6 +41,8 @@
 #define DPRINT(x) /* do nothing */
 #endif
 
+static const gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
+
 enum cposition
 {
     CP_DIAGONAL,

@@ -408,23 +408,32 @@ GList *get_possible_cards(app *app, GList *list)
     return NULL;
 }
 
-gint rate_cards(app *app, GList *list)
+gint rate_cards(app *app, player *player, GList *list)
 {
-    gint jacks = 0, rate = 0, best = 0;
+    gint i, jacks = 0, rate = 0, best = 0;
     GList *ptr = NULL;
     card *card = NULL;
 
     best = get_best_suit(list);
 
-    /* no cards of one suit? */
-    if (!get_suit_list(app, list, KARO))
+    /* +1 if forehand */
+    if (app->forehand == player->id)
         rate++;
-    if (!get_suit_list(app, list, HERZ))
-        rate++;
-    if (!get_suit_list(app, list, PIK))
-        rate++;
-    if (!get_suit_list(app, list, KREUZ))
-        rate++;
+
+    /* no or one card of one suit? */
+    for (i=0; i<4; ++i)
+    {
+        ptr = get_suit_list(app, list, SUITS[i]);
+
+        if (!ptr)
+            rate++;
+        else
+        {
+            if (g_list_length(ptr) == 1)
+                rate++;
+            g_list_free(ptr);
+        }
+    }
 
     for (ptr = g_list_first(list); ptr; ptr = ptr->next)
     {
@@ -544,7 +553,7 @@ gint do_hoeren(app *app, player *player, gint value)
     {
         max = get_max_reizwert(player->cards);
 
-        if (rate_cards(app, player->cards) >= 6 && value <= max)
+        if (rate_cards(app, player, player->cards) >= 7 && value <= max)
         {
             player->gereizt = value;
             return value;
@@ -577,7 +586,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         {
             max = get_max_reizwert(player->cards);
 
-            if (rate_cards(app, player->cards) >= 6 && value <= max)
+            if (rate_cards(app, player, player->cards) >= 7 && value <= max)
                 gereizt = value;
             else
                 gereizt = 0;
@@ -628,7 +637,7 @@ void start_provoke(app *app)
         DPRINT(("MaxReizwert of %s: %d\n", app->player_names[i],
                     get_max_reizwert(app->players[i]->cards)));
         DPRINT(("CardRating of %s: %d\n", app->player_names[i],
-                    rate_cards(app, app->players[i]->cards)));
+                    rate_cards(app, app->players[i], app->players[i]->cards)));
     }
 
     /* sagen */
