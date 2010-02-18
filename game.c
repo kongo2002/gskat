@@ -932,9 +932,13 @@ void spiel_ansagen(app *app)
         card->draw = FALSE;
     }
 
+    /* reorder re player's cards */
+    app->re->cards = g_list_sort_with_data(app->re->cards, compare_cards, app);
+
     /* reorder player's cards if necessary */
-    app->players[0]->cards = g_list_sort_with_data(app->players[0]->cards,
-            compare_cards, app);
+    if (app->re != app->players[0])
+        app->players[0]->cards = g_list_sort_with_data(app->players[0]->cards,
+                compare_cards, app);
 
     calc_card_positions(app);
     draw_area(app);
