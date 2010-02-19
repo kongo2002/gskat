@@ -637,13 +637,13 @@ gboolean muss_bedienen(app *app, player *player)
 
 card *highest_on_table(app *app)
 {
-    gint len = 0;
+    gint len = (app->table) ? g_list_length(app->table) : 0;
 
-    if (app->table && (len = g_list_length(app->table) > 0))
+    if (app->table && len > 0)
     {
         if (len == 1)
             return g_list_nth_data(app->table, 0);
-        else if (len == 2)
+        else
         {
             if (is_greater(g_list_nth_data(app->table, 1),
                         g_list_nth_data(app->table, 0), app->trump, app->null))
@@ -652,6 +652,7 @@ card *highest_on_table(app *app)
                 return g_list_nth_data(app->table, 0);
         }
     }
+
     return NULL;
 }
 
