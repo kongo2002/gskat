@@ -1105,6 +1105,7 @@ void end_round(app *app)
         for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
         {
             card = ptr->data;
+
             if (card->owner == player->id)
             {
                 list = g_list_prepend(list, card);
@@ -1112,6 +1113,14 @@ void end_round(app *app)
                 print_card(card);
 #endif
             }
+        }
+
+        /* add points of cards in skat */
+        for (ptr = g_list_first(app->skat); ptr; ptr = ptr->next)
+        {
+            card = ptr->data;
+
+            player->points += card->points;
         }
 
         game = get_spitzen(list);
