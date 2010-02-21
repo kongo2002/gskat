@@ -189,12 +189,30 @@ card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
 
 card *ai_re_mitte(app *app, player *player, GList *list)
 {
-    card *card = NULL;
+    card *card = NULL, *first = NULL, *sel = NULL;
 
-    if ((card = knapp_trumpfen(app, player, list)))
-        return card;
-    else
+    /* played card */
+    first = g_list_nth_data(app->table, 0);
+
+    /* first of possible cards */
+    sel = g_list_nth_data(list, 0);
+
+    /* do not play a 10 when the ace is not played yet */
+    if (!is_trump(app, first) &&
+            muss_bedienen(app, player) &&
+            num_of_suit(app, app->played, first->suit) == 1 &&
+            sel->rank == 10)
+    {
+        DPRINT(("%s: 10 skipped - ace not played yet\n", player->name));
         card = abwerfen(app, player, list);
+    }
+    else
+    {
+        if ((card = knapp_trumpfen(app, player, list)))
+            return card;
+        else
+            card = abwerfen(app, player, list);
+    }
 
     return card;
 }
