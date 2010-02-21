@@ -907,7 +907,16 @@ void spiel_ansagen(app *app)
         }
         while (result == GTK_RESPONSE_DELETE_EVENT);
 
-        app->trump = result;
+        /* set game/trump */
+        if (result == 200)
+            app->trump = 0;
+        else if (result == 0)
+        {
+            app->trump = 0;
+            app->null = TRUE;
+        }
+        else
+            app->trump = result;
     }
     else
     {
@@ -1100,7 +1109,7 @@ void end_round(app *app)
             case KREUZ:
                 rank = 12;
                 break;
-            case 20:
+            case 0:
                 rank = 24;
                 break;
         }
