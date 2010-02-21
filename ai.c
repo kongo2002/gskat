@@ -177,7 +177,7 @@ card *ai_re_kommt_raus(app *app, player *player, GList *list)
     if ((card = kurz_fehl_ass(app, player, list)))
         return card;
 
-    if ((card = kreuz_pik_bube(app, player, list)))
+    if ((card = trumpf_spitzen(app, player, list)))
         return card;
 
     if ((card = truempfe_ziehen(app, player, list)))
@@ -292,37 +292,28 @@ card *ai_re_hinten(app *app, player *player, GList *list)
     return card;
 }
 
-card *kreuz_pik_bube(app *app, player *player, GList *list)
+card *trumpf_spitzen(app *app, player *player, GList *list)
 {
-    gint prob;
-    GList *ptr = get_jack_list(list);
+    GList *trump = get_trump_list(app, list);
+    gint spitzen = 0;
     card *card = NULL;
 
-    DPRINT(("%s: try kreuz_pik_bube()\n", player->name));
+    DPRINT(("%s: try trumpf_spitzen()\n", player->name));
 
-    if (ptr)
+    if (trump)
     {
-        card = g_list_nth_data(ptr, 0);
-
-        if (card->suit == KREUZ && g_list_length(ptr) > 1)
+        if (!app->null)
         {
-            card = g_list_nth_data(ptr, 1);
+            spitzen = len_spitzen(app, player, trump, app->trump);
 
-            if (card->suit == PIK)
-            {
-                prob = rand() % 2;
-                card = g_list_nth_data(ptr, prob);
-
-                g_list_free(ptr);
-
-                return card;
-            }
+            if (spitzen)
+                card = g_list_nth_data(trump, rand() % spitzen);
         }
 
-        g_list_free(ptr);
+        g_list_free(trump);
     }
 
-    return NULL;
+    return card;
 }
 
 card *truempfe_ziehen(app *app, player *player, GList *list)
@@ -694,6 +685,59 @@ gboolean truempfe_weg(app *app, player *player)
     if (count == 11)
         return TRUE;
     return FALSE;
+}
+
+gint len_spitzen(app *app, player *player, GList *list, gint suit)
+{
+    gint len = 0;
+    GList *all = NULL, *ptr = NULL, *pcards = NULL;
+    card *card = NULL, *cmp = NULL;
+
+    /* get player's cards */
+    if (!(pcards = get_trump_list(app, list)))
+        return 0;
+
+    /* get cards not played yet */
+    if (suit == app->trump)
+        all = get_trump_list(app, app->cards);
+    else
+        all = get_suit_list(app, app->cards, suit);
+
+    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        all = g_list_remove(all, card);
+    }
+
+    ptr = NULL;
+    card = NULL;
+
+    if (all)
+    {
+        for (ptr = g_list_first(pcards); ptr; ptr = ptr->next)
+        {
+            card = ptr->data;
+
+            if ((cmp = g_list_nth_data(all, len)))
+            {
+                if (card == cmp)
+                {
+                    ++len;
+                    continue;
+                }
+            }
+            break;
+        }
+
+        g_list_free(all);
+    }
+
+    g_list_free(pcards);
+
+    DPRINT(("%s: len_spitzen(%d) = %d\n", player->name, suit, len));
+
+    return len;
 }
 
 gboolean muss_bedienen(app *app, player *player)
