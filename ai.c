@@ -504,9 +504,14 @@ card *highest_fehl(app *app, player *player, GList *list)
 
 card *abwerfen(app *app, player *player, GList *list)
 {
-    gint min = -1;
+    gint i, min = -1, len = 0;
+    gint lengths[4];
     GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
+
+    /* get lengths of card suits */
+    for (i=0; i<4; ++i)
+        lengths[i] = num_of_suit(app, list, SUITS[i]);
 
     DPRINT(("%s: try abwerfen()\n", player->name));
 
@@ -521,10 +526,13 @@ card *abwerfen(app *app, player *player, GList *list)
                 continue;
 
         if (min == -1 || card->points < min ||
-                (card->points == min && card->rank < ret->rank))
+                (card->points == min && !highest_rem_of_suit(app, card) &&
+                    (!is_trump(app, card) ||
+                     lengths[(card->suit-20)/20-1] < len)))
         {
             min = card->points;
             ret = card;
+            len = lengths[(card->suit-20)/20-1];
         }
     }
 
