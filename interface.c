@@ -157,9 +157,11 @@ void create_interface(app *app)
     GtkWidget *lb_game_stich_left;
     GtkWidget *lb_game_re_left;
     GtkWidget *lb_game_spiel_left;
+    GtkWidget *lb_game_gereizt_left;
     GtkWidget *lb_game_stich_right;
     GtkWidget *lb_game_re_right;
     GtkWidget *lb_game_spiel_right;
+    GtkWidget *lb_game_gereizt_right;
     GtkWidget *frame_rank;
     GtkWidget *table_rank;
     GtkWidget *lb_rank_p1_left;
@@ -175,7 +177,7 @@ void create_interface(app *app)
     if (iconfile)
         g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    app->allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 9);
+    app->allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 10);
 
     if (app->allwidgets != NULL)
     {
@@ -208,7 +210,7 @@ void create_interface(app *app)
         gtk_frame_set_shadow_type(GTK_FRAME(frame_game), GTK_SHADOW_ETCHED_IN);
 
         /* gtk_table_new(rows, columns, homogeneous) */
-        table_game = gtk_table_new(3, 2, FALSE);
+        table_game = gtk_table_new(4, 2, FALSE);
         gtk_container_add(GTK_CONTAINER(frame_game), table_game);
         gtk_container_set_border_width(GTK_CONTAINER(table_game), 20);
         gtk_table_set_col_spacings(GTK_TABLE(table_game), 20);
@@ -217,6 +219,7 @@ void create_interface(app *app)
         lb_game_stich_left = gtk_label_new("Stich:");
         lb_game_re_left = gtk_label_new("Re:");
         lb_game_spiel_left = gtk_label_new("Spiel:");
+        lb_game_gereizt_left = gtk_label_new("Gereizt:");
 
         /* gtk_misc_set_alignment(misc, xalign, yalign)
          * xalign: 0 (left) to 1 (right)
@@ -224,6 +227,7 @@ void create_interface(app *app)
         gtk_misc_set_alignment(GTK_MISC(lb_game_stich_left), 1, 0.5);
         gtk_misc_set_alignment(GTK_MISC(lb_game_re_left), 1, 0.5);
         gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_left), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_game_gereizt_left), 1, 0.5);
 
         /* gtk_table_attach_defaults(parent, child, left, right, top, bottom) */
         gtk_table_attach_defaults(GTK_TABLE(table_game),
@@ -235,14 +239,19 @@ void create_interface(app *app)
         gtk_table_attach_defaults(GTK_TABLE(table_game),
                 lb_game_spiel_left,
                 0, 1, 2, 3);
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_gereizt_left,
+                0, 1, 3, 4);
 
         lb_game_stich_right = gtk_label_new("1");
         lb_game_re_right = gtk_label_new("-");
         lb_game_spiel_right = gtk_label_new("-");
+        lb_game_gereizt_right = gtk_label_new("-");
 
         gtk_misc_set_alignment(GTK_MISC(lb_game_stich_right), 1, 0.5);
         gtk_misc_set_alignment(GTK_MISC(lb_game_re_right), 1, 0.5);
         gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_right), 1, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(lb_game_gereizt_right), 1, 0.5);
 
         gtk_table_attach_defaults(GTK_TABLE(table_game),
                 lb_game_stich_right,
@@ -253,6 +262,9 @@ void create_interface(app *app)
         gtk_table_attach_defaults(GTK_TABLE(table_game),
                 lb_game_spiel_right,
                 1, 2, 2, 3);
+        gtk_table_attach_defaults(GTK_TABLE(table_game),
+                lb_game_gereizt_right,
+                1, 2, 3, 4);
 
         frame_rank = gtk_frame_new("Spielstand");
         gtk_frame_set_label_align(GTK_FRAME(frame_rank), 0.5, 0.5);
@@ -313,10 +325,11 @@ void create_interface(app *app)
         app->allwidgets[2] = lb_game_stich_right;
         app->allwidgets[3] = lb_game_re_right;
         app->allwidgets[4] = lb_game_spiel_right;
-        app->allwidgets[5] = lb_rank_p1_right;
-        app->allwidgets[6] = lb_rank_p2_right;
-        app->allwidgets[7] = lb_rank_p3_right;
-        app->allwidgets[8] = frame_game;
+        app->allwidgets[5] = lb_game_gereizt_right;
+        app->allwidgets[6] = lb_rank_p1_right;
+        app->allwidgets[7] = lb_rank_p2_right;
+        app->allwidgets[8] = lb_rank_p3_right;
+        app->allwidgets[9] = frame_game;
 
         /* attach signals */
         g_signal_connect(G_OBJECT(window), "destroy",

@@ -620,6 +620,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
 
 void start_provoke(app *app)
 {
+    gchar msg[4];
     gint hoerer = app->forehand;
     gint sager = (hoerer + 1) % 3;
     gint i = 18;
@@ -665,6 +666,9 @@ void start_provoke(app *app)
         gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
         gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Spiel ansagen");
         gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), app->re->name);
+
+        g_sprintf(msg, "%d", app->re->gereizt);
+        gtk_label_set_text(GTK_LABEL(app->allwidgets[5]), msg);
 
         take_skat(app);
     }
@@ -1201,14 +1205,14 @@ void end_round(app *app)
 
     /* update interface */
     g_sprintf(msg, "%d", app->players[0]->sum_points);
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[5]), msg);
-    g_sprintf(msg, "%d", app->players[1]->sum_points);
     gtk_label_set_text(GTK_LABEL(app->allwidgets[6]), msg);
-    g_sprintf(msg, "%d", app->players[2]->sum_points);
+    g_sprintf(msg, "%d", app->players[1]->sum_points);
     gtk_label_set_text(GTK_LABEL(app->allwidgets[7]), msg);
+    g_sprintf(msg, "%d", app->players[2]->sum_points);
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[8]), msg);
 
     g_sprintf(msg, "Runde %d", app->round);
-    gtk_frame_set_label(GTK_FRAME(app->allwidgets[8]), msg);
+    gtk_frame_set_label(GTK_FRAME(app->allwidgets[9]), msg);
 
     reset_game(app);
 }
@@ -1310,6 +1314,7 @@ void reset_game(app *app)
     gtk_label_set_text(GTK_LABEL(app->allwidgets[2]), "1");
     gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), "-");
     gtk_label_set_text(GTK_LABEL(app->allwidgets[4]), "-");
+    gtk_label_set_text(GTK_LABEL(app->allwidgets[5]), "-");
     gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
     gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Neue Runde");
 }
