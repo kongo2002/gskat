@@ -1177,7 +1177,7 @@ void end_round(app *app)
             else if (player->points < 30)
                 game += 1;
 
-            game *= rank * -2;
+            game = game * rank * -2;
 
             g_sprintf(msg, "%s verliert mit %d zu %d Punkten\n\t%d",
                     player->name,
