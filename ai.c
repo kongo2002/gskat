@@ -134,6 +134,29 @@ card *knapp_trumpfen(app *app, player *player, GList *list)
 
     DPRINT(("%s: try knapp_trumpfen()\n", player->name));
 
+    /* play ace if first trick of suit */
+    if (!is_trump(app, high))
+    {
+        if ((ptr = get_suit_list(app, app->played, high->rank)))
+        {
+            if (g_list_length(ptr) < 2)
+            {
+                card = g_list_nth_data(list, 0);
+
+                if (card->rank == ASS &&
+                        is_greater(card, high, app->trump, app->null))
+                {
+                    g_list_free(ptr);
+                    return card;
+                }
+            }
+
+            g_list_free(ptr);
+            ptr = NULL;
+            card = NULL;
+        }
+    }
+
     for (ptr = g_list_first(list); ptr; ptr = ptr->next)
     {
         card = ptr->data;
