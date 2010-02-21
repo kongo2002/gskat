@@ -137,7 +137,7 @@ card *knapp_trumpfen(app *app, player *player, GList *list)
     /* play ace if first trick of suit */
     if (!is_trump(app, high))
     {
-        if ((ptr = get_suit_list(app, app->played, high->rank)))
+        if ((ptr = get_suit_list(app, app->played, high->suit)))
         {
             if (g_list_length(ptr) < 2)
             {
