@@ -63,11 +63,15 @@ gdouble prob_stich_geht_durch(app *, player *);
 
 gint num_poss_higher_cards(app *, player *, card *);
 
-gint num_truempfe_draussen(app *);
+gint num_jacks_played(app *);
+
+gboolean jacks_weg(app *, player *);
+
+gint num_truempfe_played(app *);
 
 gboolean highest_rem_of_suit(app *, card *);
 
-gboolean truempfe_draussen(app *, player *);
+gboolean truempfe_weg(app *, player *);
 
 gboolean hat_gestochen(app *, player *, gint);
 

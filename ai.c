@@ -326,6 +326,14 @@ card *truempfe_ziehen(app *app, player *player, GList *list)
             /* play the big trumps if nothing better out there */
             else if (highest_rem_of_suit(app, card))
             {
+                /* do not play 10 or ace if there are more jacks around */
+                if ((card->rank == 10 || card->rank == ASS) &&
+                        !jacks_weg(app, player))
+                {
+                    card = NULL;
+                    continue;
+                }
+
                 g_list_free(trump);
                 return card;
             }
@@ -506,7 +514,7 @@ card *highest_fehl(app *app, player *player, GList *list)
     DPRINT(("%s: try highest_fehl()\n", player->name));
 
     /* play only if there is no trump left */
-    if (truempfe_draussen(app, player))
+    if (truempfe_weg(app, player))
     {
         for (ptr = g_list_first(list); ptr; ptr = ptr->next)
         {
@@ -593,7 +601,37 @@ gboolean hat_gestochen(app *app, player *player, gint suit)
     return FALSE;
 }
 
-gint num_truempfe_draussen(app *app)
+gint num_jacks_played(app *app)
+{
+    gint count = 0;
+    GList *ptr = NULL;
+
+    if ((ptr = get_jack_list(app->played)))
+    {
+        count = g_list_length(ptr);
+        g_list_free(ptr);
+    }
+
+    return count;
+}
+
+gboolean jacks_weg(app *app, player *player)
+{
+    gint count = num_jacks_played(app);
+    GList *ptr = NULL;
+
+    if ((ptr = get_jack_list(player->cards)))
+    {
+        count += g_list_length(ptr);
+        g_list_free(ptr);
+    }
+
+    if (count == 4)
+        return TRUE;
+    return FALSE;
+}
+
+gint num_truempfe_played(app *app)
 {
     gint count = 0;
     GList *ptr = NULL;
@@ -608,18 +646,18 @@ gint num_truempfe_draussen(app *app)
             ++count;
     }
 
-    DPRINT(("num_truempfe_draussen = %d\n", count));
+    DPRINT(("num_truempfe_played = %d\n", count));
 
     return count;
 }
 
-gboolean truempfe_draussen(app *app, player *player)
+gboolean truempfe_weg(app *app, player *player)
 {
     gint count = 0;
     GList *ptr = NULL;
     card *card = NULL;
 
-    count += num_truempfe_draussen(app);
+    count += num_truempfe_played(app);
 
     /* iterate through player's cards */
     for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
@@ -773,7 +811,7 @@ gdouble prob_stich_geht_durch(app *app, player *player)
                 !hat_gestochen(app, app->re, first->suit))
             poss = 0.6;
 
-        else if (truempfe_draussen(app, player) && hat_gestochen(app, app->re,
+        else if (truempfe_weg(app, player) && hat_gestochen(app, app->re,
                     first->suit))
             poss = 0.1;
 
