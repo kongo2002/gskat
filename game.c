@@ -19,6 +19,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
@@ -169,25 +170,24 @@ void give_cards(app *app)
     give_to_skat(app, g_list_nth_data(app->cards, order[31]));
 }
 
-gint get_provoke_response(app *app, gint value)
+gint get_provoke_response(app *app, gint value, gchar *msg, gboolean hoeren)
 {
+    gint result;
     gchar caption[4];
     g_sprintf(caption, "%d", value);
 
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Reizen",
             GTK_WINDOW(app->allwidgets[0]),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            caption, value,
-            "Pass", 0,
+            (hoeren) ? "Ja" : caption, value,
+            (hoeren) ? "Nein" : "Passen", 0,
             NULL);
 
-    /*
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
-            gtk_label_new("Reizen"), FALSE, TRUE, 2);
+            gtk_label_new(msg), FALSE, TRUE, 2);
     gtk_widget_show_all(dialog);
-    */
 
-    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+    result = gtk_dialog_run(GTK_DIALOG(dialog));
 
     gtk_widget_destroy(dialog);
     return result;
@@ -542,13 +542,22 @@ gint get_max_reizwert(GList *list)
     return 0;
 }
 
-gint do_hoeren(app *app, player *player, gint value)
+gint do_hoeren(app *app, player *player, gint value, gint sager)
 {
     gint max = 0;
     gint response = 0;
+    gchar *msg;
 
     if (player->human)
-        response = get_provoke_response(app, value);
+    {
+        msg = (gchar *) g_malloc(sizeof(gchar) *
+                (20+strlen(app->player_names[sager])));
+        g_sprintf(msg, "%s sagt %d:", app->player_names[sager], value);
+
+        response = get_provoke_response(app, value, msg, TRUE);
+
+        g_free(msg);
+    }
     else
     {
         max = get_max_reizwert(player->cards);
@@ -573,6 +582,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
     gint gereizt = 0;
     gint id = 0;
     gint max = 0;
+    gchar *msg;
 
     DPRINT(("Sager: %s; Hoerer: %s\n", player->name,
                 app->player_names[hoerer]));
@@ -581,7 +591,15 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
     if (value != player->gereizt)
     {
         if (player->human)
-            gereizt = get_provoke_response(app, value);
+        {
+            msg = (gchar *) g_malloc(sizeof(gchar) *
+                    (20+strlen(app->player_names[hoerer])));
+            g_sprintf(msg, "Hörer: %s. Sagen?", app->player_names[hoerer]);
+
+            gereizt = get_provoke_response(app, value, msg, FALSE);
+
+            g_free(msg);
+        }
         else
         {
             max = get_max_reizwert(player->cards);
@@ -601,7 +619,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         DPRINT(("%s sagt %d\n", player->name, value));
         player->gereizt = value;
 
-        response = do_hoeren(app, app->players[hoerer], value);
+        response = do_hoeren(app, app->players[hoerer], value, player->id);
         DPRINT(("%s sagt %s\n", app->player_names[hoerer],
                 (response) ? "JA" : "NEIN"));
 
@@ -651,7 +669,7 @@ void start_provoke(app *app)
 
     /* first two players have passed */
     if (app->players[sager]->gereizt == 0)
-        do_hoeren(app, app->players[sager], 18);
+        do_hoeren(app, app->players[sager], 18, sager);
 
     /* TODO: Ramsch */
     if (app->players[sager]->gereizt)
@@ -832,12 +850,18 @@ void take_skat(app *app)
     {
         do
         {
+            gchar *msg = "Hand spielen?";
+
             GtkWidget *dialog = gtk_dialog_new_with_buttons("Hand spielen?",
                     GTK_WINDOW(app->allwidgets[0]),
                     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                     "Ja", 1,
                     "Nein", 0,
                     NULL);
+
+            gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+                    gtk_label_new(msg), FALSE, TRUE, 2);
+            gtk_widget_show_all(dialog);
 
             result = gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
@@ -912,7 +936,7 @@ void spiel_ansagen(app *app)
             app->trump = 0;
         else if (result == 0)
         {
-            app->trump = 0;
+            app->trump = -1;
             app->null = TRUE;
         }
         else
@@ -928,7 +952,7 @@ void spiel_ansagen(app *app)
     /* print game to label */
     switch (app->trump)
     {
-        case 0:
+        case -1:
             g_sprintf(gamename, "Null");
             break;
         case KARO:
@@ -943,7 +967,7 @@ void spiel_ansagen(app *app)
         case KREUZ:
             g_sprintf(gamename, "Kreuz");
             break;
-        case 200:
+        case 0:
             g_sprintf(gamename, "Grand");
             break;
     }

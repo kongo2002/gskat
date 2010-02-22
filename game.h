@@ -39,6 +39,8 @@ gint compare_jacks(gconstpointer, gconstpointer);
 
 gint compare_family(gconstpointer, gconstpointer);
 
+gint get_provoke_response(app *, gint, gchar *, gboolean);
+
 gboolean is_trump(app *, card *);
 
 GList *get_jack_list(GList *);
@@ -59,7 +61,7 @@ gint get_max_reizwert(GList *);
 
 gint next_reizwert(gint);
 
-gint do_hoeren(app *, player *, gint);
+gint do_hoeren(app *, player *, gint, gint);
 
 gint do_sagen(app *, player *, gint, gint);
 
