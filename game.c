@@ -850,8 +850,6 @@ void take_skat(app *app)
     {
         do
         {
-            gchar *msg = "Hand spielen?";
-
             GtkWidget *dialog = gtk_dialog_new_with_buttons("Hand spielen?",
                     GTK_WINDOW(app->allwidgets[0]),
                     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -860,7 +858,7 @@ void take_skat(app *app)
                     NULL);
 
             gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
-                    gtk_label_new(msg), FALSE, TRUE, 2);
+                    gtk_label_new("Hand spielen?"), FALSE, TRUE, 2);
             gtk_widget_show_all(dialog);
 
             result = gtk_dialog_run(GTK_DIALOG(dialog));
