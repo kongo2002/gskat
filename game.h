@@ -55,9 +55,9 @@ gint get_best_suit(GList *);
 
 gint rate_cards(app *, player *, GList *);
 
-gint get_spitzen(GList *);
+gint get_spitzen(app *, GList *, gint);
 
-gint get_max_reizwert(GList *);
+gint get_max_reizwert(app *, GList *);
 
 gint next_reizwert(gint);
 

@@ -481,55 +481,65 @@ gint get_best_suit(GList *list)
     return ((ret+1)*20+20);
 }
 
-gint get_spitzen(GList *list)
+gint get_spitzen(app *app, GList *list, gint suit)
 {
-    gint max = 0;
-    GList *ptr = NULL, *jacks = NULL;
-    card *card = NULL;
+    gint i = 0, max = 0, back = 0;
+    GList *ptr = NULL, *cards = NULL, *pcards = NULL;
+    gboolean mit = FALSE;
+    card *card = NULL, *cmp = NULL;
 
-    jacks = get_jack_list(list);
+    /* backup trump */
+    back = app->trump;
+    app->trump = suit;
 
-    if (!jacks)
-        max = 4;
-    else
+    cards = get_trump_list(app, app->cards);
+    pcards = get_trump_list(app, list);
+
+    for (ptr = g_list_first(cards); ptr; ptr = ptr->next)
     {
-        ptr = g_list_first(jacks);
-        card = ptr->data;
+        cmp = ptr->data;
 
-        /* mit ... */
-        if (card->suit == KREUZ)
+        if ((card = g_list_nth_data(pcards, i)))
         {
-            for (ptr = g_list_first(jacks); ptr; ptr = ptr->next)
+            if (card == cmp)
             {
-                card = ptr->data;
-                if (card->suit == (KREUZ - 20*max))
-                    ++max;
-                else
+                if (max == 0)
+                    mit = TRUE;
+                else if (mit == FALSE)
                     break;
+
+                max++;
+                i++;
+                continue;
+            }
+            else if (mit == FALSE)
+            {
+                max++;
+                continue;
             }
         }
-        /* ohne ... */
-        else
-        {
-            ptr = g_list_first(jacks);
-            card = ptr->data;
-            max = (KREUZ - card->suit) / 20;
-        }
-
-        g_list_free(jacks);
+        break;
     }
+
+    g_list_free(cards);
+
+    if (pcards)
+        g_list_free(pcards);
+
+    /* restore trump */
+    app->trump = back;
 
     return (max + 1);
 }
 
-gint get_max_reizwert(GList *list)
+gint get_max_reizwert(app *app, GList *list)
 {
     gint suit = 0;
     gint max = 0;
 
-    max = get_spitzen(list);
-
     suit = get_best_suit(list);
+
+    max = get_spitzen(app, list, suit);
 
     switch (suit)
     {
@@ -563,7 +573,7 @@ gint do_hoeren(app *app, player *player, gint value, gint sager)
     }
     else
     {
-        max = get_max_reizwert(player->cards);
+        max = get_max_reizwert(app, player->cards);
 
         if (rate_cards(app, player, player->cards) >= 7 && value <= max)
         {
@@ -597,7 +607,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         {
             msg = (gchar *) g_malloc(sizeof(gchar) *
                     (20+strlen(app->player_names[hoerer])));
-            g_sprintf(msg, "Hörer: %s. Sagen?", app->player_names[hoerer]);
+            g_sprintf(msg, "Hoerer: %s. Sagen?", app->player_names[hoerer]);
 
             gereizt = get_provoke_response(app, value, msg, FALSE);
 
@@ -605,7 +615,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         }
         else
         {
-            max = get_max_reizwert(player->cards);
+            max = get_max_reizwert(app, player->cards);
 
             if (rate_cards(app, player, player->cards) >= 7 && value <= max)
                 gereizt = value;
@@ -657,7 +667,7 @@ void start_provoke(app *app)
         app->players[i]->gereizt = 0;
 
         DPRINT(("MaxReizwert of %s: %d\n", app->player_names[i],
-                    get_max_reizwert(app->players[i]->cards)));
+                    get_max_reizwert(app, app->players[i]->cards)));
         DPRINT(("CardRating of %s: %d\n", app->player_names[i],
                     rate_cards(app, app->players[i], app->players[i]->cards)));
     }
@@ -1161,7 +1171,7 @@ void end_round(app *app)
             player->points += card->points;
         }
 
-        game = get_spitzen(list);
+        game = get_spitzen(app, list, app->trump);
 
         /* hand game */
         if (app->hand)
@@ -1226,7 +1236,9 @@ void end_round(app *app)
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
-                msg);
+                NULL);
+
+        gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(dialog), msg);
 
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
