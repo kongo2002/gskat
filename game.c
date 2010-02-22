@@ -1176,7 +1176,7 @@ void end_round(app *app)
             if (player->points == 120)
                 game += 2;
             /* player won 'schneider' */
-            else if (player->points > 90)
+            else if (player->points >= 90)
                 game += 1;
 
             game *= rank;
@@ -1208,7 +1208,7 @@ void end_round(app *app)
             if (player->points == 0)
                 game += 2;
             /* player lost 'schneider' */
-            else if (player->points < 30)
+            else if (player->points <= 30)
                 game += 1;
 
             game = game * rank * -2;
