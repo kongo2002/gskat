@@ -684,7 +684,6 @@ void start_provoke(app *app)
     if (app->players[sager]->gereizt == 0)
         do_hoeren(app, app->players[sager], 18, sager);
 
-    /* TODO: Ramsch */
     if (app->players[sager]->gereizt)
     {
         DPRINT(("%s won 2. reizen with %d\n", app->player_names[sager],
@@ -705,7 +704,7 @@ void start_provoke(app *app)
     }
     else
     {
-        DPRINT(("All players have passed -> Ramsch.\n"));
+        DPRINT(("All players have passed -> new round.\n"));
 
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->allwidgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1384,4 +1383,4 @@ void game_start(app *app)
     gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
 }
 
-/* vim:set et sw=4 ts=4 tw=80: */
+/* vim:set et sw=4 sts=4 ts=8 tw=80: */

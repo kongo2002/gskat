@@ -41,4 +41,4 @@ gboolean is_greater(card *, card *, gint, gboolean);
 
 #endif /* __UTILS_H__ */
 
-/* vim:set et sw=4 ts=4 tw=80: */
+/* vim:set et sw=4 sts=4 ts=8 tw=80: */

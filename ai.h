@@ -89,4 +89,4 @@ gint num_of_suit(app *, GList *, gint);
 
 #endif /* __AI_H__ */
 
-/* vim:set et sw=4 ts=4 tw=80: */
+/* vim:set et sw=4 sts=4 ts=8 tw=80: */

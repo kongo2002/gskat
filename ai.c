@@ -975,4 +975,4 @@ gint num_of_suit(app *app, GList *list, gint suit)
     return num;
 }
 
-/* vim:set et sw=4 ts=4 tw=80: */
+/* vim:set et sw=4 sts=4 ts=8 tw=80: */
