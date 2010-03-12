@@ -1383,4 +1383,4 @@ void game_start(app *app)
     gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
 }
 
-/* vim:set et sw=4 sts=4 ts=8 tw=80: */
+/* vim:set et sw=4 sts=4 tw=80: */

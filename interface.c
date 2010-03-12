@@ -753,4 +753,4 @@ void free_app(app *app)
     DPRINT(("Quit gskat\n"));
 }
 
-/* vim:set et sw=4 sts=4 ts=8 tw=80: */
+/* vim:set et sw=4 sts=4 tw=80: */

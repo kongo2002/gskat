@@ -89,4 +89,4 @@ void game_start(app *app);
 
 #endif /* __GAME_H__ */
 
-/* vim:set et sw=4 sts=4 ts=8 tw=80: */
+/* vim:set et sw=4 sts=4 tw=80: */
