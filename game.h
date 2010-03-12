@@ -21,71 +21,71 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-void give_cards(app *);
+void give_cards(app *app);
 
-void give_to_skat(app *, card *);
+void give_to_skat(app *app, card *card);
 
-gboolean play_card(app *, GdkEventButton *);
+gboolean play_card(app *app, GdkEventButton *event);
 
-gboolean click_skat(app *, GdkEventButton *);
+gboolean click_skat(app *app, GdkEventButton *event);
 
-card *click_card(app *, GdkEventButton *, GList *);
+card *click_card(app *app, GdkEventButton *event, GList *list);
 
-void card_to_player(player *, card *);
+void card_to_player(player *player, card *card);
 
-gint compare_cards(gconstpointer, gconstpointer, gpointer);
+gint compare_cards(gconstpointer a, gconstpointer b, gpointer data);
 
-gint compare_jacks(gconstpointer, gconstpointer);
+gint compare_jacks(gconstpointer a, gconstpointer b);
 
-gint compare_family(gconstpointer, gconstpointer);
+gint compare_family(gconstpointer a, gconstpointer b);
 
-gint get_provoke_response(app *, gint, gchar *, gboolean);
+gint get_provoke_response(app *app, gint value, gchar *msg, gboolean hoeren);
 
-gboolean is_trump(app *, card *);
+gboolean is_trump(app *app, card *card);
 
-GList *get_jack_list(GList *);
+GList *get_jack_list(GList *list);
 
-GList *get_suit_list(app *, GList *, gint);
+GList *get_suit_list(app *app, GList *list, gint suit);
 
-GList *get_trump_list(app *, GList *);
+GList *get_trump_list(app *app, GList *list);
 
-GList *get_possible_cards(app *, GList *);
+GList *get_possible_cards(app *app, GList *list);
 
-gint get_best_suit(GList *);
+gint get_best_suit(GList *list);
 
-gint rate_cards(app *, player *, GList *);
+gint rate_cards(app *app, player *player, GList *list);
 
-gint get_spitzen(app *, GList *, gint);
+gint get_spitzen(app *app, GList *list, gint suit);
 
-gint get_max_reizwert(app *, GList *);
+gint get_max_reizwert(app *app, GList *list);
 
-gint next_reizwert(gint);
+gint next_reizwert(gint value);
 
-gint do_hoeren(app *, player *, gint, gint);
+gint do_hoeren(app *app, player *player, gint value, gint sager);
 
-gint do_sagen(app *, player *, gint, gint);
+gint do_sagen(app *app, player *player, gint hoerer, gint value);
 
-void take_skat(app *);
+void take_skat(app *app);
 
 void start_provoke(app *app);
 
 void calculate_stich(app *app);
 
-void druecke_skat(app *);
+void druecke_skat(app *app);
 
-void throw_card(app *, card *);
+void throw_card(app *app, card *card);
 
-void ai_play_card(app *, player *);
+void ai_play_card(app *app, player *player);
 
-void spiel_ansagen(app *);
+void spiel_ansagen(app *app);
 
-void reset_game(app *);
+void reset_game(app *app);
 
-void end_round(app *);
+void end_round(app *app);
 
-void play_stich(app *);
+void play_stich(app *app);
 
-void game_start(app *);
+void game_start(app *app);
 
 #endif /* __GAME_H__ */
 

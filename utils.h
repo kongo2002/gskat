@@ -23,21 +23,21 @@
 
 #include "def.h"
 
-void swap(gint *, gint *);
+void swap(gint *a, gint *b);
 
-gint get_card_points(gint);
+gint get_card_points(gint rank);
 
-gchar *get_card_rank(gint, gchar *);
+gchar *get_card_rank(gint id, gchar *string);
 
-gchar *get_card_suit(gint, gchar *);
+gchar *get_card_suit(gint id, gchar *string);
 
-void print_player_cards(player *);
+void print_player_cards(player *player);
 
-void print_card(card *);
+void print_card(card *card);
 
-gboolean higher_rank(card *, card *);
+gboolean higher_rank(card *top, card *bottom);
 
-gboolean is_greater(card *, card *, gint, gboolean);
+gboolean is_greater(card *top, card *bottom, gint trump, gboolean null);
 
 #endif /* __UTILS_H__ */
 

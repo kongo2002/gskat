@@ -21,17 +21,17 @@
 #ifndef __CALLBACK_H__
 #define __CALLBACK_H__
 
-gboolean quit(GtkWidget *, gpointer);
+gboolean quit(GtkWidget *window, gpointer data);
 
-void next_round(GtkButton *, gpointer);
+void next_round(GtkButton *button, gpointer data);
 
-gboolean configure(GtkWidget *, GdkEventExpose *, gpointer);
+gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
-gboolean button_press(GtkWidget *, GdkEventButton *, gpointer);
+gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data);
 
-gboolean realization(GtkWidget *, gpointer);
+gboolean realization(GtkWidget *area, gpointer data);
 
-void refresh(GtkWidget *, GdkEventExpose *, gpointer);
+void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
 #endif /* __CALLBACK_H__ */
 

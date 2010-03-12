@@ -23,33 +23,33 @@
 
 #include "def.h"
 
-player *init_player(gint, gchar *, gboolean);
+player *init_player(gint id, gchar *name, gboolean human);
 
-void load_icons(app *);
+void load_icons(app *app);
 
-void alloc_app(app *);
+void alloc_app(app *app);
 
-void load_config(app *);
+void load_config(app *app);
 
-void create_interface(app *);
+void create_interface(app *app);
 
-void pos_player_cards(player *, gint, gint, gint);
+void pos_player_cards(player *player, gint x, gint y, gint step);
 
-void calc_card_positions(app *);
+void calc_card_positions(app *app);
 
-void load_card(GList **, const gchar *, gint, gint);
+void load_card(GList **list, const gchar *file, gint rank, gint suit);
 
-cairo_surface_t *load_image(gchar *);
+cairo_surface_t *load_image(gchar *filename);
 
-gboolean load_cards(const gchar *, app *);
+gboolean load_cards(const gchar *path, app *app);
 
-void draw_cards(app *, GList *, cairo_t *);
+void draw_cards(app *app, GList *cards, cairo_t *target);
 
-void draw_player(app *, player *, cairo_t *);
+void draw_player(app *app, player *player, cairo_t *cr);
 
-void draw_area(app *);
+void draw_area(app *app);
 
-void free_app(app *);
+void free_app(app *app);
 
 #endif /* __INTERFACE_H__ */
 
