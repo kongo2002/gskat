@@ -61,7 +61,7 @@ gboolean play_card(app *app, GdkEventButton *event)
     player *player = app->players[0];
 
     /* check if it's the player's turn */
-    if (((app->player + num_cards) % 3) == 0)
+    if (((app->cplayer + num_cards) % 3) == 0)
     {
         /* get card that has been clicked on */
         if ((card = click_card(app, event, player->cards)))
@@ -1091,7 +1091,7 @@ void calculate_stich(app *app)
     }
 
     app->players[winner]->points += points;
-    app->player = winner;
+    app->cplayer = winner;
 
     DPRINT(("%s won the stich (%d).\n", app->players[winner]->name, points));
 
@@ -1264,19 +1264,19 @@ void end_round(app *app)
 
 void play_stich(app *app)
 {
-    gint fh = (app->player == -1) ? app->forehand : app->player;
+    gint fh = (app->cplayer == -1) ? app->forehand : app->cplayer;
     gint num_cards = (app->table) ? g_list_length(app->table) : 0;
-    gint player;
+    gint current;
 
-    player = (fh + num_cards) % 3;
+    current = (fh + num_cards) % 3;
 
     if (app->stich <= 10)
     {
         if (num_cards < 3)
         {
-            if (!app->players[player]->human)
+            if (!app->players[current]->human)
             {
-                ai_play_card(app, app->players[player]);
+                ai_play_card(app, app->players[current]);
                 play_stich(app);
             }
         }
@@ -1300,7 +1300,7 @@ void reset_game(app *app)
     app->re = NULL;
     app->forehand = (app->forehand + 1) % 3;
     app->state = ENDGAME;
-    app->player = app->forehand;
+    app->cplayer = app->forehand;
     app->trump = -1;
     app->hand = FALSE;
 

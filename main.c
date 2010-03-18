@@ -45,7 +45,7 @@ int main(int argc, const char *argv[])
     GError *error = NULL;
 
     /* initialization of game objects */
-    app app =
+    app gskat =
     {
         /* lists */
         NULL, NULL, NULL, NULL, NULL, NULL,
@@ -80,25 +80,25 @@ int main(int argc, const char *argv[])
         g_option_context_free(context);
 
         /* allocate configuration */
-        alloc_config(&app);
+        alloc_config(&gskat);
 
         /* load configuration */
-        load_config(&app);
+        load_config(&gskat);
 
         /* toggle gui if desired */
         if (cli_mode)
-            app.conf->gui = FALSE;
+            gskat.conf->gui = FALSE;
 
         /* initialize interface */
-        create_interface(&app);
+        create_interface(&gskat);
 
         /* show all widgets after being initialized */
-        if (app.allwidgets != NULL)
+        if (gskat.allwidgets != NULL)
         {
-            gtk_widget_show_all(app.allwidgets[0]);
+            gtk_widget_show_all(gskat.allwidgets[0]);
             gtk_main();
 
-            free_app(&app);
+            free_app(&gskat);
         }
     }
 

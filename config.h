@@ -31,6 +31,8 @@ gboolean write_config(app *app, const gchar *filename);
 
 gboolean read_config(app *app, const gchar *filename);
 
+void alloc_config(app *app);
+
 void set_default_config(app *app);
 
 #endif /* __CONFIG_H__ */

@@ -50,13 +50,13 @@ enum cposition
     CP_VERTICAL
 };
 
-typedef struct _dim
+typedef struct _dimension
 {
     gint x;
     gint y;
     gint w;
     gint h;
-} dim;
+} dimension;
 
 enum cstatus
 {
@@ -80,7 +80,7 @@ enum gstate
 typedef struct _card
 {
     cairo_surface_t *img;
-    dim dim;
+    dimension dim;
     gint suit;
     gint rank;
     gint points;
@@ -141,7 +141,7 @@ typedef struct _app
     /* current forehand player index */
     gint forehand;
     /* current player index */
-    gint player;
+    gint cplayer;
     /* current trump suit */
     gint trump;
     /* round number */
