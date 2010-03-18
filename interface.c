@@ -92,7 +92,7 @@ void alloc_app(app *app)
     if (app->players)
     {
         for (i=0; i<3; ++i)
-            app->players[i] = init_player(i, app->player_names[i],
+            app->players[i] = init_player(i, app->conf->player_names[i],
                     i ? FALSE : TRUE);
     }
     else
@@ -240,9 +240,9 @@ void create_interface(app *app)
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 20);
         gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-        lb_rank_p1_left = gtk_label_new(app->player_names[0]);
-        lb_rank_p2_left = gtk_label_new(app->player_names[1]);
-        lb_rank_p3_left = gtk_label_new(app->player_names[2]);
+        lb_rank_p1_left = gtk_label_new(app->conf->player_names[0]);
+        lb_rank_p2_left = gtk_label_new(app->conf->player_names[1]);
+        lb_rank_p3_left = gtk_label_new(app->conf->player_names[2]);
 
         gtk_misc_set_alignment(GTK_MISC(lb_rank_p1_left), 1, 0.5);
         gtk_misc_set_alignment(GTK_MISC(lb_rank_p2_left), 1, 0.5);
@@ -676,11 +676,14 @@ void free_app(app *app)
     /* free player names */
     for (i=0; i<3; ++i)
     {
-        g_free(app->player_names[i]);
-        app->player_names[i] = NULL;
+        g_free(app->conf->player_names[i]);
+        app->conf->player_names[i] = NULL;
     }
-    g_free(app->player_names);
-    app->player_names = NULL;
+    g_free(app->conf->player_names);
+    app->conf->player_names = NULL;
+
+    g_free(app->conf);
+    app->conf = NULL;
 
     /* free played stiche */
     for (i=0; i<10; ++i)

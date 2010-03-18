@@ -36,9 +36,6 @@ void load_config(app *app)
 
     filename = g_strconcat(home_dir, "/.gskat/gskat.conf", NULL);
 
-    /* TODO: this does not belong here */
-    app->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
-
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
     {
@@ -62,14 +59,25 @@ void load_config(app *app)
     g_free(filename);
 }
 
+void alloc_config(app *app)
+{
+    app->conf = (config *) g_malloc(sizeof(config));
+
+    if (app->conf)
+    {
+        app->conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
+        app->conf->gui = TRUE;
+    }
+}
+
 void set_default_config(app *app)
 {
     /* set player names */
     const gchar *user_name = g_getenv("USER");
 
-    app->player_names[0] = g_strdup(user_name ? user_name : "Player");
-    app->player_names[1] = g_strdup("Cuyo");
-    app->player_names[2] = g_strdup("Dozo");
+    app->conf->player_names[0] = g_strdup(user_name ? user_name : "Player");
+    app->conf->player_names[1] = g_strdup("Cuyo");
+    app->conf->player_names[2] = g_strdup("Dozo");
 }
 
 gboolean write_config(app *app, const gchar *filename)
@@ -84,7 +92,7 @@ gboolean write_config(app *app, const gchar *filename)
     if (keys)
     {
         g_key_file_set_string_list(keys, "gskat", "player_names",
-                (const gchar **) app->player_names, 3);
+                (const gchar **) app->conf->player_names, 3);
 
         key_file_content = g_key_file_to_data(keys, &length, NULL);
 
@@ -130,7 +138,7 @@ gboolean read_config(app *app, const gchar *filename)
         if (done)
         {
             /* read player names */
-            app->player_names = g_key_file_get_string_list(keyfile, "gskat",
+            app->conf->player_names = g_key_file_get_string_list(keyfile, "gskat",
                     "player_names", &length, NULL);
         }
 

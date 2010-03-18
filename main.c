@@ -59,9 +59,7 @@ int main(int argc, const char *argv[])
         2, -1 , -1, 1, 1,
         /* hand/null game */
         FALSE, FALSE,
-        /* options */
-        TRUE,
-        /* player names */
+        /* configuration */
         NULL
     };
 
@@ -81,9 +79,12 @@ int main(int argc, const char *argv[])
 
         g_option_context_free(context);
 
+        /* allocate configuration */
+        alloc_config(&app);
+
         /* toggle gui if desired */
         if (cli_mode)
-            app.gui = FALSE;
+            app.conf->gui = FALSE;
 
         /* load configuration */
         load_config(&app);

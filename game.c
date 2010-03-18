@@ -564,8 +564,8 @@ gint do_hoeren(app *app, player *player, gint value, gint sager)
     if (player->human)
     {
         msg = (gchar *) g_malloc(sizeof(gchar) *
-                (20+strlen(app->player_names[sager])));
-        g_sprintf(msg, "%s sagt %d:", app->player_names[sager], value);
+                (20+strlen(app->players[sager]->name)));
+        g_sprintf(msg, "%s sagt %d:", app->players[sager]->name, value);
 
         response = get_provoke_response(app, value, msg, TRUE);
 
@@ -598,7 +598,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
     gchar *msg;
 
     DPRINT(("Sager: %s; Hoerer: %s\n", player->name,
-                app->player_names[hoerer]));
+                app->players[hoerer]->name));
 
     /* pass immediately? */
     if (value != player->gereizt)
@@ -606,8 +606,8 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         if (player->human)
         {
             msg = (gchar *) g_malloc(sizeof(gchar) *
-                    (20+strlen(app->player_names[hoerer])));
-            g_sprintf(msg, "Hoerer: %s. Sagen?", app->player_names[hoerer]);
+                    (20+strlen(app->players[hoerer]->name)));
+            g_sprintf(msg, "Hoerer: %s. Sagen?", app->players[hoerer]->name);
 
             gereizt = get_provoke_response(app, value, msg, FALSE);
 
@@ -633,7 +633,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         player->gereizt = value;
 
         response = do_hoeren(app, app->players[hoerer], value, player->id);
-        DPRINT(("%s sagt %s\n", app->player_names[hoerer],
+        DPRINT(("%s sagt %s\n", app->players[hoerer]->name,
                 (response) ? "JA" : "NEIN"));
 
         if (response)
@@ -666,15 +666,15 @@ void start_provoke(app *app)
     {
         app->players[i]->gereizt = 0;
 
-        DPRINT(("MaxReizwert of %s: %d\n", app->player_names[i],
+        DPRINT(("MaxReizwert of %s: %d\n", app->players[i]->name,
                     get_max_reizwert(app, app->players[i]->cards)));
-        DPRINT(("CardRating of %s: %d\n", app->player_names[i],
+        DPRINT(("CardRating of %s: %d\n", app->players[i]->name,
                     rate_cards(app, app->players[i], app->players[i]->cards)));
     }
 
     /* sagen */
     sager = do_sagen(app, app->players[sager], hoerer, 18);
-    DPRINT(("%s won 1. reizen with %d\n", app->player_names[sager],
+    DPRINT(("%s won 1. reizen with %d\n", app->players[sager]->name,
             app->players[sager]->gereizt));
 
     sager = do_sagen(app, app->players[sager], (hoerer+2) % 3,
@@ -686,7 +686,7 @@ void start_provoke(app *app)
 
     if (app->players[sager]->gereizt)
     {
-        DPRINT(("%s won 2. reizen with %d\n", app->player_names[sager],
+        DPRINT(("%s won 2. reizen with %d\n", app->players[sager]->name,
                     app->players[sager]->gereizt));
 
         app->re = app->players[sager];
@@ -1093,7 +1093,7 @@ void calculate_stich(app *app)
     app->players[winner]->points += points;
     app->player = winner;
 
-    DPRINT(("%s won the stich (%d).\n", app->player_names[winner], points));
+    DPRINT(("%s won the stich (%d).\n", app->players[winner]->name, points));
 
     /* add played cards to 'stiche' array */
     app->stiche[app->stich-1] = (card **) g_malloc(sizeof(card *) * 3);

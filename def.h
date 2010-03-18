@@ -102,6 +102,14 @@ typedef struct _player {
     GList *cards;
 } player;
 
+typedef struct _config 
+{
+    /* array of player names */
+    gchar **player_names;
+    /* gui mode */
+    gboolean gui;
+} config;
+
 typedef struct _app
 {
     /* all cards in the game */
@@ -144,10 +152,8 @@ typedef struct _app
     gboolean hand;
     /* null game */
     gboolean null;
-    /* gui mode */
-    gboolean gui;
-    /* array of player names */
-    gchar **player_names;
+    /* configuration */
+    config *conf;
 } app;
 
 #endif /*  __DEF_H__ */
