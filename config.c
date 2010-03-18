@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <glib/gstdio.h>
 #include "def.h"
 #include "config.h"
 
@@ -59,6 +60,28 @@ void load_config(app *app)
     }
 
     g_free(filename);
+}
+
+gboolean create_conf_dir(app *app, const gchar *home)
+{
+    gboolean done = FALSE, exists = FALSE;
+    gchar *gtk_dir = g_strconcat(home, "/.gskat", NULL);
+
+    if (gtk_dir)
+    {
+        exists = g_file_test(gtk_dir, G_FILE_TEST_EXISTS);
+
+        if (!exists && g_mkdir(gtk_dir, 0755) != 0)
+        {
+            DPRINT(("Unable to create directory: %s\n", gtk_dir));
+        }
+        else
+            done = TRUE;
+
+        g_free(gtk_dir);
+    }
+
+    return done;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
