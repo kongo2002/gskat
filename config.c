@@ -34,8 +34,9 @@ void load_config(app *app)
     if (!home_dir)
         home_dir = g_get_home_dir();
 
-    filename = g_strconcat(home_dir, "/.gskat/conf", NULL);
+    filename = g_strconcat(home_dir, "/.gskat/gskat.conf", NULL);
 
+    /* TODO: this does not belong here */
     app->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
 
     /* try to find config file */
@@ -72,11 +73,10 @@ void set_default_config(app *app)
     app->player_names[2] = g_strdup("Dozo");
 }
 
-gboolean write_config(app *app, const gchar *home)
+gboolean write_config(app *app, const gchar *filename)
 {
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
-    gchar *gtk_file = g_strconcat(home, "/.gskat/gskat.conf", NULL);
     gsize length = -1;
 
     GKeyFile *keys = g_key_file_new();
@@ -93,18 +93,15 @@ gboolean write_config(app *app, const gchar *home)
 
     if (key_file_content)
     {
-        done = g_file_set_contents(gtk_file, key_file_content, length, NULL);
+        done = g_file_set_contents(filename, key_file_content, length, NULL);
 
         if (done)
-            DPRINT(("Saved configuration: %s\n", gtk_file));
+            DPRINT(("Saved configuration: %s\n", filename));
         else
-            DPRINT(("Failed to save configuration: %s\n", gtk_file));
+            DPRINT(("Failed to save configuration: %s\n", filename));
 
         g_free(key_file_content);
     }
-
-    if (gtk_file)
-        g_free(gtk_file);
 
     return done;
 }
