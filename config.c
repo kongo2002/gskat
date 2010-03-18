@@ -62,6 +62,38 @@ void load_config(app *app)
     g_free(filename);
 }
 
+gboolean write_config(app *app, const gchar *home)
+{
+    gboolean done = FALSE;
+    gchar *key_file_content = NULL;
+    gchar *gtk_file = g_strconcat(home, "/.gskat/gskat.conf", NULL);
+    gsize length = -1;
+
+    GKeyFile *keys = g_key_file_new();
+
+    if (keys)
+    {
+        g_key_file_set_string_list(keys, "gskat", "player_names",
+                (const gchar **) app->player_names, 3);
+
+        key_file_content = g_key_file_to_data(keys, &length, NULL);
+
+        g_key_file_free(keys);
+    }
+
+    if (key_file_content)
+    {
+        done = g_file_set_contents(gtk_file, key_file_content, length, NULL);
+
+        g_free(key_file_content);
+    }
+
+    if (gtk_file)
+        g_free(gtk_file);
+
+    return done;
+}
+
 gboolean create_conf_dir(app *app, const gchar *home)
 {
     gboolean done = FALSE, exists = FALSE;
