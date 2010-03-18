@@ -29,6 +29,8 @@ gboolean create_conf_dir(app *app, const gchar *home);
 
 gboolean write_config(app *app, const gchar *home);
 
+void set_default_config(app *app);
+
 #endif /* __CONFIG_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

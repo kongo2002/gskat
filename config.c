@@ -49,17 +49,23 @@ void load_config(app *app)
     /* set default values */
     else
     {
-        const gchar *user_name = g_getenv("USER");
-
         DPRINT(("Failed to load config from '%s'\n", filename));
         DPRINT(("Using default settings instead.\n"));
 
-        app->player_names[0] = g_strdup(user_name ? user_name : "Player");
-        app->player_names[1] = g_strdup("Cuyo");
-        app->player_names[2] = g_strdup("Dozo");
+        set_default_config(app);
     }
 
     g_free(filename);
+}
+
+void set_default_config(app *app)
+{
+    /* set player names */
+    const gchar *user_name = g_getenv("USER");
+
+    app->player_names[0] = g_strdup(user_name ? user_name : "Player");
+    app->player_names[1] = g_strdup("Cuyo");
+    app->player_names[2] = g_strdup("Dozo");
 }
 
 gboolean write_config(app *app, const gchar *home)
