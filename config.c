@@ -46,13 +46,17 @@ void load_config(app *app)
         /* read config
          * set player names */
     }
-    /* set default values */
     else
     {
         DPRINT(("Failed to load config from '%s'\n", filename));
         DPRINT(("Using default settings instead.\n"));
 
+        /* set default values */
         set_default_config(app);
+
+        /* try to save config */
+        if (create_conf_dir(app, home_dir))
+            write_config(app, home_dir);
     }
 
     g_free(filename);
@@ -90,6 +94,11 @@ gboolean write_config(app *app, const gchar *home)
     if (key_file_content)
     {
         done = g_file_set_contents(gtk_file, key_file_content, length, NULL);
+
+        if (done)
+            DPRINT(("Saved configuration: %s\n", gtk_file));
+        else
+            DPRINT(("Failed to save configuration: %s\n", gtk_file));
 
         g_free(key_file_content);
     }
