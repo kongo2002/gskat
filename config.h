@@ -29,6 +29,8 @@ gboolean create_conf_dir(app *app, const gchar *home);
 
 gboolean write_config(app *app, const gchar *filename);
 
+gboolean read_config(app *app, const gchar *filename);
+
 void set_default_config(app *app);
 
 #endif /* __CONFIG_H__ */

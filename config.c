@@ -44,8 +44,7 @@ void load_config(app *app)
     {
         DPRINT(("Found config file '%s'\n", filename));
 
-        /* read config
-         * set player names */
+        read_config(app, filename);
     }
     else
     {
@@ -101,6 +100,40 @@ gboolean write_config(app *app, const gchar *filename)
             DPRINT(("Failed to save configuration: %s\n", filename));
 
         g_free(key_file_content);
+    }
+
+    return done;
+}
+
+gboolean read_config(app *app, const gchar *filename)
+{
+    gsize length;
+    gboolean done = FALSE;
+    GError *error = NULL;
+    GKeyFile *keyfile = NULL;
+
+    keyfile = g_key_file_new();
+
+    if (keyfile)
+    {
+        done = g_key_file_load_from_file(keyfile, filename,
+                G_KEY_FILE_NONE, &error);
+
+        if (error)
+        {
+            DPRINT(("Error on reading configuration file: %s\n", error->message));
+
+            g_clear_error(&error);
+        }
+
+        if (done)
+        {
+            /* read player names */
+            app->player_names = g_key_file_get_string_list(keyfile, "gskat",
+                    "player_names", &length, NULL);
+        }
+
+        g_key_file_free(keyfile);
     }
 
     return done;
