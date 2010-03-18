@@ -74,11 +74,12 @@ void set_default_config(app *app)
 
 gboolean write_config(app *app, const gchar *filename)
 {
+    gsize length;
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
-    gsize length = -1;
+    GKeyFile *keys = NULL;
 
-    GKeyFile *keys = g_key_file_new();
+    keys = g_key_file_new();
 
     if (keys)
     {
