@@ -82,12 +82,12 @@ int main(int argc, const char *argv[])
         /* allocate configuration */
         alloc_config(&app);
 
+        /* load configuration */
+        load_config(&app);
+
         /* toggle gui if desired */
         if (cli_mode)
             app.conf->gui = FALSE;
-
-        /* load configuration */
-        load_config(&app);
 
         /* initialize interface */
         create_interface(&app);
