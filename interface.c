@@ -108,43 +108,6 @@ void alloc_app(app *app)
     load_icons(app);
 }
 
-void load_config(app *app)
-{
-    gchar *filename;
-
-    /* get home directory */
-    const gchar *home_dir = g_getenv("HOME");
-    if (!home_dir)
-        home_dir = g_get_home_dir();
-
-    filename = g_strconcat(home_dir, "/.gskat/conf", NULL);
-
-    app->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
-
-    /* try to find config file */
-    if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
-    {
-        DPRINT(("Found config file '%s'\n", filename));
-
-        /* read config
-         * set player names */
-    }
-    /* set default values */
-    else
-    {
-        const gchar *user_name = g_getenv("USER");
-
-        DPRINT(("Failed to load config from '%s'\n", filename));
-        DPRINT(("Using default settings instead.\n"));
-
-        app->player_names[0] = g_strdup(user_name ? user_name : "Player");
-        app->player_names[1] = g_strdup("Cuyo");
-        app->player_names[2] = g_strdup("Dozo");
-    }
-
-    g_free(filename);
-}
-
 void create_interface(app *app)
 {
     GtkWidget *window;

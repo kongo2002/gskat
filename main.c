@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include "def.h"
 #include "interface.h"
+#include "config.h"
 
 static gboolean debug = FALSE;
 static gboolean cli_mode = FALSE;
