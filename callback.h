@@ -21,6 +21,8 @@
 #ifndef __CALLBACK_H__
 #define __CALLBACK_H__
 
+#include "def.h"
+
 gboolean quit(GtkWidget *window, gpointer data);
 
 void next_round(GtkButton *button, gpointer data);

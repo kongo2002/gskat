@@ -18,10 +18,7 @@
  *
  */
 
-#include <stdlib.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gtk/gtk.h>
+#include "def.h"
 #include "ai.h"
 #include "game.h"
 #include "utils.h"

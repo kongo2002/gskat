@@ -18,11 +18,8 @@
  *
  */
 
-#include <gtk/gtk.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include "utils.h"
 #include "def.h"
+#include "utils.h"
 
 void swap(gint *a, gint *b)
 {

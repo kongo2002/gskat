@@ -18,7 +18,6 @@
  *
  */
 
-#include <gtk/gtk.h>
 #include "def.h"
 #include "interface.h"
 #include "config.h"

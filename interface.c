@@ -18,12 +18,8 @@
  *
  */
 
-#include <string.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gtk/gtk.h>
-#include "interface.h"
 #include "def.h"
+#include "interface.h"
 #include "utils.h"
 #include "callback.h"
 
@@ -392,7 +388,7 @@ gboolean load_cards(const gchar *path, app *app)
 cairo_surface_t *load_image(gchar *filename)
 {
     DPRINT(("Loading '%s' ... ", filename));
-    
+
     if (g_file_test(filename, G_FILE_TEST_EXISTS))
     {
         DPRINT(("OK\n"));

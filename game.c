@@ -18,15 +18,10 @@
  *
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gtk/gtk.h>
 #include "def.h"
+#include "game.h"
 #include "ai.h"
 #include "interface.h"
-#include "game.h"
 #include "utils.h"
 
 void card_to_player(player *player, card *card)
@@ -775,20 +770,20 @@ void druecke_skat(app *app)
             if (suits[i] != best)
             {
                 ptr = get_suit_list(app, player->cards, suits[i]);
-    
+
                 if (g_list_length(ptr) == 2)
                 {
                     card = g_list_nth_data(ptr, 0);
                     if (card->rank == ASS)
                         continue;
-    
+
                     app->skat = g_list_prepend(app->skat, card);
                     player->cards = g_list_remove(player->cards, card);
-    
+
                     card = g_list_nth_data(ptr, 1);
                     app->skat = g_list_prepend(app->skat, card);
                     player->cards = g_list_remove(player->cards, card);
-    
+
                     count = 2;
                     break;
                 }

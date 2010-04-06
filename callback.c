@@ -18,9 +18,8 @@
  *
  */
 
-#include <gtk/gtk.h>
-#include "callback.h"
 #include "def.h"
+#include "callback.h"
 #include "utils.h"
 #include "game.h"
 #include "interface.h"

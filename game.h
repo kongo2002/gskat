@@ -21,6 +21,8 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "def.h"
+
 void give_cards(app *app);
 
 void give_to_skat(app *app, card *card);

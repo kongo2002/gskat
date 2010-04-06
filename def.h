@@ -21,6 +21,11 @@
 #ifndef __DEF_H__
 #define __DEF_H__
 
+#include <stdlib.h>
+#include <string.h>
+#include <glib.h>
+#include <glib/gprintf.h>
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
 #define DATA_DIR "/home/kongo/cpp/c/gskat/pixmaps"
