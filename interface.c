@@ -324,7 +324,6 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
         tcard->dim.y = 0;
 
         tcard->draw = FALSE;
-        tcard->blink = FALSE;
 
         tcard->img = cairo_image_surface_create_from_png(file);
         tcard->dim.w = cairo_image_surface_get_width(tcard->img);

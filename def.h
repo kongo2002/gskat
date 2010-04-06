@@ -108,7 +108,6 @@ typedef struct _card
     enum cstatus status;  /**< current card status */
     gboolean draw;        /**< draw card? */
     gboolean draw_face;   /**< draw the face of the card? */
-    gboolean blink;       /**< card blinking? */
 } card;
 
 /**
