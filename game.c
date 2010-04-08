@@ -24,6 +24,12 @@
 #include "interface.h"
 #include "utils.h"
 
+/**
+ * @brief Give a card to player
+ *
+ * @param player  pointer to player that gets the card
+ * @param card    pointer to card to give to player
+ */
 void card_to_player(player *player, card *card)
 {
     if (player->human)
@@ -38,6 +44,12 @@ void card_to_player(player *player, card *card)
     player->cards = g_list_prepend(player->cards, (gpointer) card);
 }
 
+/**
+ * @brief Give a card into skat
+ *
+ * @param app   main application object
+ * @param card  card to give into skat
+ */
 void give_to_skat(app *app, card *card)
 {
     card->draw = TRUE;
@@ -48,6 +60,17 @@ void give_to_skat(app *app, card *card)
     app->skat = g_list_prepend(app->skat, (gpointer) card);
 }
 
+/**
+ * @brief Play the card clicked on
+ *
+ * It's checked if the clicked card is possible to play
+ * and if it's the player's turn to play.
+ *
+ * @param app    main application object
+ * @param event  button event pointer
+ *
+ * @return TRUE if the card was played, else FALSE
+ */
 gboolean play_card(app *app, GdkEventButton *event)
 {
     gint num_cards = (app->table) ? g_list_length(app->table) : 0;
@@ -77,6 +100,14 @@ gboolean play_card(app *app, GdkEventButton *event)
     return FALSE;
 }
 
+/**
+ * @brief Swaps the clicked card with one of the cards in skat
+ *
+ * @param app    main application object
+ * @param event  button event pointer
+ *
+ * @return TRUE when the cards could be swapped
+ */
 gboolean click_skat(app *app, GdkEventButton *event)
 {
     player *player = app->players[0];
@@ -105,6 +136,16 @@ gboolean click_skat(app *app, GdkEventButton *event)
     return FALSE;
 }
 
+/**
+ * @brief Gets the card the player clicked on
+ *
+ * @param app    main application objects
+ * @param event  button event pointer
+ * @param list   list of possible cards to choose from
+ *
+ * @return pointer to the card clicked on or NULL if at the position
+ * the user clicked on there is not card
+ */
 card *click_card(app *app, GdkEventButton *event, GList *list)
 {
     GList *ptr = NULL;
@@ -126,6 +167,14 @@ card *click_card(app *app, GdkEventButton *event, GList *list)
     return NULL;
 }
 
+/**
+ * @brief Distribute the 32 cards in the deck to the players/skat
+ *
+ * Every player gets 10 cards whereas the last 2 cards go into
+ * the skat in the middle of the table.
+ *
+ * @param app main application objects
+ */
 void give_cards(app *app)
 {
     gint order[32];
@@ -165,6 +214,20 @@ void give_cards(app *app)
     give_to_skat(app, g_list_nth_data(app->cards, order[31]));
 }
 
+/**
+ * @brief Gets a provoke response from the user by opening a message box
+ *
+ * When the user has to 'hear' he gets the possible answers 'Yes'
+ * and 'No' otherwise the next provoke value and 'Pass'.
+ *
+ * @param app     main application objects
+ * @param value   provoking value
+ * @param msg     string containing the title of the message box
+ * @param hoeren  user has to 'hear'?
+ *
+ * @return If the user continues to provoke that value is returned.
+ * Otherwise 0 is returned representing 'pass'.
+ */
 gint get_provoke_response(app *app, gint value, gchar *msg, gboolean hoeren)
 {
     gint result;
@@ -188,6 +251,13 @@ gint get_provoke_response(app *app, gint value, gchar *msg, gboolean hoeren)
     return result;
 }
 
+/**
+ * @brief Returns the next value to provoke
+ *
+ * @param value current provoke value
+ *
+ * @return the next value to provoke about
+ */
 gint next_reizwert(gint value)
 {
     gint i;
@@ -203,6 +273,15 @@ gint next_reizwert(gint value)
     return 0;
 }
 
+/**
+ * @brief Function comparing two cards used with a sort function
+ *
+ * @param a     first card
+ * @param b     second card
+ * @param data  main application objects cast to (gpointer)
+ *
+ * @return -1 if a > b; 1 if a < b; 0 if a == b
+ */
 gint compare_cards(gconstpointer a, gconstpointer b, gpointer data)
 {
     card *card_a = (card *) a;
@@ -256,6 +335,14 @@ gint compare_cards(gconstpointer a, gconstpointer b, gpointer data)
     return 0;
 }
 
+/**
+ * @brief Function comparing two jacks used with a sort function
+ *
+ * @param a first jack
+ * @param b second jack
+ *
+ * @return -1 if a > b; 1 if a < b; 0 if a == b
+ */
 gint compare_jacks(gconstpointer a, gconstpointer b)
 {
     card *card_a = (card *) a;
@@ -269,6 +356,15 @@ gint compare_jacks(gconstpointer a, gconstpointer b)
         return 0;
 }
 
+/**
+ * @brief Function comparing two cards of the same suit
+ * used with a sort function
+ *
+ * @param a first card
+ * @param b second card
+ *
+ * @return -1 if a > b; 1 if a < b; 0 if a == b
+ */
 gint compare_family(gconstpointer a, gconstpointer b)
 {
     card *card_a = (card *) a;
@@ -290,7 +386,14 @@ gint compare_family(gconstpointer a, gconstpointer b)
         return 0;
 }
 
-/* return a list of jacks of a given list of cards */
+/**
+ * @brief Returns a list of jacks of a given list of cards
+ *
+ * @param list list of cards to search jacks in
+ *
+ * @return Returns a new GList* containing all jacks in 'list'.
+ * If no jacks could be found NULL is returned.
+ */
 GList *get_jack_list(GList *list)
 {
     GList *ptr = NULL, *jacks = NULL;
@@ -308,6 +411,16 @@ GList *get_jack_list(GList *list)
     return jacks;
 }
 
+/**
+ * @brief Returns a list containing only cards of a specific suit
+ *
+ * @param app   main application objects
+ * @param list  list of cards to search in
+ * @param suit  suit that is searched
+ *
+ * @return Returns a new GList* containing all card of the given
+ * suit. If no cards could be found NULL is returned.
+ */
 GList *get_suit_list(app *app, GList *list, gint suit)
 {
     GList *ptr = NULL, *family = NULL;
@@ -334,6 +447,14 @@ GList *get_suit_list(app *app, GList *list, gint suit)
     return family;
 }
 
+/**
+ * @brief Checks if the given card is trump
+ *
+ * @param app   main application objects
+ * @param card  card to be checked
+ *
+ * @return TRUE if the card is trump, otherwise FALSE
+ */
 gboolean is_trump(app *app, card *card)
 {
     if (app->null)
@@ -351,6 +472,15 @@ gboolean is_trump(app *app, card *card)
     return FALSE;
 }
 
+/**
+ * @brief Returns a list of trump cards from the given card list
+ *
+ * @param app   main application objects
+ * @param list  list of cards to search in
+ *
+ * @return Returns a new GList* of all trump cards. If no trump
+ * cards could be found return NULL.
+ */
 GList *get_trump_list(app *app, GList *list)
 {
     GList *ptr = NULL, *family = NULL, *jacks = NULL;
@@ -380,6 +510,16 @@ GList *get_trump_list(app *app, GList *list)
     return family;
 }
 
+/**
+ * @brief Return a list of cards that are possible to play
+ * based on the cards currently on the table
+ *
+ * @param app   main applications objects
+ * @param list  list of cards to search in for possible cards
+ *
+ * @return Returns a new GList* with all cards that are possible
+ * or allowed to play.
+ */
 GList *get_possible_cards(app *app, GList *list)
 {
     GList *ptr = NULL;
@@ -406,6 +546,19 @@ GList *get_possible_cards(app *app, GList *list)
     return NULL;
 }
 
+/**
+ * @brief Returns a rating of a given card deck
+ *
+ * This function does a simply calculation of the rating of a
+ * player's card deck. Currently the longest suit, the number of
+ * jacks and suits you can trump are respected.
+ *
+ * @param app     main application objects
+ * @param player  player to calculate the cards for
+ * @param list    list of the player's cards
+ *
+ * @return card deck rating
+ */
 gint rate_cards(app *app, player *player, GList *list)
 {
     gint i, jacks = 0, rate = 0, best = 0;
@@ -445,9 +598,13 @@ gint rate_cards(app *app, player *player, GList *list)
     return (rate + jacks*1.5);
 }
 
-/* find the best suit in a list of cards
- * TODO: select best suit if several suits
- * of the same count */
+/**
+ * @brief find the best suit in a list of cards
+ *
+ * @param list list of cards to search in
+ *
+ * @return index of the selected (best) suit
+ */
 gint get_best_suit(GList *list)
 {
     gint i, max, ret, rank_count[4];
@@ -476,6 +633,15 @@ gint get_best_suit(GList *list)
     return ((ret+1)*20+20);
 }
 
+/**
+ * @brief Calculate the 'spitzen' for a given list of cards and suit
+ *
+ * @param app   main application objects
+ * @param list  list of cards to parse
+ * @param suit  suit to search for
+ *
+ * @return 'spitzen' value
+ */
 gint get_spitzen(app *app, GList *list, gint suit)
 {
     gint i = 0, max = 0, back = 0;
@@ -527,6 +693,14 @@ gint get_spitzen(app *app, GList *list, gint suit)
     return (max + 1);
 }
 
+/**
+ * @brief Returns the maximum value to provoke
+ *
+ * @param app   main application objects
+ * @param list  list of cards to analyze
+ *
+ * @return maximum value to provoke
+ */
 gint get_max_reizwert(app *app, GList *list)
 {
     gint suit = 0;
@@ -550,6 +724,16 @@ gint get_max_reizwert(app *app, GList *list)
     return 0;
 }
 
+/**
+ * @brief Execute the 'hearing' process for the given player
+ *
+ * @param app     main application objects
+ * @param player  hearing player
+ * @param value   provoke value that is asked
+ * @param sager   saying player's index
+ *
+ * @return provoked value or 0 if passed
+ */
 gint do_hoeren(app *app, player *player, gint value, gint sager)
 {
     gint max = 0;
@@ -584,6 +768,16 @@ gint do_hoeren(app *app, player *player, gint value, gint sager)
     return response;
 }
 
+/**
+ * @brief Execute the 'saying' process for the given player
+ *
+ * @param app     main application objects
+ * @param player  saying player
+ * @param hoerer  hearing player's index
+ * @param value   last provoked value
+ *
+ * @return provoked value
+ */
 gint do_sagen(app *app, player *player, gint hoerer, gint value)
 {
     gint response = 0;
@@ -644,6 +838,11 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
     return id;
 }
 
+/**
+ * @brief Initialize provoking process
+ *
+ * @param app main application objects
+ */
 void start_provoke(app *app)
 {
     gchar msg[4];
@@ -715,8 +914,11 @@ void start_provoke(app *app)
     }
 }
 
-/* TODO: select cards to be put in skat
- * combine with spiel_ansagen() */
+/**
+ * @brief Select cards to be put in skat
+ *
+ * @param app main application objects
+ */
 void druecke_skat(app *app)
 {
     gint suits[] = { 40, 60, 80, 100 };
@@ -847,6 +1049,11 @@ void druecke_skat(app *app)
 #endif
 }
 
+/**
+ * @brief Take the two cards in the skat or play 'hand'
+ *
+ * @param app main application objects
+ */
 void take_skat(app *app)
 {
     gint result;
@@ -905,6 +1112,11 @@ void take_skat(app *app)
     draw_area(app);
 }
 
+/**
+ * @brief Decide and say what play should be played this round
+ *
+ * @param app main application objects
+ */
 void spiel_ansagen(app *app)
 {
     gint result = 0;
@@ -1001,6 +1213,12 @@ void spiel_ansagen(app *app)
     play_stich(app);
 }
 
+/**
+ * @brief Throw given card on the table
+ *
+ * @param app   main application objects
+ * @param card  card to throw on the table
+ */
 void throw_card(app *app, card *card)
 {
     player *player = app->players[card->owner];
@@ -1022,6 +1240,12 @@ void throw_card(app *app, card *card)
     draw_area(app);
 }
 
+/**
+ * @brief Trigger AI to play a card
+ *
+ * @param app     main application objects
+ * @param player  pointer to AI player
+ */
 void ai_play_card(app *app, player *player)
 {
     GList *ptr = NULL;
@@ -1037,6 +1261,11 @@ void ai_play_card(app *app, player *player)
     throw_card(app, card);
 }
 
+/**
+ * @brief Calculate the winner and the points of the last stich
+ *
+ * @param app main application objects
+ */
 void calculate_stich(app *app)
 {
     gchar msg[6];
@@ -1112,6 +1341,12 @@ void calculate_stich(app *app)
     draw_area(app);
 }
 
+/**
+ * @brief Finalize the last round by refreshing all settings
+ * and player's points
+ *
+ * @param app main application objects
+ */
 void end_round(app *app)
 {
     gint rank, game;
@@ -1257,6 +1492,11 @@ void end_round(app *app)
     reset_game(app);
 }
 
+/**
+ * @brief Trigger the next player to play his card
+ *
+ * @param app main application objects
+ */
 void play_stich(app *app)
 {
     gint fh = (app->cplayer == -1) ? app->forehand : app->cplayer;
@@ -1285,6 +1525,11 @@ void play_stich(app *app)
         end_round(app);
 }
 
+/**
+ * @brief Reset all game settings and free the allocated memory
+ *
+ * @param app main application objects
+ */
 void reset_game(app *app)
 {
     gint i;
@@ -1359,6 +1604,11 @@ void reset_game(app *app)
     gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Neue Runde");
 }
 
+/**
+ * @brief Distribute cards and start a new round
+ *
+ * @param app main application objects
+ */
 void game_start(app *app)
 {
     /* give cards */
