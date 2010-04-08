@@ -35,7 +35,7 @@ card *click_card(GdkEventButton *event, GList *list);
 
 void card_to_player(player *player, card *card);
 
-gint compare_cards(gconstpointer a, gconstpointer b, gpointer data);
+gint compare_cards(gconstpointer a, gconstpointer b);
 
 gint compare_jacks(gconstpointer a, gconstpointer b);
 

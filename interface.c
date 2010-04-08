@@ -292,19 +292,19 @@ void create_interface()
 
         /* attach signals */
         g_signal_connect(G_OBJECT(window), "destroy",
-                G_CALLBACK(quit), &gskat);
+                G_CALLBACK(quit), NULL);
         g_signal_connect(G_OBJECT(area), "realize",
-                G_CALLBACK(realization), &gskat);
+                G_CALLBACK(realization), NULL);
         g_signal_connect(G_OBJECT(area), "configure_event",
-                G_CALLBACK(configure), &gskat);
+                G_CALLBACK(configure), NULL);
         g_signal_connect(G_OBJECT(area), "expose_event",
-                G_CALLBACK(refresh), &gskat);
+                G_CALLBACK(refresh), NULL);
         g_signal_connect(G_OBJECT(button), "clicked",
-                G_CALLBACK(next_round), &gskat);
+                G_CALLBACK(next_round), NULL);
 
         gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK);
         g_signal_connect(G_OBJECT(area), "button_press_event",
-                G_CALLBACK(button_press), &gskat);
+                G_CALLBACK(button_press), NULL);
     }
 }
 

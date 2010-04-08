@@ -33,9 +33,7 @@ gboolean quit(GtkWidget *window, gpointer data)
 
 gboolean realization(GtkWidget *area, gpointer data)
 {
-    struct _app *app = (struct _app *) data;
-
-    /* allocate memory for app lists */
+    /* allocate memory for application lists */
     alloc_app();
 
     if (load_cards(DATA_DIR))
@@ -46,8 +44,6 @@ gboolean realization(GtkWidget *area, gpointer data)
 
 void next_round(GtkButton *button, gpointer data)
 {
-    struct _app *app = (struct _app *) data;
-
     if (gskat.state == ENDGAME)
     {
         game_start();
@@ -72,8 +68,6 @@ void next_round(GtkButton *button, gpointer data)
 
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
-    struct _app *app = (struct _app *) data;
-
     calc_card_positions();
 
     return TRUE;
@@ -82,11 +76,11 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
     gboolean found = FALSE;
-    struct _app *app = (struct _app *) data;
 
     if (event->button == 1)
     {
-        if (gskat.state == TAKESKAT && gskat.re == gskat.players[0] && !gskat.hand)
+        if (gskat.state == TAKESKAT && gskat.re == gskat.players[0]
+                && !gskat.hand)
             found = click_skat(event);
         else if (gskat.state == PLAYING)
             found = play_card(event);
@@ -104,8 +98,6 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
-    struct _app *app = (struct _app *) data;
-
     if (gskat.area && gskat.area->window)
         draw_area();
 }

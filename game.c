@@ -123,8 +123,7 @@ gboolean click_skat(GdkEventButton *event)
         player->cards = g_list_prepend(player->cards, (gpointer) card);
         gskat.skat = g_list_remove(gskat.skat, (gconstpointer) card);
 
-        player->cards = g_list_sort_with_data(player->cards,
-                compare_cards, &gskat);
+        player->cards = g_list_sort(player->cards, compare_cards);
 
         /* redraw screen */
         calc_card_positions();
@@ -205,8 +204,7 @@ void give_cards()
             card_to_player(player,
                     g_list_nth_data(gskat.cards, order[j+(i*10)]));
         }
-        player->cards = g_list_sort_with_data(player->cards,
-                compare_cards, &gskat);
+        player->cards = g_list_sort(player->cards, compare_cards);
     }
 
     /* two cards for skat */
@@ -278,15 +276,13 @@ gint next_reizwert(gint value)
  *
  * @param a     first card
  * @param b     second card
- * @param data  main application objects cast to (gpointer)
  *
  * @return -1 if a > b; 1 if a < b; 0 if a == b
  */
-gint compare_cards(gconstpointer a, gconstpointer b, gpointer data)
+gint compare_cards(gconstpointer a, gconstpointer b)
 {
     card *card_a = (card *) a;
     card *card_b = (card *) b;
-    struct _app *app = (struct _app *) data;
 
     if (!gskat.null)
     {
@@ -1200,12 +1196,12 @@ void spiel_ansagen(app *app)
     }
 
     /* reorder re player's cards */
-    gskat.re->cards = g_list_sort_with_data(gskat.re->cards, compare_cards, &gskat);
+    gskat.re->cards = g_list_sort(gskat.re->cards, compare_cards);
 
     /* reorder player's cards if necessary */
     if (gskat.re != gskat.players[0])
-        gskat.players[0]->cards = g_list_sort_with_data(gskat.players[0]->cards,
-                compare_cards, &gskat);
+        gskat.players[0]->cards = g_list_sort(gskat.players[0]->cards,
+                compare_cards);
 
     calc_card_positions();
     draw_area();
