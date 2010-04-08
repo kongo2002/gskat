@@ -90,17 +90,17 @@ int main(int argc, const char *argv[])
         g_option_context_free(context);
 
         /* allocate configuration */
-        alloc_config(&gskat);
+        alloc_config();
 
         /* load configuration */
-        load_config(&gskat);
+        load_config();
 
         /* toggle gui if desired */
         if (cli_mode)
             gskat.conf->gui = FALSE;
 
         /* initialize interface */
-        create_interface(&gskat);
+        create_interface();
 
         /* show all widgets after being initialized */
         if (gskat.allwidgets != NULL)
@@ -108,7 +108,7 @@ int main(int argc, const char *argv[])
             gtk_widget_show_all(gskat.allwidgets[0]);
             gtk_main();
 
-            free_app(&gskat);
+            free_app();
         }
     }
 

@@ -821,7 +821,7 @@ gint do_sagen(player *player, gint hoerer, gint value)
 /**
  * @brief Initialize provoking process
  */
-void start_provoke(app *app)
+void start_provoke()
 {
     gchar msg[4];
     gint hoerer = gskat.forehand;
@@ -872,7 +872,7 @@ void start_provoke(app *app)
         g_sprintf(msg, "%d", gskat.re->gereizt);
         gtk_label_set_text(GTK_LABEL(gskat.allwidgets[5]), msg);
 
-        take_skat(app);
+        take_skat();
     }
     else
     {
@@ -887,15 +887,15 @@ void start_provoke(app *app)
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
 
-        reset_game(app);
-        game_start(app);
+        reset_game();
+        game_start();
     }
 }
 
 /**
  * @brief Select cards to be put in skat
  */
-void druecke_skat(app *app)
+void druecke_skat()
 {
     gint suits[] = { 40, 60, 80, 100 };
     gint count = 0;
@@ -1028,7 +1028,7 @@ void druecke_skat(app *app)
 /**
  * @brief Take the two cards in the skat or play 'hand'
  */
-void take_skat(app *app)
+void take_skat()
 {
     gint result;
     GList *ptr = NULL;
@@ -1076,20 +1076,20 @@ void take_skat(app *app)
 
     if (!gskat.re->human)
     {
-        druecke_skat(app);
-        spiel_ansagen(app);
+        druecke_skat();
+        spiel_ansagen();
 
         gskat.state = PLAYING;
     }
 
     /* update screen */
-    draw_area(app);
+    draw_area();
 }
 
 /**
  * @brief Decide and say what play should be played this round
  */
-void spiel_ansagen(app *app)
+void spiel_ansagen()
 {
     gint result = 0;
     gchar gamename[10];
