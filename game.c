@@ -47,7 +47,6 @@ void card_to_player(player *player, card *card)
 /**
  * @brief Give a card into skat
  *
- * @param app   main application object
  * @param card  card to give into skat
  */
 void give_to_skat(card *card)
@@ -66,7 +65,6 @@ void give_to_skat(card *card)
  * It's checked if the clicked card is possible to play
  * and if it's the player's turn to play.
  *
- * @param app    main application object
  * @param event  button event pointer
  *
  * @return TRUE if the card was played, else FALSE
@@ -103,7 +101,6 @@ gboolean play_card(GdkEventButton *event)
 /**
  * @brief Swaps the clicked card with one of the cards in skat
  *
- * @param app    main application object
  * @param event  button event pointer
  *
  * @return TRUE when the cards could be swapped
@@ -138,7 +135,6 @@ gboolean click_skat(GdkEventButton *event)
 /**
  * @brief Gets the card the player clicked on
  *
- * @param app    main application objects
  * @param event  button event pointer
  * @param list   list of possible cards to choose from
  *
@@ -171,8 +167,6 @@ card *click_card(GdkEventButton *event, GList *list)
  *
  * Every player gets 10 cards whereas the last 2 cards go into
  * the skat in the middle of the table.
- *
- * @param app main application objects
  */
 void give_cards()
 {
@@ -218,7 +212,6 @@ void give_cards()
  * When the user has to 'hear' he gets the possible answers 'Yes'
  * and 'No' otherwise the next provoke value and 'Pass'.
  *
- * @param app     main application objects
  * @param value   provoking value
  * @param msg     string containing the title of the message box
  * @param hoeren  user has to 'hear'?
@@ -410,7 +403,6 @@ GList *get_jack_list(GList *list)
 /**
  * @brief Returns a list containing only cards of a specific suit
  *
- * @param app   main application objects
  * @param list  list of cards to search in
  * @param suit  suit that is searched
  *
@@ -446,7 +438,6 @@ GList *get_suit_list(GList *list, gint suit)
 /**
  * @brief Checks if the given card is trump
  *
- * @param app   main application objects
  * @param card  card to be checked
  *
  * @return TRUE if the card is trump, otherwise FALSE
@@ -471,7 +462,6 @@ gboolean is_trump(card *card)
 /**
  * @brief Returns a list of trump cards from the given card list
  *
- * @param app   main application objects
  * @param list  list of cards to search in
  *
  * @return Returns a new GList* of all trump cards. If no trump
@@ -510,7 +500,6 @@ GList *get_trump_list(GList *list)
  * @brief Return a list of cards that are possible to play
  * based on the cards currently on the table
  *
- * @param app   main applications objects
  * @param list  list of cards to search in for possible cards
  *
  * @return Returns a new GList* with all cards that are possible
@@ -549,7 +538,6 @@ GList *get_possible_cards(GList *list)
  * player's card deck. Currently the longest suit, the number of
  * jacks and suits you can trump are respected.
  *
- * @param app     main application objects
  * @param player  player to calculate the cards for
  * @param list    list of the player's cards
  *
@@ -632,7 +620,6 @@ gint get_best_suit(GList *list)
 /**
  * @brief Calculate the 'spitzen' for a given list of cards and suit
  *
- * @param app   main application objects
  * @param list  list of cards to parse
  * @param suit  suit to search for
  *
@@ -692,7 +679,6 @@ gint get_spitzen(GList *list, gint suit)
 /**
  * @brief Returns the maximum value to provoke
  *
- * @param app   main application objects
  * @param list  list of cards to analyze
  *
  * @return maximum value to provoke
@@ -723,7 +709,6 @@ gint get_max_reizwert(GList *list)
 /**
  * @brief Execute the 'hearing' process for the given player
  *
- * @param app     main application objects
  * @param player  hearing player
  * @param value   provoke value that is asked
  * @param sager   saying player's index
@@ -767,7 +752,6 @@ gint do_hoeren(player *player, gint value, gint sager)
 /**
  * @brief Execute the 'saying' process for the given player
  *
- * @param app     main application objects
  * @param player  saying player
  * @param hoerer  hearing player's index
  * @param value   last provoked value
@@ -836,8 +820,6 @@ gint do_sagen(player *player, gint hoerer, gint value)
 
 /**
  * @brief Initialize provoking process
- *
- * @param app main application objects
  */
 void start_provoke(app *app)
 {
@@ -912,8 +894,6 @@ void start_provoke(app *app)
 
 /**
  * @brief Select cards to be put in skat
- *
- * @param app main application objects
  */
 void druecke_skat(app *app)
 {
@@ -1047,8 +1027,6 @@ void druecke_skat(app *app)
 
 /**
  * @brief Take the two cards in the skat or play 'hand'
- *
- * @param app main application objects
  */
 void take_skat(app *app)
 {
@@ -1110,8 +1088,6 @@ void take_skat(app *app)
 
 /**
  * @brief Decide and say what play should be played this round
- *
- * @param app main application objects
  */
 void spiel_ansagen(app *app)
 {
@@ -1212,7 +1188,6 @@ void spiel_ansagen(app *app)
 /**
  * @brief Throw given card on the table
  *
- * @param app   main application objects
  * @param card  card to throw on the table
  */
 void throw_card(card *card)
@@ -1239,7 +1214,6 @@ void throw_card(card *card)
 /**
  * @brief Trigger AI to play a card
  *
- * @param app     main application objects
  * @param player  pointer to AI player
  */
 void ai_play_card(player *player)
@@ -1259,8 +1233,6 @@ void ai_play_card(player *player)
 
 /**
  * @brief Calculate the winner and the points of the last stich
- *
- * @param app main application objects
  */
 void calculate_stich()
 {
@@ -1340,8 +1312,6 @@ void calculate_stich()
 /**
  * @brief Finalize the last round by refreshing all settings
  * and player's points
- *
- * @param app main application objects
  */
 void end_round()
 {
@@ -1490,8 +1460,6 @@ void end_round()
 
 /**
  * @brief Trigger the next player to play his card
- *
- * @param app main application objects
  */
 void play_stich()
 {
@@ -1523,8 +1491,6 @@ void play_stich()
 
 /**
  * @brief Reset all game settings and free the allocated memory
- *
- * @param app main application objects
  */
 void reset_game()
 {
@@ -1602,8 +1568,6 @@ void reset_game()
 
 /**
  * @brief Distribute cards and start a new round
- *
- * @param app main application objects
  */
 void game_start()
 {
