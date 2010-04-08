@@ -25,29 +25,29 @@
 
 player *init_player(gint id, gchar *name, gboolean human);
 
-void load_icons(app *app);
+void load_icons();
 
-void alloc_app(app *app);
+void alloc_app();
 
-void create_interface(app *app);
+void create_interface();
 
 void pos_player_cards(player *player, gint x, gint y, gint step);
 
-void calc_card_positions(app *app);
+void calc_card_positions();
 
 void load_card(GList **list, const gchar *file, gint rank, gint suit);
 
 cairo_surface_t *load_image(gchar *filename);
 
-gboolean load_cards(const gchar *path, app *app);
+gboolean load_cards(const gchar *path);
 
-void draw_cards(app *app, GList *cards, cairo_t *target);
+void draw_cards(GList *cards, cairo_t *target);
 
-void draw_player(app *app, player *player, cairo_t *cr);
+void draw_player(player *player, cairo_t *cr);
 
-void draw_area(app *app);
+void draw_area();
 
-void free_app(app *app);
+void free_app();
 
 #endif /* __INTERFACE_H__ */
 

@@ -22,6 +22,8 @@
 #include "interface.h"
 #include "config.h"
 
+app gskat;
+
 static gboolean debug = FALSE;
 static gboolean cli_mode = FALSE;
 
@@ -38,29 +40,38 @@ static GOptionEntry arguments[] =
     { NULL }
 };
 
+void initialize()
+{
+    gskat.cards      = NULL;
+    gskat.skat       = NULL;
+    gskat.table      = NULL;
+    gskat.players    = NULL;
+    gskat.stiche     = NULL;
+    gskat.players    = NULL;
+    gskat.icons      = NULL;
+    gskat.back       = NULL;
+    gskat.bg         = NULL;
+    gskat.area       = NULL;
+    gskat.allwidgets = NULL;
+    gskat.state      = LOADING;
+    gskat.re         = NULL;
+    gskat.forehand   = 2;
+    gskat.cplayer    = -1;
+    gskat.trump      = -1;
+    gskat.round      = 1;
+    gskat.stich      = 1;
+    gskat.hand       = FALSE;
+    gskat.null       = FALSE;
+    gskat.conf       = NULL;
+}
+
 int main(int argc, const char *argv[])
 {
     GOptionContext *context;
     GError *error = NULL;
 
     /* initialization of game objects */
-    app gskat =
-    {
-        /* lists */
-        NULL, NULL, NULL, NULL, NULL, NULL,
-        /* pixmaps and widgets */
-        NULL, NULL, NULL, NULL, NULL,
-        /* game state */
-        LOADING,
-        /* re player */
-        NULL,
-        /* integers */
-        2, -1 , -1, 1, 1,
-        /* hand/null game */
-        FALSE, FALSE,
-        /* configuration */
-        NULL
-    };
+    initialize();
 
     /* parse command line arguments */
     context = g_option_context_new(" - GTK Skat");

@@ -28,7 +28,7 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
-#define DATA_DIR "/home/kongo/cpp/c/gskat/pixmaps"
+#define DATA_DIR "/home/kongo/c/gskat/pixmaps"
 
 #define KARO  40
 #define HERZ  60
@@ -183,6 +183,8 @@ typedef struct _app
     /** Configuration */
     config *conf;
 } app;
+
+extern app gskat;
 
 #endif /*  __DEF_H__ */
 

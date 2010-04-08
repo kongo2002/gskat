@@ -36,10 +36,10 @@ gboolean realization(GtkWidget *area, gpointer data)
     struct _app *app = (struct _app *) data;
 
     /* allocate memory for app lists */
-    alloc_app(app);
+    alloc_app();
 
-    if (load_cards(DATA_DIR, app))
-        game_start(app);
+    if (load_cards(DATA_DIR))
+        game_start();
 
     return FALSE;
 }
@@ -48,25 +48,25 @@ void next_round(GtkButton *button, gpointer data)
 {
     struct _app *app = (struct _app *) data;
 
-    if (app->state == ENDGAME)
+    if (gskat.state == ENDGAME)
     {
-        game_start(app);
+        game_start();
 
-        app->state = WAITING;
+        gskat.state = WAITING;
 
         next_round(button, data);
     }
-    else if (app->state == WAITING)
+    else if (gskat.state == WAITING)
     {
-        app->state = PROVOKE;
+        gskat.state = PROVOKE;
 
-        start_provoke(app);
+        start_provoke();
     }
-    else if (app->state == TAKESKAT)
+    else if (gskat.state == TAKESKAT)
     {
-        spiel_ansagen(app);
+        spiel_ansagen();
 
-        app->state = PLAYING;
+        gskat.state = PLAYING;
     }
 }
 
@@ -74,7 +74,7 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     struct _app *app = (struct _app *) data;
 
-    calc_card_positions(app);
+    calc_card_positions();
 
     return TRUE;
 }
@@ -86,15 +86,15 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 
     if (event->button == 1)
     {
-        if (app->state == TAKESKAT && app->re == app->players[0] && !app->hand)
-            found = click_skat(app, event);
-        else if (app->state == PLAYING)
-            found = play_card(app, event);
-        else if (app->state == READY)
+        if (gskat.state == TAKESKAT && gskat.re == gskat.players[0] && !gskat.hand)
+            found = click_skat(event);
+        else if (gskat.state == PLAYING)
+            found = play_card(event);
+        else if (gskat.state == READY)
         {
-            calculate_stich(app);
-            app->state = PLAYING;
-            play_stich(app);
+            calculate_stich();
+            gskat.state = PLAYING;
+            play_stich();
             return TRUE;
         }
     }
@@ -106,8 +106,8 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     struct _app *app = (struct _app *) data;
 
-    if (app->area && app->area->window)
-        draw_area(app);
+    if (gskat.area && gskat.area->window)
+        draw_area();
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

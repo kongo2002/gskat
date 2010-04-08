@@ -23,7 +23,7 @@
 #include "game.h"
 #include "utils.h"
 
-card *ai_select_card(app *app, player *player, GList *list)
+card *ai_select_card(player *player, GList *list)
 {
     gint selection;
     gint position;
@@ -37,7 +37,7 @@ card *ai_select_card(app *app, player *player, GList *list)
     }
 
     /* determine position on table */
-    position = (app->table) ? g_list_length(app->table) : 0;
+    position = (gskat.table) ? g_list_length(gskat.table) : 0;
 
     /* re player */
     if (player->re)
@@ -45,17 +45,17 @@ card *ai_select_card(app *app, player *player, GList *list)
         /* player is first to play */
         if (position == 0)
         {
-            card = ai_re_kommt_raus(app, player, list);
+            card = ai_re_kommt_raus(player, list);
         }
         /* player is in the middle */
         else if (position == 1)
         {
-            card = ai_re_mitte(app, player, list);
+            card = ai_re_mitte(player, list);
         }
         /* player is the last to play */
         else
         {
-            card = ai_re_hinten(app, player, list);
+            card = ai_re_hinten(player, list);
         }
     }
     /* kontra player */
@@ -64,17 +64,17 @@ card *ai_select_card(app *app, player *player, GList *list)
         /* player is first to play */
         if (position == 0)
         {
-            card = ai_kontra_kommt_raus(app, player, list);
+            card = ai_kontra_kommt_raus(player, list);
         }
         /* player is in the middle */
         else if (position == 1)
         {
-            card = ai_kontra_mitte(app, player, list);
+            card = ai_kontra_mitte(player, list);
         }
         /* player is the last to play */
         else
         {
-            card = ai_kontra_hinten(app, player, list);
+            card = ai_kontra_hinten(player, list);
         }
     }
 
@@ -90,7 +90,7 @@ card *ai_select_card(app *app, player *player, GList *list)
     return card;
 }
 
-card *kurz_fehl_ass(app *app, player *player, GList *list)
+card *kurz_fehl_ass(player *player, GList *list)
 {
     gint i, len, min = -1;
     GList *ptr = NULL;
@@ -100,9 +100,9 @@ card *kurz_fehl_ass(app *app, player *player, GList *list)
 
     for (i=0; i<4; ++i)
     {
-        if (SUITS[i] != app->trump)
+        if (SUITS[i] != gskat.trump)
         {
-            if ((ptr = get_suit_list(app, list, SUITS[i])))
+            if ((ptr = get_suit_list(list, SUITS[i])))
             {
                 card = ptr->data;
                 len = g_list_length(ptr);
@@ -124,24 +124,24 @@ card *kurz_fehl_ass(app *app, player *player, GList *list)
     return ret;
 }
 
-card *knapp_trumpfen(app *app, player *player, GList *list)
+card *knapp_trumpfen(player *player, GList *list)
 {
     GList *ptr = NULL;
-    card *ret = NULL, *card = NULL, *high = highest_on_table(app);
+    card *ret = NULL, *card = NULL, *high = highest_on_table();
 
     DPRINT(("%s: try knapp_trumpfen()\n", player->name));
 
     /* play ace if first trick of suit */
-    if (!is_trump(app, high))
+    if (!is_trump(high))
     {
-        if ((ptr = get_suit_list(app, app->played, high->suit)))
+        if ((ptr = get_suit_list(gskat.played, high->suit)))
         {
             if (g_list_length(ptr) < 2)
             {
                 card = g_list_nth_data(list, 0);
 
                 if (card->rank == ASS &&
-                        is_greater(card, high, app->trump, app->null))
+                        is_greater(card, high, gskat.trump, gskat.null))
                 {
                     g_list_free(ptr);
                     return card;
@@ -158,140 +158,140 @@ card *knapp_trumpfen(app *app, player *player, GList *list)
     {
         card = ptr->data;
 
-        if (is_greater(card, high, app->trump, app->null))
+        if (is_greater(card, high, gskat.trump, gskat.null))
             ret = card;
     }
     return ret;
 }
 
-card *ai_re_kommt_raus(app *app, player *player, GList *list)
+card *ai_re_kommt_raus(player *player, GList *list)
 {
     card *card = NULL;
 
-    if ((card = highest_fehl(app, player, list)))
+    if ((card = highest_fehl(player, list)))
         return card;
 
-    if ((card = kurz_fehl_ass(app, player, list)))
+    if ((card = kurz_fehl_ass(player, list)))
         return card;
 
-    if ((card = trumpf_spitzen(app, player, list)))
+    if ((card = trumpf_spitzen(player, list)))
         return card;
 
-    if ((card = truempfe_ziehen(app, player, list)))
+    if ((card = truempfe_ziehen(player, list)))
         return card;
 
     return card;
 }
 
-card *ai_kontra_kommt_raus(app *app, player *player, GList *list)
+card *ai_kontra_kommt_raus(player *player, GList *list)
 {
     card *card = NULL;
 
-    if ((card = highest_fehl(app, player, list)))
+    if ((card = highest_fehl(player, list)))
         return card;
 
-    if ((card = kurz_fehl_ass(app, player, list)))
+    if ((card = kurz_fehl_ass(player, list)))
         return card;
 
     /* partner sits at the end */
-    if (app->players[(player->id+1)%3]->re)
+    if (gskat.players[(player->id+1)%3]->re)
     {
-        card = kurz_aufspielen(app, player, list);
+        card = kurz_aufspielen(player, list);
     }
     /* re player sits at the end */
     else
     {
-        card = lang_aufspielen(app, player, list);
+        card = lang_aufspielen(player, list);
     }
 
     return card;
 }
 
-card *ai_re_mitte(app *app, player *player, GList *list)
+card *ai_re_mitte(player *player, GList *list)
 {
     card *card = NULL, *first = NULL, *sel = NULL;
 
     /* played card */
-    first = g_list_nth_data(app->table, 0);
+    first = g_list_nth_data(gskat.table, 0);
 
     /* first of possible cards */
     sel = g_list_nth_data(list, 0);
 
     /* do not play a 10 when the ace is not played yet */
-    if (!is_trump(app, first) &&
-            muss_bedienen(app, player) &&
-            num_of_suit(app, app->played, first->suit) == 1 &&
+    if (!is_trump(first) &&
+            muss_bedienen(player) &&
+            num_of_suit(gskat.played, first->suit) == 1 &&
             sel->rank == 10)
     {
         DPRINT(("%s: 10 skipped - ace not played yet\n", player->name));
-        card = abwerfen(app, player, list);
+        card = abwerfen(player, list);
     }
     else
     {
-        if ((card = knapp_trumpfen(app, player, list)))
+        if ((card = knapp_trumpfen(player, list)))
             return card;
         else
-            card = abwerfen(app, player, list);
+            card = abwerfen(player, list);
     }
 
     return card;
 }
 
-card *ai_kontra_mitte(app *app, player *player, GList *list)
+card *ai_kontra_mitte(player *player, GList *list)
 {
     card *tmp = NULL;
     card *card = NULL;
 
-    tmp = g_list_nth_data(app->table, 0);
+    tmp = g_list_nth_data(gskat.table, 0);
 
-    if (!app->players[tmp->owner]->re)
+    if (!gskat.players[tmp->owner]->re)
     {
-        if (kontra_stich_sicher(app, player))
-            card = ai_kontra_schmieren(app, player, list);
+        if (kontra_stich_sicher(player))
+            card = ai_kontra_schmieren(player, list);
     }
 
     if (!card)
     {
-        if ((card = knapp_trumpfen(app, player, list)))
+        if ((card = knapp_trumpfen(player, list)))
             return card;
         else
-            card = abwerfen(app, player, list);
+            card = abwerfen(player, list);
     }
 
     return card;
 }
 
-card *ai_kontra_hinten(app *app, player *player, GList *list)
+card *ai_kontra_hinten(player *player, GList *list)
 {
     card *card = NULL;
 
-    if (kontra_stich_sicher(app, player))
-        return ai_kontra_schmieren(app, player, list);
+    if (kontra_stich_sicher(player))
+        return ai_kontra_schmieren(player, list);
     /* trump only if enough points on the table */
-    else if (muss_bedienen(app, player) || punkte_auf_tisch(app) > 2)
-        card = knapp_trumpfen(app, player, list);
+    else if (muss_bedienen(player) || punkte_auf_tisch() > 2)
+        card = knapp_trumpfen(player, list);
 
     if (!card)
-        card = abwerfen(app, player, list);
+        card = abwerfen(player, list);
 
     return card;
 }
 
-card *ai_re_hinten(app *app, player *player, GList *list)
+card *ai_re_hinten(player *player, GList *list)
 {
     card *card = NULL;
 
-    if ((card = knapp_trumpfen(app, player, list)))
+    if ((card = knapp_trumpfen(player, list)))
         return card;
     else
-        card = abwerfen(app, player, list);
+        card = abwerfen(player, list);
 
     return card;
 }
 
-card *trumpf_spitzen(app *app, player *player, GList *list)
+card *trumpf_spitzen(player *player, GList *list)
 {
-    GList *trump = get_trump_list(app, list);
+    GList *trump = get_trump_list(list);
     gint spitzen = 0;
     card *card = NULL;
 
@@ -299,9 +299,9 @@ card *trumpf_spitzen(app *app, player *player, GList *list)
 
     if (trump)
     {
-        if (!app->null)
+        if (!gskat.null)
         {
-            spitzen = len_spitzen(app, player, trump, app->trump);
+            spitzen = len_spitzen(player, trump, gskat.trump);
 
             if (spitzen)
                 card = g_list_nth_data(trump, rand() % spitzen);
@@ -313,9 +313,9 @@ card *trumpf_spitzen(app *app, player *player, GList *list)
     return card;
 }
 
-card *truempfe_ziehen(app *app, player *player, GList *list)
+card *truempfe_ziehen(player *player, GList *list)
 {
-    GList *trump = get_trump_list(app, list);
+    GList *trump = get_trump_list(list);
     GList *ptr = NULL;
     card *card = NULL;
 
@@ -335,11 +335,11 @@ card *truempfe_ziehen(app *app, player *player, GList *list)
                 return card;
             }
             /* play the big trumps if nothing better out there */
-            else if (highest_rem_of_suit(app, card))
+            else if (highest_rem_of_suit(card))
             {
                 /* do not play 10 or ace if there are more jacks around */
                 if ((card->rank == 10 || card->rank == ASS) &&
-                        !jacks_weg(app, player))
+                        !jacks_weg(player))
                 {
                     card = NULL;
                     continue;
@@ -356,7 +356,7 @@ card *truempfe_ziehen(app *app, player *player, GList *list)
     return card;
 }
 
-card *kurz_aufspielen(app *app, player *player, GList *list)
+card *kurz_aufspielen(player *player, GList *list)
 {
     gint id = player->id;
     gint i, sel_suit = 0, min = -1, num = 0;
@@ -367,24 +367,24 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
 
     for (i=0; i<4; ++i)
     {
-        if (SUITS[i] != app->trump)
+        if (SUITS[i] != gskat.trump)
         {
             /* skip suit if already gestochen */
             if (player->re)
             {
-                if (hat_gestochen(app, app->players[(id+1)%3], SUITS[i]))
+                if (hat_gestochen(gskat.players[(id+1)%3], SUITS[i]))
                     continue;
-                if (hat_gestochen(app, app->players[(id+2)%3], SUITS[i]))
+                if (hat_gestochen(gskat.players[(id+2)%3], SUITS[i]))
                     continue;
             }
             else
             {
-                if (hat_gestochen(app, app->re, SUITS[i]))
+                if (hat_gestochen(gskat.re, SUITS[i]))
                     continue;
             }
 
 
-            ptr = get_suit_list(app, list, SUITS[i]);
+            ptr = get_suit_list(list, SUITS[i]);
 
             if (ptr)
             {
@@ -402,7 +402,7 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
 
     if (sel_suit)
     {
-        ptr = get_suit_list(app, list, sel_suit);
+        ptr = get_suit_list(list, sel_suit);
 
         /* TODO: implement more logic here */
         i = rand() % g_list_length(ptr);
@@ -414,7 +414,7 @@ card *kurz_aufspielen(app *app, player *player, GList *list)
     return card;
 }
 
-card *lang_aufspielen(app *app, player *player, GList *list)
+card *lang_aufspielen(player *player, GList *list)
 {
     gint i, sel_suit = 0, max = 0, num = 0;
     GList *ptr = NULL;
@@ -424,15 +424,15 @@ card *lang_aufspielen(app *app, player *player, GList *list)
 
     for (i=0; i<4; ++i)
     {
-        if (SUITS[i] != app->trump)
+        if (SUITS[i] != gskat.trump)
         {
             if (!player->re)
             {
-                if (hat_gestochen(app, app->re, SUITS[i]))
+                if (hat_gestochen(gskat.re, SUITS[i]))
                     continue;
             }
 
-            ptr = get_suit_list(app, list, SUITS[i]);
+            ptr = get_suit_list(list, SUITS[i]);
 
             if (ptr)
             {
@@ -450,7 +450,7 @@ card *lang_aufspielen(app *app, player *player, GList *list)
 
     if (sel_suit)
     {
-        ptr = get_suit_list(app, list, sel_suit);
+        ptr = get_suit_list(list, sel_suit);
 
         /* TODO: implement more logic here */
         i = rand() % g_list_length(ptr);
@@ -462,7 +462,7 @@ card *lang_aufspielen(app *app, player *player, GList *list)
     return card;
 }
 
-card *ai_kontra_schmieren(app *app, player *player, GList *list)
+card *ai_kontra_schmieren(player *player, GList *list)
 {
     gint i, max = 0;
     GList *ptr = NULL, *suit = NULL;
@@ -473,7 +473,7 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
     card = g_list_nth_data(list, 0);
 
     /* player has to play trump */
-    if (is_trump(app, card))
+    if (is_trump(card))
     {
         for (ptr = g_list_first(list); ptr; ptr = ptr->next)
         {
@@ -491,9 +491,9 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
     {
         for (i=0; i<4; ++i)
         {
-            if (SUITS[i] != app->trump)
+            if (SUITS[i] != gskat.trump)
             {
-                if ((suit = get_suit_list(app, list, SUITS[i])))
+                if ((suit = get_suit_list(list, SUITS[i])))
                 {
                     for (ptr = g_list_first(suit); ptr; ptr = ptr->next)
                     {
@@ -517,7 +517,7 @@ card *ai_kontra_schmieren(app *app, player *player, GList *list)
     return ret;
 }
 
-card *highest_fehl(app *app, player *player, GList *list)
+card *highest_fehl(player *player, GList *list)
 {
     GList *ptr = NULL;
     card *card = NULL;
@@ -525,13 +525,13 @@ card *highest_fehl(app *app, player *player, GList *list)
     DPRINT(("%s: try highest_fehl()\n", player->name));
 
     /* play only if there is no trump left */
-    if (truempfe_weg(app, player))
+    if (truempfe_weg(player))
     {
         for (ptr = g_list_first(list); ptr; ptr = ptr->next)
         {
             card = ptr->data;
 
-            if (highest_rem_of_suit(app, card))
+            if (highest_rem_of_suit(card))
                 return card;
         }
     }
@@ -539,7 +539,7 @@ card *highest_fehl(app *app, player *player, GList *list)
     return NULL;
 }
 
-card *abwerfen(app *app, player *player, GList *list)
+card *abwerfen(player *player, GList *list)
 {
     gint i, min = -1, len = 0;
     gint lengths[4];
@@ -548,7 +548,7 @@ card *abwerfen(app *app, player *player, GList *list)
 
     /* get lengths of card suits */
     for (i=0; i<4; ++i)
-        lengths[i] = num_of_suit(app, list, SUITS[i]);
+        lengths[i] = num_of_suit(list, SUITS[i]);
 
     DPRINT(("%s: try abwerfen()\n", player->name));
 
@@ -558,13 +558,13 @@ card *abwerfen(app *app, player *player, GList *list)
 
         /* skip jacks
          * TODO: not always appropriate */
-        if (!app->null)
+        if (!gskat.null)
             if (card->rank == BUBE)
                 continue;
 
         if (min == -1 || card->points < min ||
-                (card->points == min && !highest_rem_of_suit(app, card) &&
-                    (!is_trump(app, card) ||
+                (card->points == min && !highest_rem_of_suit(card) &&
+                    (!is_trump(card) ||
                      lengths[(card->suit-20)/20-1] < len)))
         {
             min = card->points;
@@ -577,14 +577,14 @@ card *abwerfen(app *app, player *player, GList *list)
 }
 
 /* TODO: we need to consider grand and null games here */
-gboolean hat_gestochen(app *app, player *player, gint suit)
+gboolean hat_gestochen(player *player, gint suit)
 {
     gint i = 0;
     gboolean found = FALSE;
     GList *ptr = NULL;
     card *card = NULL;
 
-    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.played); ptr; ptr = ptr->next)
     {
         card = ptr->data;
 
@@ -612,12 +612,12 @@ gboolean hat_gestochen(app *app, player *player, gint suit)
     return FALSE;
 }
 
-gint num_jacks_played(app *app)
+gint num_jacks_played()
 {
     gint count = 0;
     GList *ptr = NULL;
 
-    if ((ptr = get_jack_list(app->played)))
+    if ((ptr = get_jack_list(gskat.played)))
     {
         count = g_list_length(ptr);
         g_list_free(ptr);
@@ -626,9 +626,9 @@ gint num_jacks_played(app *app)
     return count;
 }
 
-gboolean jacks_weg(app *app, player *player)
+gboolean jacks_weg(player *player)
 {
-    gint count = num_jacks_played(app);
+    gint count = num_jacks_played();
     GList *ptr = NULL;
 
     if ((ptr = get_jack_list(player->cards)))
@@ -642,18 +642,18 @@ gboolean jacks_weg(app *app, player *player)
     return FALSE;
 }
 
-gint num_truempfe_played(app *app)
+gint num_truempfe_played()
 {
     gint count = 0;
     GList *ptr = NULL;
     card *card = NULL;
 
     /* iterate through played cards */
-    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.played); ptr; ptr = ptr->next)
     {
         card = ptr->data;
 
-        if (is_trump(app, card))
+        if (is_trump(card))
             ++count;
     }
 
@@ -662,20 +662,20 @@ gint num_truempfe_played(app *app)
     return count;
 }
 
-gboolean truempfe_weg(app *app, player *player)
+gboolean truempfe_weg(player *player)
 {
     gint count = 0;
     GList *ptr = NULL;
     card *card = NULL;
 
-    count += num_truempfe_played(app);
+    count += num_truempfe_played();
 
     /* iterate through player's cards */
     for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
     {
         card = ptr->data;
 
-        if (is_trump(app, card))
+        if (is_trump(card))
             ++count;
     }
 
@@ -684,23 +684,23 @@ gboolean truempfe_weg(app *app, player *player)
     return FALSE;
 }
 
-gint len_spitzen(app *app, player *player, GList *list, gint suit)
+gint len_spitzen(player *player, GList *list, gint suit)
 {
     gint len = 0;
     GList *all = NULL, *ptr = NULL, *pcards = NULL;
     card *card = NULL, *cmp = NULL;
 
     /* get player's cards */
-    if (!(pcards = get_trump_list(app, list)))
+    if (!(pcards = get_trump_list(list)))
         return 0;
 
     /* get cards not played yet */
-    if (suit == app->trump)
-        all = get_trump_list(app, app->cards);
+    if (suit == gskat.trump)
+        all = get_trump_list(gskat.cards);
     else
-        all = get_suit_list(app, app->cards, suit);
+        all = get_suit_list(gskat.cards, suit);
 
-    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.played); ptr; ptr = ptr->next)
     {
         card = ptr->data;
 
@@ -737,24 +737,24 @@ gint len_spitzen(app *app, player *player, GList *list, gint suit)
     return len;
 }
 
-gboolean muss_bedienen(app *app, player *player)
+gboolean muss_bedienen(player *player)
 {
     card *card = NULL;
 
-    if (app->table && g_list_length(app->table) > 0)
+    if (gskat.table && g_list_length(gskat.table) > 0)
     {
-        card = g_list_nth_data(app->table, 0);
+        card = g_list_nth_data(gskat.table, 0);
 
-        if (is_trump(app, card))
+        if (is_trump(card))
         {
-            if (num_of_trump(app, player->cards) > 0)
+            if (num_of_trump(player->cards) > 0)
                 return TRUE;
             else
                 return FALSE;
         }
         else
         {
-            if (num_of_suit(app, player->cards, card->suit) > 0)
+            if (num_of_suit(player->cards, card->suit) > 0)
                 return TRUE;
             else
                 return FALSE;
@@ -763,49 +763,49 @@ gboolean muss_bedienen(app *app, player *player)
     return FALSE;
 }
 
-card *highest_on_table(app *app)
+card *highest_on_table()
 {
-    gint len = (app->table) ? g_list_length(app->table) : 0;
+    gint len = (gskat.table) ? g_list_length(gskat.table) : 0;
 
-    if (app->table && len > 0)
+    if (gskat.table && len > 0)
     {
         if (len == 1)
-            return g_list_nth_data(app->table, 0);
+            return g_list_nth_data(gskat.table, 0);
         else
         {
-            if (is_greater(g_list_nth_data(app->table, 1),
-                        g_list_nth_data(app->table, 0), app->trump, app->null))
-                return g_list_nth_data(app->table, 1);
+            if (is_greater(g_list_nth_data(gskat.table, 1),
+                        g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
+                return g_list_nth_data(gskat.table, 1);
             else
-                return g_list_nth_data(app->table, 0);
+                return g_list_nth_data(gskat.table, 0);
         }
     }
 
     return NULL;
 }
 
-gboolean kommt_drueber(app *app, player *player, GList *list)
+gboolean kommt_drueber(player *player, GList *list)
 {
-    card *card = highest_on_table(app);
+    card *card = highest_on_table();
 
-    if (is_greater(g_list_nth_data(list, 0), card, app->trump, app->null))
+    if (is_greater(g_list_nth_data(list, 0), card, gskat.trump, gskat.null))
         return TRUE;
     return FALSE;
 }
 
-gboolean kontra_stich_sicher(app *app, player *player)
+gboolean kontra_stich_sicher(player *player)
 {
     card *card = NULL;
 
-    if (g_list_length(app->table) == 2)
+    if (g_list_length(gskat.table) == 2)
     {
-        if (is_greater(g_list_nth_data(app->table, 1),
-                    g_list_nth_data(app->table, 0), app->trump, app->null))
-            card = g_list_nth_data(app->table, 1);
+        if (is_greater(g_list_nth_data(gskat.table, 1),
+                    g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
+            card = g_list_nth_data(gskat.table, 1);
         else
-            card = g_list_nth_data(app->table, 0);
+            card = g_list_nth_data(gskat.table, 0);
 
-        if (app->players[card->owner]->re)
+        if (gskat.players[card->owner]->re)
             return FALSE;
         else
             return TRUE;
@@ -813,7 +813,7 @@ gboolean kontra_stich_sicher(app *app, player *player)
     /* TODO: try to check even when there is only one card on the table */
     else
     {
-        if (prob_stich_geht_durch(app, player) > 0.5)
+        if (prob_stich_geht_durch(player) > 0.5)
             return TRUE;
     }
 
@@ -821,16 +821,16 @@ gboolean kontra_stich_sicher(app *app, player *player)
 }
 
 /* TODO: substract player's cards */
-gboolean highest_rem_of_suit(app *app, card *first)
+gboolean highest_rem_of_suit(card *first)
 {
-    GList *out = cards_out(app);
+    GList *out = cards_out();
     GList *suit = NULL;
     card *high = NULL;
 
-    if (is_trump(app, first))
-        suit = get_trump_list(app, out);
+    if (is_trump(first))
+        suit = get_trump_list(out);
     else
-        suit = get_suit_list(app, out, first->suit);
+        suit = get_suit_list(out, first->suit);
 
     if (suit)
     {
@@ -848,34 +848,34 @@ gboolean highest_rem_of_suit(app *app, card *first)
         return FALSE;
 }
 
-gdouble prob_stich_geht_durch(app *app, player *player)
+gdouble prob_stich_geht_durch(player *player)
 {
     gdouble poss = 0.25;
     gint played = 0;
     gint poss_higher = 0;
 
-    card *first = g_list_nth_data(app->table, 0);
+    card *first = g_list_nth_data(gskat.table, 0);
 
-    poss_higher = num_poss_higher_cards(app, player, first);
+    poss_higher = num_poss_higher_cards(player, first);
 
     if (poss_higher == 0)
         poss = 1.0;
 
-    else if (is_trump(app, first))
-        played = num_of_trump(app, app->played);
+    else if (is_trump(first))
+        played = num_of_trump(gskat.played);
 
     else
     {
-        played = num_of_suit(app, app->played, first->suit);
+        played = num_of_suit(gskat.played, first->suit);
 
         if (played == 1 && first->rank == ASS)
             poss = 0.9;
 
-        else if (highest_rem_of_suit(app, first) &&
-                !hat_gestochen(app, app->re, first->suit))
+        else if (highest_rem_of_suit(first) &&
+                !hat_gestochen(gskat.re, first->suit))
             poss = 0.6;
 
-        else if (truempfe_weg(app, player) && hat_gestochen(app, app->re,
+        else if (truempfe_weg(player) && hat_gestochen(gskat.re,
                     first->suit))
             poss = 0.1;
 
@@ -888,10 +888,10 @@ gdouble prob_stich_geht_durch(app *app, player *player)
     return poss;
 }
 
-gint num_poss_higher_cards(app *app, player *player, card *first)
+gint num_poss_higher_cards(player *player, card *first)
 {
     gint len = 0;
-    GList *possible = cards_out(app);
+    GList *possible = cards_out();
     GList *ptr = NULL;
     card *new = NULL;
 
@@ -901,7 +901,7 @@ gint num_poss_higher_cards(app *app, player *player, card *first)
         {
             new = ptr->data;
 
-            if (is_greater(new, first, app->trump, app->null) &&
+            if (is_greater(new, first, gskat.trump, gskat.null) &&
                     new->owner != player->id)
                 ++len;
         }
@@ -912,13 +912,13 @@ gint num_poss_higher_cards(app *app, player *player, card *first)
     return len;
 }
 
-GList *cards_out(app *app)
+GList *cards_out()
 {
-    GList *ret = g_list_copy(app->cards);
+    GList *ret = g_list_copy(gskat.cards);
     GList *ptr = NULL;
     card *card = NULL;
 
-    for (ptr = g_list_first(app->played); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.played); ptr; ptr = ptr->next)
     {
         card = ptr->data;
         ret = g_list_remove(ret, card);
@@ -930,13 +930,13 @@ GList *cards_out(app *app)
     return ret;
 }
 
-gint punkte_auf_tisch(app *app)
+gint punkte_auf_tisch()
 {
     gint points = 0;
     GList *ptr = NULL;
     card *card = NULL;
 
-    for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
     {
         card = ptr->data;
 
@@ -946,12 +946,12 @@ gint punkte_auf_tisch(app *app)
     return points;
 }
 
-gint num_of_trump(app *app, GList *list)
+gint num_of_trump(GList *list)
 {
     gint num = 0;
     GList *ptr = NULL;
 
-    if ((ptr = get_trump_list(app, list)))
+    if ((ptr = get_trump_list(list)))
     {
         num = g_list_length(ptr);
         g_list_free(ptr);
@@ -959,12 +959,12 @@ gint num_of_trump(app *app, GList *list)
     return num;
 }
 
-gint num_of_suit(app *app, GList *list, gint suit)
+gint num_of_suit(GList *list, gint suit)
 {
     gint num = 0;
     GList *ptr = NULL;
 
-    if ((ptr = get_suit_list(app, list, suit)))
+    if ((ptr = get_suit_list(list, suit)))
     {
         num = g_list_length(ptr);
         g_list_free(ptr);

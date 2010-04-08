@@ -44,7 +44,7 @@ player *init_player(gint id, gchar *name, gboolean human)
     return new;
 }
 
-void load_icons(app *app)
+void load_icons()
 {
     gint i;
     gchar *suits[] = { "diamond", "heart", "spade", "club" };
@@ -54,7 +54,7 @@ void load_icons(app *app)
 
     if (filename)
     {
-        app->icons = (GdkPixbuf **) g_malloc(sizeof(GdkPixbuf *) * 4);
+        gskat.icons = (GdkPixbuf **) g_malloc(sizeof(GdkPixbuf *) * 4);
 
         for (i=0; i<4; i++)
         {
@@ -65,12 +65,12 @@ void load_icons(app *app)
             if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
             {
                 DPRINT(("OK\n"));
-                app->icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
+                gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
             }
             else
             {
                 DPRINT(("FAIL\n"));
-                app->icons[i] = NULL;
+                gskat.icons[i] = NULL;
             }
         }
 
@@ -78,33 +78,33 @@ void load_icons(app *app)
     }
 }
 
-void alloc_app(app *app)
+void alloc_app()
 {
     gint i;
 
     /* initialize players */
-    app->players = (player **) g_malloc(sizeof(player *) * 3);
+    gskat.players = (player **) g_malloc(sizeof(player *) * 3);
 
-    if (app->players)
+    if (gskat.players)
     {
         for (i=0; i<3; ++i)
-            app->players[i] = init_player(i, app->conf->player_names[i],
+            gskat.players[i] = init_player(i, gskat.conf->player_names[i],
                     i ? FALSE : TRUE);
     }
     else
         g_printerr("Could not create players.\n");
 
     /* initialize played cards */
-    app->stiche = (card ***) g_malloc(sizeof(card **) * 10);
+    gskat.stiche = (card ***) g_malloc(sizeof(card **) * 10);
 
     for (i=0; i<10; ++i)
-        app->stiche[i] = NULL;
+        gskat.stiche[i] = NULL;
 
     /* initialize suit icons */
-    load_icons(app);
+    load_icons();
 }
 
-void create_interface(app *app)
+void create_interface()
 {
     GtkWidget *window;
     GtkWidget *vboxmenu;
@@ -136,9 +136,9 @@ void create_interface(app *app)
     if (iconfile)
         g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    app->allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 10);
+    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 10);
 
-    if (app->allwidgets != NULL)
+    if (gskat.allwidgets != NULL)
     {
         window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_title(GTK_WINDOW(window), "gskat");
@@ -236,9 +236,9 @@ void create_interface(app *app)
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 20);
         gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-        lb_rank_p1_left = gtk_label_new(app->conf->player_names[0]);
-        lb_rank_p2_left = gtk_label_new(app->conf->player_names[1]);
-        lb_rank_p3_left = gtk_label_new(app->conf->player_names[2]);
+        lb_rank_p1_left = gtk_label_new(gskat.conf->player_names[0]);
+        lb_rank_p2_left = gtk_label_new(gskat.conf->player_names[1]);
+        lb_rank_p3_left = gtk_label_new(gskat.conf->player_names[2]);
 
         gtk_misc_set_alignment(GTK_MISC(lb_rank_p1_left), 1, 0.5);
         gtk_misc_set_alignment(GTK_MISC(lb_rank_p2_left), 1, 0.5);
@@ -277,34 +277,34 @@ void create_interface(app *app)
         gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, TRUE, 2);
 
         /* set game object pointers */
-        app->area = area;
+        gskat.area = area;
 
-        app->allwidgets[0] = window;
-        app->allwidgets[1] = button;
-        app->allwidgets[2] = lb_game_stich_right;
-        app->allwidgets[3] = lb_game_re_right;
-        app->allwidgets[4] = lb_game_spiel_right;
-        app->allwidgets[5] = lb_game_gereizt_right;
-        app->allwidgets[6] = lb_rank_p1_right;
-        app->allwidgets[7] = lb_rank_p2_right;
-        app->allwidgets[8] = lb_rank_p3_right;
-        app->allwidgets[9] = frame_game;
+        gskat.allwidgets[0] = window;
+        gskat.allwidgets[1] = button;
+        gskat.allwidgets[2] = lb_game_stich_right;
+        gskat.allwidgets[3] = lb_game_re_right;
+        gskat.allwidgets[4] = lb_game_spiel_right;
+        gskat.allwidgets[5] = lb_game_gereizt_right;
+        gskat.allwidgets[6] = lb_rank_p1_right;
+        gskat.allwidgets[7] = lb_rank_p2_right;
+        gskat.allwidgets[8] = lb_rank_p3_right;
+        gskat.allwidgets[9] = frame_game;
 
         /* attach signals */
         g_signal_connect(G_OBJECT(window), "destroy",
-                G_CALLBACK(quit), app);
+                G_CALLBACK(quit), &gskat);
         g_signal_connect(G_OBJECT(area), "realize",
-                G_CALLBACK(realization), app);
+                G_CALLBACK(realization), &gskat);
         g_signal_connect(G_OBJECT(area), "configure_event",
-                G_CALLBACK(configure), app);
+                G_CALLBACK(configure), &gskat);
         g_signal_connect(G_OBJECT(area), "expose_event",
-                G_CALLBACK(refresh), app);
+                G_CALLBACK(refresh), &gskat);
         g_signal_connect(G_OBJECT(button), "clicked",
-                G_CALLBACK(next_round), app);
+                G_CALLBACK(next_round), &gskat);
 
         gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK);
         g_signal_connect(G_OBJECT(area), "button_press_event",
-                G_CALLBACK(button_press), app);
+                G_CALLBACK(button_press), &gskat);
     }
 }
 
@@ -333,9 +333,9 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
     }
 }
 
-gboolean load_cards(const gchar *path, app *app)
+gboolean load_cards(const gchar *path)
 {
-    GList **list = &(app->cards);
+    GList **list = &(gskat.cards);
 
     gint suits[] = { 40, 60, 80, 100 };
     gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
@@ -373,11 +373,11 @@ gboolean load_cards(const gchar *path, app *app)
 
     /* load back of cards */
     g_sprintf(cname, "%s/back.png", path);
-    app->back = load_image(cname);
+    gskat.back = load_image(cname);
 
     /* load back of cards */
     g_sprintf(cname, "%s/bg.png", path);
-    app->bg = load_image(cname);
+    gskat.bg = load_image(cname);
 
     g_free(cname);
 
@@ -417,24 +417,24 @@ void pos_player_cards(player *player, gint x, gint y, gint step)
     }
 }
 
-void calc_card_positions(app *app)
+void calc_card_positions()
 {
     gint x, y, win_w, win_h, card_w, card_h, step;
     GList *ptr = NULL;
     card *card = NULL;
     player *player = NULL;
 
-    if ((ptr = g_list_first(app->cards)) && app->players)
+    if ((ptr = g_list_first(gskat.cards)) && gskat.players)
     {
         card = ptr->data;
         card_w = card->dim.w;
         card_h = card->dim.h;
 
-        win_w = app->area->allocation.width;
-        win_h = app->area->allocation.height;
+        win_w = gskat.area->allocation.width;
+        win_h = gskat.area->allocation.height;
 
         /* player 0 */
-        if ((player = app->players[0]))
+        if ((player = gskat.players[0]))
         {
             if (player->cards && g_list_length(player->cards) > 0)
             {
@@ -447,7 +447,7 @@ void calc_card_positions(app *app)
         }
 
         /* player 1 */
-        if ((player = app->players[1]))
+        if ((player = gskat.players[1]))
         {
             step = 10;
             y = 5;
@@ -457,7 +457,7 @@ void calc_card_positions(app *app)
         }
 
         /* player 2 */
-        if ((player = app->players[2]))
+        if ((player = gskat.players[2]))
         {
             step = -10;
             y = 5;
@@ -467,31 +467,31 @@ void calc_card_positions(app *app)
         }
 
         /* cards in skat */
-        if (app->skat && g_list_length(app->skat) > 0)
+        if (gskat.skat && g_list_length(gskat.skat) > 0)
         {
             y = win_h / 2 - card_h / 2;
             x = win_w / 2 - card_w;
             step = card_w + 5;
 
-            ptr = g_list_first(app->skat);
+            ptr = g_list_first(gskat.skat);
             card = ptr->data;
             card->dim.x = x;
             card->dim.y = y;
             x += step;
 
-            ptr = g_list_last(app->skat);
+            ptr = g_list_last(gskat.skat);
             card = ptr->data;
             card->dim.x = x;
             card->dim.y = y;
         }
 
         /* cards on the table */
-        if (app->table && g_list_length(app->table) > 0)
+        if (gskat.table && g_list_length(gskat.table) > 0)
         {
             y = win_h / 2 - card_h / 2;
             x = win_w / 2 - card_w / 2;
 
-            for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
+            for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
             {
                 card = ptr->data;
                 if (card->owner == 0)
@@ -516,7 +516,7 @@ void calc_card_positions(app *app)
 }
 
 /* draw cards from last to first */
-void draw_cards(app *app, GList *cards, cairo_t *target)
+void draw_cards(GList *cards, cairo_t *target)
 {
     card *card;
     GList *ptr;
@@ -529,7 +529,7 @@ void draw_cards(app *app, GList *cards, cairo_t *target)
         if (card && card->draw)
         {
             if (!card->draw_face)
-                img = app->back;
+                img = gskat.back;
             else
                 img = card->img;
         }
@@ -542,23 +542,23 @@ void draw_cards(app *app, GList *cards, cairo_t *target)
     }
 }
 
-void draw_player(app *app, player *player, cairo_t *cr)
+void draw_player(player *player, cairo_t *cr)
 {
     gchar *name;
     gint card_w, card_h, w, h;
     card *card = NULL;
 
     /* get screen dimensions */
-    w = app->area->allocation.width;
-    h = app->area->allocation.height;
+    w = gskat.area->allocation.width;
+    h = gskat.area->allocation.height;
 
     /* get card dimensions */
-    card = g_list_nth_data(app->cards, 0);
+    card = g_list_nth_data(gskat.cards, 0);
     card_w = card->dim.w;
     card_h = card->dim.h;
 
     /* set font color and size */
-    if (player->id == app->forehand)
+    if (player->id == gskat.forehand)
         cairo_set_source_rgb(cr, 1.0, 0.1, 0.1);
     else
         cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
@@ -571,7 +571,7 @@ void draw_player(app *app, player *player, cairo_t *cr)
     /* set name */
     name = (gchar *) g_malloc(sizeof(gchar) * strlen(player->name) + 6);
 
-    if (player == app->re)
+    if (player == gskat.re)
         g_sprintf(name, "%s (Re)", player->name);
     else
         g_sprintf(name, "%s", player->name);
@@ -590,18 +590,18 @@ void draw_player(app *app, player *player, cairo_t *cr)
     g_free(name);
 }
 
-void draw_area(app *app)
+void draw_area()
 {
     gint i;
     cairo_t *cr;
     cairo_pattern_t *pat;
     player *player;
 
-    cr = gdk_cairo_create(app->area->window);
+    cr = gdk_cairo_create(gskat.area->window);
 
-    if (app->bg)
+    if (gskat.bg)
     {
-        pat = cairo_pattern_create_for_surface(app->bg);
+        pat = cairo_pattern_create_for_surface(gskat.bg);
         cairo_pattern_set_extend (pat, CAIRO_EXTEND_REPEAT);
 
         cairo_set_source(cr, pat);
@@ -611,23 +611,23 @@ void draw_area(app *app)
         cairo_set_source_rgb(cr, 0, 0, 0);
 
     cairo_rectangle(cr, 0, 0,
-            app->area->allocation.width,
-            app->area->allocation.height);
+            gskat.area->allocation.width,
+            gskat.area->allocation.height);
     cairo_fill(cr);
 
-    if (app->skat)
-        draw_cards(app, app->skat, cr);
+    if (gskat.skat)
+        draw_cards(gskat.skat, cr);
 
-    if (app->table)
-        draw_cards(app, app->table, cr);
+    if (gskat.table)
+        draw_cards(gskat.table, cr);
 
-    if (app->players)
+    if (gskat.players)
     {
         for (i=0; i<3; ++i)
         {
-            player = app->players[i];
-            draw_cards(app, player->cards, cr);
-            draw_player(app, player, cr);
+            player = gskat.players[i];
+            draw_cards(player->cards, cr);
+            draw_player(player, cr);
         }
     }
 
@@ -636,7 +636,7 @@ void draw_area(app *app)
     cairo_destroy(cr);
 }
 
-void free_app(app *app)
+void free_app()
 {
     GList *ptr;
     gint i;
@@ -645,15 +645,15 @@ void free_app(app *app)
     /* free players */
     for (i=0; i<3; ++i)
     {
-        g_list_free(app->players[i]->cards);
-        g_free(app->players[i]);
-        app->players[i] = NULL;
+        g_list_free(gskat.players[i]->cards);
+        g_free(gskat.players[i]);
+        gskat.players[i] = NULL;
     }
-    g_free(app->players);
-    app->players = NULL;
+    g_free(gskat.players);
+    gskat.players = NULL;
 
     /* free cards */
-    for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
     {
         card = ptr->data;
         if (card && card->img)
@@ -661,55 +661,55 @@ void free_app(app *app)
         g_free(card);
         card = NULL;
     }
-    g_list_free(app->cards);
-    app->cards = NULL;
-    g_list_free(app->skat);
-    app->skat = NULL;
-    g_list_free(app->played);
-    app->played = NULL;
+    g_list_free(gskat.cards);
+    gskat.cards = NULL;
+    g_list_free(gskat.skat);
+    gskat.skat = NULL;
+    g_list_free(gskat.played);
+    gskat.played = NULL;
 
     /* free player names */
     for (i=0; i<3; ++i)
     {
-        g_free(app->conf->player_names[i]);
-        app->conf->player_names[i] = NULL;
+        g_free(gskat.conf->player_names[i]);
+        gskat.conf->player_names[i] = NULL;
     }
-    g_free(app->conf->player_names);
-    app->conf->player_names = NULL;
+    g_free(gskat.conf->player_names);
+    gskat.conf->player_names = NULL;
 
-    g_free(app->conf);
-    app->conf = NULL;
+    g_free(gskat.conf);
+    gskat.conf = NULL;
 
     /* free played stiche */
     for (i=0; i<10; ++i)
     {
-        if (app->stiche[i])
-            g_free(app->stiche[i]);
-        app->stiche[i] = NULL;
+        if (gskat.stiche[i])
+            g_free(gskat.stiche[i]);
+        gskat.stiche[i] = NULL;
     }
-    g_free(app->stiche);
-    app->stiche = NULL;
+    g_free(gskat.stiche);
+    gskat.stiche = NULL;
 
     /* free icons */
-    if (app->icons)
+    if (gskat.icons)
     {
         for (i=0; i<4; i++)
         {
-            g_object_unref(app->icons[i]);
-            app->icons[i] = NULL;
+            g_object_unref(gskat.icons[i]);
+            gskat.icons[i] = NULL;
         }
-        g_free(app->icons);
+        g_free(gskat.icons);
     }
 
     /* free remaining objects */
-    if (app->back)
-        cairo_surface_destroy(app->back);
-    app->back = NULL;
-    if (app->bg)
-        cairo_surface_destroy(app->bg);
-    app->bg = NULL;
+    if (gskat.back)
+        cairo_surface_destroy(gskat.back);
+    gskat.back = NULL;
+    if (gskat.bg)
+        cairo_surface_destroy(gskat.bg);
+    gskat.bg = NULL;
 
-    g_free(app->allwidgets);
+    g_free(gskat.allwidgets);
 
     DPRINT(("Quit gskat\n"));
 }

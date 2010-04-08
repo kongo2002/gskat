@@ -50,14 +50,14 @@ void card_to_player(player *player, card *card)
  * @param app   main application object
  * @param card  card to give into skat
  */
-void give_to_skat(app *app, card *card)
+void give_to_skat(card *card)
 {
     card->draw = TRUE;
     card->draw_face = FALSE;
     card->status = CS_DISTRIBUTED;
     card->owner = -1;
 
-    app->skat = g_list_prepend(app->skat, (gpointer) card);
+    gskat.skat = g_list_prepend(gskat.skat, (gpointer) card);
 }
 
 /**
@@ -71,25 +71,25 @@ void give_to_skat(app *app, card *card)
  *
  * @return TRUE if the card was played, else FALSE
  */
-gboolean play_card(app *app, GdkEventButton *event)
+gboolean play_card(GdkEventButton *event)
 {
-    gint num_cards = (app->table) ? g_list_length(app->table) : 0;
+    gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
     GList *ptr = NULL;
     card *card = NULL;
-    player *player = app->players[0];
+    player *player = gskat.players[0];
 
     /* check if it's the player's turn */
-    if (((app->cplayer + num_cards) % 3) == 0)
+    if (((gskat.cplayer + num_cards) % 3) == 0)
     {
         /* get card that has been clicked on */
-        if ((card = click_card(app, event, player->cards)))
+        if ((card = click_card(event, player->cards)))
         {
             /* check if card is possible */
-            ptr = get_possible_cards(app, player->cards);
+            ptr = get_possible_cards(player->cards);
             if (g_list_index(ptr, card) != -1)
             {
-                throw_card(app, card);
-                play_stich(app);
+                throw_card(card);
+                play_stich();
                 return TRUE;
             }
             else
@@ -108,27 +108,27 @@ gboolean play_card(app *app, GdkEventButton *event)
  *
  * @return TRUE when the cards could be swapped
  */
-gboolean click_skat(app *app, GdkEventButton *event)
+gboolean click_skat(GdkEventButton *event)
 {
-    player *player = app->players[0];
+    player *player = gskat.players[0];
     card *card = NULL;
 
-    if ((card = click_card(app, event, player->cards)))
+    if ((card = click_card(event, player->cards)))
     {
         /* swap clicked card with last card in skat */
-        app->skat = g_list_prepend(app->skat, (gpointer) card);
+        gskat.skat = g_list_prepend(gskat.skat, (gpointer) card);
         player->cards = g_list_remove(player->cards, (gconstpointer) card);
 
-        card = g_list_nth_data(app->skat, 2);
+        card = g_list_nth_data(gskat.skat, 2);
         player->cards = g_list_prepend(player->cards, (gpointer) card);
-        app->skat = g_list_remove(app->skat, (gconstpointer) card);
+        gskat.skat = g_list_remove(gskat.skat, (gconstpointer) card);
 
         player->cards = g_list_sort_with_data(player->cards,
-                compare_cards, app);
+                compare_cards, &gskat);
 
         /* redraw screen */
-        calc_card_positions(app);
-        draw_area(app);
+        calc_card_positions();
+        draw_area();
 
         return TRUE;
     }
@@ -146,7 +146,7 @@ gboolean click_skat(app *app, GdkEventButton *event)
  * @return pointer to the card clicked on or NULL if at the position
  * the user clicked on there is not card
  */
-card *click_card(app *app, GdkEventButton *event, GList *list)
+card *click_card(GdkEventButton *event, GList *list)
 {
     GList *ptr = NULL;
     card *card = NULL;
@@ -175,7 +175,7 @@ card *click_card(app *app, GdkEventButton *event, GList *list)
  *
  * @param app main application objects
  */
-void give_cards(app *app)
+void give_cards()
 {
     gint order[32];
     gint i, j, k;
@@ -199,19 +199,19 @@ void give_cards(app *app)
     /* give cards to players */
     for (i=0; i<3; ++i)
     {
-        player = app->players[i];
+        player = gskat.players[i];
         for (j=0; j<10; ++j)
         {
             card_to_player(player,
-                    g_list_nth_data(app->cards, order[j+(i*10)]));
+                    g_list_nth_data(gskat.cards, order[j+(i*10)]));
         }
         player->cards = g_list_sort_with_data(player->cards,
-                compare_cards, app);
+                compare_cards, &gskat);
     }
 
     /* two cards for skat */
-    give_to_skat(app, g_list_nth_data(app->cards, order[30]));
-    give_to_skat(app, g_list_nth_data(app->cards, order[31]));
+    give_to_skat(g_list_nth_data(gskat.cards, order[30]));
+    give_to_skat(g_list_nth_data(gskat.cards, order[31]));
 }
 
 /**
@@ -228,14 +228,14 @@ void give_cards(app *app)
  * @return If the user continues to provoke that value is returned.
  * Otherwise 0 is returned representing 'pass'.
  */
-gint get_provoke_response(app *app, gint value, gchar *msg, gboolean hoeren)
+gint get_provoke_response(gint value, gchar *msg, gboolean hoeren)
 {
     gint result;
     gchar caption[4];
     g_sprintf(caption, "%d", value);
 
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Reizen",
-            GTK_WINDOW(app->allwidgets[0]),
+            GTK_WINDOW(gskat.allwidgets[0]),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             (hoeren) ? "Ja" : caption, value,
             (hoeren) ? "Nein" : "Passen", 0,
@@ -288,7 +288,7 @@ gint compare_cards(gconstpointer a, gconstpointer b, gpointer data)
     card *card_b = (card *) b;
     struct _app *app = (struct _app *) data;
 
-    if (!app->null)
+    if (!gskat.null)
     {
         if (card_a->rank == BUBE && card_b->rank == BUBE)
         {
@@ -304,11 +304,11 @@ gint compare_cards(gconstpointer a, gconstpointer b, gpointer data)
     }
 
     /* change default order when trump given */
-    if (app->trump > 0)
+    if (gskat.trump > 0)
     {
-        if (card_a->suit == app->trump && card_b->suit != app->trump)
+        if (card_a->suit == gskat.trump && card_b->suit != gskat.trump)
             return -1;
-        else if (card_a->suit != app->trump && card_b->suit == app->trump)
+        else if (card_a->suit != gskat.trump && card_b->suit == gskat.trump)
             return 1;
     }
 
@@ -421,7 +421,7 @@ GList *get_jack_list(GList *list)
  * @return Returns a new GList* containing all card of the given
  * suit. If no cards could be found NULL is returned.
  */
-GList *get_suit_list(app *app, GList *list, gint suit)
+GList *get_suit_list(GList *list, gint suit)
 {
     GList *ptr = NULL, *family = NULL;
     card *card = NULL;
@@ -430,7 +430,7 @@ GList *get_suit_list(app *app, GList *list, gint suit)
     {
         card = ptr->data;
 
-        if (!app->null)
+        if (!gskat.null)
         {
             if (card->suit == suit && card->rank != BUBE)
                 family = g_list_prepend(family, (gpointer) card);
@@ -455,18 +455,18 @@ GList *get_suit_list(app *app, GList *list, gint suit)
  *
  * @return TRUE if the card is trump, otherwise FALSE
  */
-gboolean is_trump(app *app, card *card)
+gboolean is_trump(card *card)
 {
-    if (app->null)
+    if (gskat.null)
         return FALSE;
-    if (!app->trump)
+    if (!gskat.trump)
     {
         if (card->rank == BUBE)
             return TRUE;
     }
     else
     {
-        if (card->suit == app->trump || card->rank == BUBE)
+        if (card->suit == gskat.trump || card->rank == BUBE)
             return TRUE;
     }
     return FALSE;
@@ -481,20 +481,20 @@ gboolean is_trump(app *app, card *card)
  * @return Returns a new GList* of all trump cards. If no trump
  * cards could be found return NULL.
  */
-GList *get_trump_list(app *app, GList *list)
+GList *get_trump_list(GList *list)
 {
     GList *ptr = NULL, *family = NULL, *jacks = NULL;
     card *card = NULL;
 
-    if (app->null)
+    if (gskat.null)
         return NULL;
 
     jacks = get_jack_list(list);
 
-    if (!app->trump)
+    if (!gskat.trump)
         return jacks;
 
-    family = get_suit_list(app, list, app->trump);
+    family = get_suit_list(list, gskat.trump);
 
     if (jacks)
     {
@@ -520,23 +520,23 @@ GList *get_trump_list(app *app, GList *list)
  * @return Returns a new GList* with all cards that are possible
  * or allowed to play.
  */
-GList *get_possible_cards(app *app, GList *list)
+GList *get_possible_cards(GList *list)
 {
     GList *ptr = NULL;
     card *card = NULL;
 
     /* all cards are possible if there is no card on the table
      * copy the list because the returned list will be freed after usage */
-    if (app->table == NULL || g_list_length(app->table) == 0)
+    if (gskat.table == NULL || g_list_length(gskat.table) == 0)
         return g_list_copy(list);
     else
     {
-        card = g_list_nth_data(app->table, 0);
+        card = g_list_nth_data(gskat.table, 0);
 
-        if (is_trump(app, card))
-            ptr = get_trump_list(app, list);
+        if (is_trump(card))
+            ptr = get_trump_list(list);
         else
-            ptr = get_suit_list(app, list, card->suit);
+            ptr = get_suit_list(list, card->suit);
 
         if (ptr)
             return ptr;
@@ -559,7 +559,7 @@ GList *get_possible_cards(app *app, GList *list)
  *
  * @return card deck rating
  */
-gint rate_cards(app *app, player *player, GList *list)
+gint rate_cards(player *player, GList *list)
 {
     gint i, jacks = 0, rate = 0, best = 0;
     GList *ptr = NULL;
@@ -568,13 +568,13 @@ gint rate_cards(app *app, player *player, GList *list)
     best = get_best_suit(list);
 
     /* +1 if forehand */
-    if (app->forehand == player->id)
+    if (gskat.forehand == player->id)
         rate++;
 
     /* no or one card of one suit? */
     for (i=0; i<4; ++i)
     {
-        ptr = get_suit_list(app, list, SUITS[i]);
+        ptr = get_suit_list(list, SUITS[i]);
 
         if (!ptr)
             rate++;
@@ -642,7 +642,7 @@ gint get_best_suit(GList *list)
  *
  * @return 'spitzen' value
  */
-gint get_spitzen(app *app, GList *list, gint suit)
+gint get_spitzen(GList *list, gint suit)
 {
     gint i = 0, max = 0, back = 0;
     GList *ptr = NULL, *cards = NULL, *pcards = NULL;
@@ -650,11 +650,11 @@ gint get_spitzen(app *app, GList *list, gint suit)
     card *card = NULL, *cmp = NULL;
 
     /* backup trump */
-    back = app->trump;
-    app->trump = suit;
+    back = gskat.trump;
+    gskat.trump = suit;
 
-    cards = get_trump_list(app, app->cards);
-    pcards = get_trump_list(app, list);
+    cards = get_trump_list(gskat.cards);
+    pcards = get_trump_list(list);
 
     for (ptr = g_list_first(cards); ptr; ptr = ptr->next)
     {
@@ -688,7 +688,7 @@ gint get_spitzen(app *app, GList *list, gint suit)
         g_list_free(pcards);
 
     /* restore trump */
-    app->trump = back;
+    gskat.trump = back;
 
     return (max + 1);
 }
@@ -701,14 +701,14 @@ gint get_spitzen(app *app, GList *list, gint suit)
  *
  * @return maximum value to provoke
  */
-gint get_max_reizwert(app *app, GList *list)
+gint get_max_reizwert(GList *list)
 {
     gint suit = 0;
     gint max = 0;
 
     suit = get_best_suit(list);
 
-    max = get_spitzen(app, list, suit);
+    max = get_spitzen(list, suit);
 
     switch (suit)
     {
@@ -734,7 +734,7 @@ gint get_max_reizwert(app *app, GList *list)
  *
  * @return provoked value or 0 if passed
  */
-gint do_hoeren(app *app, player *player, gint value, gint sager)
+gint do_hoeren(player *player, gint value, gint sager)
 {
     gint max = 0;
     gint response = 0;
@@ -743,18 +743,18 @@ gint do_hoeren(app *app, player *player, gint value, gint sager)
     if (player->human)
     {
         msg = (gchar *) g_malloc(sizeof(gchar) *
-                (20+strlen(app->players[sager]->name)));
-        g_sprintf(msg, "%s sagt %d:", app->players[sager]->name, value);
+                (20+strlen(gskat.players[sager]->name)));
+        g_sprintf(msg, "%s sagt %d:", gskat.players[sager]->name, value);
 
-        response = get_provoke_response(app, value, msg, TRUE);
+        response = get_provoke_response(value, msg, TRUE);
 
         g_free(msg);
     }
     else
     {
-        max = get_max_reizwert(app, player->cards);
+        max = get_max_reizwert(player->cards);
 
-        if (rate_cards(app, player, player->cards) >= 7 && value <= max)
+        if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
             player->gereizt = value;
             return value;
@@ -778,7 +778,7 @@ gint do_hoeren(app *app, player *player, gint value, gint sager)
  *
  * @return provoked value
  */
-gint do_sagen(app *app, player *player, gint hoerer, gint value)
+gint do_sagen(player *player, gint hoerer, gint value)
 {
     gint response = 0;
     gint gereizt = 0;
@@ -787,7 +787,7 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
     gchar *msg;
 
     DPRINT(("Sager: %s; Hoerer: %s\n", player->name,
-                app->players[hoerer]->name));
+                gskat.players[hoerer]->name));
 
     /* pass immediately? */
     if (value != player->gereizt)
@@ -795,18 +795,18 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         if (player->human)
         {
             msg = (gchar *) g_malloc(sizeof(gchar) *
-                    (20+strlen(app->players[hoerer]->name)));
-            g_sprintf(msg, "Hoerer: %s. Sagen?", app->players[hoerer]->name);
+                    (20+strlen(gskat.players[hoerer]->name)));
+            g_sprintf(msg, "Hoerer: %s. Sagen?", gskat.players[hoerer]->name);
 
-            gereizt = get_provoke_response(app, value, msg, FALSE);
+            gereizt = get_provoke_response(value, msg, FALSE);
 
             g_free(msg);
         }
         else
         {
-            max = get_max_reizwert(app, player->cards);
+            max = get_max_reizwert(player->cards);
 
-            if (rate_cards(app, player, player->cards) >= 7 && value <= max)
+            if (rate_cards(player, player->cards) >= 7 && value <= max)
                 gereizt = value;
             else
                 gereizt = 0;
@@ -821,19 +821,19 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
         DPRINT(("%s sagt %d\n", player->name, value));
         player->gereizt = value;
 
-        response = do_hoeren(app, app->players[hoerer], value, player->id);
-        DPRINT(("%s sagt %s\n", app->players[hoerer]->name,
+        response = do_hoeren(gskat.players[hoerer], value, player->id);
+        DPRINT(("%s sagt %s\n", gskat.players[hoerer]->name,
                 (response) ? "JA" : "NEIN"));
 
         if (response)
         {
-            id = do_sagen(app, player, hoerer, next_reizwert(value));
+            id = do_sagen(player, hoerer, next_reizwert(value));
         }
         else
             return player->id;
     }
 
-    if (player->gereizt == app->players[hoerer]->gereizt)
+    if (player->gereizt == gskat.players[hoerer]->gereizt)
         return hoerer;
     return id;
 }
@@ -846,53 +846,53 @@ gint do_sagen(app *app, player *player, gint hoerer, gint value)
 void start_provoke(app *app)
 {
     gchar msg[4];
-    gint hoerer = app->forehand;
+    gint hoerer = gskat.forehand;
     gint sager = (hoerer + 1) % 3;
     gint i = 18;
 
     DPRINT(("Start of provoking\n"));
 
     /* disable button */
-    gtk_widget_set_sensitive(app->allwidgets[1], FALSE);
+    gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
 
     /* reset all player values */
     for (i=0; i<3; ++i)
     {
-        app->players[i]->gereizt = 0;
+        gskat.players[i]->gereizt = 0;
 
-        DPRINT(("MaxReizwert of %s: %d\n", app->players[i]->name,
-                    get_max_reizwert(app, app->players[i]->cards)));
-        DPRINT(("CardRating of %s: %d\n", app->players[i]->name,
-                    rate_cards(app, app->players[i], app->players[i]->cards)));
+        DPRINT(("MaxReizwert of %s: %d\n", gskat.players[i]->name,
+                    get_max_reizwert(gskat.players[i]->cards)));
+        DPRINT(("CardRating of %s: %d\n", gskat.players[i]->name,
+                    rate_cards(gskat.players[i], gskat.players[i]->cards)));
     }
 
     /* sagen */
-    sager = do_sagen(app, app->players[sager], hoerer, 18);
-    DPRINT(("%s won 1. reizen with %d\n", app->players[sager]->name,
-            app->players[sager]->gereizt));
+    sager = do_sagen(gskat.players[sager], hoerer, 18);
+    DPRINT(("%s won 1. reizen with %d\n", gskat.players[sager]->name,
+            gskat.players[sager]->gereizt));
 
-    sager = do_sagen(app, app->players[sager], (hoerer+2) % 3,
-            (app->players[sager]->gereizt) ? app->players[sager]->gereizt : 18);
+    sager = do_sagen(gskat.players[sager], (hoerer+2) % 3,
+            (gskat.players[sager]->gereizt) ? gskat.players[sager]->gereizt : 18);
 
     /* first two players have passed */
-    if (app->players[sager]->gereizt == 0)
-        do_hoeren(app, app->players[sager], 18, sager);
+    if (gskat.players[sager]->gereizt == 0)
+        do_hoeren(gskat.players[sager], 18, sager);
 
-    if (app->players[sager]->gereizt)
+    if (gskat.players[sager]->gereizt)
     {
-        DPRINT(("%s won 2. reizen with %d\n", app->players[sager]->name,
-                    app->players[sager]->gereizt));
+        DPRINT(("%s won 2. reizen with %d\n", gskat.players[sager]->name,
+                    gskat.players[sager]->gereizt));
 
-        app->re = app->players[sager];
-        app->re->re = TRUE;
+        gskat.re = gskat.players[sager];
+        gskat.re->re = TRUE;
 
         /* update interface */
-        gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
-        gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Spiel ansagen");
-        gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), app->re->name);
+        gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
+        gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]), "Spiel ansagen");
+        gtk_label_set_text(GTK_LABEL(gskat.allwidgets[3]), gskat.re->name);
 
-        g_sprintf(msg, "%d", app->re->gereizt);
-        gtk_label_set_text(GTK_LABEL(app->allwidgets[5]), msg);
+        g_sprintf(msg, "%d", gskat.re->gereizt);
+        gtk_label_set_text(GTK_LABEL(gskat.allwidgets[5]), msg);
 
         take_skat(app);
     }
@@ -900,7 +900,7 @@ void start_provoke(app *app)
     {
         DPRINT(("All players have passed -> new round.\n"));
 
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->allwidgets[0]),
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
@@ -926,17 +926,17 @@ void druecke_skat(app *app)
     gint i, best;
     GList *ptr = NULL;
     card *card = NULL;
-    player *player = app->re;
+    player *player = gskat.re;
 
     /* add skat to player's cards */
     player->cards = g_list_prepend(player->cards,
-            g_list_nth_data(app->skat, 0));
+            g_list_nth_data(gskat.skat, 0));
     player->cards = g_list_prepend(player->cards,
-            g_list_nth_data(app->skat, 1));
+            g_list_nth_data(gskat.skat, 1));
 
     /* empty skat */
-    g_list_free(app->skat);
-    app->skat = NULL;
+    g_list_free(gskat.skat);
+    gskat.skat = NULL;
 
     best = get_best_suit(player->cards);
 
@@ -946,14 +946,14 @@ void druecke_skat(app *app)
     {
         if (suits[i] != best && count < 2)
         {
-            ptr = get_suit_list(app, player->cards, suits[i]);
+            ptr = get_suit_list(player->cards, suits[i]);
 
             if (g_list_length(ptr) == 1)
             {
                 card = g_list_nth_data(ptr, 0);
                 if (card->rank != ASS)
                 {
-                    app->skat = g_list_prepend(app->skat, card);
+                    gskat.skat = g_list_prepend(gskat.skat, card);
                     player->cards = g_list_remove(player->cards, card);
                     ++count;
                 }
@@ -971,7 +971,7 @@ void druecke_skat(app *app)
         {
             if (suits[i] != best)
             {
-                ptr = get_suit_list(app, player->cards, suits[i]);
+                ptr = get_suit_list(player->cards, suits[i]);
 
                 if (g_list_length(ptr) == 2)
                 {
@@ -979,11 +979,11 @@ void druecke_skat(app *app)
                     if (card->rank == ASS)
                         continue;
 
-                    app->skat = g_list_prepend(app->skat, card);
+                    gskat.skat = g_list_prepend(gskat.skat, card);
                     player->cards = g_list_remove(player->cards, card);
 
                     card = g_list_nth_data(ptr, 1);
-                    app->skat = g_list_prepend(app->skat, card);
+                    gskat.skat = g_list_prepend(gskat.skat, card);
                     player->cards = g_list_remove(player->cards, card);
 
                     count = 2;
@@ -1006,7 +1006,7 @@ void druecke_skat(app *app)
         {
             if (suits[i] != best)
             {
-                ptr = get_suit_list(app, player->cards, suits[i]);
+                ptr = get_suit_list(player->cards, suits[i]);
 
                 len = g_list_length(ptr);
                 if (len < min && len > 0)
@@ -1035,7 +1035,7 @@ void druecke_skat(app *app)
         ptr = g_list_last(minimum);
         card = ptr->data;
 
-        app->skat = g_list_prepend(app->skat, card);
+        gskat.skat = g_list_prepend(gskat.skat, card);
         player->cards = g_list_remove(player->cards, card);
         ++count;
 
@@ -1044,8 +1044,8 @@ void druecke_skat(app *app)
     }
 
 #ifdef DEBUG
-    print_card(g_list_nth_data(app->skat, 0)); g_print("\n");
-    print_card(g_list_nth_data(app->skat, 1)); g_print("\n");
+    print_card(g_list_nth_data(gskat.skat, 0)); g_print("\n");
+    print_card(g_list_nth_data(gskat.skat, 1)); g_print("\n");
 #endif
 }
 
@@ -1060,12 +1060,12 @@ void take_skat(app *app)
     GList *ptr = NULL;
     card *card = NULL;
 
-    if (app->re->human)
+    if (gskat.re->human)
     {
         do
         {
             GtkWidget *dialog = gtk_dialog_new_with_buttons("Hand spielen?",
-                    GTK_WINDOW(app->allwidgets[0]),
+                    GTK_WINDOW(gskat.allwidgets[0]),
                     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                     "Ja", 1,
                     "Nein", 0,
@@ -1081,31 +1081,31 @@ void take_skat(app *app)
         while (result == GTK_RESPONSE_DELETE_EVENT);
 
         if (result == 1)
-            app->hand = TRUE;
+            gskat.hand = TRUE;
     }
 
-    app->state = TAKESKAT;
+    gskat.state = TAKESKAT;
 
-    for (ptr = g_list_first(app->skat); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
     {
         /* update card owner */
         card = ptr->data;
-        card->owner = app->re->id;
+        card->owner = gskat.re->id;
 
         /* show cards in skat */
-        if (app->re->human && !app->hand)
+        if (gskat.re->human && !gskat.hand)
         {
             card->draw = TRUE;
             card->draw_face = TRUE;
         }
     }
 
-    if (!app->re->human)
+    if (!gskat.re->human)
     {
         druecke_skat(app);
         spiel_ansagen(app);
 
-        app->state = PLAYING;
+        gskat.state = PLAYING;
     }
 
     /* update screen */
@@ -1127,12 +1127,12 @@ void spiel_ansagen(app *app)
     DPRINT(("Spiel ansagen.\n"));
 
     /* select game to play */
-    if (app->re->human)
+    if (gskat.re->human)
     {
         do
         {
             GtkWidget *dialog = gtk_dialog_new_with_buttons("Spiel ansagen",
-                    GTK_WINDOW(app->allwidgets[0]),
+                    GTK_WINDOW(gskat.allwidgets[0]),
                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                     "Kreuz", KREUZ,
                     "Pik", PIK,
@@ -1150,24 +1150,24 @@ void spiel_ansagen(app *app)
 
         /* set game/trump */
         if (result == 200)
-            app->trump = 0;
+            gskat.trump = 0;
         else if (result == 0)
         {
-            app->trump = -1;
-            app->null = TRUE;
+            gskat.trump = -1;
+            gskat.null = TRUE;
         }
         else
-            app->trump = result;
+            gskat.trump = result;
     }
     else
     {
         /* TODO: implement selection of special games
          * i.e. grand, null */
-        app->trump = get_best_suit(app->re->cards);
+        gskat.trump = get_best_suit(gskat.re->cards);
     }
 
     /* print game to label */
-    switch (app->trump)
+    switch (gskat.trump)
     {
         case -1:
             g_sprintf(gamename, "Null");
@@ -1189,28 +1189,28 @@ void spiel_ansagen(app *app)
             break;
     }
 
-    gtk_widget_set_sensitive(app->allwidgets[1], FALSE);
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[4]), gamename);
+    gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), gamename);
 
     /* hide skat & redraw screen */
-    for (list = g_list_first(app->skat); list; list = list->next)
+    for (list = g_list_first(gskat.skat); list; list = list->next)
     {
         card = list->data;
         card->draw = FALSE;
     }
 
     /* reorder re player's cards */
-    app->re->cards = g_list_sort_with_data(app->re->cards, compare_cards, app);
+    gskat.re->cards = g_list_sort_with_data(gskat.re->cards, compare_cards, &gskat);
 
     /* reorder player's cards if necessary */
-    if (app->re != app->players[0])
-        app->players[0]->cards = g_list_sort_with_data(app->players[0]->cards,
-                compare_cards, app);
+    if (gskat.re != gskat.players[0])
+        gskat.players[0]->cards = g_list_sort_with_data(gskat.players[0]->cards,
+                compare_cards, &gskat);
 
-    calc_card_positions(app);
-    draw_area(app);
+    calc_card_positions();
+    draw_area();
 
-    play_stich(app);
+    play_stich();
 }
 
 /**
@@ -1219,9 +1219,9 @@ void spiel_ansagen(app *app)
  * @param app   main application objects
  * @param card  card to throw on the table
  */
-void throw_card(app *app, card *card)
+void throw_card(card *card)
 {
-    player *player = app->players[card->owner];
+    player *player = gskat.players[card->owner];
 
     card->draw = TRUE;
     card->draw_face = TRUE;
@@ -1232,12 +1232,12 @@ void throw_card(app *app, card *card)
     g_print("\n");
 #endif
 
-    app->table = g_list_append(app->table, card);
-    app->played = g_list_append(app->played, card);
+    gskat.table = g_list_append(gskat.table, card);
+    gskat.played = g_list_append(gskat.played, card);
     player->cards = g_list_remove(player->cards, card);
 
-    calc_card_positions(app);
-    draw_area(app);
+    calc_card_positions();
+    draw_area();
 }
 
 /**
@@ -1246,19 +1246,19 @@ void throw_card(app *app, card *card)
  * @param app     main application objects
  * @param player  pointer to AI player
  */
-void ai_play_card(app *app, player *player)
+void ai_play_card(player *player)
 {
     GList *ptr = NULL;
     card *card = NULL;
 
-    ptr = get_possible_cards(app, player->cards);
+    ptr = get_possible_cards(player->cards);
 
     /* TODO: implement AI logic here */
-    card = ai_select_card(app, player, ptr);
+    card = ai_select_card(player, ptr);
 
     g_list_free(ptr);
 
-    throw_card(app, card);
+    throw_card(card);
 }
 
 /**
@@ -1266,7 +1266,7 @@ void ai_play_card(app *app, player *player)
  *
  * @param app main application objects
  */
-void calculate_stich(app *app)
+void calculate_stich()
 {
     gchar msg[6];
     gint i, winner;
@@ -1275,38 +1275,38 @@ void calculate_stich(app *app)
     card *crd = NULL;
 
     /* calculate winner of stich */
-    if (is_greater(g_list_nth_data(app->table, 1),
-                g_list_nth_data(app->table, 0), app->trump, app->null))
+    if (is_greater(g_list_nth_data(gskat.table, 1),
+                g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
     {
-        if (is_greater(g_list_nth_data(app->table, 2),
-                    g_list_nth_data(app->table, 1), app->trump, app->null))
+        if (is_greater(g_list_nth_data(gskat.table, 2),
+                    g_list_nth_data(gskat.table, 1), gskat.trump, gskat.null))
         {
-            crd = g_list_nth_data(app->table, 2);
+            crd = g_list_nth_data(gskat.table, 2);
             winner = crd->owner;
         }
         else
         {
-            crd = g_list_nth_data(app->table, 1);
+            crd = g_list_nth_data(gskat.table, 1);
             winner = crd->owner;
         }
     }
     else
     {
-        if (is_greater(g_list_nth_data(app->table, 2),
-                    g_list_nth_data(app->table, 0), app->trump, app->null))
+        if (is_greater(g_list_nth_data(gskat.table, 2),
+                    g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
         {
-            crd = g_list_nth_data(app->table, 2);
+            crd = g_list_nth_data(gskat.table, 2);
             winner = crd->owner;
         }
         else
         {
-            crd = g_list_nth_data(app->table, 0);
+            crd = g_list_nth_data(gskat.table, 0);
             winner = crd->owner;
         }
     }
 
     /* calculate points of stich */
-    for (ptr = g_list_first(app->table); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
     {
         crd = ptr->data;
         points += crd->points;
@@ -1314,31 +1314,31 @@ void calculate_stich(app *app)
         crd->draw = FALSE;
     }
 
-    app->players[winner]->points += points;
-    app->cplayer = winner;
+    gskat.players[winner]->points += points;
+    gskat.cplayer = winner;
 
-    DPRINT(("%s won the stich (%d).\n", app->players[winner]->name, points));
+    DPRINT(("%s won the stich (%d).\n", gskat.players[winner]->name, points));
 
     /* add played cards to 'stiche' array */
-    app->stiche[app->stich-1] = (card **) g_malloc(sizeof(card *) * 3);
+    gskat.stiche[gskat.stich-1] = (card **) g_malloc(sizeof(card *) * 3);
     for (i=0; i<3; ++i)
-        app->stiche[app->stich-1][i] = g_list_nth_data(app->table, i);
+        gskat.stiche[gskat.stich-1][i] = g_list_nth_data(gskat.table, i);
 
     /* remove cards from table */
-    g_list_free(app->table);
-    app->table = NULL;
+    g_list_free(gskat.table);
+    gskat.table = NULL;
 
-    ++app->stich;
+    ++gskat.stich;
 
     /* update interface */
-    if (app->stich <= 10)
+    if (gskat.stich <= 10)
     {
-        g_sprintf(msg, "%d", app->stich);
-        gtk_label_set_text(GTK_LABEL(app->allwidgets[2]), msg);
+        g_sprintf(msg, "%d", gskat.stich);
+        gtk_label_set_text(GTK_LABEL(gskat.allwidgets[2]), msg);
     }
 
-    calc_card_positions(app);
-    draw_area(app);
+    calc_card_positions();
+    draw_area();
 }
 
 /**
@@ -1347,19 +1347,19 @@ void calculate_stich(app *app)
  *
  * @param app main application objects
  */
-void end_round(app *app)
+void end_round()
 {
     gint rank, game;
     gchar msg[200];
     GList *list = NULL, *ptr = NULL;
     card *card = NULL;
-    player *player = app->re;
+    player *player = gskat.re;
 
-    app->round += 1;
+    gskat.round += 1;
 
-    if (!app->null)
+    if (!gskat.null)
     {
-        switch (app->trump)
+        switch (gskat.trump)
         {
             case KARO:
                 rank = 9;
@@ -1379,7 +1379,7 @@ void end_round(app *app)
         }
 
         /* get player's cards */
-        for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
+        for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
         {
             card = ptr->data;
 
@@ -1393,17 +1393,17 @@ void end_round(app *app)
         }
 
         /* add points of cards in skat */
-        for (ptr = g_list_first(app->skat); ptr; ptr = ptr->next)
+        for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
         {
             card = ptr->data;
 
             player->points += card->points;
         }
 
-        game = get_spitzen(app, list, app->trump);
+        game = get_spitzen(list, gskat.trump);
 
         /* hand game */
-        if (app->hand)
+        if (gskat.hand)
             game += 1;
 
         g_list_free(list);
@@ -1461,7 +1461,7 @@ void end_round(app *app)
 
         player->sum_points += game;
 
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->allwidgets[0]),
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
@@ -1479,17 +1479,17 @@ void end_round(app *app)
     }
 
     /* update interface */
-    g_sprintf(msg, "%d", app->players[0]->sum_points);
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[6]), msg);
-    g_sprintf(msg, "%d", app->players[1]->sum_points);
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[7]), msg);
-    g_sprintf(msg, "%d", app->players[2]->sum_points);
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[8]), msg);
+    g_sprintf(msg, "%d", gskat.players[0]->sum_points);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[6]), msg);
+    g_sprintf(msg, "%d", gskat.players[1]->sum_points);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[7]), msg);
+    g_sprintf(msg, "%d", gskat.players[2]->sum_points);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[8]), msg);
 
-    g_sprintf(msg, "Runde %d", app->round);
-    gtk_frame_set_label(GTK_FRAME(app->allwidgets[9]), msg);
+    g_sprintf(msg, "Runde %d", gskat.round);
+    gtk_frame_set_label(GTK_FRAME(gskat.allwidgets[9]), msg);
 
-    reset_game(app);
+    reset_game();
 }
 
 /**
@@ -1497,32 +1497,32 @@ void end_round(app *app)
  *
  * @param app main application objects
  */
-void play_stich(app *app)
+void play_stich()
 {
-    gint fh = (app->cplayer == -1) ? app->forehand : app->cplayer;
-    gint num_cards = (app->table) ? g_list_length(app->table) : 0;
+    gint fh = (gskat.cplayer == -1) ? gskat.forehand : gskat.cplayer;
+    gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
     gint current;
 
     current = (fh + num_cards) % 3;
 
-    if (app->stich <= 10)
+    if (gskat.stich <= 10)
     {
         if (num_cards < 3)
         {
-            if (!app->players[current]->human)
+            if (!gskat.players[current]->human)
             {
-                ai_play_card(app, app->players[current]);
-                play_stich(app);
+                ai_play_card(gskat.players[current]);
+                play_stich();
             }
         }
         else
         {
             /* wait for the user to press button */
-            app->state = READY;
+            gskat.state = READY;
         }
     }
     else
-        end_round(app);
+        end_round();
 }
 
 /**
@@ -1530,62 +1530,62 @@ void play_stich(app *app)
  *
  * @param app main application objects
  */
-void reset_game(app *app)
+void reset_game()
 {
     gint i;
     GList *ptr = NULL;
     card *card = NULL;
 
-    app->stich = 1;
-    app->re = NULL;
-    app->forehand = (app->forehand + 1) % 3;
-    app->state = ENDGAME;
-    app->cplayer = app->forehand;
-    app->trump = -1;
-    app->hand = FALSE;
+    gskat.stich = 1;
+    gskat.re = NULL;
+    gskat.forehand = (gskat.forehand + 1) % 3;
+    gskat.state = ENDGAME;
+    gskat.cplayer = gskat.forehand;
+    gskat.trump = -1;
+    gskat.hand = FALSE;
 
     /* remove cards from players if necessary */
-    if (app->players)
+    if (gskat.players)
     {
         for (i=0; i<3; ++i)
         {
-            if (app->players[i]->cards)
-                g_list_free(app->players[i]->cards);
-            app->players[i]->cards = NULL;
-            app->players[i]->re = FALSE;
-            app->players[i]->gereizt = 0;
-            app->players[i]->points = 0;
+            if (gskat.players[i]->cards)
+                g_list_free(gskat.players[i]->cards);
+            gskat.players[i]->cards = NULL;
+            gskat.players[i]->re = FALSE;
+            gskat.players[i]->gereizt = 0;
+            gskat.players[i]->points = 0;
         }
     }
 
     /* empty played stiche if necessary */
-    if (app->stiche)
+    if (gskat.stiche)
     {
         for (i=0; i<10; ++i)
         {
-            if (app->stiche[i])
-                g_free(app->stiche[i]);
-            app->stiche[i] = NULL;
+            if (gskat.stiche[i])
+                g_free(gskat.stiche[i]);
+            gskat.stiche[i] = NULL;
         }
     }
 
     /* empty played cards if necessary */
-    if (app->played)
-        g_list_free(app->played);
-    app->played = NULL;
+    if (gskat.played)
+        g_list_free(gskat.played);
+    gskat.played = NULL;
 
     /* empty skat if necessary */
-    if (app->skat)
-        g_list_free(app->skat);
-    app->skat = NULL;
+    if (gskat.skat)
+        g_list_free(gskat.skat);
+    gskat.skat = NULL;
 
     /* empty table if necessary */
-    if (app->table)
-        g_list_free(app->table);
-    app->table = NULL;
+    if (gskat.table)
+        g_list_free(gskat.table);
+    gskat.table = NULL;
 
     /* reset all cards */
-    for (ptr = g_list_first(app->cards); ptr; ptr = ptr->next)
+    for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
     {
         card = ptr->data;
 
@@ -1596,12 +1596,12 @@ void reset_game(app *app)
     }
 
     /* update interface */
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[2]), "1");
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[3]), "-");
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[4]), "-");
-    gtk_label_set_text(GTK_LABEL(app->allwidgets[5]), "-");
-    gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
-    gtk_button_set_label(GTK_BUTTON(app->allwidgets[1]), "Neue Runde");
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[2]), "1");
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[3]), "-");
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), "-");
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[5]), "-");
+    gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
+    gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]), "Neue Runde");
 }
 
 /**
@@ -1609,23 +1609,23 @@ void reset_game(app *app)
  *
  * @param app main application objects
  */
-void game_start(app *app)
+void game_start()
 {
     /* give cards */
-    app->state = GIVE_CARDS;
-    give_cards(app);
+    gskat.state = GIVE_CARDS;
+    give_cards();
 
     /* recalculate card positions */
-    calc_card_positions(app);
+    calc_card_positions();
 
     /* refresh screen */
-    draw_area(app);
+    draw_area();
 
-    app->state = WAITING;
-    app->re = NULL;
+    gskat.state = WAITING;
+    gskat.re = NULL;
 
     /* activate button */
-    gtk_widget_set_sensitive(app->allwidgets[1], TRUE);
+    gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

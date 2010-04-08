@@ -23,69 +23,69 @@
 
 #include "def.h"
 
-card *ai_select_card(app *app, player *player, GList *list);
+card *ai_select_card(player *player, GList *list);
 
-card *ai_re_kommt_raus(app *app, player *player, GList *list);
+card *ai_re_kommt_raus(player *player, GList *list);
 
-card *ai_kontra_kommt_raus(app *app, player *player, GList *list);
+card *ai_kontra_kommt_raus(player *player, GList *list);
 
-card *ai_re_mitte(app *app, player *player, GList *list);
+card *ai_re_mitte(player *player, GList *list);
 
-card *ai_kontra_mitte(app *app, player *player, GList *list);
+card *ai_kontra_mitte(player *player, GList *list);
 
-card *ai_kontra_hinten(app *app, player *player, GList *list);
+card *ai_kontra_hinten(player *player, GList *list);
 
-card *kurz_aufspielen(app *app, player *player, GList *list);
+card *kurz_aufspielen(player *player, GList *list);
 
-card *lang_aufspielen(app *app, player *player, GList *list);
+card *lang_aufspielen(player *player, GList *list);
 
-card *ai_kontra_schmieren(app *app, player *player, GList *list);
+card *ai_kontra_schmieren(player *player, GList *list);
 
-card *ai_re_hinten(app *app, player *player, GList *list);
+card *ai_re_hinten(player *player, GList *list);
 
-card *highest_fehl(app *app, player *player, GList *list);
+card *highest_fehl(player *player, GList *list);
 
-card *kurz_fehl_ass(app *app, player *player, GList *list);
+card *kurz_fehl_ass(player *player, GList *list);
 
-card *highest_on_table(app *app);
+card *highest_on_table();
 
-card *knapp_trumpfen(app *app, player *player, GList *list);
+card *knapp_trumpfen(player *player, GList *list);
 
-card *truempfe_ziehen(app *app, player *player, GList *list);
+card *truempfe_ziehen(player *player, GList *list);
 
-card *trumpf_spitzen(app *app, player *player, GList *list);
+card *trumpf_spitzen(player *player, GList *list);
 
-card *abwerfen(app *app, player *player, GList *list);
+card *abwerfen(player *player, GList *list);
 
-GList *cards_out(app *app);
+GList *cards_out();
 
-gdouble prob_stich_geht_durch(app *app, player *player);
+gdouble prob_stich_geht_durch(player *player);
 
-gint num_poss_higher_cards(app *app, player *player, card *card);
+gint num_poss_higher_cards(player *player, card *card);
 
-gint num_jacks_played(app *app);
+gint num_jacks_played();
 
-gboolean jacks_weg(app *app, player *player);
+gboolean jacks_weg(player *player);
 
-gint num_truempfe_played(app *app);
+gint num_truempfe_played();
 
-gboolean highest_rem_of_suit(app *app, card *card);
+gboolean highest_rem_of_suit(card *card);
 
-gboolean truempfe_weg(app *app, player *player);
+gboolean truempfe_weg(player *player);
 
-gboolean hat_gestochen(app *app, player *player, gint suit);
+gboolean hat_gestochen(player *player, gint suit);
 
-gboolean muss_bedienen(app *app, player *player);
+gboolean muss_bedienen(player *player);
 
-gboolean kontra_stich_sicher(app *app, player *player);
+gboolean kontra_stich_sicher(player *player);
 
-gint len_spitzen(app *app, player *player, GList *list, gint suit);
+gint len_spitzen(player *player, GList *list, gint suit);
 
-gint punkte_auf_tisch(app *app);
+gint punkte_auf_tisch();
 
-gint num_of_trump(app *app, GList *list);
+gint num_of_trump(GList *list);
 
-gint num_of_suit(app *app, GList *list, gint suit);
+gint num_of_suit(GList *list, gint suit);
 
 #endif /* __AI_H__ */
 

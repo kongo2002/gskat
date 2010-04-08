@@ -23,17 +23,17 @@
 
 #include "def.h"
 
-void load_config(app *app);
+void load_config();
 
-gboolean create_conf_dir(app *app, const gchar *home);
+gboolean create_conf_dir(const gchar *home);
 
-gboolean write_config(app *app, const gchar *filename);
+gboolean write_config(const gchar *filename);
 
-gboolean read_config(app *app, const gchar *filename);
+gboolean read_config(const gchar *filename);
 
-void alloc_config(app *app);
+void alloc_config();
 
-void set_default_config(app *app);
+void set_default_config();
 
 #endif /* __CONFIG_H__ */
 
