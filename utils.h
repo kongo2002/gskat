@@ -27,9 +27,9 @@ void swap(gint *a, gint *b);
 
 gint get_card_points(gint rank);
 
-gchar *get_card_rank(gint id, gchar *string);
+gchar *suit_name(gint id);
 
-gchar *get_card_suit(gint id, gchar *string);
+gchar *get_card_name(card *card);
 
 void print_player_cards(player *player);
 

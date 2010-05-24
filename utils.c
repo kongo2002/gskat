@@ -51,55 +51,59 @@ gint get_card_points(gint rank)
     return 0;
 }
 
-gchar *get_card_suit(gint id, gchar *string)
+gchar *suit_name(gint id)
 {
-    id -= id % 20;
+    switch (id)
+    {
+        case -1:
+            return "Null";
+        case KARO:
+            return "Karo";
+        case HERZ:
+            return "Herz";
+        case PIK:
+            return "Pik";
+        case KREUZ:
+            return "Kreuz";
+        case 0:
+            return "Grand";
+        default:
+            return "";
+    }
+}
+
+gchar *rank_name(gint id)
+{
+    static gchar name[4];
 
     switch (id)
     {
-        case 40:
-            g_sprintf(string, "diamond");
-            break;
-        case 60:
-            g_sprintf(string, "heart");
-            break;
-        case 80:
-            g_sprintf(string, "spade");
-            break;
-        case 100:
-            g_sprintf(string, "club");
-            break;
+        case 1:
+            return "Ass";
+        case 11:
+            return "Bube";
+        case 12:
+            return "Dame";
+        case 13:
+            return "König";
+        default:
+            g_snprintf(name, 4, "%d", id);
+            return name;
     }
-
-    return string;
 }
 
-gchar *get_card_rank(gint id, gchar *string)
+gchar *get_card_name(card *card)
 {
-    id = id % 20;
+    static gchar name[64];
 
-    if (id == 1)
-        g_sprintf(string, "ace");
-    else if (id == 11)
-        g_sprintf(string, "jack");
-    else if (id == 12)
-        g_sprintf(string, "queen");
-    else if (id == 13)
-        g_sprintf(string, "king");
-    else
-        g_sprintf(string, "%d", id);
+    g_snprintf(name, 64, "%s %s", suit_name(card->suit), rank_name(card->rank));
 
-    return string;
+    return name;
 }
 
 void print_card(card *card)
 {
-    gchar suit[20];
-    gchar rank[20];
-    gint id = card->rank + card->suit;
-
-    g_print("%s of %s", get_card_rank(id, rank),
-            get_card_suit(id, suit));
+    g_print("%s %s", suit_name(card->suit), rank_name(card->rank));
 }
 
 void print_player_cards(player *player)

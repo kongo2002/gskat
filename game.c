@@ -1092,7 +1092,6 @@ void take_skat()
 void spiel_ansagen()
 {
     gint result = 0;
-    gchar gamename[10];
     GList *list = NULL;
     GtkWidget *dialog = NULL;
     card *card = NULL;
@@ -1150,30 +1149,9 @@ void spiel_ansagen()
     }
 
     /* print game to label */
-    switch (gskat.trump)
-    {
-        case -1:
-            g_sprintf(gamename, "Null");
-            break;
-        case KARO:
-            g_sprintf(gamename, "Karo");
-            break;
-        case HERZ:
-            g_sprintf(gamename, "Herz");
-            break;
-        case PIK:
-            g_sprintf(gamename, "Pik");
-            break;
-        case KREUZ:
-            g_sprintf(gamename, "Kreuz");
-            break;
-        case 0:
-            g_sprintf(gamename, "Grand");
-            break;
-    }
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), suit_name(gskat.trump));
 
     gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), gamename);
 
     /* hide skat & redraw screen */
     for (list = g_list_first(gskat.skat); list; list = list->next)
@@ -1365,9 +1343,11 @@ void end_round()
                 list = g_list_prepend(list, card);
 #ifdef DEBUG
                 print_card(card);
+                g_print(", ");
 #endif
             }
         }
+        g_print("\n");
 
         /* add points of cards in skat */
         for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
