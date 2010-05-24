@@ -84,6 +84,8 @@ int main(int argc, const char *argv[])
         if (!g_option_context_parse(context, &argc, (gchar ***) &argv, &error))
         {
             g_printerr("failed to parse arguments: %s\n", error->message);
+            g_clear_error(&error);
+
             return 1;
         }
 
