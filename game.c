@@ -1094,6 +1094,7 @@ void spiel_ansagen()
     gint result = 0;
     gchar gamename[10];
     GList *list = NULL;
+    GtkWidget *dialog = NULL;
     card *card = NULL;
 
     DPRINT(("Spiel ansagen.\n"));
@@ -1103,7 +1104,7 @@ void spiel_ansagen()
     {
         do
         {
-            GtkWidget *dialog = gtk_dialog_new_with_buttons("Spiel ansagen",
+            dialog = gtk_dialog_new_with_buttons("Spiel ansagen",
                     GTK_WINDOW(gskat.allwidgets[0]),
                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                     "Kreuz", KREUZ,
@@ -1136,6 +1137,16 @@ void spiel_ansagen()
         /* TODO: implement selection of special games
          * i.e. grand, null */
         gskat.trump = get_best_suit(gskat.re->cards);
+
+        dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+                GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_INFO,
+                GTK_BUTTONS_CLOSE,
+                "%s spielt %s.", gskat.re->name, suit_name(gskat.trump));
+
+        gtk_dialog_run(GTK_DIALOG(dialog));
+
+        gtk_widget_destroy(dialog);
     }
 
     /* print game to label */
