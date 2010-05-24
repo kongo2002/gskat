@@ -29,6 +29,8 @@ gint get_card_points(gint rank);
 
 gchar *suit_name(gint id);
 
+gchar *rank_name(gint id);
+
 gchar *get_card_name(card *card);
 
 void print_player_cards(player *player);
