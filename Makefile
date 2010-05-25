@@ -1,19 +1,23 @@
+include config.mk
+
 CC=gcc
-CFLAGS=-c -O0 -Wall `pkg-config --cflags gtk+-2.0` -g -DDEBUG
-LDFLAGS=`pkg-config --libs gtk+-2.0`
-SOURCES=main.c interface.c callback.c game.c utils.c ai.c config.c
-OBJECTS=$(SOURCES:.c=.o)
-INCLUDES=
+
+SOURCES=$(wildcard *.c)
+HEADS=$(wildcard *.h)
+OBJECTS=$(foreach obj,$(SOURCES:.c=.o),$(obj))
+
 EXECUTABLE=gskat
 
-all: $(SOURCES) $(EXECUTABLE)
-
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(INCLUDES) -o $@
+all: ${EXECUTABLE}
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) $< -o $@
+	${CC} -c ${CFLAGS} ${CPPFLAGS} $< -o $@
+
+${OBJECTS}: ${HEADS}
+
+${EXECUTABLE}: ${OBJECTS}
+	${CC} ${OBJECTS} ${LDFLAGS} -o $@
 
 clean:
-	rm $(OBJECTS)
-	rm $(EXECUTABLE)
+	rm -f ${OBJECTS}
+	rm -f ${EXECUTABLE}
