@@ -76,6 +76,7 @@ enum cstatus
 {
     CS_NOTAVAILABLE, /**< card is not available */
     CS_AVAILABLE,    /**< card is available */
+    CS_MOVING,       /**< card is moving */
     CS_DISTRIBUTED   /**< card is distributed */
 };
 
@@ -109,6 +110,16 @@ typedef struct _card
     gboolean draw;        /**< draw card? */
     gboolean draw_face;   /**< draw the face of the card? */
 } card;
+
+/**
+ * @brief Structure containing card movement information
+ */
+typedef struct _card_move
+{
+    card *mcard; /**< card to move */
+    gint dest_x; /**< x coordinate destination */
+    gint dest_y; /**< y coordinate destination */
+} card_move;
 
 /**
  * @brief Structure representing a player

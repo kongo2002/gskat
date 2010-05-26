@@ -23,6 +23,8 @@
 #include "utils.h"
 #include "callback.h"
 
+#define CARD_MOVE_STEP 35
+
 player *init_player(gint id, gchar *name, gboolean human)
 {
     player *new = (player *) g_malloc(sizeof(player));
@@ -158,6 +160,7 @@ void create_interface()
         area = gtk_drawing_area_new();
         gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
         gtk_widget_set_size_request(area, 450, 500);
+        gtk_widget_set_double_buffered(area, TRUE);
 
         vbox = gtk_vbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
@@ -488,31 +491,88 @@ void calc_card_positions()
         /* cards on the table */
         if (gskat.table && g_list_length(gskat.table) > 0)
         {
-            y = win_h / 2 - card_h / 2;
-            x = win_w / 2 - card_w / 2;
-
             for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
             {
                 card = ptr->data;
-                if (card->owner == 0)
-                {
-                    card->dim.x = x;
-                    card->dim.y = y + card_h / 3;
-                }
-                else if (card->owner == 1)
-                {
-                    card->dim.x = x - card_w / 3;
-                    card->dim.y = y;
-                }
-                else if (card->owner == 2)
-                {
-                    card->dim.x = x + card_w / 3;
-                    card->dim.y = y - card_h / 3;
-                }
-            }
 
+                /* do not update card position while moving */
+                if (card->status != CS_MOVING)
+                    set_table_position(card, &card->dim.x, &card->dim.y);
+            }
         }
     }
+}
+
+void set_table_position(card *card, gint *dest_x, gint *dest_y)
+{
+    gint card_w = card->dim.w;
+    gint card_h = card->dim.h;
+    gint win_w = gskat.area->allocation.width;
+    gint win_h = gskat.area->allocation.height;
+
+    gint y = win_h / 2 - card_h / 2;
+    gint x = win_w / 2 - card_w / 2;
+
+    if (card->owner == 0)
+    {
+        *dest_x = x;
+        *dest_y = y + card_h / 3;
+    }
+    else if (card->owner == 1)
+    {
+        *dest_x = x - card_w / 3;
+        *dest_y = y;
+    }
+    else if (card->owner == 2)
+    {
+        *dest_x = x + card_w / 3;
+        *dest_y = y - card_h / 3;
+    }
+}
+
+gboolean move_card(gpointer data)
+{
+    card_move *cm = (card_move *) data;
+    card *ptr = cm->mcard;
+
+    gint step;
+    gint dx = ptr->dim.x - cm->dest_x;
+    gint dy = ptr->dim.y - cm->dest_y;
+
+    /* adjust x coordinate */
+    if (abs(dx) < CARD_MOVE_STEP)
+        ptr->dim.x = cm->dest_x;
+    else
+    {
+        step = (dx > 0) ? -CARD_MOVE_STEP : CARD_MOVE_STEP;
+        ptr->dim.x += step;
+    }
+
+
+    /* adjust y coordinate */
+    if (abs(dy) < CARD_MOVE_STEP)
+        ptr->dim.y = cm->dest_y;
+    else
+    {
+        step = (dy > 0) ? -CARD_MOVE_STEP : CARD_MOVE_STEP;
+        ptr->dim.y += step;
+    }
+
+
+    /* check for finished movement */
+    if (ptr->dim.x == cm->dest_x && ptr->dim.y == cm->dest_y)
+    {
+        ptr->status = CS_AVAILABLE;
+
+        g_free(cm);
+        cm = NULL;
+
+        return FALSE;
+    }
+
+    draw_area();
+
+    return TRUE;
 }
 
 /* draw cards from last to first */

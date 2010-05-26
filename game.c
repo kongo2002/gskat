@@ -1181,6 +1181,8 @@ void spiel_ansagen()
  */
 void throw_card(card *card)
 {
+    card_move *cm = NULL;
+
     player *player = gskat.players[card->owner];
 
     card->draw = TRUE;
@@ -1195,6 +1197,20 @@ void throw_card(card *card)
     gskat.table = g_list_append(gskat.table, card);
     gskat.played = g_list_append(gskat.played, card);
     player->cards = g_list_remove(player->cards, card);
+
+    /* initiate card movement animation */
+    card->status = CS_MOVING;
+
+    /* this will be freed in the last call of 'move_card' */
+    cm = (card_move *) g_malloc(sizeof(card_move));
+
+    if (cm)
+    {
+        cm->mcard = card;
+        set_table_position(card, &cm->dest_x, &cm->dest_y);
+
+        g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
+    }
 
     calc_card_positions();
     draw_area();

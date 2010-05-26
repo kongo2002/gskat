@@ -35,6 +35,10 @@ void pos_player_cards(player *player, gint x, gint y, gint step);
 
 void calc_card_positions();
 
+void set_table_position(card *card, gint *dest_x, gint *dest_y);
+
+gboolean move_card(gpointer data);
+
 void load_card(GList **list, const gchar *file, gint rank, gint suit);
 
 cairo_surface_t *load_image(gchar *filename);
