@@ -137,18 +137,18 @@ gboolean read_config(const gchar *filename)
 
         if (error)
         {
-            DPRINT(("Error on reading configuration file: %s\n", error->message));
+            DPRINT(("Failed to read configuration: %s\n", error->message));
 
             g_clear_error(&error);
         }
 
-        /* TODO: this has to be much more safer
+        /* TODO: this has to be much safer
          * i.e. check for error codes */
         if (done)
         {
             /* read player names */
-            gskat.conf->player_names = g_key_file_get_string_list(keyfile, "gskat",
-                    "player_names", &length, NULL);
+            gskat.conf->player_names = g_key_file_get_string_list(keyfile,
+                    "gskat", "player_names", &length, NULL);
 
             /* read other values */
             gskat.conf->gui = g_key_file_get_boolean(keyfile, "gskat",

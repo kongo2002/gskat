@@ -1198,7 +1198,7 @@ void throw_card(card *card)
     gskat.played = g_list_append(gskat.played, card);
     player->cards = g_list_remove(player->cards, card);
 
-    if (gskat.conf->animation)
+    if (gskat.conf->gui && gskat.conf->animation)
     {
         /* initiate card movement animation */
         card->status = CS_MOVING;
