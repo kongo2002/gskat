@@ -144,6 +144,8 @@ typedef struct _config
     gchar **player_names;
     /** GUI mode */
     gboolean gui;
+    /** Card animation */
+    gboolean animation;
 } config;
 
 /**

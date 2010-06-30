@@ -1198,18 +1198,21 @@ void throw_card(card *card)
     gskat.played = g_list_append(gskat.played, card);
     player->cards = g_list_remove(player->cards, card);
 
-    /* initiate card movement animation */
-    card->status = CS_MOVING;
-
-    /* this will be freed in the last call of 'move_card' */
-    cm = (card_move *) g_malloc(sizeof(card_move));
-
-    if (cm)
+    if (gskat.conf->animation)
     {
-        cm->mcard = card;
-        set_table_position(card, &cm->dest_x, &cm->dest_y);
+        /* initiate card movement animation */
+        card->status = CS_MOVING;
 
-        g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
+        /* this will be freed in the last call of 'move_card' */
+        cm = (card_move *) g_malloc(sizeof(card_move));
+
+        if (cm)
+        {
+            cm->mcard = card;
+            set_table_position(card, &cm->dest_x, &cm->dest_y);
+
+            g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
+        }
     }
 
     calc_card_positions();

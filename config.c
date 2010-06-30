@@ -49,7 +49,7 @@ void load_config()
 
         /* try to save config */
         if (create_conf_dir(home_dir))
-            write_config(home_dir);
+            write_config(filename);
     }
 
     g_free(filename);
@@ -63,6 +63,7 @@ void alloc_config()
     {
         gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
         gskat.conf->gui = TRUE;
+        gskat.conf->animation = FALSE;
     }
 }
 
@@ -82,6 +83,7 @@ gboolean write_config(const gchar *filename)
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
     GKeyFile *keys = NULL;
+    GError *err = NULL;
 
     keys = g_key_file_new();
 
@@ -90,6 +92,10 @@ gboolean write_config(const gchar *filename)
         g_key_file_set_string_list(keys, "gskat", "player_names",
                 (const gchar **) gskat.conf->player_names, 3);
 
+        g_key_file_set_boolean(keys, "gskat", "gui", gskat.conf->gui);
+        g_key_file_set_boolean(keys, "gskat", "animation",
+                gskat.conf->animation);
+
         key_file_content = g_key_file_to_data(keys, &length, NULL);
 
         g_key_file_free(keys);
@@ -97,12 +103,17 @@ gboolean write_config(const gchar *filename)
 
     if (key_file_content)
     {
-        done = g_file_set_contents(filename, key_file_content, length, NULL);
+        done = g_file_set_contents(filename, key_file_content, length, &err);
 
         if (done)
             DPRINT(("Saved configuration: %s\n", filename));
         else
+        {
             DPRINT(("Failed to save configuration: %s\n", filename));
+
+            g_printerr("%s\n", err->message);
+            g_clear_error(&err);
+        }
 
         g_free(key_file_content);
     }
@@ -131,11 +142,19 @@ gboolean read_config(const gchar *filename)
             g_clear_error(&error);
         }
 
+        /* TODO: this has to be much more safer
+         * i.e. check for error codes */
         if (done)
         {
             /* read player names */
             gskat.conf->player_names = g_key_file_get_string_list(keyfile, "gskat",
                     "player_names", &length, NULL);
+
+            /* read other values */
+            gskat.conf->gui = g_key_file_get_boolean(keyfile, "gskat",
+                    "gui", NULL);
+            gskat.conf->animation = g_key_file_get_boolean(keyfile, "gskat",
+                    "animation", NULL);
         }
 
         g_key_file_free(keyfile);
