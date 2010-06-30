@@ -111,24 +111,25 @@ static GtkWidget *create_menu()
     GtkWidget *menu;  /* main menu */
     GtkWidget *gmenu; /* game submenu */
     GtkWidget *game;
-    GtkWidget *new;
-    GtkWidget *quit;
+    GtkWidget *new_item;
+    GtkWidget *quit_item;
     GtkWidget *cmenu; /* configuration submenu */
     GtkWidget *config;
-    GtkWidget *options;
+    GtkWidget *options_item;
     GtkWidget *hmenu; /* help submenu */
     GtkWidget *help;
-    GtkWidget *about;
+    GtkWidget *about_item;
 
     menu = gtk_menu_bar_new();
 
     /* game submenu */
-    new = gtk_menu_item_new_with_label("Neues Spiel");
-    quit = gtk_menu_item_new_with_label("Beenden");
+    new_item = gtk_menu_item_new_with_label("Neues Spiel");
+    quit_item = gtk_menu_item_new_with_label("Beenden");
+    g_signal_connect(G_OBJECT(quit_item), "activate", G_CALLBACK(quit), NULL);
 
     gmenu = gtk_menu_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new);
-    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quit);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quit_item);
 
     game = gtk_menu_item_new_with_label("Spiel");
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(game), gmenu);
@@ -136,10 +137,10 @@ static GtkWidget *create_menu()
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), game);
 
     /* configuration submenu */
-    options = gtk_menu_item_new_with_label("Optionen");
+    options_item = gtk_menu_item_new_with_label("Optionen");
 
     cmenu = gtk_menu_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(cmenu), options);
+    gtk_menu_shell_append(GTK_MENU_SHELL(cmenu), options_item);
 
     config = gtk_menu_item_new_with_label("Einstellungen");
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(config), cmenu);
@@ -147,10 +148,10 @@ static GtkWidget *create_menu()
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), config);
 
     /* help submenu */
-    about = gtk_menu_item_new_with_label("Über");
+    about_item = gtk_menu_item_new_with_label("Über");
 
     hmenu = gtk_menu_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(hmenu), about);
+    gtk_menu_shell_append(GTK_MENU_SHELL(hmenu), about_item);
 
     help = gtk_menu_item_new_with_label("Hilfe");
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(help), hmenu);
