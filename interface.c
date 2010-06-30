@@ -106,10 +106,65 @@ void alloc_app()
     load_icons();
 }
 
+static GtkWidget *create_menu()
+{
+    GtkWidget *menu;  /* main menu */
+    GtkWidget *gmenu; /* game submenu */
+    GtkWidget *game;
+    GtkWidget *new;
+    GtkWidget *quit;
+    GtkWidget *cmenu; /* configuration submenu */
+    GtkWidget *config;
+    GtkWidget *options;
+    GtkWidget *hmenu; /* help submenu */
+    GtkWidget *help;
+    GtkWidget *about;
+
+    menu = gtk_menu_bar_new();
+
+    /* game submenu */
+    new = gtk_menu_item_new_with_label("Neues Spiel");
+    quit = gtk_menu_item_new_with_label("Beenden");
+
+    gmenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quit);
+
+    game = gtk_menu_item_new_with_label("Spiel");
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(game), gmenu);
+
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), game);
+
+    /* configuration submenu */
+    options = gtk_menu_item_new_with_label("Optionen");
+
+    cmenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(cmenu), options);
+
+    config = gtk_menu_item_new_with_label("Einstellungen");
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(config), cmenu);
+
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), config);
+
+    /* help submenu */
+    about = gtk_menu_item_new_with_label("Über");
+
+    hmenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(hmenu), about);
+
+    help = gtk_menu_item_new_with_label("Hilfe");
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(help), hmenu);
+
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), help);
+
+    return menu;
+}
+
 void create_interface()
 {
     GtkWidget *window;
     GtkWidget *vboxmenu;
+    GtkWidget *mainmenu;
     GtkWidget *hbox;
     GtkWidget *vbox;
     GtkWidget *area;
@@ -152,6 +207,10 @@ void create_interface()
 
         vboxmenu = gtk_vbox_new(FALSE, 0);
         gtk_container_add(GTK_CONTAINER(window), vboxmenu);
+
+        mainmenu = create_menu();
+        if (mainmenu)
+            gtk_box_pack_start(GTK_BOX(vboxmenu), mainmenu, FALSE, FALSE, 0);
 
         hbox = gtk_hbox_new(FALSE, 0);
         /* gtk_box_pack_start(child, expand, fill, padding) */
