@@ -37,7 +37,7 @@ static GOptionEntry arguments[] =
         "cli_mode", 0, 0, G_OPTION_ARG_NONE, &cli_mode,
         "disable GUI (command line only)", NULL
     },
-    { NULL }
+    { NULL, 0, 0, 0, NULL, NULL, NULL }
 };
 
 void initialize()
