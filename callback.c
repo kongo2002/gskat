@@ -64,6 +64,16 @@ void next_round(GtkButton *button, gpointer data)
 
         gskat.state = PLAYING;
     }
+    /* abort the current round via the menu bar "Game -> New Round" */
+    else
+    {
+        /* TODO: add confirmation dialog here */
+        reset_game();
+
+        gskat.state = ENDGAME;
+
+        next_round(button, data);
+    }
 }
 
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)

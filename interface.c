@@ -108,22 +108,24 @@ void alloc_app()
 
 static GtkWidget *create_menu()
 {
-    GtkWidget *menu;  /* main menu */
-    GtkWidget *gmenu; /* game submenu */
+    GtkWidget *menu;         /* main menu */
+    GtkWidget *gmenu;        /* game submenu */
     GtkWidget *game;
     GtkWidget *new_item;
     GtkWidget *quit_item;
-    GtkWidget *cmenu; /* configuration submenu */
+    GtkWidget *cmenu;        /* configuration submenu */
     GtkWidget *config;
     GtkWidget *options_item;
-    GtkWidget *hmenu; /* help submenu */
+    GtkWidget *hmenu;        /* help submenu */
     GtkWidget *help;
     GtkWidget *about_item;
 
     menu = gtk_menu_bar_new();
 
     /* game submenu */
-    new_item = gtk_menu_item_new_with_label("Neues Spiel");
+    new_item = gtk_menu_item_new_with_label("Neue Runde");
+    g_signal_connect(G_OBJECT(new_item), "activate",
+            G_CALLBACK(next_round), NULL);
     quit_item = gtk_menu_item_new_with_label("Beenden");
     g_signal_connect(G_OBJECT(quit_item), "activate", G_CALLBACK(quit), NULL);
 
