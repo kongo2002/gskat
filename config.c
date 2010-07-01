@@ -30,8 +30,13 @@ void load_config()
     if (!home_dir)
         home_dir = g_get_home_dir();
 
-    filename = g_strconcat(home_dir, "/.gskat/gskat.conf", NULL);
-    gskat.conf->filename = filename;
+    if (!gskat.conf->filename)
+    {
+        filename = g_strconcat(home_dir, "/.gskat/gskat.conf", NULL);
+        gskat.conf->filename = filename;
+    }
+    else
+        filename = gskat.conf->filename;
 
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
