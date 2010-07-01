@@ -63,7 +63,7 @@ void alloc_config()
     {
         gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
         gskat.conf->gui = TRUE;
-        gskat.conf->animation = FALSE;
+        gskat.conf->animation = TRUE;
     }
 }
 

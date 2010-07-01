@@ -26,6 +26,7 @@ app gskat;
 
 static gboolean debug = FALSE;
 static gboolean cli_mode = FALSE;
+static gboolean no_animation = FALSE;
 
 static GOptionEntry arguments[] =
 {
@@ -36,6 +37,10 @@ static GOptionEntry arguments[] =
     {
         "cli_mode", 0, 0, G_OPTION_ARG_NONE, &cli_mode,
         "disable GUI (command line only)", NULL
+    },
+    {
+        "no_animation", 0, 0, G_OPTION_ARG_NONE, &no_animation,
+        "disable card animations", NULL
     },
     { NULL, 0, 0, 0, NULL, NULL, NULL }
 };
@@ -100,6 +105,9 @@ int main(int argc, const char *argv[])
         /* toggle gui if desired */
         if (cli_mode)
             gskat.conf->gui = FALSE;
+
+        if (no_animation)
+            gskat.conf->animation = FALSE;
 
         /* initialize interface */
         create_interface();
