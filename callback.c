@@ -19,6 +19,7 @@
  */
 
 #include "def.h"
+#include "config.h"
 #include "callback.h"
 #include "utils.h"
 #include "game.h"
@@ -40,6 +41,27 @@ gboolean realization(GtkWidget *area, gpointer data)
         game_start();
 
     return FALSE;
+}
+
+gboolean close_config(GtkButton *button, gpointer data)
+{
+    GtkWidget *window = (GtkWidget *) data;
+
+    gtk_widget_destroy(window);
+
+    return TRUE;
+}
+
+gboolean save_config(GtkButton *button, gpointer data)
+{
+    GtkWidget *window = (GtkWidget *) data;
+
+    /* TODO: before saving we need to set the new values first */
+    write_config();
+
+    gtk_widget_destroy(window);
+
+    return TRUE;
 }
 
 void next_round(GtkButton *button, gpointer data)

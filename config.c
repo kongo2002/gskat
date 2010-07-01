@@ -31,13 +31,14 @@ void load_config()
         home_dir = g_get_home_dir();
 
     filename = g_strconcat(home_dir, "/.gskat/gskat.conf", NULL);
+    gskat.conf->filename = filename;
 
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
     {
         DPRINT(("Found config file '%s'\n", filename));
 
-        read_config(filename);
+        read_config();
     }
     else
     {
@@ -49,10 +50,8 @@ void load_config()
 
         /* try to save config */
         if (create_conf_dir(home_dir))
-            write_config(filename);
+            write_config();
     }
-
-    g_free(filename);
 }
 
 void alloc_config()
@@ -64,6 +63,8 @@ void alloc_config()
         gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
         gskat.conf->gui = TRUE;
         gskat.conf->animation = TRUE;
+        gskat.conf->debug = FALSE;
+        gskat.conf->filename = NULL;
     }
 }
 
@@ -77,9 +78,10 @@ void set_default_config()
     gskat.conf->player_names[2] = g_strdup("Dozo");
 }
 
-gboolean write_config(const gchar *filename)
+gboolean write_config()
 {
     gsize length;
+    gchar *filename = gskat.conf->filename;
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
     GKeyFile *keys = NULL;
@@ -95,6 +97,7 @@ gboolean write_config(const gchar *filename)
         g_key_file_set_boolean(keys, "gskat", "gui", gskat.conf->gui);
         g_key_file_set_boolean(keys, "gskat", "animation",
                 gskat.conf->animation);
+        g_key_file_set_boolean(keys, "gskat", "debug", gskat.conf->debug);
 
         key_file_content = g_key_file_to_data(keys, &length, NULL);
 
@@ -121,9 +124,10 @@ gboolean write_config(const gchar *filename)
     return done;
 }
 
-gboolean read_config(const gchar *filename)
+gboolean read_config()
 {
     gsize length;
+    gchar *filename = gskat.conf->filename;
     gboolean done = FALSE;
     GError *error = NULL;
     GKeyFile *keyfile = NULL;
@@ -155,6 +159,8 @@ gboolean read_config(const gchar *filename)
                     "gui", NULL);
             gskat.conf->animation = g_key_file_get_boolean(keyfile, "gskat",
                     "animation", NULL);
+            gskat.conf->debug = g_key_file_get_boolean(keyfile, "gskat",
+                    "debug", NULL);
         }
 
         g_key_file_free(keyfile);

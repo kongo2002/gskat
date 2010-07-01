@@ -27,9 +27,9 @@ void load_config();
 
 gboolean create_conf_dir(const gchar *home);
 
-gboolean write_config(const gchar *filename);
+gboolean write_config();
 
-gboolean read_config(const gchar *filename);
+gboolean read_config();
 
 void alloc_config();
 

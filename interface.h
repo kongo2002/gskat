@@ -29,6 +29,8 @@ void load_icons();
 
 void alloc_app();
 
+void show_config_window();
+
 void create_interface();
 
 void pos_player_cards(player *player, gint x, gint y, gint step);

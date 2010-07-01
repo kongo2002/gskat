@@ -88,7 +88,7 @@ int main(int argc, const char *argv[])
 
         if (!g_option_context_parse(context, &argc, (gchar ***) &argv, &error))
         {
-            g_printerr("failed to parse arguments: %s\n", error->message);
+            g_printerr("Failed to parse arguments: %s\n", error->message);
             g_clear_error(&error);
 
             return 1;
@@ -106,6 +106,7 @@ int main(int argc, const char *argv[])
         if (cli_mode)
             gskat.conf->gui = FALSE;
 
+        /* disable card animation if desired */
         if (no_animation)
             gskat.conf->animation = FALSE;
 

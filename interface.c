@@ -106,6 +106,116 @@ void alloc_app()
     load_icons();
 }
 
+void show_config_window()
+{
+    gint i;
+    GtkWidget *window;
+    GtkWidget *vbox;
+    GtkWidget *notebook;
+    GtkWidget *names_label;
+    GtkWidget *names_table;
+    GtkWidget *player_label[3];
+    GtkWidget *player_entry[3];
+    GtkWidget *misc_label;
+    GtkWidget *misc_table;
+    GtkWidget *animation_label;
+    GtkWidget *animation_check;
+    GtkWidget *debug_label;
+    GtkWidget *debug_check;
+    GtkWidget *hbox_buttons;
+    GtkWidget *ok_button;
+    GtkWidget *cancel_button;
+
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Einstellungen");
+    gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+    gtk_widget_set_size_request(window, 300, 200);
+
+    vbox = gtk_vbox_new(FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+
+    notebook = gtk_notebook_new();
+    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_LEFT);
+    gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
+
+    /* set up player names table */
+    names_label = gtk_label_new("Spieler-Namen");
+    names_table = gtk_table_new(3, 2, TRUE);
+
+    player_label[0] = gtk_label_new("Spieler-Name:");
+    player_label[1] = gtk_label_new("Spieler 1:");
+    player_label[2] = gtk_label_new("Spieler 2:");
+
+    gtk_table_attach_defaults(GTK_TABLE(names_table),
+            player_label[0],
+            0, 1, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(names_table),
+            player_label[1],
+            0, 1, 1, 2);
+    gtk_table_attach_defaults(GTK_TABLE(names_table),
+            player_label[2],
+            0, 1, 2, 3);
+
+    for (i=0; i<3; ++i)
+    {
+        player_entry[i] = gtk_entry_new();
+
+        gtk_entry_set_text(GTK_ENTRY(player_entry[i]),
+                gskat.conf->player_names[i]);
+
+        gtk_table_attach_defaults(GTK_TABLE(names_table),
+                player_entry[i],
+                1, 2, i, i+1);
+    }
+
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), names_table, names_label);
+
+    /* set up misc table */
+    misc_label = gtk_label_new("Sonstiges");
+    misc_table = gtk_table_new(3, 2, FALSE);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
+
+    animation_label = gtk_label_new("Animiere Kartenbewegung:");
+    gtk_table_attach(GTK_TABLE(misc_table),
+            animation_label,
+            0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    animation_check = gtk_check_button_new();
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_check),
+            gskat.conf->animation);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            animation_check,
+            1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    debug_label = gtk_label_new("Debug Meldungen:");
+    gtk_table_attach(GTK_TABLE(misc_table),
+            debug_label,
+            0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    debug_check = gtk_check_button_new();
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
+            gskat.conf->debug);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            debug_check,
+            1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    /* add bottom buttons */
+    hbox_buttons = gtk_hbox_new(TRUE, 10);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, FALSE, 0);
+
+    ok_button = gtk_button_new_from_stock(GTK_STOCK_APPLY);
+    g_signal_connect(G_OBJECT(ok_button), "clicked",
+            G_CALLBACK(save_config), (gpointer) window);
+    gtk_box_pack_start(GTK_BOX(hbox_buttons), ok_button, FALSE, FALSE, 0);
+
+    cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+    g_signal_connect(G_OBJECT(cancel_button), "clicked",
+            G_CALLBACK(close_config), (gpointer) window);
+    gtk_box_pack_start(GTK_BOX(hbox_buttons), cancel_button, FALSE, FALSE, 0);
+
+    gtk_widget_show_all(window);
+}
+
 static GtkWidget *create_menu()
 {
     GtkWidget *menu;         /* main menu */
@@ -140,6 +250,8 @@ static GtkWidget *create_menu()
 
     /* configuration submenu */
     options_item = gtk_menu_item_new_with_label("Optionen");
+    g_signal_connect(G_OBJECT(options_item), "activate",
+            G_CALLBACK(show_config_window), NULL);
 
     cmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(cmenu), options_item);
