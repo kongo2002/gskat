@@ -179,6 +179,8 @@ typedef struct _app
     GtkWidget *area;
     /** Array of all gtk widgets used */
     GtkWidget **allwidgets;
+    /** Array of configuration widgets */
+    GtkWidget **confwidgets;
     /** Current game state */
     enum gstate state;
     /** Current re player */

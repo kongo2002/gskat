@@ -220,6 +220,16 @@ void show_config_window()
             G_CALLBACK(close_config), (gpointer) window);
     gtk_box_pack_start(GTK_BOX(hbox_buttons), cancel_button, FALSE, FALSE, 0);
 
+    /* allocate configuration widgets
+     * this array is freed in either 'save_config' or 'close_config' */
+    gskat.confwidgets = (GtkWidget **) g_malloc(5 * sizeof(GtkWidget *));
+
+    gskat.confwidgets[0] = player_entry[0];
+    gskat.confwidgets[1] = player_entry[1];
+    gskat.confwidgets[2] = player_entry[2];
+    gskat.confwidgets[3] = animation_check;
+    gskat.confwidgets[4] = debug_check;
+
     gtk_widget_show_all(window);
 }
 

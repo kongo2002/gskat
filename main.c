@@ -47,27 +47,28 @@ static GOptionEntry arguments[] =
 
 void initialize()
 {
-    gskat.cards      = NULL;
-    gskat.skat       = NULL;
-    gskat.table      = NULL;
-    gskat.players    = NULL;
-    gskat.stiche     = NULL;
-    gskat.players    = NULL;
-    gskat.icons      = NULL;
-    gskat.back       = NULL;
-    gskat.bg         = NULL;
-    gskat.area       = NULL;
-    gskat.allwidgets = NULL;
-    gskat.state      = LOADING;
-    gskat.re         = NULL;
-    gskat.forehand   = 2;
-    gskat.cplayer    = -1;
-    gskat.trump      = -1;
-    gskat.round      = 1;
-    gskat.stich      = 1;
-    gskat.hand       = FALSE;
-    gskat.null       = FALSE;
-    gskat.conf       = NULL;
+    gskat.cards       = NULL;
+    gskat.skat        = NULL;
+    gskat.table       = NULL;
+    gskat.players     = NULL;
+    gskat.stiche      = NULL;
+    gskat.players     = NULL;
+    gskat.icons       = NULL;
+    gskat.back        = NULL;
+    gskat.bg          = NULL;
+    gskat.area        = NULL;
+    gskat.allwidgets  = NULL;
+    gskat.confwidgets = NULL;
+    gskat.state       = LOADING;
+    gskat.re          = NULL;
+    gskat.forehand    = 2;
+    gskat.cplayer     = -1;
+    gskat.trump       = -1;
+    gskat.round       = 1;
+    gskat.stich       = 1;
+    gskat.hand        = FALSE;
+    gskat.null        = FALSE;
+    gskat.conf        = NULL;
 }
 
 int main(int argc, const char *argv[])

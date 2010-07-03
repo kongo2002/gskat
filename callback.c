@@ -47,6 +47,9 @@ gboolean close_config(GtkButton *button, gpointer data)
 {
     GtkWidget *window = (GtkWidget *) data;
 
+    g_free(gskat.confwidgets);
+    gskat.confwidgets = NULL;
+
     gtk_widget_destroy(window);
 
     return TRUE;
@@ -54,10 +57,32 @@ gboolean close_config(GtkButton *button, gpointer data)
 
 gboolean save_config(GtkButton *button, gpointer data)
 {
+    gint i;
+    const gchar *cptr = NULL;
     GtkWidget *window = (GtkWidget *) data;
 
-    /* TODO: before saving we need to set the new values first */
+    /* change player names if differing */
+    for (i=0; i<3; ++i)
+    {
+        cptr = gtk_entry_get_text(GTK_ENTRY(gskat.confwidgets[i]));
+
+        if (strcmp(gskat.conf->player_names[i], cptr))
+        {
+            g_free(gskat.conf->player_names[i]);
+            gskat.conf->player_names[i] = g_strdup(cptr);
+        }
+    }
+
+    gskat.conf->animation = gtk_toggle_button_get_active(
+            GTK_TOGGLE_BUTTON(gskat.confwidgets[3]));
+
+    gskat.conf->debug = gtk_toggle_button_get_active(
+            GTK_TOGGLE_BUTTON(gskat.confwidgets[4]));
+
     write_config();
+
+    g_free(gskat.confwidgets);
+    gskat.confwidgets = NULL;
 
     gtk_widget_destroy(window);
 

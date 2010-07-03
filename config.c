@@ -147,25 +147,51 @@ gboolean read_config()
         if (error)
         {
             DPRINT(("Failed to read configuration: %s\n", error->message));
-
             g_clear_error(&error);
         }
 
-        /* TODO: this has to be much safer
-         * i.e. check for error codes */
+        /* TODO: this needs to be refactored/modularized */
         if (done)
         {
             /* read player names */
             gskat.conf->player_names = g_key_file_get_string_list(keyfile,
-                    "gskat", "player_names", &length, NULL);
+                    "gskat", "player_names", &length, &error);
+
+            if (error)
+            {
+                DPRINT(("Failed to read player names.\n"));
+                g_clear_error(&error);
+            }
 
             /* read other values */
             gskat.conf->gui = g_key_file_get_boolean(keyfile, "gskat",
-                    "gui", NULL);
+                    "gui", &error);
+
+            if (error)
+            {
+                DPRINT(("Failed to read 'gui' value from config file.\n"));
+                g_clear_error(&error);
+            }
+
             gskat.conf->animation = g_key_file_get_boolean(keyfile, "gskat",
                     "animation", NULL);
+
+            if (error)
+            {
+                DPRINT(("Failed to read 'animation' value from config \
+                            file.\n"));
+                g_clear_error(&error);
+            }
+
             gskat.conf->debug = g_key_file_get_boolean(keyfile, "gskat",
                     "debug", NULL);
+
+            if (error)
+            {
+                DPRINT(("Failed to read 'debug' value from config file.\n"));
+                g_clear_error(&error);
+            }
+
         }
 
         g_key_file_free(keyfile);
