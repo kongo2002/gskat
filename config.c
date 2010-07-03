@@ -174,7 +174,7 @@ gboolean read_config()
             }
 
             gskat.conf->animation = g_key_file_get_boolean(keyfile, "gskat",
-                    "animation", NULL);
+                    "animation", &error);
 
             if (error)
             {
@@ -184,7 +184,7 @@ gboolean read_config()
             }
 
             gskat.conf->debug = g_key_file_get_boolean(keyfile, "gskat",
-                    "debug", NULL);
+                    "debug", &error);
 
             if (error)
             {
