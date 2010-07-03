@@ -199,6 +199,13 @@ void show_config_window()
             debug_check,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
+#ifdef DEBUG
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check), TRUE);
+
+    gtk_widget_set_sensitive(debug_label, FALSE);
+    gtk_widget_set_sensitive(debug_check, FALSE);
+#endif
+
     /* add bottom buttons */
     hbox_buttons = gtk_hbox_new(TRUE, 10);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, FALSE, 0);
