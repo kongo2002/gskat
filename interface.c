@@ -920,13 +920,11 @@ void free_app()
     gskat.played = NULL;
 
     /* free player names */
-    for (i=0; i<3; ++i)
-    {
-        g_free(gskat.conf->player_names[i]);
-        gskat.conf->player_names[i] = NULL;
-    }
-    g_free(gskat.conf->player_names);
+    g_strfreev(gskat.conf->player_names);
     gskat.conf->player_names = NULL;
+
+    g_free(gskat.conf->filename);
+    gskat.conf->filename = NULL;
 
     g_free(gskat.conf);
     gskat.conf = NULL;

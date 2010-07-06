@@ -65,7 +65,7 @@ void alloc_config()
 
     if (gskat.conf)
     {
-        gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
+        gskat.conf->player_names = NULL;
         gskat.conf->gui = TRUE;
         gskat.conf->animation = TRUE;
         gskat.conf->debug = FALSE;
@@ -77,6 +77,8 @@ void set_default_config()
 {
     /* set player names */
     const gchar *user_name = g_getenv("USER");
+
+    gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
 
     gskat.conf->player_names[0] = g_strdup(user_name ? user_name : "Player");
     gskat.conf->player_names[1] = g_strdup("Cuyo");

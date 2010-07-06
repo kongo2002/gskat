@@ -88,10 +88,16 @@ gboolean play_card(GdkEventButton *event)
             {
                 throw_card(card);
                 play_stich();
+
+                g_list_free(ptr);
+
                 return TRUE;
             }
             else
                 DPRINT(("Card is not possible.\n"));
+
+            if (ptr)
+                g_list_free(ptr);
         }
     }
 
@@ -936,6 +942,7 @@ void druecke_skat()
             }
 
             g_list_free(ptr);
+            ptr = NULL;
         }
     }
 
@@ -947,6 +954,12 @@ void druecke_skat()
         {
             if (suits[i] != best)
             {
+                if (ptr)
+                {
+                    g_list_free(ptr);
+                    ptr = NULL;
+                }
+
                 ptr = get_suit_list(player->cards, suits[i]);
 
                 if (g_list_length(ptr) == 2)
@@ -965,9 +978,13 @@ void druecke_skat()
                     count = 2;
                     break;
                 }
-
-                g_list_free(ptr);
             }
+        }
+
+        if (ptr)
+        {
+            g_list_free(ptr);
+            ptr = NULL;
         }
     }
 
