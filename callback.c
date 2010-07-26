@@ -156,6 +156,24 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     return found;
 }
 
+gboolean animation_toggle(GtkWidget *tbutton, gpointer data)
+{
+    GtkWidget *label = (GtkWidget *) data;
+
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tbutton)))
+    {
+        gtk_widget_set_sensitive(gskat.confwidgets[4], TRUE);
+        gtk_widget_set_sensitive(label, TRUE);
+    }
+    else
+    {
+        gtk_widget_set_sensitive(gskat.confwidgets[4], FALSE);
+        gtk_widget_set_sensitive(label, FALSE);
+    }
+
+    return TRUE;
+}
+
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     if (gskat.area && gskat.area->window)

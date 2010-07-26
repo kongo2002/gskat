@@ -194,6 +194,7 @@ void show_config_window()
     /* animation duration */
     animation_dur_label = gtk_label_new("Animationsdauer:");
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
+    gtk_widget_set_sensitive(animation_dur_label, gskat.conf->animation);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_dur_label,
             0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
@@ -202,9 +203,13 @@ void show_config_window()
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
             gskat.conf->anim_duration);
+    gtk_widget_set_sensitive(animation_duration, gskat.conf->animation);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    g_signal_connect(G_OBJECT(animation_check), "toggled",
+            G_CALLBACK(animation_toggle), animation_dur_label);
 
     /* debugging */
     debug_label = gtk_label_new("Debug Meldungen:");
