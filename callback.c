@@ -156,15 +156,13 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     return found;
 }
 
-gboolean animation_toggle(GtkWidget *tbutton, gpointer data)
+void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 {
     GtkWidget *label = (GtkWidget *) data;
-    gboolean active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tbutton));
+    gboolean active = gtk_toggle_button_get_active(tbutton);
 
     gtk_widget_set_sensitive(gskat.confwidgets[4], active);
     gtk_widget_set_sensitive(label, active);
-
-    return TRUE;
 }
 
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
