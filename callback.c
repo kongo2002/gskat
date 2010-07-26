@@ -159,17 +159,10 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 gboolean animation_toggle(GtkWidget *tbutton, gpointer data)
 {
     GtkWidget *label = (GtkWidget *) data;
+    gboolean active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tbutton));
 
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tbutton)))
-    {
-        gtk_widget_set_sensitive(gskat.confwidgets[4], TRUE);
-        gtk_widget_set_sensitive(label, TRUE);
-    }
-    else
-    {
-        gtk_widget_set_sensitive(gskat.confwidgets[4], FALSE);
-        gtk_widget_set_sensitive(label, FALSE);
-    }
+    gtk_widget_set_sensitive(gskat.confwidgets[4], active);
+    gtk_widget_set_sensitive(label, active);
 
     return TRUE;
 }
