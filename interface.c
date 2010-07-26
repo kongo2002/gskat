@@ -120,6 +120,8 @@ void show_config_window()
     GtkWidget *misc_table;
     GtkWidget *animation_label;
     GtkWidget *animation_check;
+    GtkWidget *animation_dur_label;
+    GtkWidget *animation_duration;
     GtkWidget *debug_label;
     GtkWidget *debug_check;
     GtkWidget *hbox_buttons;
@@ -158,6 +160,8 @@ void show_config_window()
 
     for (i=0; i<3; ++i)
     {
+        gtk_misc_set_alignment(GTK_MISC(player_label[i]), 0, 0.5);
+
         player_entry[i] = gtk_entry_new();
 
         gtk_entry_set_text(GTK_ENTRY(player_entry[i]),
@@ -176,6 +180,7 @@ void show_config_window()
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
 
     animation_label = gtk_label_new("Animiere Kartenbewegung:");
+    gtk_misc_set_alignment(GTK_MISC(animation_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_label,
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
@@ -187,17 +192,32 @@ void show_config_window()
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
+    animation_dur_label = gtk_label_new("Animationsdauer:");
+    gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            animation_dur_label,
+            0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    animation_duration = gtk_spin_button_new_with_range(0, 5000, 10);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
+            gskat.conf->anim_duration);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            animation_duration,
+            1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
     debug_label = gtk_label_new("Debug Meldungen:");
+    gtk_misc_set_alignment(GTK_MISC(debug_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_label,
-            0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+            0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
             gskat.conf->debug);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
-            1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
+            1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
 #ifdef DEBUG
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check), TRUE);
@@ -222,13 +242,14 @@ void show_config_window()
 
     /* allocate configuration widgets
      * this array is freed in either 'save_config' or 'close_config' */
-    gskat.confwidgets = (GtkWidget **) g_malloc(5 * sizeof(GtkWidget *));
+    gskat.confwidgets = (GtkWidget **) g_malloc(6 * sizeof(GtkWidget *));
 
     gskat.confwidgets[0] = player_entry[0];
     gskat.confwidgets[1] = player_entry[1];
     gskat.confwidgets[2] = player_entry[2];
     gskat.confwidgets[3] = animation_check;
-    gskat.confwidgets[4] = debug_check;
+    gskat.confwidgets[4] = animation_duration;
+    gskat.confwidgets[5] = debug_check;
 
     gtk_widget_show_all(window);
 }

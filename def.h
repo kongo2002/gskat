@@ -146,6 +146,8 @@ typedef struct _config
     gboolean gui;
     /** Card animation */
     gboolean animation;
+    /** Card animation duration */
+    gint anim_duration;
     /** Print debug statements */
     gboolean debug;
     /** Filename of the configuration file */

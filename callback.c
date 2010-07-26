@@ -76,8 +76,11 @@ gboolean save_config(GtkButton *button, gpointer data)
     gskat.conf->animation = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[3]));
 
+    gskat.conf->anim_duration = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(gskat.confwidgets[4]));
+
     gskat.conf->debug = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[4]));
+            GTK_TOGGLE_BUTTON(gskat.confwidgets[5]));
 
     write_config();
 
