@@ -196,7 +196,7 @@ void show_config_window()
             animation_dur_label,
             0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
-    animation_duration = gtk_spin_button_new_with_range(0, 5000, 10);
+    animation_duration = gtk_spin_button_new_with_range(25, 5000, 10);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
             gskat.conf->anim_duration);
@@ -753,10 +753,11 @@ void set_card_move_step(card_move *cm)
 {
     card *ptr = cm->mcard;
 
-    gint dx = ptr->dim.x - cm->dest_x;
-    gint dy = ptr->dim.y - cm->dest_y;
+    gint dx = abs(ptr->dim.x - cm->dest_x);
+    gint dy = abs(ptr->dim.y - cm->dest_y);
+    gint diff_max = (dx < dy) ? dx : dy;
 
-    cm->move = ((abs(dx) + abs(dy)) / 2) / (gskat.conf->anim_duration / 25);
+    cm->move = diff_max / ((gdouble) gskat.conf->anim_duration / 25);
 }
 
 gboolean move_card(gpointer data)
@@ -778,7 +779,6 @@ gboolean move_card(gpointer data)
         ptr->dim.x += step;
     }
 
-
     /* adjust y coordinate */
     if (abs(dy) < move)
         ptr->dim.y = cm->dest_y;
@@ -788,11 +788,11 @@ gboolean move_card(gpointer data)
         ptr->dim.y += step;
     }
 
-
     /* check for finished movement */
     if (ptr->dim.x == cm->dest_x && ptr->dim.y == cm->dest_y)
     {
         ptr->status = CS_AVAILABLE;
+        draw_area();
 
         g_free(cm);
         cm = NULL;
