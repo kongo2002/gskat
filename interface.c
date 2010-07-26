@@ -146,25 +146,16 @@ void show_config_window()
     player_label[1] = gtk_label_new("Spieler 1:");
     player_label[2] = gtk_label_new("Spieler 2:");
 
-    gtk_table_attach_defaults(GTK_TABLE(names_table),
-            player_label[0],
-            0, 1, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(names_table),
-            player_label[1],
-            0, 1, 1, 2);
-    gtk_table_attach_defaults(GTK_TABLE(names_table),
-            player_label[2],
-            0, 1, 2, 3);
-
     for (i=0; i<3; ++i)
     {
         gtk_misc_set_alignment(GTK_MISC(player_label[i]), 0, 0.5);
+        gtk_table_attach_defaults(GTK_TABLE(names_table),
+                player_label[i],
+                0, 1, i, i+1);
 
         player_entry[i] = gtk_entry_new();
-
         gtk_entry_set_text(GTK_ENTRY(player_entry[i]),
                 gskat.conf->player_names[i]);
-
         gtk_table_attach_defaults(GTK_TABLE(names_table),
                 player_entry[i],
                 1, 2, i, i+1);
