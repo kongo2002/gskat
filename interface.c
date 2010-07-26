@@ -848,6 +848,15 @@ void draw_area()
     cairo_pattern_t *pat;
     player *player;
 
+    GdkRectangle rect =
+    {
+        0, 0,
+        gskat.area->allocation.width,
+        gskat.area->allocation.height
+    };
+
+    gdk_window_begin_paint_rect(gskat.area->window, &rect);
+
     cr = gdk_cairo_create(gskat.area->window);
 
     if (gskat.bg)
@@ -885,6 +894,8 @@ void draw_area()
     if (pat)
         cairo_pattern_destroy(pat);
     cairo_destroy(cr);
+
+    gdk_window_end_paint(gskat.area->window);
 }
 
 void free_app()
