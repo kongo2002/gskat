@@ -1227,6 +1227,7 @@ void throw_card(card *card)
         {
             cm->mcard = card;
             set_table_position(card, &cm->dest_x, &cm->dest_y);
+            set_card_move_step(cm);
 
             g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
         }

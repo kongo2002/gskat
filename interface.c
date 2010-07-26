@@ -23,8 +23,6 @@
 #include "utils.h"
 #include "callback.h"
 
-#define CARD_MOVE_STEP 35
-
 player *init_player(gint id, gchar *name, gboolean human)
 {
     player *new = (player *) g_malloc(sizeof(player));
@@ -742,31 +740,51 @@ void set_table_position(card *card, gint *dest_x, gint *dest_y)
     }
 }
 
+/**
+ * @brief Calculate the card movement step
+ *
+ * Calculate the card movement step depending on the configuration value
+ * 'anim_duration', the drawing timeout interval of 25 ms and the mean card
+ * distance to move.
+ *
+ * @param cm  card_movement structure
+ */
+void set_card_move_step(card_move *cm)
+{
+    card *ptr = cm->mcard;
+
+    gint dx = ptr->dim.x - cm->dest_x;
+    gint dy = ptr->dim.y - cm->dest_y;
+
+    cm->move = ((abs(dx) + abs(dy)) / 2) / (gskat.conf->anim_duration / 25);
+}
+
 gboolean move_card(gpointer data)
 {
     card_move *cm = (card_move *) data;
     card *ptr = cm->mcard;
 
     gint step;
+    gint move = cm->move;
     gint dx = ptr->dim.x - cm->dest_x;
     gint dy = ptr->dim.y - cm->dest_y;
 
     /* adjust x coordinate */
-    if (abs(dx) < CARD_MOVE_STEP)
+    if (abs(dx) < move)
         ptr->dim.x = cm->dest_x;
     else
     {
-        step = (dx > 0) ? -CARD_MOVE_STEP : CARD_MOVE_STEP;
+        step = (dx > 0) ? -move : move;
         ptr->dim.x += step;
     }
 
 
     /* adjust y coordinate */
-    if (abs(dy) < CARD_MOVE_STEP)
+    if (abs(dy) < move)
         ptr->dim.y = cm->dest_y;
     else
     {
-        step = (dy > 0) ? -CARD_MOVE_STEP : CARD_MOVE_STEP;
+        step = (dy > 0) ? -move : move;
         ptr->dim.y += step;
     }
 

@@ -119,6 +119,7 @@ typedef struct _card_move
     card *mcard; /**< card to move */
     gint dest_x; /**< x coordinate destination */
     gint dest_y; /**< y coordinate destination */
+    gint move;   /**< card movement step */
 } card_move;
 
 /**

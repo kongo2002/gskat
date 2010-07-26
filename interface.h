@@ -39,6 +39,8 @@ void calc_card_positions();
 
 void set_table_position(card *card, gint *dest_x, gint *dest_y);
 
+void set_card_move_step(card_move *cm);
+
 gboolean move_card(gpointer data);
 
 void load_card(GList **list, const gchar *file, gint rank, gint suit);

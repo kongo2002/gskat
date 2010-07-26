@@ -68,7 +68,7 @@ void alloc_config()
         gskat.conf->player_names = NULL;
         gskat.conf->gui = TRUE;
         gskat.conf->animation = TRUE;
-        gskat.conf->anim_duration = 500;
+        gskat.conf->anim_duration = 350;
         gskat.conf->debug = FALSE;
         gskat.conf->filename = NULL;
     }
