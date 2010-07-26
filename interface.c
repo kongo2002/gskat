@@ -138,7 +138,7 @@ void show_config_window()
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_LEFT);
     gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
-    /* set up player names table */
+    /* PLAYER NAMES TABLE */
     names_label = gtk_label_new("Spieler-Namen");
     names_table = gtk_table_new(3, 2, TRUE);
 
@@ -172,11 +172,12 @@ void show_config_window()
 
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), names_table, names_label);
 
-    /* set up misc table */
+    /* MISC TABLE */
     misc_label = gtk_label_new("Sonstiges");
     misc_table = gtk_table_new(3, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
 
+    /* animation */
     animation_label = gtk_label_new("Animiere Kartenbewegung:");
     gtk_misc_set_alignment(GTK_MISC(animation_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
@@ -190,6 +191,7 @@ void show_config_window()
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
+    /* animation duration */
     animation_dur_label = gtk_label_new("Animationsdauer:");
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
@@ -204,6 +206,7 @@ void show_config_window()
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
+    /* debugging */
     debug_label = gtk_label_new("Debug Meldungen:");
     gtk_misc_set_alignment(GTK_MISC(debug_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
@@ -224,7 +227,7 @@ void show_config_window()
     gtk_widget_set_sensitive(debug_check, FALSE);
 #endif
 
-    /* add bottom buttons */
+    /* BOTTOM BUTTONS */
     hbox_buttons = gtk_hbox_new(TRUE, 10);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, FALSE, 0);
 
