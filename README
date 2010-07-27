@@ -1,8 +1,38 @@
-gskat is a gtk skat game written in c
+gskat - an open-source gtk skat game
+http://github.com/kongo2002/gskat
 
-The current state cannot even be considered as alpha stadium because it
-is not playable. The main reason for me to program gskat is to improve
-my c skills and to become familiar with glib/gtk.
+ABOUT
 
-So maybe in the future this small game will be playable but until then
-it is a long way to go.
+gskat allows you to play Skat against two computer controlled players.
+Since gskat is currently in alpha state you cannot expect too much AI
+from the computer opponents.  Nevertheless they strictly follow the
+rules, do not cheat and act on some major game playing principles.
+
+There are many web resources for learning to play Skat.  A good starting
+point is probably the Wikipedia:
+
+    see http://en.wikipedia.org/wiki/Skat_(card_game)
+
+INSTALL
+
+Currently there is only a simple Makefile assisting you to install
+gskat.  So after downloading the source files you simply do:
+
+    cd gskat
+    make
+
+After compiling the game can be started by launching the executable:
+
+    ./gskat
+
+Your feedback, bug reports and ideas for new features are especially
+welcome.
+
+    - Project: http://github.com/kongo2002/gskat
+
+    - Bug Reports: http://github.com/kongo2002/gskat/issues
+
+COPYRIGHT
+
+gskat is released under the GNU General Public License, version 3 or
+later.  A copy of the license is provided in the COPYING file.
