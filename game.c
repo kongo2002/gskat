@@ -1108,9 +1108,10 @@ void take_skat()
  */
 void spiel_ansagen()
 {
-    gint result = 0;
+    gint i, result = 0;
     GList *list = NULL;
-    GtkWidget *dialog = NULL;
+    GtkWidget *dialog;
+    GtkWidget *button;
     card *card = NULL;
 
     DPRINT(("Spiel ansagen.\n"));
@@ -1118,18 +1119,23 @@ void spiel_ansagen()
     /* select game to play */
     if (gskat.re->human)
     {
+        /* TODO: we want to have a confirm dialog instead
+         * of forcing the user to click on something valid */
         do
         {
-            dialog = gtk_dialog_new_with_buttons("Spiel ansagen",
-                    GTK_WINDOW(gskat.allwidgets[0]),
-                    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                    "Kreuz", KREUZ,
-                    "Pik", PIK,
-                    "Herz", HERZ,
-                    "Karo", KARO,
-                    "Grand", 200,
-                    "Null", 0,
-                    NULL);
+            dialog = gtk_dialog_new();
+
+            /* add buttons with suit images */
+            for (i=0; i<4; ++i)
+            {
+                button = gtk_dialog_add_button(GTK_DIALOG(dialog),
+                        suit_name(SUITS[i]), SUITS[i]);
+                gtk_button_set_image(GTK_BUTTON(button),
+                        gtk_image_new_from_pixbuf(gskat.icons[i]));
+            }
+
+            gtk_dialog_add_button(GTK_DIALOG(dialog), "Grand", 200);
+            gtk_dialog_add_button(GTK_DIALOG(dialog), "Null", 0);
 
             result = gtk_dialog_run(GTK_DIALOG(dialog));
 

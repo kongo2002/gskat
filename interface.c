@@ -47,7 +47,7 @@ player *init_player(gint id, gchar *name, gboolean human)
 void load_icons()
 {
     gint i;
-    gchar *suits[] = { "diamond", "heart", "spade", "club" };
+    gchar *suits[] = { "club", "spade", "heart", "diamond" };
     gchar *filename;
 
     filename = (gchar *) g_malloc(sizeof(gchar) * (strlen(DATA_DIR) + 20));
