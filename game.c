@@ -1480,12 +1480,17 @@ void end_round(enum finish_type ft)
         else
             game = 23;
 
-        /* player has definitely lost 'null' game */
-        if (gskat.stich < 10 || player->points > 0)
+        /* player has lost 'null' game */
+        if (ft == FT_LOST)
         {
             game *= -2;
 
             g_sprintf(msg, "%s verliert das Nullspiel\n\t%d", player->name,
+                    game);
+        }
+        else
+        {
+            g_sprintf(msg, "%s gewinnt das Nullspiel\n\t%d", player->name,
                     game);
         }
 
