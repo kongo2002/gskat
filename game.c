@@ -1317,6 +1317,15 @@ void calculate_stich()
     gskat.players[winner]->points += points;
     gskat.cplayer = winner;
 
+    /* check if a 'null' playing re player won the stich
+     * -> he would have lost the game then */
+    if (gskat.re == gskat.players[winner] && gskat.null)
+    {
+        DPRINT(("%s lost the game (null game)\n", gskat.re->name));
+
+        end_round(FT_LOST);
+    }
+
     DPRINT(("%s won the stich (%d).\n", gskat.players[winner]->name, points));
 
     /* add played cards to 'stiche' array */
@@ -1345,7 +1354,7 @@ void calculate_stich()
  * @brief Finalize the last round by refreshing all settings
  * and player's points
  */
-void end_round()
+void end_round(enum finish_type ft)
 {
     gint rank, game;
     gchar msg[200];
@@ -1407,6 +1416,7 @@ void end_round()
             game += 1;
 
         g_list_free(list);
+        list = NULL;
 
         /* player has won */
         if (player->points > 60)
@@ -1461,22 +1471,37 @@ void end_round()
 
         player->sum_points += game;
 
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
-                GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_INFO,
-                GTK_BUTTONS_CLOSE,
-                NULL);
-
-        gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(dialog), msg);
-
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
     }
     else
     {
         /* TODO: implement null game */
-        game = 23;
+        if (gskat.hand)
+            game = 35;
+        else
+            game = 23;
+
+        /* player has definitely lost 'null' game */
+        if (gskat.stich < 10 || player->points > 0)
+        {
+            game *= -2;
+
+            g_sprintf(msg, "%s verliert das Nullspiel\n\t%d", player->name,
+                    game);
+        }
+
     }
+
+    /* show game summary message dialog */
+    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+            GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_INFO,
+            GTK_BUTTONS_CLOSE,
+            NULL);
+
+    gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(dialog), msg);
+
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
 
     /* update interface */
     g_sprintf(msg, "%d", gskat.players[0]->sum_points);
@@ -1520,7 +1545,7 @@ void play_stich()
         }
     }
     else
-        end_round();
+        end_round(FT_NORMAL);
 }
 
 /**

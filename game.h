@@ -83,7 +83,7 @@ void spiel_ansagen();
 
 void reset_game();
 
-void end_round();
+void end_round(enum finish_type ft);
 
 void play_stich();
 

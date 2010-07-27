@@ -96,6 +96,16 @@ enum gstate
 };
 
 /**
+ * @brief Enumeration of game finish types
+ */
+enum finish_type
+{
+    FT_NORMAL, /**< game ended normally after 10 rounds */
+    FT_WIN,    /**< re player won the game prematurely */
+    FT_LOST    /**< re player lost the game prematurely */
+};
+
+/**
  * @brief Structure representing a card
  */
 typedef struct _card
