@@ -117,12 +117,14 @@ void next_round(GtkButton *button, gpointer data)
     /* abort the current round via the menu bar "Game -> New Round" */
     else
     {
-        /* TODO: add confirmation dialog here */
-        reset_game();
+        if (game_abort())
+        {
+            reset_game();
 
-        gskat.state = ENDGAME;
+            gskat.state = ENDGAME;
 
-        next_round(button, data);
+            next_round(button, data);
+        }
     }
 }
 

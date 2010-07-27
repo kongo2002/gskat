@@ -87,6 +87,8 @@ void end_round(enum finish_type ft);
 
 void play_stich();
 
+gboolean game_abort();
+
 void game_start();
 
 #endif /* __GAME_H__ */

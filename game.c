@@ -1554,6 +1554,40 @@ void play_stich()
 }
 
 /**
+ * @brief Ask user if he really wants to abort the current game round
+ */
+gboolean game_abort()
+{
+    gboolean abort = FALSE;
+    gint response;
+    GtkWidget *dialog;
+
+    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+            GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_INFO,
+            GTK_BUTTONS_YES_NO,
+            "Runde wirklich abbrechen?");
+
+    response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    switch (response)
+    {
+        case GTK_RESPONSE_YES:
+            abort = TRUE;
+            break;
+        case GTK_RESPONSE_NO:
+            abort = FALSE;
+            break;
+        default:
+            break;
+    }
+
+    gtk_widget_destroy(dialog);
+
+    return abort;
+}
+
+/**
  * @brief Reset all game settings and free the allocated memory
  */
 void reset_game()
