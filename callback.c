@@ -146,9 +146,12 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
             found = play_card(event);
         else if (gskat.state == READY)
         {
-            calculate_stich();
             gskat.state = PLAYING;
-            play_stich();
+            calculate_stich();
+
+            /* only continue playing if game was not ended early */
+            if (gskat.state == PLAYING)
+                play_stich();
             return TRUE;
         }
     }
