@@ -1227,6 +1227,7 @@ void throw_card(card *_card)
     if (stich == NULL)
     {
         stich = (card **) g_malloc(sizeof(card *) * 3);
+        gskat.stiche[gskat.stich-1] = stich;
 
         for (i=0; i<3; ++i)
             stich[i] = NULL;

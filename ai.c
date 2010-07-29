@@ -580,33 +580,27 @@ card *abwerfen(player *player, GList *list)
 /* TODO: we need to consider grand and null games here */
 gboolean hat_gestochen(player *player, gint suit)
 {
-    gint i = 0;
-    gboolean found = FALSE;
-    GList *ptr = NULL;
-    card *card = NULL;
+    gint i, j;
+    card **stich = NULL;
 
-    for (ptr = g_list_first(gskat.played); ptr; ptr = ptr->next)
+    for (i = 0; i < 10; ++i)
     {
-        card = ptr->data;
+        if ((stich = gskat.stiche[i]) == NULL)
+            break;
 
-        if (++i > 3)
-        {
-            found = FALSE;
-            i = 1;
-        }
-
-        if (i == 1 && card->suit == suit && card->rank != BUBE &&
-                card->owner != player->id)
-        {
-            found = TRUE;
+        /* first card must not be trump or one of player's cards */
+        if ((*stich)->suit != suit || (*stich)->owner == player->id
+                    || is_trump(*stich))
             continue;
-        }
 
-        if (found == TRUE && card->owner == player->id &&
-                (card->suit != suit || card->rank == BUBE))
+        for (j = 1; j < 3; ++j)
         {
-            DPRINT(("%s hat %d gestochen\n", player->name, suit));
-            return TRUE;
+            if (stich[j] && stich[j]->owner == player->id &&
+                    (stich[j]->suit != suit || is_trump(stich[j])))
+            {
+                DPRINT(("%s hat %d gestochen\n", player->name, suit));
+                return TRUE;
+            }
         }
     }
 
