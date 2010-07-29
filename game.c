@@ -1202,37 +1202,51 @@ void spiel_ansagen()
  *
  * @param card  card to throw on the table
  */
-void throw_card(card *card)
+void throw_card(card *_card)
 {
+    gint i, index;
+    card **stich = gskat.stiche[gskat.stich-1];
     card_move *cm = NULL;
 
-    player *player = gskat.players[card->owner];
+    player *player = gskat.players[_card->owner];
 
-    card->draw = TRUE;
-    card->draw_face = TRUE;
+    _card->draw = TRUE;
+    _card->draw_face = TRUE;
 
 #ifdef DEBUG
     g_print("%s played: ", player->name);
-    print_card(card);
+    print_card(_card);
     g_print("\n");
 #endif
 
-    gskat.table = g_list_append(gskat.table, card);
-    gskat.played = g_list_append(gskat.played, card);
-    player->cards = g_list_remove(player->cards, card);
+    gskat.table = g_list_append(gskat.table, _card);
+    gskat.played = g_list_append(gskat.played, _card);
+    player->cards = g_list_remove(player->cards, _card);
+
+    /* keep record of played cards */
+    if (stich == NULL)
+    {
+        stich = (card **) g_malloc(sizeof(card *) * 3);
+
+        for (i=0; i<3; ++i)
+            stich[i] = NULL;
+    }
+
+    index = g_list_length(gskat.table) - 1;
+    stich[index] = _card;
 
     if (gskat.conf->gui && gskat.conf->animation)
     {
         /* initiate card movement animation */
-        card->status = CS_MOVING;
+        _card->status = CS_MOVING;
 
         /* this will be freed in the last call of 'move_card' */
         cm = (card_move *) g_malloc(sizeof(card_move));
 
         if (cm)
         {
-            cm->mcard = card;
-            set_table_position(card, &cm->dest_x, &cm->dest_y);
+            cm->mcard = _card;
+            set_table_position(_card, &cm->dest_x, &cm->dest_y);
             set_card_move_step(cm);
 
             g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
@@ -1269,7 +1283,7 @@ void ai_play_card(player *player)
 void calculate_stich()
 {
     gchar msg[6];
-    gint i, winner;
+    gint winner;
     gint points = 0;
     GList *ptr = NULL;
     card *crd = NULL;
@@ -1327,11 +1341,6 @@ void calculate_stich()
     }
 
     DPRINT(("%s won the stich (%d).\n", gskat.players[winner]->name, points));
-
-    /* add played cards to 'stiche' array */
-    gskat.stiche[gskat.stich-1] = (card **) g_malloc(sizeof(card *) * 3);
-    for (i=0; i<3; ++i)
-        gskat.stiche[gskat.stich-1][i] = g_list_nth_data(gskat.table, i);
 
     /* remove cards from table */
     g_list_free(gskat.table);
