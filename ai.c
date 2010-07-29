@@ -87,6 +87,7 @@ card *ai_select_card(player *player, GList *list)
         selection = rand() % g_list_length(list);
         return g_list_nth_data(list, selection);
     }
+
     return card;
 }
 
@@ -820,9 +821,9 @@ gboolean kontra_stich_sicher(player *player)
     return FALSE;
 }
 
-/* TODO: substract player's cards */
 gboolean highest_rem_of_suit(card *first)
 {
+    gint i = 0, len;
     GList *out = cards_out();
     GList *suit = NULL;
     card *high = NULL;
@@ -832,15 +833,26 @@ gboolean highest_rem_of_suit(card *first)
     else
         suit = get_suit_list(out, first->suit);
 
+    g_list_free(out);
+
     if (suit)
     {
-        high = g_list_nth_data(suit, 0);
+        len = g_list_length(suit);
+        high = g_list_nth_data(suit, i);
+
+        /* skip player's cards */
+        while (i < len && high->owner == first->owner)
+            high = g_list_nth_data(suit, ++i);
+
         g_list_free(suit);
+
+        /* player owns all remaining cards of that suit
+         * so he definitely owns the highest one as well */
+        if (i == (len - 1) && high->owner == first->owner)
+            return TRUE;
     }
     else
         return TRUE;
-
-    g_list_free(out);
 
     if (high && high == first)
         return TRUE;
