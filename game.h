@@ -75,7 +75,7 @@ void calculate_stich();
 
 void druecke_skat();
 
-void throw_card(card *card);
+void throw_card(card *_card);
 
 void ai_play_card(player *player);
 
