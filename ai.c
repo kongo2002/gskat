@@ -854,7 +854,8 @@ gboolean highest_rem_of_suit(card *first)
     else
         return TRUE;
 
-    if (high && high == first)
+    if (high && (high == first
+                || is_greater(first, high, gskat.trump, gskat.null)))
         return TRUE;
     else
         return FALSE;
