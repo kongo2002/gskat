@@ -674,7 +674,7 @@ gboolean truempfe_weg(player *player)
             ++count;
     }
 
-    if (count == 11)
+    if (count == 11 || (!gskat.trump && count == 4) || gskat.null)
         return TRUE;
     return FALSE;
 }
