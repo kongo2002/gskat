@@ -401,6 +401,15 @@ card *trumpf_spitzen(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Try to pull some trump cards from the opponent players
+ * by playing a relative low trump card
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *truempfe_ziehen(player *player, GList *list)
 {
     GList *trump = get_trump_list(list);
@@ -444,6 +453,14 @@ card *truempfe_ziehen(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Try to play a card of a short numbered non-trump suit
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *kurz_aufspielen(player *player, GList *list)
 {
     gint id = player->id;
@@ -502,6 +519,14 @@ card *kurz_aufspielen(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Try to play a card of a long-numbered suit
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *lang_aufspielen(player *player, GList *list)
 {
     gint i, sel_suit = 0, max = 0, num = 0;
@@ -550,6 +575,14 @@ card *lang_aufspielen(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Try to play a high points card on the Kontra team
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_kontra_schmieren(player *player, GList *list)
 {
     gint i, max = 0;
