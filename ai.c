@@ -23,6 +23,15 @@
 #include "game.h"
 #include "utils.h"
 
+/**
+ * @brief Main AI function to determine the next card to play according to the
+ * position and the team the player is in
+ *
+ * @param player  player to choose the next card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the card to play next
+ */
 card *ai_select_card(player *player, GList *list)
 {
     gint selection;
@@ -91,6 +100,14 @@ card *ai_select_card(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief try to select an ace from a short numbered suit
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *kurz_fehl_ass(player *player, GList *list)
 {
     gint i, len, min = -1;
@@ -125,6 +142,14 @@ card *kurz_fehl_ass(player *player, GList *list)
     return ret;
 }
 
+/**
+ * @brief try to select a minimal card to get the trick on the table
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *knapp_trumpfen(player *player, GList *list)
 {
     GList *ptr = NULL;
@@ -165,6 +190,15 @@ card *knapp_trumpfen(player *player, GList *list)
     return ret;
 }
 
+/**
+ * @brief Determine the strategy to play for the Re player
+ * if he is the first to play
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_re_kommt_raus(player *player, GList *list)
 {
     card *card = NULL;
@@ -184,6 +218,15 @@ card *ai_re_kommt_raus(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Determine the strategy to play for the Kontra player
+ * if he is the first to play
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_kontra_kommt_raus(player *player, GList *list)
 {
     card *card = NULL;
@@ -208,6 +251,15 @@ card *ai_kontra_kommt_raus(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Determine the strategy to play for the Re player
+ * if he is the second to play
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_re_mitte(player *player, GList *list)
 {
     card *card = NULL, *first = NULL, *sel = NULL;
@@ -238,6 +290,15 @@ card *ai_re_mitte(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Determine the strategy to play for the Kontra player
+ * if he is the second to play
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_kontra_mitte(player *player, GList *list)
 {
     card *tmp = NULL;
@@ -262,6 +323,15 @@ card *ai_kontra_mitte(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Determine the strategy to play for the Kontra player
+ * if he is the last to play
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_kontra_hinten(player *player, GList *list)
 {
     card *card = NULL;
@@ -278,6 +348,15 @@ card *ai_kontra_hinten(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Determine the strategy to play for the Re player
+ * if he is the last to play
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *ai_re_hinten(player *player, GList *list)
 {
     card *card = NULL;
@@ -290,6 +369,14 @@ card *ai_re_hinten(player *player, GList *list)
     return card;
 }
 
+/**
+ * @brief Try to select one random high trump card
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *trumpf_spitzen(player *player, GList *list)
 {
     GList *trump = get_trump_list(list);
