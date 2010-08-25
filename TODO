@@ -1,0 +1,25 @@
+------------------------------------------------------------------------
+GSKAT TODO LIST
+------------------------------------------------------------------------
+
+MAJOR FEATURES
+
+* AI: properly implement 'null' and 'grand' games
+* AI: improve bidding algorithm
+* review last trick(s)
+* save and view round/stich history
+* save and load game and round states
+* implement integrated bug reports
+* implement 'ramsch' game
+
+MINOR POINTS
+
+* use XDG base directory specification for config/data files
+* improve game summary display
+* design and implement a game icon
+* integrate optional pre-round random seed definition for card
+  distribution
+
+IMPROVEMENTS
+
+* rewrite AI concept/implementation (more flexible, dynamic)
