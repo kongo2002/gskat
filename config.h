@@ -25,7 +25,7 @@
 
 void load_config();
 
-gboolean create_conf_dir(const gchar *home);
+gboolean create_conf_dir(const gchar *config_dir);
 
 gboolean write_config();
 

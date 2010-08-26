@@ -29,16 +29,24 @@
  */
 void load_config()
 {
-    gchar *filename;
+    gchar *filename, *config_dir = NULL;
 
-    /* get home directory */
-    const gchar *home_dir = g_getenv("HOME");
-    if (!home_dir)
-        home_dir = g_get_home_dir();
+    /* get XDG config directory */
+    config_dir = (gchar *) g_get_user_config_dir();
+
+    if (!config_dir)
+    {
+        /* get home directory */
+        const gchar *home_dir = g_getenv("HOME");
+        if (!home_dir)
+            home_dir = g_get_home_dir();
+
+        config_dir = (gchar *) home_dir;
+    }
 
     if (!gskat.conf->filename)
     {
-        filename = g_strconcat(home_dir, "/.gskat/gskat.conf", NULL);
+        filename = g_strconcat(config_dir, "/gskat/gskat.conf", NULL);
         gskat.conf->filename = filename;
     }
     else
@@ -60,7 +68,7 @@ void load_config()
         set_default_config();
 
         /* try to save config */
-        if (create_conf_dir(home_dir))
+        if (create_conf_dir(config_dir))
             write_config();
     }
 }
@@ -236,10 +244,10 @@ gboolean read_config()
 /**
  * @brief Create the directory for the config file if necessary
  */
-gboolean create_conf_dir(const gchar *home)
+gboolean create_conf_dir(const gchar *config_dir)
 {
     gboolean done = FALSE, exists = FALSE;
-    gchar *gtk_dir = g_strconcat(home, "/.gskat", NULL);
+    gchar *gtk_dir = g_strconcat(config_dir, "/gskat", NULL);
 
     if (gtk_dir)
     {
