@@ -23,6 +23,9 @@
 #include "utils.h"
 #include "callback.h"
 
+/**
+ * @brief Allocate and initialize a new player structure
+ */
 player *init_player(gint id, gchar *name, gboolean human)
 {
     player *new = (player *) g_malloc(sizeof(player));
@@ -44,6 +47,9 @@ player *init_player(gint id, gchar *name, gboolean human)
     return new;
 }
 
+/**
+ * @brief Try to load the icons of the four suits
+ */
 void load_icons()
 {
     gint i;
@@ -78,6 +84,9 @@ void load_icons()
     }
 }
 
+/**
+ * @brief Allocate all game objects like players, icons and stiche array
+ */
 void alloc_app()
 {
     gint i;
@@ -104,6 +113,10 @@ void alloc_app()
     load_icons();
 }
 
+/**
+ * @brief Show the configuration dialog window and initialize the
+ * widgets with the current config values
+ */
 void show_config_window()
 {
     gint i;
@@ -251,6 +264,9 @@ void show_config_window()
     gtk_widget_show_all(window);
 }
 
+/**
+ * @brief Create the main menu and populate it with the menu items
+ */
 static GtkWidget *create_menu()
 {
     GtkWidget *menu;         /* main menu */
@@ -310,6 +326,9 @@ static GtkWidget *create_menu()
     return menu;
 }
 
+/**
+ * @brief Create and allocate the main window layout
+ */
 void create_interface()
 {
     GtkWidget *window;
@@ -520,6 +539,9 @@ void create_interface()
     }
 }
 
+/**
+ * @brief Load the card image of the given rank and suit
+ */
 void load_card(GList **list, const gchar *file, gint rank, gint suit)
 {
     card *tcard = (card *) g_malloc(sizeof(card));
@@ -545,6 +567,9 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
     }
 }
 
+/**
+ * @brief Allocate and initialize all 32 game cards
+ */
 gboolean load_cards(const gchar *path)
 {
     GList **list = &(gskat.cards);
@@ -596,6 +621,9 @@ gboolean load_cards(const gchar *path)
     return !error;
 }
 
+/**
+ * @brief Load an image and create a new cairo surface on its basis
+ */
 cairo_surface_t *load_image(gchar *filename)
 {
     DPRINT(("Loading '%s' ... ", filename));
@@ -612,6 +640,9 @@ cairo_surface_t *load_image(gchar *filename)
     }
 }
 
+/**
+ * @brief Position the player's cards on the game table
+ */
 void pos_player_cards(player *player, gint x, gint y, gint step)
 {
     GList *ptr = NULL;
@@ -629,6 +660,10 @@ void pos_player_cards(player *player, gint x, gint y, gint step)
     }
 }
 
+/**
+ * @brief Calculate the card positions of all three players
+ * based on the game window's dimension
+ */
 void calc_card_positions()
 {
     gint x, y, win_w, win_h, card_w, card_h, step;
@@ -712,6 +747,9 @@ void calc_card_positions()
     }
 }
 
+/**
+ * @brief Set the position of the given card on the game table
+ */
 void set_table_position(card *card, gint *dest_x, gint *dest_y)
 {
     gint card_w = card->dim.w;
@@ -759,6 +797,15 @@ void set_card_move_step(card_move *cm)
     cm->move = diff_max / ((gdouble) gskat.conf->anim_duration / 25);
 }
 
+/**
+ * @brief Move the given card towards its destination by the given
+ * movement step
+ *
+ * The card movement structure contains the information about what card to move,
+ * the movement destination and the movement step.
+ *
+ * @param data card_move structure that contains the card movement information
+ */
 gboolean move_card(gpointer data)
 {
     card_move *cm = (card_move *) data;
@@ -804,7 +851,9 @@ gboolean move_card(gpointer data)
     return TRUE;
 }
 
-/* draw cards from last to first */
+/**
+ * @brief Draw the cards from the last to the first
+ */
 void draw_cards(GList *cards, cairo_t *target)
 {
     card *card;
@@ -831,6 +880,12 @@ void draw_cards(GList *cards, cairo_t *target)
     }
 }
 
+/**
+ * @brief Draw the player's name on the game surface
+ *
+ * The player in the forehand position is drawn in red and
+ * the others in black.
+ */
 void draw_player(player *player, cairo_t *cr)
 {
     gchar *name;
@@ -879,6 +934,9 @@ void draw_player(player *player, cairo_t *cr)
     g_free(name);
 }
 
+/**
+ * @brief Draw the game area with its players and their cards
+ */
 void draw_area()
 {
     gint i;
@@ -936,6 +994,9 @@ void draw_area()
     gdk_window_end_paint(gskat.area->window);
 }
 
+/**
+ * @brief Free all allocated in-game memory
+ */
 void free_app()
 {
     GList *ptr;
