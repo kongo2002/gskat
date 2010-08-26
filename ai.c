@@ -638,6 +638,15 @@ card *ai_kontra_schmieren(player *player, GList *list)
     return ret;
 }
 
+/**
+ * @brief Try to play the highest non-trump card of a suit
+ * if no trumps are left in the game
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *highest_fehl(player *player, GList *list)
 {
     GList *ptr = NULL;
@@ -660,6 +669,15 @@ card *highest_fehl(player *player, GList *list)
     return NULL;
 }
 
+/**
+ * @brief Throw a card with minimal points and try to
+ * choose a suit with minimal cards left
+ *
+ * @param player  player to choose a card to play for
+ * @param list    possible cards to choose from
+ *
+ * @return the selected card or NULL
+ */
 card *abwerfen(player *player, GList *list)
 {
     gint i, min = -1, len = 0;
@@ -697,7 +715,16 @@ card *abwerfen(player *player, GList *list)
     return ret;
 }
 
-/* TODO: we need to consider grand and null games here */
+/**
+ * @brief Check if 'player' has 'gestochen' the given suit yet
+ *
+ * @param player  player to check
+ * @param suit    suit to check
+ *
+ * @todo we need to consider grand and null games here
+ *
+ * @return TRUE if 'player' has gestochen, otherwise FALSE
+ */
 gboolean hat_gestochen(player *player, gint suit)
 {
     gint i, j;
@@ -727,6 +754,11 @@ gboolean hat_gestochen(player *player, gint suit)
     return FALSE;
 }
 
+/**
+ * @brief Get the number of played jacks
+ *
+ * @return the number of played jacks in this current round
+ */
 gint num_jacks_played()
 {
     gint count = 0;
@@ -741,6 +773,13 @@ gint num_jacks_played()
     return count;
 }
 
+/**
+ * @brief Check if all jacks are already played
+ *
+ * @param player  player that checks the jack count
+ *
+ * @return TRUE if all jacks are played or in player's hand, otherwise FALSE
+ */
 gboolean jacks_weg(player *player)
 {
     gint count = num_jacks_played();
@@ -757,6 +796,11 @@ gboolean jacks_weg(player *player)
     return FALSE;
 }
 
+/**
+ * @brief Get the number of played trump cards
+ *
+ * @return the number of played trump cards in this round
+ */
 gint num_truempfe_played()
 {
     gint count = 0;
@@ -777,6 +821,14 @@ gint num_truempfe_played()
     return count;
 }
 
+/**
+ * @brief Check if all trump cards are already played
+ *
+ * @param player  player that checks the trump card count
+ *
+ * @return TRUE if all trump cards are played or in player's hand,
+ * otherwise FALSE
+ */
 gboolean truempfe_weg(player *player)
 {
     gint count = 0;
@@ -799,6 +851,15 @@ gboolean truempfe_weg(player *player)
     return FALSE;
 }
 
+/**
+ * @brief Get the length of the 'spitzen' cards of the given suit
+ *
+ * @param player  player to check for the 'spitzen' cards
+ * @param list    player's cards
+ * @param suit    suit to check for 'spitzen' cards
+ *
+ * @return the number of 'spitzen' cards
+ */
 gint len_spitzen(player *player, GList *list, gint suit)
 {
     gint len = 0;
@@ -852,6 +913,13 @@ gint len_spitzen(player *player, GList *list, gint suit)
     return len;
 }
 
+/**
+ * @brief Check if the given player has to serve the suit on the table
+ *
+ * @param player  player to check
+ *
+ * @return TRUE if player has to serve, otherwise FALSE
+ */
 gboolean muss_bedienen(player *player)
 {
     card *card = NULL;
@@ -878,6 +946,11 @@ gboolean muss_bedienen(player *player)
     return FALSE;
 }
 
+/**
+ * @brief Get the highest card on the table
+ *
+ * @return the highest card on the table
+ */
 card *highest_on_table()
 {
     gint len = (gskat.table) ? g_list_length(gskat.table) : 0;
@@ -889,7 +962,8 @@ card *highest_on_table()
         else
         {
             if (is_greater(g_list_nth_data(gskat.table, 1),
-                        g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
+                        g_list_nth_data(gskat.table, 0),
+                        gskat.trump, gskat.null))
                 return g_list_nth_data(gskat.table, 1);
             else
                 return g_list_nth_data(gskat.table, 0);
@@ -899,6 +973,17 @@ card *highest_on_table()
     return NULL;
 }
 
+/**
+ * @brief Check if player has a higher card than the highest one
+ * currently on the table
+ *
+ * @param player  player to check
+ * @param list    player's cards
+ *
+ * @todo check if player has to serve the suit on the table
+ *
+ * @return TRUE if player has a higher card, otherwise FALSE
+ */
 gboolean kommt_drueber(player *player, GList *list)
 {
     card *card = highest_on_table();
@@ -908,6 +993,14 @@ gboolean kommt_drueber(player *player, GList *list)
     return FALSE;
 }
 
+/**
+ * @brief Try to determine if the current stich is safe
+ * for player's team to get
+ *
+ * @param player  player that checks for stich safety
+ *
+ * @return TRUE if the stich is likely to be safe, otherwise FALSE
+ */
 gboolean kontra_stich_sicher(player *player)
 {
     card *card = NULL;
