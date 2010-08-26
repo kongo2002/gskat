@@ -25,6 +25,9 @@
 #include "game.h"
 #include "interface.h"
 
+/**
+ * @brief Leave the gtk main loop and exit the program
+ */
 gboolean quit(GtkWidget *window, gpointer data)
 {
     gtk_main_quit();
@@ -32,6 +35,10 @@ gboolean quit(GtkWidget *window, gpointer data)
     return TRUE;
 }
 
+/**
+ * @brief Allocate memory for game objects, load all cards
+ * and start the first game round
+ */
 gboolean realization(GtkWidget *area, gpointer data)
 {
     /* allocate memory for application lists */
@@ -43,6 +50,12 @@ gboolean realization(GtkWidget *area, gpointer data)
     return FALSE;
 }
 
+/**
+ * @brief Callback function of the 'cancel' button of the config
+ * dialog.
+ *
+ * Frees the allocated memory for the confwidgets array
+ */
 gboolean close_config(GtkButton *button, gpointer data)
 {
     GtkWidget *window = (GtkWidget *) data;
@@ -55,6 +68,13 @@ gboolean close_config(GtkButton *button, gpointer data)
     return TRUE;
 }
 
+/**
+ * @brief Callback function of the 'apply' button of the config
+ * dialog.
+ *
+ * Apply the set values and free the allocated memory of the confwidgets
+ * array afterwards
+ */
 gboolean save_config(GtkButton *button, gpointer data)
 {
     gint i;
@@ -92,6 +112,10 @@ gboolean save_config(GtkButton *button, gpointer data)
     return TRUE;
 }
 
+/**
+ * @brief Start the next or first round of the game triggered
+ * by a click on the 'New Round' button
+ */
 void next_round(GtkButton *button, gpointer data)
 {
     if (gskat.state == ENDGAME)
@@ -128,6 +152,10 @@ void next_round(GtkButton *button, gpointer data)
     }
 }
 
+/**
+ * @brief Recalculate the card positions on the game table
+ * after the window being resized
+ */
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     calc_card_positions();
@@ -135,6 +163,11 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
     return TRUE;
 }
 
+/**
+ * @brief Callback function of a mouse click event
+ *
+ * Check for the current game state and trigger the appropriate action
+ */
 gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
     gboolean found = FALSE;
@@ -161,6 +194,10 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     return found;
 }
 
+/**
+ * @brief Callback function of the 'animation' checkbox
+ * in the config dialog
+ */
 void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 {
     GtkWidget *label = (GtkWidget *) data;
@@ -170,6 +207,9 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
     gtk_widget_set_sensitive(label, active);
 }
 
+/**
+ * @brief Redraw the game area on the 'expose' signal
+ */
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     if (gskat.area && gskat.area->window)
