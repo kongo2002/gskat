@@ -21,6 +21,9 @@
 #include "def.h"
 #include "utils.h"
 
+/**
+ * @brief Helper function to swap two integers
+ */
 void swap(gint *a, gint *b)
 {
     gint tmp = *a;
@@ -28,7 +31,9 @@ void swap(gint *a, gint *b)
     *b = tmp;
 }
 
-/* return card value depending on rank */
+/**
+ * @brief Get card value depending on its rank
+ */
 gint get_card_points(gint rank)
 {
     switch (rank)
@@ -51,6 +56,9 @@ gint get_card_points(gint rank)
     return 0;
 }
 
+/**
+ * @brief Return the card's suit name
+ */
 gchar *suit_name(gint id)
 {
     switch (id)
@@ -72,6 +80,9 @@ gchar *suit_name(gint id)
     }
 }
 
+/**
+ * @brief Return the card's rank name
+ */
 gchar *rank_name(gint id)
 {
     static gchar name[4];
@@ -92,6 +103,9 @@ gchar *rank_name(gint id)
     }
 }
 
+/**
+ * @brief Return the card's name
+ */
 gchar *get_card_name(card *card)
 {
     static gchar name[64];
@@ -101,11 +115,17 @@ gchar *get_card_name(card *card)
     return name;
 }
 
+/**
+ * @brief Print the card's name to stdout
+ */
 void print_card(card *card)
 {
     g_print("%s %s", suit_name(card->suit), rank_name(card->rank));
 }
 
+/**
+ * @brief Print player's cards to stdout
+ */
 void print_player_cards(player *player)
 {
     GList *ptr = NULL;
@@ -121,6 +141,14 @@ void print_player_cards(player *player)
     g_print("\n");
 }
 
+/**
+ * @brief Compare two cards' ranks
+ *
+ * @param top     card lying on the top
+ * @param bottom  card lying on the bottom
+ *
+ * @return TRUE if top is higher that bottom, otherwise FALSE
+ */
 gboolean higher_rank(card *top, card *bottom)
 {
     /* top = jack */
@@ -156,8 +184,17 @@ gboolean higher_rank(card *top, card *bottom)
         return FALSE;
 }
 
-/* check if top card is higher than bottom card
- * depending on trump suit and game type */
+/**
+ * @brief Check if the top card is higher than the bottom card
+ * depending on trump and game type
+ *
+ * @param top card lying on the top
+ * @param bottom card lying on the bottom
+ * @param trump trump suit index
+ * @param null TRUE if it's a null game, otherwise FALSE
+ *
+ * @return TRUE if top is greater than bottom, otherwise FALSE
+ */
 gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
 {
     /* null (ramsch) */
