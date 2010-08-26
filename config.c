@@ -21,6 +21,12 @@
 #include "def.h"
 #include "config.h"
 
+/**
+ * @brief Load the gskat configuration file
+ *
+ * If the config file cannot be found the default configuration values
+ * are written to a new config file.
+ */
 void load_config()
 {
     gchar *filename;
@@ -59,6 +65,9 @@ void load_config()
     }
 }
 
+/**
+ * @brief Allocate the configuration structure and set the default values
+ */
 void alloc_config()
 {
     gskat.conf = (config *) g_malloc(sizeof(config));
@@ -74,6 +83,9 @@ void alloc_config()
     }
 }
 
+/**
+ * @brief Set the configuration to the default values
+ */
 void set_default_config()
 {
     /* set player names */
@@ -86,6 +98,9 @@ void set_default_config()
     gskat.conf->player_names[2] = g_strdup("Dozo");
 }
 
+/**
+ * @brief Write the current configuration to the config file
+ */
 gboolean write_config()
 {
     gsize length;
@@ -134,6 +149,9 @@ gboolean write_config()
     return done;
 }
 
+/**
+ * @brief Read the configuration values from the config file
+ */
 gboolean read_config()
 {
     gsize length;
@@ -215,6 +233,9 @@ gboolean read_config()
     return done;
 }
 
+/**
+ * @brief Create the directory for the config file if necessary
+ */
 gboolean create_conf_dir(const gchar *home)
 {
     gboolean done = FALSE, exists = FALSE;
