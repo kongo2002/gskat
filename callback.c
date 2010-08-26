@@ -30,6 +30,9 @@
  */
 gboolean quit(GtkWidget *window, gpointer data)
 {
+    (void) window;
+    (void) data;
+
     gtk_main_quit();
 
     return TRUE;
@@ -41,6 +44,9 @@ gboolean quit(GtkWidget *window, gpointer data)
  */
 gboolean realization(GtkWidget *area, gpointer data)
 {
+    (void) area;
+    (void) data;
+
     /* allocate memory for application lists */
     alloc_app();
 
@@ -58,6 +64,7 @@ gboolean realization(GtkWidget *area, gpointer data)
  */
 gboolean close_config(GtkButton *button, gpointer data)
 {
+    (void) button;
     GtkWidget *window = (GtkWidget *) data;
 
     g_free(gskat.confwidgets);
@@ -77,6 +84,7 @@ gboolean close_config(GtkButton *button, gpointer data)
  */
 gboolean save_config(GtkButton *button, gpointer data)
 {
+    (void) button;
     gint i;
     const gchar *cptr = NULL;
     GtkWidget *window = (GtkWidget *) data;
@@ -158,6 +166,10 @@ void next_round(GtkButton *button, gpointer data)
  */
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
+    (void) area;
+    (void) event;
+    (void) data;
+
     calc_card_positions();
 
     return TRUE;
@@ -170,6 +182,8 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
+    (void) area;
+    (void) data;
     gboolean found = FALSE;
 
     if (event->button == 1)
@@ -212,6 +226,10 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
  */
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
+    (void) area;
+    (void) event;
+    (void) data;
+
     if (gskat.area && gskat.area->window)
         draw_area();
 }
