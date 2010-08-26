@@ -1028,6 +1028,13 @@ gboolean kontra_stich_sicher(player *player)
     return FALSE;
 }
 
+/**
+ * @brief Check if card is the highest remaining card of its suit
+ *
+ * @param first  card to check
+ *
+ * @return TRUE if card is the highest remaining, otherwise FALSE
+ */
 gboolean highest_rem_of_suit(card *first)
 {
     gint i = 0, len;
@@ -1068,6 +1075,17 @@ gboolean highest_rem_of_suit(card *first)
         return FALSE;
 }
 
+/**
+ * @brief Try to determine a probability that the current stich
+ * will belong to player's team
+ *
+ * @param player  player that checks the probabilty
+ *
+ * @todo This functions needs to be improved - very rudimentary algorithms
+ * at the moment.
+ *
+ * @return probability value
+ */
 gdouble prob_stich_geht_durch(player *player)
 {
     gdouble poss = 0.25;
@@ -1108,6 +1126,14 @@ gdouble prob_stich_geht_durch(player *player)
     return poss;
 }
 
+/**
+ * @brief Get the number of possibly higher cards than the given card
+ *
+ * @param player  player that checks
+ * @param first   card to check
+ *
+ * @return count of possibly higher cards
+ */
 gint num_poss_higher_cards(player *player, card *first)
 {
     gint len = 0;
@@ -1132,6 +1158,11 @@ gint num_poss_higher_cards(player *player, card *first)
     return len;
 }
 
+/**
+ * @brief Return a list of all cards already played in the current round
+ *
+ * @return a new GList* with all cards played in the current round
+ */
 GList *cards_out()
 {
     GList *ret = g_list_copy(gskat.cards);
@@ -1150,6 +1181,11 @@ GList *cards_out()
     return ret;
 }
 
+/**
+ * @brief Return the card values currently on the table
+ *
+ * @return sum of all card values currently on the table
+ */
 gint punkte_auf_tisch()
 {
     gint points = 0;
@@ -1166,6 +1202,13 @@ gint punkte_auf_tisch()
     return points;
 }
 
+/**
+ * @brief Get the number of trump cards in the given list
+ *
+ * @param list  list to count trump cards in
+ *
+ * @return count of trump cards
+ */
 gint num_of_trump(GList *list)
 {
     gint num = 0;
@@ -1179,6 +1222,13 @@ gint num_of_trump(GList *list)
     return num;
 }
 
+/**
+ * @brief Get the number of cards of the given suit
+ *
+ * @param list  list to count suit cards in
+ *
+ * @return count of cards of the given suit
+ */
 gint num_of_suit(GList *list, gint suit)
 {
     gint num = 0;
