@@ -83,6 +83,8 @@ void spiel_ansagen();
 
 void reset_game();
 
+void set_round_points(gint winner, gint points);
+
 void end_round(enum finish_type ft);
 
 void play_stich();

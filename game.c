@@ -1361,6 +1361,33 @@ void calculate_stich()
 }
 
 /**
+ * @brief Refresh the points each player got in the played round
+ *
+ * @param winner  Id of the player that won the round
+ * @param points  Game points of the round
+ */
+void set_round_points(gint winner, gint points)
+{
+    gint i;
+    player *cur = NULL;
+
+    for (i=0; i<3; ++i)
+    {
+        cur = gskat.players[i];
+
+        if (i == winner)
+        {
+            cur->sum_points += points;
+            cur->round_points = g_list_append(cur->round_points,
+                    GINT_TO_POINTER(points));
+        }
+        else
+            cur->round_points = g_list_append(cur->round_points,
+                    GINT_TO_POINTER(0));
+    }
+}
+
+/**
  * @brief Finalize the last round by refreshing all settings
  * and player's points
  */
@@ -1478,9 +1505,6 @@ void end_round(enum finish_type ft)
                     (120 - player->points),
                     game);
         }
-
-        player->sum_points += game;
-
     }
     else
     {
@@ -1506,6 +1530,9 @@ void end_round(enum finish_type ft)
 
     }
 
+    /* refresh the new players' points */
+    set_round_points(player->id, game);
+
     /* show game summary message dialog */
     GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
             GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1529,6 +1556,7 @@ void end_round(enum finish_type ft)
     g_sprintf(msg, "Runde %d", gskat.round);
     gtk_frame_set_label(GTK_FRAME(gskat.allwidgets[9]), msg);
 
+    /* reset game values */
     reset_game();
 }
 

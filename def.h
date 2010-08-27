@@ -136,14 +136,15 @@ typedef struct _card_move
  * @brief Structure representing a player
  */
 typedef struct _player {
-    gint id;         /**< player id */
-    gchar *name;     /**< player name */
-    gboolean human;  /**< human player? */
-    gboolean re;     /**< re player? */
-    gint gereizt;    /**< value the player provoked */
-    gint points;     /**< points of the current round */
-    gint sum_points; /**< points of all played rounds */
-    GList *cards;    /**< list of player's cards */
+    gint id;             /**< player id */
+    gchar *name;         /**< player name */
+    gboolean human;      /**< human player? */
+    gboolean re;         /**< re player? */
+    gint gereizt;        /**< value the player provoked */
+    gint points;         /**< points of the current round */
+    GList *round_points; /**< points of each played round */
+    gint sum_points;     /**< points of all played rounds */
+    GList *cards;        /**< list of player's cards */
 } player;
 
 /**
