@@ -986,6 +986,7 @@ card *highest_on_table()
  */
 gboolean kommt_drueber(player *player, GList *list)
 {
+    (void) player;
     card *card = highest_on_table();
 
     if (is_greater(g_list_nth_data(list, 0), card, gskat.trump, gskat.null))
