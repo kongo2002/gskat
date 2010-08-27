@@ -99,11 +99,12 @@ void set_default_config()
     /* set player names */
     const gchar *user_name = g_getenv("USER");
 
-    gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 3);
+    gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
 
     gskat.conf->player_names[0] = g_strdup(user_name ? user_name : "Player");
     gskat.conf->player_names[1] = g_strdup("Cuyo");
     gskat.conf->player_names[2] = g_strdup("Dozo");
+    gskat.conf->player_names[3] = NULL;
 }
 
 /**
