@@ -1,0 +1,6 @@
+*.o
+*.swp
+*~
+*.1
+gskat
+tags
