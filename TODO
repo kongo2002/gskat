@@ -14,11 +14,14 @@ MAJOR FEATURES
 
 MINOR POINTS
 
-* use XDG base directory specification for config/data files
 * improve game summary display
+* show point distribution graph dialog
+* slow down bidding process between computer players
+* improve card movement animation
 * design and implement a game icon
 * integrate optional pre-round random seed definition for card
   distribution
+* use XDG base directory specification for config/data files                DONE
 
 IMPROVEMENTS
 
