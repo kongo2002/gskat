@@ -24,9 +24,10 @@
 
 app gskat;
 
-static gboolean debug = FALSE;
-static gboolean cli_mode = FALSE;
+static gboolean debug        = FALSE;
+static gboolean cli_mode     = FALSE;
 static gboolean no_animation = FALSE;
+static gboolean version_only = FALSE;
 
 static GOptionEntry arguments[] =
 {
@@ -41,6 +42,10 @@ static GOptionEntry arguments[] =
     {
         "no_animation", 0, 0, G_OPTION_ARG_NONE, &no_animation,
         "disable card animations", NULL
+    },
+    {
+        "version", 'v', 0, G_OPTION_ARG_NONE, &version_only,
+        "print version and exit", NULL
     },
     { NULL, 0, 0, 0, NULL, NULL, NULL }
 };
@@ -99,6 +104,12 @@ int main(int argc, const char *argv[])
         }
 
         g_option_context_free(context);
+
+        if (version_only)
+        {
+            g_print("gskat %s\n", VERSION);
+            return 0;
+        }
 
         /* allocate configuration */
         alloc_config();
