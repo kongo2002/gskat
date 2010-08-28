@@ -11,6 +11,7 @@ MAJOR FEATURES
 * save and load game and round states
 * implement integrated bug reports
 * implement 'ramsch' game
+* add localization/language support
 
 MINOR POINTS
 
