@@ -349,6 +349,8 @@ void create_interface()
     GtkWidget *lb_game_spiel_right;
     GtkWidget *lb_game_gereizt_right;
     GtkWidget *frame_rank;
+    GtkWidget *scrolled_win;
+    GtkWidget *vbox_table;
     GtkWidget *table_rank;
     GtkWidget *lb_rank_p1_left;
     GtkWidget *lb_rank_p2_left;
@@ -462,9 +464,19 @@ void create_interface()
         gtk_box_pack_start(GTK_BOX(vbox), frame_rank, TRUE, TRUE, 2);
         gtk_frame_set_shadow_type(GTK_FRAME(frame_rank), GTK_SHADOW_ETCHED_IN);
 
-        table_rank = gtk_table_new(3, 2, TRUE);
-        gtk_container_add(GTK_CONTAINER(frame_rank), table_rank);
-        gtk_container_set_border_width(GTK_CONTAINER(table_rank), 20);
+        scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
+                GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        gtk_container_add(GTK_CONTAINER(frame_rank), scrolled_win);
+
+        vbox_table = gtk_vbox_new(FALSE, 2);
+
+        gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
+                vbox_table);
+
+        table_rank = gtk_table_new(2, 3, TRUE);
+        gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(table_rank), 10);
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 20);
         gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
@@ -472,37 +484,29 @@ void create_interface()
         lb_rank_p2_left = gtk_label_new(gskat.conf->player_names[1]);
         lb_rank_p3_left = gtk_label_new(gskat.conf->player_names[2]);
 
-        gtk_misc_set_alignment(GTK_MISC(lb_rank_p1_left), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_rank_p2_left), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_rank_p3_left), 1, 0.5);
-
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p1_left,
                 0, 1, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p2_left,
-                0, 1, 1, 2);
+                1, 2, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p3_left,
-                0, 1, 2, 3);
+                2, 3, 0, 1);
 
         lb_rank_p1_right = gtk_label_new("0");
         lb_rank_p2_right = gtk_label_new("0");
         lb_rank_p3_right = gtk_label_new("0");
 
-        gtk_misc_set_alignment(GTK_MISC(lb_rank_p1_right), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_rank_p2_right), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_rank_p3_right), 1, 0.5);
-
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p1_right,
-                1, 2, 0, 1);
+                0, 1, 1, 2);
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p2_right,
                 1, 2, 1, 2);
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p3_right,
-                1, 2, 2, 3);
+                2, 3, 1, 2);
 
         button = gtk_button_new_with_label("Neue Runde");
         gtk_widget_set_sensitive(button, FALSE);
