@@ -15,7 +15,6 @@ MAJOR FEATURES
 
 MINOR POINTS
 
-* improve game summary display
 * show point distribution graph dialog
 * slow down bidding process between computer players
 * improve card movement animation
@@ -23,6 +22,7 @@ MINOR POINTS
 * integrate optional pre-round random seed definition for card
   distribution
 * use XDG base directory specification for config/data files                DONE
+* improve game summary display                                              DONE
 
 IMPROVEMENTS
 
