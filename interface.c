@@ -353,6 +353,7 @@ void create_interface()
     GtkWidget *vbox_table;
     GtkWidget *table_rank;
     GtkWidget *table_points;
+    GtkWidget *hsep;
     GtkWidget *lb_rank_p1_left;
     GtkWidget *lb_rank_p2_left;
     GtkWidget *lb_rank_p3_left;
@@ -460,6 +461,7 @@ void create_interface()
                 lb_game_gereizt_right,
                 1, 2, 3, 4);
 
+        /* game rankings */
         frame_rank = gtk_frame_new("Spielstand");
         gtk_frame_set_label_align(GTK_FRAME(frame_rank), 0.5, 0.5);
         gtk_box_pack_start(GTK_BOX(vbox), frame_rank, TRUE, TRUE, 2);
@@ -477,6 +479,7 @@ void create_interface()
         gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
                 vbox_table);
 
+        /* players' points table */
         table_rank = gtk_table_new(1, 3, TRUE);
         gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(table_rank), 10);
@@ -496,6 +499,9 @@ void create_interface()
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p3_left,
                 2, 3, 0, 1);
+
+        hsep = gtk_hseparator_new();
+        gtk_box_pack_start(GTK_BOX(vbox_table), hsep, FALSE, TRUE, 0);
 
         table_points = gtk_table_new(1, 3, TRUE);
         gtk_container_set_border_width(GTK_CONTAINER(table_points), 10);
