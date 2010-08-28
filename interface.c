@@ -352,12 +352,13 @@ void create_interface()
     GtkWidget *scrolled_win;
     GtkWidget *vbox_table;
     GtkWidget *table_rank;
+    GtkWidget *hbox_points;
     GtkWidget *lb_rank_p1_left;
     GtkWidget *lb_rank_p2_left;
     GtkWidget *lb_rank_p3_left;
-    GtkWidget *lb_rank_p1_right;
-    GtkWidget *lb_rank_p2_right;
-    GtkWidget *lb_rank_p3_right;
+    GtkWidget *lb_rank_p1;
+    GtkWidget *lb_rank_p2;
+    GtkWidget *lb_rank_p3;
     GtkWidget *button;
 
     gchar *iconfile = (gchar *) g_malloc(sizeof(gchar) * strlen(DATA_DIR)+20);
@@ -365,7 +366,7 @@ void create_interface()
     if (iconfile)
         g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 10);
+    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 11);
 
     if (gskat.allwidgets != NULL)
     {
@@ -467,6 +468,8 @@ void create_interface()
         scrolled_win = gtk_scrolled_window_new(NULL, NULL);
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_win),
+                GTK_SHADOW_NONE);
         gtk_container_add(GTK_CONTAINER(frame_rank), scrolled_win);
 
         vbox_table = gtk_vbox_new(FALSE, 2);
@@ -474,11 +477,11 @@ void create_interface()
         gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
                 vbox_table);
 
-        table_rank = gtk_table_new(2, 3, TRUE);
+        table_rank = gtk_table_new(1, 3, TRUE);
         gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(table_rank), 10);
-        gtk_table_set_col_spacings(GTK_TABLE(table_rank), 20);
-        gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
+        gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
+        gtk_table_set_row_spacings(GTK_TABLE(table_rank), 10);
 
         lb_rank_p1_left = gtk_label_new(gskat.conf->player_names[0]);
         lb_rank_p2_left = gtk_label_new(gskat.conf->player_names[1]);
@@ -494,19 +497,20 @@ void create_interface()
                 lb_rank_p3_left,
                 2, 3, 0, 1);
 
-        lb_rank_p1_right = gtk_label_new("0");
-        lb_rank_p2_right = gtk_label_new("0");
-        lb_rank_p3_right = gtk_label_new("0");
+        hbox_points = gtk_hbox_new(TRUE, 2);
 
-        gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p1_right,
-                0, 1, 1, 2);
-        gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p2_right,
-                1, 2, 1, 2);
-        gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p3_right,
-                2, 3, 1, 2);
+        lb_rank_p1 = gtk_label_new("0");
+        lb_rank_p2 = gtk_label_new("0");
+        lb_rank_p3 = gtk_label_new("0");
+
+        gtk_box_pack_start(GTK_BOX(hbox_points), lb_rank_p1,
+                FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(hbox_points), lb_rank_p2,
+                FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(hbox_points), lb_rank_p3,
+                FALSE, TRUE, 2);
+
+        gtk_box_pack_start(GTK_BOX(vbox_table), hbox_points, FALSE, TRUE, 2);
 
         button = gtk_button_new_with_label("Neue Runde");
         gtk_widget_set_sensitive(button, FALSE);
@@ -521,10 +525,11 @@ void create_interface()
         gskat.allwidgets[3] = lb_game_re_right;
         gskat.allwidgets[4] = lb_game_spiel_right;
         gskat.allwidgets[5] = lb_game_gereizt_right;
-        gskat.allwidgets[6] = lb_rank_p1_right;
-        gskat.allwidgets[7] = lb_rank_p2_right;
-        gskat.allwidgets[8] = lb_rank_p3_right;
+        gskat.allwidgets[6] = lb_rank_p1;
+        gskat.allwidgets[7] = lb_rank_p2;
+        gskat.allwidgets[8] = lb_rank_p3;
         gskat.allwidgets[9] = frame_game;
+        gskat.allwidgets[10] = table_rank;
 
         /* attach signals */
         g_signal_connect(G_OBJECT(window), "destroy",
@@ -541,6 +546,44 @@ void create_interface()
         gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK);
         g_signal_connect(G_OBJECT(area), "button_press_event",
                 G_CALLBACK(button_press), NULL);
+    }
+}
+
+/**
+ * @brief Update the players' points on the right-hand interface
+ */
+void update_rank_interface()
+{
+    gint i, len = 0;
+    gchar msg[128];
+    player *cur;
+    GtkWidget *rank_label;
+    GtkTable *table = GTK_TABLE(gskat.allwidgets[10]);
+
+    /* update sum of points */
+    g_sprintf(msg, "%d", gskat.players[0]->sum_points);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[6]), msg);
+    g_sprintf(msg, "%d", gskat.players[1]->sum_points);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[7]), msg);
+    g_sprintf(msg, "%d", gskat.players[2]->sum_points);
+    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[8]), msg);
+
+    /* get the number of rows */
+    g_object_get(G_OBJECT(table), "n-rows", &len, NULL);
+
+    /* add a new row in the table_rank list */
+    gtk_table_resize(table, len+1, 3);
+
+    for (i=0; i<3; ++i)
+    {
+        cur = gskat.players[i];
+
+        /* get last entry in round_points list */
+        g_sprintf(msg, "%d", GPOINTER_TO_INT(g_list_nth_data(cur->round_points,
+                        g_list_length(cur->round_points)-1)));
+        rank_label = gtk_label_new(msg);
+        gtk_table_attach_defaults(table, rank_label, i, i+1, len, len+1);
+        gtk_widget_show_all(GTK_WIDGET(table));
     }
 }
 

@@ -1546,12 +1546,7 @@ void end_round(enum finish_type ft)
     gtk_widget_destroy(dialog);
 
     /* update interface */
-    g_sprintf(msg, "%d", gskat.players[0]->sum_points);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[6]), msg);
-    g_sprintf(msg, "%d", gskat.players[1]->sum_points);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[7]), msg);
-    g_sprintf(msg, "%d", gskat.players[2]->sum_points);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[8]), msg);
+    update_rank_interface();
 
     g_sprintf(msg, "Runde %d", gskat.round);
     gtk_frame_set_label(GTK_FRAME(gskat.allwidgets[9]), msg);
