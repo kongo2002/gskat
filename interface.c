@@ -502,9 +502,13 @@ void create_interface()
         gtk_table_set_col_spacings(GTK_TABLE(table_points), 10);
         gtk_table_set_row_spacings(GTK_TABLE(table_points), 5);
 
-        lb_rank_p1 = gtk_label_new("0");
-        lb_rank_p2 = gtk_label_new("0");
-        lb_rank_p3 = gtk_label_new("0");
+        lb_rank_p1 = gtk_label_new("");
+        lb_rank_p2 = gtk_label_new("");
+        lb_rank_p3 = gtk_label_new("");
+
+        gtk_label_set_markup(GTK_LABEL(lb_rank_p1), "<b>0</b>");
+        gtk_label_set_markup(GTK_LABEL(lb_rank_p2), "<b>0</b>");
+        gtk_label_set_markup(GTK_LABEL(lb_rank_p3), "<b>0</b>");
 
         gtk_table_attach_defaults(GTK_TABLE(table_points),
                 lb_rank_p1,
@@ -567,12 +571,12 @@ void update_rank_interface()
     GtkTable *table = GTK_TABLE(gskat.allwidgets[10]);
 
     /* update sum of points */
-    g_sprintf(msg, "%d", gskat.players[0]->sum_points);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[6]), msg);
-    g_sprintf(msg, "%d", gskat.players[1]->sum_points);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[7]), msg);
-    g_sprintf(msg, "%d", gskat.players[2]->sum_points);
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[8]), msg);
+    g_sprintf(msg, "<b>%d</b>", gskat.players[0]->sum_points);
+    gtk_label_set_markup(GTK_LABEL(gskat.allwidgets[6]), msg);
+    g_sprintf(msg, "<b>%d</b>", gskat.players[1]->sum_points);
+    gtk_label_set_markup(GTK_LABEL(gskat.allwidgets[7]), msg);
+    g_sprintf(msg, "<b>%d</b>", gskat.players[2]->sum_points);
+    gtk_label_set_markup(GTK_LABEL(gskat.allwidgets[8]), msg);
 
     /* get the number of rows */
     g_object_get(G_OBJECT(table), "n-rows", &len, NULL);
@@ -588,6 +592,7 @@ void update_rank_interface()
         g_sprintf(msg, "%d", GPOINTER_TO_INT(g_list_nth_data(cur->round_points,
                         g_list_length(cur->round_points)-1)));
         rank_label = gtk_label_new(msg);
+
         gtk_table_attach_defaults(table, rank_label, i, i+1, len, len+1);
         gtk_widget_show_all(GTK_WIDGET(table));
     }
