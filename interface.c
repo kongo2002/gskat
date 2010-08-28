@@ -352,7 +352,7 @@ void create_interface()
     GtkWidget *scrolled_win;
     GtkWidget *vbox_table;
     GtkWidget *table_rank;
-    GtkWidget *hbox_points;
+    GtkWidget *table_points;
     GtkWidget *lb_rank_p1_left;
     GtkWidget *lb_rank_p2_left;
     GtkWidget *lb_rank_p3_left;
@@ -481,7 +481,7 @@ void create_interface()
         gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(table_rank), 10);
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
-        gtk_table_set_row_spacings(GTK_TABLE(table_rank), 10);
+        gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
         lb_rank_p1_left = gtk_label_new(gskat.conf->player_names[0]);
         lb_rank_p2_left = gtk_label_new(gskat.conf->player_names[1]);
@@ -497,20 +497,26 @@ void create_interface()
                 lb_rank_p3_left,
                 2, 3, 0, 1);
 
-        hbox_points = gtk_hbox_new(TRUE, 2);
+        table_points = gtk_table_new(1, 3, TRUE);
+        gtk_container_set_border_width(GTK_CONTAINER(table_points), 10);
+        gtk_table_set_col_spacings(GTK_TABLE(table_points), 10);
+        gtk_table_set_row_spacings(GTK_TABLE(table_points), 5);
 
         lb_rank_p1 = gtk_label_new("0");
         lb_rank_p2 = gtk_label_new("0");
         lb_rank_p3 = gtk_label_new("0");
 
-        gtk_box_pack_start(GTK_BOX(hbox_points), lb_rank_p1,
-                FALSE, TRUE, 2);
-        gtk_box_pack_start(GTK_BOX(hbox_points), lb_rank_p2,
-                FALSE, TRUE, 2);
-        gtk_box_pack_start(GTK_BOX(hbox_points), lb_rank_p3,
-                FALSE, TRUE, 2);
+        gtk_table_attach_defaults(GTK_TABLE(table_points),
+                lb_rank_p1,
+                0, 1, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(table_points),
+                lb_rank_p2,
+                1, 2, 0, 1);
+        gtk_table_attach_defaults(GTK_TABLE(table_points),
+                lb_rank_p3,
+                2, 3, 0, 1);
 
-        gtk_box_pack_start(GTK_BOX(vbox_table), hbox_points, FALSE, TRUE, 2);
+        gtk_box_pack_start(GTK_BOX(vbox_table), table_points, FALSE, TRUE, 2);
 
         button = gtk_button_new_with_label("Neue Runde");
         gtk_widget_set_sensitive(button, FALSE);
