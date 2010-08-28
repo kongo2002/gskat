@@ -76,6 +76,21 @@ gboolean close_config(GtkButton *button, gpointer data)
 }
 
 /**
+ * @brief Callback function of the 'show last trick' dialog window
+ *
+ * Frees all allocated memory belonging to the dialog window
+ */
+gboolean close_show_trick(GtkButton *button, gpointer data)
+{
+    (void) button;
+    GtkWidget *window = (GtkWidget *) data;
+
+    gtk_widget_destroy(window);
+
+    return TRUE;
+}
+
+/**
  * @brief Callback function of the 'apply' button of the config
  * dialog.
  *
@@ -186,6 +201,7 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     (void) data;
     gboolean found = FALSE;
 
+    /* left mouse button click */
     if (event->button == 1)
     {
         if (gskat.state == TAKESKAT && gskat.re == gskat.players[0]
@@ -203,6 +219,12 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
                 play_stich();
             return TRUE;
         }
+    }
+    /* right mouse button click */
+    else if (event->button == 3 && gskat.state == PLAYING)
+    {
+        show_last_tricks();
+        return TRUE;
     }
 
     return found;

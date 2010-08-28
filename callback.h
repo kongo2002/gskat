@@ -25,6 +25,8 @@
 
 gboolean quit(GtkWidget *window, gpointer data);
 
+gboolean close_show_trick(GtkButton *button, gpointer data);
+
 gboolean close_config(GtkButton *button, gpointer data);
 
 gboolean save_config(GtkButton *button, gpointer data);

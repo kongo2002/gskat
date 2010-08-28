@@ -115,6 +115,45 @@ void alloc_app()
 }
 
 /**
+ * @brief Show a dialog window showing the last trick(s)
+ */
+void show_last_tricks()
+{
+    GtkWidget *window;
+    GtkWidget *vbox;
+    GtkWidget *area;
+    GtkWidget *button;
+    card **stich = NULL;
+
+    /* return if there is no stich to show */
+    if (gskat.stich < 2 || (stich = gskat.stiche[gskat.stich-1]) == NULL)
+        return;
+
+    /* dialog window widgets */
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Letzter Stich");
+    gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+    gtk_widget_set_size_request(window, 300, 200);
+
+    vbox = gtk_vbox_new(FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+
+    /* drawing area */
+    area = gtk_drawing_area_new();
+    gtk_box_pack_start(GTK_BOX(vbox), area, TRUE, TRUE, 2);
+    gtk_widget_set_size_request(area, 450, 500);
+    gtk_widget_set_double_buffered(area, TRUE);
+
+    /* close/ok button */
+    button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 2);
+    g_signal_connect(G_OBJECT(button), "clicked",
+            G_CALLBACK(close_show_trick), (gpointer) window);
+
+    gtk_widget_show_all(window);
+}
+
+/**
  * @brief Show the configuration dialog window and initialize the
  * widgets with the current config values
  */
