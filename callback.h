@@ -41,6 +41,8 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
 gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data);
 
+void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data);
+
 void animation_toggle(GtkToggleButton *tbutton, gpointer data);
 
 gboolean realization(GtkWidget *area, gpointer data);

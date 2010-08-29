@@ -226,10 +226,12 @@ void show_config_window()
     GtkWidget *window;
     GtkWidget *vbox;
     GtkWidget *notebook;
+
     GtkWidget *names_label;
     GtkWidget *names_table;
     GtkWidget *player_label[3];
     GtkWidget *player_entry[3];
+
     GtkWidget *misc_label;
     GtkWidget *misc_table;
     GtkWidget *animation_label;
@@ -238,6 +240,14 @@ void show_config_window()
     GtkWidget *animation_duration;
     GtkWidget *debug_label;
     GtkWidget *debug_check;
+
+    GtkWidget *rules_label;
+    GtkWidget *rules_table;
+    GtkWidget *show_tricks_label;
+    GtkWidget *show_tricks_check;
+    GtkWidget *num_show_tricks_label;
+    GtkWidget *num_show_tricks;
+
     GtkWidget *hbox_buttons;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
@@ -259,6 +269,7 @@ void show_config_window()
     /* PLAYER NAMES TABLE */
     names_label = gtk_label_new("Spieler-Namen");
     names_table = gtk_table_new(3, 2, TRUE);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), names_table, names_label);
 
     player_label[0] = gtk_label_new("Spieler-Name:");
     player_label[1] = gtk_label_new("Spieler 1:");
@@ -279,7 +290,42 @@ void show_config_window()
                 1, 2, i, i+1);
     }
 
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), names_table, names_label);
+    /* RULES TABLE */
+    rules_label = gtk_label_new("Regeln");
+    rules_table = gtk_table_new(2, 2, FALSE);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), rules_table, rules_label);
+
+    show_tricks_label = gtk_label_new("Zeige letzten Stich:");
+    gtk_misc_set_alignment(GTK_MISC(show_tricks_label), 0, 0.5);
+
+    show_tricks_check = gtk_check_button_new();
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_tricks_check),
+            gskat.conf->show_tricks);
+    g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
+            G_CALLBACK(show_tricks_toggle), NULL);
+
+    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+            show_tricks_label,
+            0, 1, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+            show_tricks_check,
+            1, 2, 0, 1);
+
+    num_show_tricks_label = gtk_label_new("Anzahl letzter Stiche:");
+    gtk_misc_set_alignment(GTK_MISC(num_show_tricks_label), 0, 0.5);
+
+    num_show_tricks = gtk_spin_button_new_with_range(1, 11, 1.0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(num_show_tricks), 0);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(num_show_tricks),
+            gskat.conf->num_show_tricks);
+    gtk_widget_set_sensitive(num_show_tricks, gskat.conf->show_tricks);
+
+    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+            num_show_tricks_label,
+            0, 1, 1, 2);
+    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+            num_show_tricks,
+            1, 2, 1, 2);
 
     /* MISC TABLE */
     misc_label = gtk_label_new("Sonstiges");
@@ -308,7 +354,7 @@ void show_config_window()
             animation_dur_label,
             0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
-    animation_duration = gtk_spin_button_new_with_range(25, 5000, 10);
+    animation_duration = gtk_spin_button_new_with_range(25, 5000, 10.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
             gskat.conf->anim_duration);
@@ -318,7 +364,7 @@ void show_config_window()
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     g_signal_connect(G_OBJECT(animation_check), "toggled",
-            G_CALLBACK(animation_toggle), animation_dur_label);
+            G_CALLBACK(animation_toggle), NULL);
 
     /* debugging */
     debug_label = gtk_label_new("Debug Meldungen:");
@@ -360,7 +406,7 @@ void show_config_window()
      *
      * TODO: the array has to be freed as well if the window is closed
      * via the window manager */
-    gskat.confwidgets = (GtkWidget **) g_malloc(6 * sizeof(GtkWidget *));
+    gskat.confwidgets = (GtkWidget **) g_malloc(8 * sizeof(GtkWidget *));
 
     gskat.confwidgets[0] = player_entry[0];
     gskat.confwidgets[1] = player_entry[1];
@@ -368,6 +414,8 @@ void show_config_window()
     gskat.confwidgets[3] = animation_check;
     gskat.confwidgets[4] = animation_duration;
     gskat.confwidgets[5] = debug_check;
+    gskat.confwidgets[6] = show_tricks_check;
+    gskat.confwidgets[7] = num_show_tricks;
 
     gtk_widget_show_all(window);
 }
