@@ -53,9 +53,12 @@ static const gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
  */
 enum cposition
 {
-    CP_DIAGONAL,   /**< diagonal */
-    CP_HORIZONTAL, /**< horizontal */
-    CP_VERTICAL    /**< vertical */
+    /** diagonal */
+    CP_DIAGONAL,
+    /** horizontal */
+    CP_HORIZONTAL,
+    /** vertical */
+    CP_VERTICAL
 };
 
 /**
@@ -63,10 +66,14 @@ enum cposition
  */
 typedef struct _dimension
 {
-    gint x; /**< x coordinate */
-    gint y; /**< y coordinate */
-    gint w; /**< width */
-    gint h; /**< height */
+    /** x coordinate */
+    gint x;
+    /** y coordinate */
+    gint y;
+    /** width */
+    gint w;
+    /** height */
+    gint h;
 } dimension;
 
 /**
@@ -74,10 +81,14 @@ typedef struct _dimension
  */
 enum cstatus
 {
-    CS_NOTAVAILABLE, /**< card is not available */
-    CS_AVAILABLE,    /**< card is available */
-    CS_MOVING,       /**< card is moving */
-    CS_DISTRIBUTED   /**< card is distributed */
+    /** card is not available */
+    CS_NOTAVAILABLE,
+    /** card is available */
+    CS_AVAILABLE,
+    /** card is moving */
+    CS_MOVING,
+    /** card is distributed */
+    CS_DISTRIBUTED
 };
 
 /**
@@ -85,14 +96,22 @@ enum cstatus
  */
 enum gstate
 {
-    LOADING,    /**< loading game parts */
-    WAITING,    /**< waiting for user action */
-    GIVE_CARDS, /**< distributing cards to players/skat */
-    PROVOKE,    /**< players are provoking */
-    TAKESKAT,   /**< player takes cards from the skat */
-    PLAYING,    /**< players are playing a game round */
-    READY,      /**< game is loaded */
-    ENDGAME     /**< end of the game */
+    /** loading game parts */
+    LOADING,
+    /** waiting for user action */
+    WAITING,
+    /** distributing cards to players/skat */
+    GIVE_CARDS,
+    /** players are provoking */
+    PROVOKE,
+    /** player takes cards from the skat */
+    TAKESKAT,
+    /** players are playing a game round */
+    PLAYING,
+    /** game is loaded */
+    READY,
+    /** end of the game */
+    ENDGAME
 };
 
 /**
@@ -100,9 +119,12 @@ enum gstate
  */
 enum finish_type
 {
-    FT_NORMAL, /**< game ended normally after 10 rounds */
-    FT_WIN,    /**< re player won the game prematurely */
-    FT_LOST    /**< re player lost the game prematurely */
+    /** game ended normally after 10 rounds */
+    FT_NORMAL,
+    /** re player won the game prematurely */
+    FT_WIN,
+    /** re player lost the game prematurely */
+    FT_LOST
 };
 
 /**
@@ -110,15 +132,24 @@ enum finish_type
  */
 typedef struct _card
 {
-    cairo_surface_t *img; /**< front image */
-    dimension dim;        /**< current dimension/position */
-    gint suit;            /**< card suit */
-    gint rank;            /**< card rank */
-    gint points;          /**< card value */
-    gint owner;           /**< current owner of the card */
-    enum cstatus status;  /**< current card status */
-    gboolean draw;        /**< draw card? */
-    gboolean draw_face;   /**< draw the face of the card? */
+    /** front image */
+    cairo_surface_t *img;
+    /** current dimension/position */
+    dimension dim;
+    /** card suit */
+    gint suit;
+    /** card rank */
+    gint rank;
+    /** card value */
+    gint points;
+    /** current owner of the card */
+    gint owner;
+    /** current card status */
+    enum cstatus status;
+    /** draw card? */
+    gboolean draw;
+    /** draw the face of the card? */
+    gboolean draw_face;
 } card;
 
 /**
@@ -126,10 +157,14 @@ typedef struct _card
  */
 typedef struct _card_move
 {
-    card *mcard; /**< card to move */
-    gint dest_x; /**< x coordinate destination */
-    gint dest_y; /**< y coordinate destination */
-    gint move;   /**< card movement step */
+    /** card to move */
+    card *mcard;
+    /** x coordinate destination */
+    gint dest_x;
+    /** y coordinate destination */
+    gint dest_y;
+    /** card movement step */
+    gint move;
 } card_move;
 
 /**
@@ -137,27 +172,42 @@ typedef struct _card_move
  */
 typedef struct _stich_view
 {
-    gint cur;          /**< index of the currently viewed stich */
-    card **stich;      /**< card array of the current stich */
-    GtkWidget *window; /**< dialog window widget */
-    GtkWidget *area;   /**< GtkDrawingArea where the cards are drawn */
-    GtkWidget *prevb;  /**< previous stich button */
-    GtkWidget *nextb;  /**< next stich button */
+    /** index of the currently viewed stich */
+    gint cur;
+    /** card array of the current stich */
+    card **stich;
+    /** dialog window widget */
+    GtkWidget *window;
+    /** GtkDrawingArea where the cards are drawn */
+    GtkWidget *area;
+    /** previous stich button */
+    GtkWidget *prevb;
+    /** next stich button */
+    GtkWidget *nextb;
 } stich_view;
 
 /**
  * @brief Structure representing a player
  */
 typedef struct _player {
-    gint id;             /**< player id */
-    gchar *name;         /**< player name */
-    gboolean human;      /**< human player? */
-    gboolean re;         /**< re player? */
-    gint gereizt;        /**< value the player provoked */
-    gint points;         /**< points of the current round */
-    GList *round_points; /**< points of each played round */
-    gint sum_points;     /**< points of all played rounds */
-    GList *cards;        /**< list of player's cards */
+    /** player id */
+    gint id;
+    /** player name */
+    gchar *name;
+    /** human player? */
+    gboolean human;
+    /** re player? */
+    gboolean re;
+    /** value the player provoked */
+    gint gereizt;
+    /** points of the current round */
+    gint points;
+    /** points of each played round */
+    GList *round_points;
+    /** points of all played rounds */
+    gint sum_points;
+    /** list of player's cards */
+    GList *cards;
 } player;
 
 /**
