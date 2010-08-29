@@ -125,6 +125,7 @@ void alloc_app()
  */
 void show_last_tricks()
 {
+    gint x, y;
     GtkWidget *window;
     GtkWidget *vbox;
     GtkWidget *area;
@@ -136,11 +137,15 @@ void show_last_tricks()
     if (gskat.stich < 2 || (stich = gskat.stiche[gskat.stich-2]) == NULL)
         return;
 
+    /* get minimal drawing area size to request */
+    x = ((*gskat.stiche[0])->dim.w + 5) * 3 + 5;
+    y = (*gskat.stiche[0])->dim.h + 40;
+
     /* dialog window widgets */
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Letzter Stich");
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-    gtk_widget_set_size_request(window, 300, 200);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -148,7 +153,7 @@ void show_last_tricks()
     /* drawing area */
     area = gtk_drawing_area_new();
     gtk_box_pack_start(GTK_BOX(vbox), area, TRUE, TRUE, 2);
-    gtk_widget_set_size_request(area, 450, 500);
+    gtk_widget_set_size_request(area, x, y);
     gtk_widget_set_double_buffered(area, TRUE);
     g_signal_connect(G_OBJECT(area), "expose-event",
             G_CALLBACK(refresh_tricks), (gpointer) stich);
