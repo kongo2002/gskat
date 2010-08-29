@@ -25,6 +25,12 @@
 
 /**
  * @brief Allocate and initialize a new player structure
+ *
+ * @param id     player id
+ * @param name   player name
+ * @param human  TRUE if player is a human player, otherwise FALSE
+ *
+ * @return the new player object
  */
 player *init_player(gint id, gchar *name, gboolean human)
 {
@@ -314,6 +320,8 @@ void show_config_window()
 
 /**
  * @brief Create the main menu and populate it with the menu items
+ *
+ * @return the new main menu GtkWidget
  */
 static GtkWidget *create_menu()
 {
@@ -653,6 +661,11 @@ void update_rank_interface()
 
 /**
  * @brief Load the card image of the given rank and suit
+ *
+ * @param list  list to put the loaded card into
+ * @param file  file to load the card image from
+ * @param rank  card rank
+ * @param suit  card suit
  */
 void load_card(GList **list, const gchar *file, gint rank, gint suit)
 {
@@ -681,6 +694,10 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
 
 /**
  * @brief Allocate and initialize all 32 game cards
+ *
+ * @param path  path to the card image files
+ *
+ * @return TRUE on success, otherwise FALSE
  */
 gboolean load_cards(const gchar *path)
 {
@@ -735,6 +752,8 @@ gboolean load_cards(const gchar *path)
 
 /**
  * @brief Load an image and create a new cairo surface on its basis
+ *
+ * @param filename  filename of the card image to load
  */
 cairo_surface_t *load_image(gchar *filename)
 {
@@ -754,6 +773,11 @@ cairo_surface_t *load_image(gchar *filename)
 
 /**
  * @brief Position the player's cards on the game table
+ *
+ * @param player  player to position his cards for
+ * @param x       x coordinate of the starting position
+ * @param y       y coordinate of the starting position
+ * @param step    offset between the cards in x direction
  */
 void pos_player_cards(player *player, gint x, gint y, gint step)
 {
@@ -861,6 +885,10 @@ void calc_card_positions()
 
 /**
  * @brief Set the position of the given card on the game table
+ *
+ * @param card    card to set the table position for
+ * @param dest_x  x coordinate of the destination
+ * @param dest_y  y coordinate of the destination
  */
 void set_table_position(card *card, gint *dest_x, gint *dest_y)
 {
@@ -917,6 +945,8 @@ void set_card_move_step(card_move *cm)
  * the movement destination and the movement step.
  *
  * @param data card_move structure that contains the card movement information
+ *
+ * @return FALSE if the card movement is finished, otherwise TRUE
  */
 gboolean move_card(gpointer data)
 {
@@ -965,6 +995,9 @@ gboolean move_card(gpointer data)
 
 /**
  * @brief Draw the cards from the last to the first
+ *
+ * @param cards   list of cards to draw
+ * @param target  cairo drawing object
  */
 void draw_cards(GList *cards, cairo_t *target)
 {
@@ -997,6 +1030,9 @@ void draw_cards(GList *cards, cairo_t *target)
  *
  * The player in the forehand position is drawn in red and
  * the others in black.
+ *
+ * @param player  player to draw the name of
+ * @param cr      cairo drawing object
  */
 void draw_player(player *player, cairo_t *cr)
 {
