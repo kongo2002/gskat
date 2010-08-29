@@ -140,6 +140,8 @@ typedef struct _stich_view
     gint cur;          /**< index of the currently viewed stich */
     card **stich;      /**< card array of the current stich */
     GtkWidget *window; /**< dialog window widget */
+    GtkWidget *prevb;  /**< previous stich button */
+    GtkWidget *nextb;  /**< next stich button */
 } stich_view;
 
 /**

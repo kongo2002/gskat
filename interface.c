@@ -143,10 +143,6 @@ void show_last_tricks()
     if (cur < 0 || (stich = gskat.stiche[cur]) == NULL)
         return;
 
-    /* initialize stich_view structure */
-    if (!(sv = g_malloc(sizeof(stich_view))))
-        return;
-
     /* get minimal drawing area size to request */
     x = ((*gskat.stiche[0])->dim.w + 5) * 3 + 5;
     y = (*gskat.stiche[0])->dim.h + 40;
@@ -157,10 +153,6 @@ void show_last_tricks()
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 
-    sv->cur = cur;
-    sv->stich = stich;
-    sv->window = window;
-
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
@@ -169,8 +161,6 @@ void show_last_tricks()
     gtk_box_pack_start(GTK_BOX(vbox), area, TRUE, TRUE, 2);
     gtk_widget_set_size_request(area, x, y);
     gtk_widget_set_double_buffered(area, TRUE);
-    g_signal_connect(G_OBJECT(area), "expose-event",
-            G_CALLBACK(refresh_tricks), (gpointer) sv);
 
     hsep = gtk_hseparator_new();
     gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
@@ -181,21 +171,37 @@ void show_last_tricks()
     /* previous stich button */
     prev_button = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
     gtk_box_pack_start(GTK_BOX(hbox_button), prev_button, FALSE, FALSE, 2);
-    g_signal_connect(G_OBJECT(prev_button), "clicked",
-            G_CALLBACK(prev_stich_click), (gpointer) sv);
 
     /* close/ok button */
     button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
     gtk_box_pack_start(GTK_BOX(hbox_button), button, FALSE, FALSE, 2);
-    g_signal_connect(G_OBJECT(button), "clicked",
-            G_CALLBACK(close_show_trick), (gpointer) sv);
 
     /* next stich button (initially deactivated) */
     next_button = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
     gtk_box_pack_start(GTK_BOX(hbox_button), next_button, FALSE, FALSE, 2);
     gtk_widget_set_sensitive(next_button, FALSE);
+
+    /* initialize stich_view structure */
+    if (!(sv = g_malloc(sizeof(stich_view))))
+        return;
+
+    sv->cur = cur;
+    sv->stich = stich;
+    sv->window = window;
+    sv->prevb = prev_button;
+    sv->nextb = next_button;
+
+    /* connect signals with callback functions */
+    /* TODO: we need to free the stich_view structure if the
+     * dialog window is closed via the window manager as well */
+    g_signal_connect(G_OBJECT(button), "clicked",
+            G_CALLBACK(close_show_trick), (gpointer) sv);
+    g_signal_connect(G_OBJECT(prev_button), "clicked",
+            G_CALLBACK(prev_stich_click), (gpointer) sv);
     g_signal_connect(G_OBJECT(next_button), "clicked",
             G_CALLBACK(next_stich_click), (gpointer) sv);
+    g_signal_connect(G_OBJECT(area), "expose-event",
+            G_CALLBACK(refresh_tricks), (gpointer) sv);
 
     gtk_widget_show_all(window);
 

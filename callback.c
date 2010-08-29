@@ -106,6 +106,9 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
     if (sv->cur <= 0)
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
+    /* activate next stich button */
+    gtk_widget_set_sensitive(sv->nextb, TRUE);
+
     return TRUE;
 }
 
@@ -122,6 +125,9 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
     /* deactivate button if on the last played stich of the round */
     if (sv->cur >= (gskat.stich - 2))
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+    /* activate previous stich button */
+    gtk_widget_set_sensitive(sv->prevb, TRUE);
 
     return TRUE;
 }
