@@ -27,6 +27,11 @@
 
 /**
  * @brief Leave the gtk main loop and exit the program
+ *
+ * @param window  window triggering the event
+ * @param data    arbitrary user data
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean quit(GtkWidget *window, gpointer data)
 {
@@ -41,6 +46,11 @@ gboolean quit(GtkWidget *window, gpointer data)
 /**
  * @brief Allocate memory for game objects, load all cards
  * and start the first game round
+ *
+ * @param area  GtkDrawingArea triggering the event
+ * @param data  arbitrary user data
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean realization(GtkWidget *area, gpointer data)
 {
@@ -61,6 +71,11 @@ gboolean realization(GtkWidget *area, gpointer data)
  * dialog.
  *
  * Frees the allocated memory for the confwidgets array
+ *
+ * @param button  button that was clicked
+ * @param data    config dialog window widget
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean close_config(GtkButton *button, gpointer data)
 {
@@ -80,6 +95,11 @@ gboolean close_config(GtkButton *button, gpointer data)
  *
  * Frees all allocated memory belonging to the dialog window
  * including the stich_view structure
+ *
+ * @param button  button that was clicked
+ * @param data    stich_view structure
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean close_show_trick(GtkButton *button, gpointer data)
 {
@@ -95,6 +115,11 @@ gboolean close_show_trick(GtkButton *button, gpointer data)
 /**
  * @brief Callback function of the 'previous' button
  * of the 'show last trick' dialog window
+ *
+ * @param button  button that was clicked
+ * @param data    stich_view structure
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean prev_stich_click(GtkButton *button, gpointer data)
 {
@@ -121,6 +146,11 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
 /**
  * @brief Callback function of the 'previous' button
  * of the 'show last trick' dialog window
+ *
+ * @param button  button that was clicked
+ * @param data    stich_view structure
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean next_stich_click(GtkButton *button, gpointer data)
 {
@@ -148,6 +178,11 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
  *
  * Apply the set values and free the allocated memory of the confwidgets
  * array afterwards
+ *
+ * @param button  button that was clicked
+ * @param data    config dialog window widget
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean save_config(GtkButton *button, gpointer data)
 {
@@ -196,6 +231,9 @@ gboolean save_config(GtkButton *button, gpointer data)
 /**
  * @brief Start the next or first round of the game triggered
  * by a click on the 'New Round' button
+ *
+ * @param button  button that was clicked
+ * @param data    arbitrary user data
  */
 void next_round(GtkButton *button, gpointer data)
 {
@@ -236,6 +274,12 @@ void next_round(GtkButton *button, gpointer data)
 /**
  * @brief Recalculate the card positions on the game table
  * after the window being resized
+ *
+ * @param area   GtkDrawingArea triggering the event
+ * @param event  expose event structure
+ * @param data   arbitrary user data
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
@@ -252,6 +296,12 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
  * @brief Callback function of a mouse click event
  *
  * Check for the current game state and trigger the appropriate action
+ *
+ * @param area   GtkDrawingArea triggering the event
+ * @param event  mouse event structure
+ * @param data   arbitrary user data
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
  */
 gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
@@ -290,6 +340,9 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 /**
  * @brief Callback function of the 'animation' checkbox
  * in the config dialog
+ *
+ * @param tbutton  GtkCheckButton triggering the event
+ * @param data     arbitrary user data
  */
 void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 {
@@ -302,6 +355,9 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 /**
  * @brief Callback function of the 'animation' checkbox
  * in the config dialog
+ *
+ * @param tbutton  GtkCheckButton triggering the event
+ * @param data     arbitrary user data
  */
 void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
 {
@@ -313,6 +369,10 @@ void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
 
 /**
  * @brief Redraw the game area on the 'expose' signal
+ *
+ * @param area   GtkDrawingArea triggering the event
+ * @param event  expose event structure
+ * @param data   arbitrary user data
  */
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
@@ -326,6 +386,10 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 
 /**
  * @brief Redraw the card drawing area in the show last tricks dialog window
+ *
+ * @param area   GtkDrawingArea triggering the event
+ * @param event  expose event structure
+ * @param data   stich_view structure
  */
 void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
