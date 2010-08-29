@@ -145,7 +145,7 @@ void show_last_tricks()
 
     /* get minimal drawing area size to request */
     x = ((*gskat.stiche[0])->dim.w + 5) * 3 + 5;
-    y = (*gskat.stiche[0])->dim.h + 40;
+    y = (*gskat.stiche[0])->dim.h + 80;
 
     /* dialog window widgets */
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -1214,6 +1214,7 @@ void draw_area()
 void draw_tricks_area(GtkWidget *area, stich_view *sv)
 {
     gint i, x, y;
+    gchar *caption = NULL;
     cairo_t *cr;
     card **stich = sv->stich;
 
@@ -1231,9 +1232,20 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     /* draw table background */
     draw_table(area, cr);
 
+    /* draw current stich */
+    caption = g_strdup_printf("Stich %d", sv->cur + 1);
+
+    cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
+    cairo_select_font_face(cr, "sans-serif",
+            CAIRO_FONT_SLANT_NORMAL,
+            CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 12);
+    cairo_move_to(cr, area->allocation.width / 2 - 25, 25);
+    cairo_show_text(cr, caption);
+
     /* draw cards of the given stich */
     x = 5;
-    y = 5;
+    y = 40;
 
     for (i=0; i<3; ++i)
     {
@@ -1257,6 +1269,7 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     }
 
     cairo_destroy(cr);
+    g_free(caption);
 
     gdk_window_end_paint(area->window);
 }
