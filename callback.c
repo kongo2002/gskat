@@ -103,8 +103,10 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
     /* refresh the stich pointer */
     sv->stich = gskat.stiche[--sv->cur];
 
-    /* deactivate button if on the first played stich of the round */
-    if (sv->cur <= 0)
+    /* deactivate button if on the first played stich of the round
+     * or if the maximum number of viewable tricks is reached
+     * according to the 'num_show_tricks' config value */
+    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= gskat.conf->num_show_tricks)
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate next stich button */
@@ -278,7 +280,9 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     }
     /* right mouse button click */
     else if (event->button == 3)
-        show_last_tricks();
+        /* show last trick(s) if activated in configuration */
+        if (gskat.conf->show_tricks)
+            show_last_tricks();
 
     return found;
 }

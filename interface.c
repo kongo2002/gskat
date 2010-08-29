@@ -174,8 +174,11 @@ void show_last_tricks()
     prev_button = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
     gtk_box_pack_start(GTK_BOX(hbox_button), prev_button, FALSE, FALSE, 2);
 
-    /* deactivate previous button if the first stich is already shown */
-    if (cur == 0)
+    /* deactivate previous button if the first stich is already shown
+     * or if 'show_tricks' is turned off
+     * or if 'num_show_tricks' == 1 */
+    if (cur == 0 || !gskat.conf->show_tricks ||
+            gskat.conf->num_show_tricks <= 1)
         gtk_widget_set_sensitive(prev_button, FALSE);
 
     /* close/ok button */
