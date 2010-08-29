@@ -125,7 +125,7 @@ void alloc_app()
  */
 void show_last_tricks()
 {
-    gint x, y;
+    gint cur, x, y;
     GtkWidget *window;
     GtkWidget *vbox;
     GtkWidget *area;
@@ -137,16 +137,15 @@ void show_last_tricks()
     card **stich;
     stich_view *sv = NULL;
 
+    cur = gskat.stich - 2;
+
     /* return if there is no stich to show */
-    if (gskat.stich < 2 || (stich = gskat.stiche[gskat.stich-2]) == NULL)
+    if (cur < 0 || (stich = gskat.stiche[cur]) == NULL)
         return;
 
     /* initialize stich_view structure */
     if (!(sv = g_malloc(sizeof(stich_view))))
         return;
-
-    sv->cur = gskat.stich - 2;
-    sv->stich = stich;
 
     /* get minimal drawing area size to request */
     x = ((*gskat.stiche[0])->dim.w + 5) * 3 + 5;
@@ -157,6 +156,10 @@ void show_last_tricks()
     gtk_window_set_title(GTK_WINDOW(window), "Letzter Stich");
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+
+    sv->cur = cur;
+    sv->stich = stich;
+    sv->window = window;
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -178,16 +181,21 @@ void show_last_tricks()
     /* previous stich button */
     prev_button = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
     gtk_box_pack_start(GTK_BOX(hbox_button), prev_button, FALSE, FALSE, 2);
+    g_signal_connect(G_OBJECT(prev_button), "clicked",
+            G_CALLBACK(prev_stich_click), (gpointer) sv);
 
     /* close/ok button */
     button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
     gtk_box_pack_start(GTK_BOX(hbox_button), button, FALSE, FALSE, 2);
     g_signal_connect(G_OBJECT(button), "clicked",
-            G_CALLBACK(close_show_trick), (gpointer) window);
+            G_CALLBACK(close_show_trick), (gpointer) sv);
 
-    /* next stich button */
+    /* next stich button (initially deactivated) */
     next_button = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
     gtk_box_pack_start(GTK_BOX(hbox_button), next_button, FALSE, FALSE, 2);
+    gtk_widget_set_sensitive(next_button, FALSE);
+    g_signal_connect(G_OBJECT(next_button), "clicked",
+            G_CALLBACK(next_stich_click), (gpointer) sv);
 
     gtk_widget_show_all(window);
 

@@ -79,13 +79,49 @@ gboolean close_config(GtkButton *button, gpointer data)
  * @brief Callback function of the 'show last trick' dialog window
  *
  * Frees all allocated memory belonging to the dialog window
+ * including the stich_view structure
  */
 gboolean close_show_trick(GtkButton *button, gpointer data)
 {
     (void) button;
-    GtkWidget *window = (GtkWidget *) data;
+    stich_view *sv = (stich_view *) data;
 
-    gtk_widget_destroy(window);
+    gtk_widget_destroy(sv->window);
+    g_free(sv);
+
+    return TRUE;
+}
+
+/**
+ * @brief Callback function of the 'previous' button
+ * of the 'show last trick' dialog window
+ */
+gboolean prev_stich_click(GtkButton *button, gpointer data)
+{
+    stich_view *sv = (stich_view *) data;
+
+    sv->cur--;
+
+    /* deactivate button if on the first played stich of the round */
+    if (sv->cur <= 0)
+        gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+    return TRUE;
+}
+
+/**
+ * @brief Callback function of the 'previous' button
+ * of the 'show last trick' dialog window
+ */
+gboolean next_stich_click(GtkButton *button, gpointer data)
+{
+    stich_view *sv = (stich_view *) data;
+
+    sv->cur++;
+
+    /* deactivate button if on the last played stich of the round */
+    if (sv->cur >= (gskat.stich - 2))
+        gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     return TRUE;
 }

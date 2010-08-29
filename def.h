@@ -137,8 +137,9 @@ typedef struct _card_move
  */
 typedef struct _stich_view
 {
-    gint cur;     /**< index of the currently viewed stich */
-    card **stich; /**< card array of the current stich */
+    gint cur;          /**< index of the currently viewed stich */
+    card **stich;      /**< card array of the current stich */
+    GtkWidget *window; /**< dialog window widget */
 } stich_view;
 
 /**
