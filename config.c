@@ -86,6 +86,8 @@ void alloc_config()
         gskat.conf->gui = TRUE;
         gskat.conf->animation = TRUE;
         gskat.conf->anim_duration = 200;
+        gskat.conf->show_tricks = TRUE;
+        gskat.conf->num_show_tricks = 1;
         gskat.conf->debug = FALSE;
         gskat.conf->filename = NULL;
     }
@@ -131,6 +133,10 @@ gboolean write_config()
                 gskat.conf->animation);
         g_key_file_set_integer(keys, "gskat", "anim_duration",
                 gskat.conf->anim_duration);
+        g_key_file_set_boolean(keys, "gskat", "show_tricks",
+                gskat.conf->show_tricks);
+        g_key_file_set_integer(keys, "gskat", "num_show_tricks",
+                gskat.conf->num_show_tricks);
         g_key_file_set_boolean(keys, "gskat", "debug", gskat.conf->debug);
 
         key_file_content = g_key_file_to_data(keys, &length, NULL);
@@ -221,6 +227,26 @@ gboolean read_config()
             if (error)
             {
                 DPRINT(("Failed to read 'anim_duration' value from config \
+                            file.\n"));
+                g_clear_error(&error);
+            }
+
+            gskat.conf->show_tricks = g_key_file_get_boolean(keyfile, "gskat",
+                    "show_tricks", &error);
+
+            if (error)
+            {
+                DPRINT(("Failed to read 'show_tricks' value from config \
+                            file.\n"));
+                g_clear_error(&error);
+            }
+
+            gskat.conf->num_show_tricks = g_key_file_get_integer(keyfile,
+                    "gskat", "num_show_tricks", &error);
+
+            if (error)
+            {
+                DPRINT(("Failed to read 'num_show_tricks' value from config \
                             file.\n"));
                 g_clear_error(&error);
             }

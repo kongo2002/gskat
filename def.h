@@ -221,6 +221,10 @@ typedef struct _config
     gboolean gui;
     /** Card animation */
     gboolean animation;
+    /** Show played stiche? */
+    gboolean show_tricks;
+    /** Number of played tricks to show */
+    gint num_show_tricks;
     /** Card animation duration */
     gint anim_duration;
     /** Print debug statements */
