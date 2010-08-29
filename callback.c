@@ -260,7 +260,7 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     (void) event;
 
-    draw_tricks_area(area, (card **) data);
+    draw_tricks_area(area, (stich_view *) data);
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

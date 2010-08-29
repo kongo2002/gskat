@@ -133,6 +133,15 @@ typedef struct _card_move
 } card_move;
 
 /**
+ * @brief Structure containing stich view information
+ */
+typedef struct _stich_view
+{
+    gint cur;     /**< index of the currently viewed stich */
+    card **stich; /**< card array of the current stich */
+} stich_view;
+
+/**
  * @brief Structure representing a player
  */
 typedef struct _player {

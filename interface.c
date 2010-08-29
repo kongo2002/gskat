@@ -131,12 +131,22 @@ void show_last_tricks()
     GtkWidget *area;
     GtkWidget *hsep;
     GtkWidget *hbox_button;
+    GtkWidget *prev_button;
+    GtkWidget *next_button;
     GtkWidget *button;
-    card **stich = NULL;
+    card **stich;
+    stich_view *sv = NULL;
 
     /* return if there is no stich to show */
     if (gskat.stich < 2 || (stich = gskat.stiche[gskat.stich-2]) == NULL)
         return;
+
+    /* initialize stich_view structure */
+    if (!(sv = g_malloc(sizeof(stich_view))))
+        return;
+
+    sv->cur = gskat.stich - 2;
+    sv->stich = stich;
 
     /* get minimal drawing area size to request */
     x = ((*gskat.stiche[0])->dim.w + 5) * 3 + 5;
@@ -157,7 +167,7 @@ void show_last_tricks()
     gtk_widget_set_size_request(area, x, y);
     gtk_widget_set_double_buffered(area, TRUE);
     g_signal_connect(G_OBJECT(area), "expose-event",
-            G_CALLBACK(refresh_tricks), (gpointer) stich);
+            G_CALLBACK(refresh_tricks), (gpointer) sv);
 
     hsep = gtk_hseparator_new();
     gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
@@ -165,15 +175,23 @@ void show_last_tricks()
     hbox_button = gtk_hbox_new(TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_button, FALSE, FALSE, 2);
 
+    /* previous stich button */
+    prev_button = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
+    gtk_box_pack_start(GTK_BOX(hbox_button), prev_button, FALSE, FALSE, 2);
+
     /* close/ok button */
     button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
     gtk_box_pack_start(GTK_BOX(hbox_button), button, FALSE, FALSE, 2);
     g_signal_connect(G_OBJECT(button), "clicked",
             G_CALLBACK(close_show_trick), (gpointer) window);
 
+    /* next stich button */
+    next_button = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
+    gtk_box_pack_start(GTK_BOX(hbox_button), next_button, FALSE, FALSE, 2);
+
     gtk_widget_show_all(window);
 
-    draw_tricks_area(area, stich);
+    draw_tricks_area(area, sv);
 }
 
 /**
@@ -1170,10 +1188,11 @@ void draw_area()
  * @param area   GtkDrawingArea widget the cards are drawn on
  * @param stich  stich (three cards) to draw
  */
-void draw_tricks_area(GtkWidget *area, card **stich)
+void draw_tricks_area(GtkWidget *area, stich_view *sv)
 {
     gint i, x, y;
     cairo_t *cr;
+    card **stich = sv->stich;
 
     GdkRectangle rect =
     {
