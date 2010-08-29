@@ -57,6 +57,8 @@ void draw_cards(GList *cards, cairo_t *target);
 
 void draw_player(player *player, cairo_t *cr);
 
+void draw_tricks_area(GtkWidget *area);
+
 void draw_area();
 
 void free_app();

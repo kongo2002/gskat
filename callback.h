@@ -41,6 +41,8 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data);
 
 gboolean realization(GtkWidget *area, gpointer data);
 
+void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data);
+
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
 #endif /* __CALLBACK_H__ */

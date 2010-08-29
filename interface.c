@@ -144,6 +144,8 @@ void show_last_tricks()
     gtk_box_pack_start(GTK_BOX(vbox), area, TRUE, TRUE, 2);
     gtk_widget_set_size_request(area, 450, 500);
     gtk_widget_set_double_buffered(area, TRUE);
+    g_signal_connect(G_OBJECT(area), "expose-event",
+            G_CALLBACK(refresh_tricks), NULL);
 
     hbox_button = gtk_hbox_new(TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_button, FALSE, FALSE, 2);
@@ -155,6 +157,8 @@ void show_last_tricks()
             G_CALLBACK(close_show_trick), (gpointer) window);
 
     gtk_widget_show_all(window);
+
+    draw_tricks_area(area);
 }
 
 /**
@@ -1100,6 +1104,45 @@ void draw_area()
     cairo_destroy(cr);
 
     gdk_window_end_paint(gskat.area->window);
+}
+
+void draw_tricks_area(GtkWidget *area)
+{
+    cairo_t *cr;
+    cairo_pattern_t *pat;
+
+    GdkRectangle rect =
+    {
+        0, 0,
+        area->allocation.width,
+        area->allocation.height
+    };
+
+    gdk_window_begin_paint_rect(area->window, &rect);
+
+    cr = gdk_cairo_create(area->window);
+
+    if (gskat.bg)
+    {
+        pat = cairo_pattern_create_for_surface(gskat.bg);
+        cairo_pattern_set_extend (pat, CAIRO_EXTEND_REPEAT);
+
+        cairo_set_source(cr, pat);
+
+    }
+    else
+        cairo_set_source_rgb(cr, 0, 0, 0);
+
+    cairo_rectangle(cr, 0, 0,
+            area->allocation.width,
+            area->allocation.height);
+    cairo_fill(cr);
+
+    if (pat)
+        cairo_pattern_destroy(pat);
+    cairo_destroy(cr);
+
+    gdk_window_end_paint(area->window);
 }
 
 /**

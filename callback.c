@@ -256,4 +256,15 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
         draw_area();
 }
 
+/**
+ * @brief Redraw the card drawing area in the show last tricks dialog window
+ */
+void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
+{
+    (void) event;
+    (void) data;
+
+    draw_tricks_area(area);
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */
