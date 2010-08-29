@@ -222,10 +222,7 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     }
     /* right mouse button click */
     else if (event->button == 3)
-    {
         show_last_tricks();
-        return TRUE;
-    }
 
     return found;
 }
@@ -262,9 +259,8 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
     (void) event;
-    (void) data;
 
-    draw_tricks_area(area);
+    draw_tricks_area(area, (card **) data);
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

@@ -133,7 +133,7 @@ void show_last_tricks()
     card **stich = NULL;
 
     /* return if there is no stich to show */
-    if (gskat.stich < 2 || (stich = gskat.stiche[gskat.stich-1]) == NULL)
+    if (gskat.stich < 2 || (stich = gskat.stiche[gskat.stich-2]) == NULL)
         return;
 
     /* dialog window widgets */
@@ -151,7 +151,7 @@ void show_last_tricks()
     gtk_widget_set_size_request(area, 450, 500);
     gtk_widget_set_double_buffered(area, TRUE);
     g_signal_connect(G_OBJECT(area), "expose-event",
-            G_CALLBACK(refresh_tricks), NULL);
+            G_CALLBACK(refresh_tricks), (gpointer) stich);
 
     hbox_button = gtk_hbox_new(TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox_button, FALSE, FALSE, 2);
@@ -164,7 +164,7 @@ void show_last_tricks()
 
     gtk_widget_show_all(window);
 
-    draw_tricks_area(area);
+    draw_tricks_area(area, stich);
 }
 
 /**
@@ -1158,10 +1158,12 @@ void draw_area()
 /**
  * @brief Draw the tricks in the show last tricks dialog window
  *
- * @param area  GtkDrawingArea widget the cards are drawn on
+ * @param area   GtkDrawingArea widget the cards are drawn on
+ * @param stich  stich (three cards) to draw
  */
-void draw_tricks_area(GtkWidget *area)
+void draw_tricks_area(GtkWidget *area, card **stich)
 {
+    gint i, x, y;
     cairo_t *cr;
 
     GdkRectangle rect =
@@ -1175,7 +1177,23 @@ void draw_tricks_area(GtkWidget *area)
 
     cr = gdk_cairo_create(area->window);
 
+    /* draw table background */
     draw_table(area, cr);
+
+    /* draw cards of the given stich */
+    x = 5;
+    y = 5;
+
+    for (i=0; i<3; ++i)
+    {
+        if (stich[i])
+        {
+            cairo_set_source_surface(cr, stich[i]->img, x, y);
+            cairo_paint(cr);
+
+            x += stich[i]->dim.w + 5;
+        }
+    }
 
     cairo_destroy(cr);
 

@@ -59,7 +59,7 @@ void draw_player(player *player, cairo_t *cr);
 
 void draw_table(GtkWidget *area, cairo_t *cr);
 
-void draw_tricks_area(GtkWidget *area);
+void draw_tricks_area(GtkWidget *area, card **stich);
 
 void draw_area();
 
