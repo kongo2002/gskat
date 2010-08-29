@@ -6,15 +6,16 @@ MAJOR FEATURES
 
 * AI: properly implement 'null' and 'grand' games
 * AI: improve bidding algorithm
-* review last trick(s)
 * save and view round/stich history
 * save and load game and round states
 * implement integrated bug reports
 * implement 'ramsch' game
 * add localization/language support
+* review last trick(s)                                                      DONE
 
 MINOR POINTS
 
+* connect review of played trick(s) with a configuration rule/setting
 * show point distribution graph dialog
 * slow down bidding process between computer players
 * improve card movement animation
