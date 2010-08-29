@@ -1188,8 +1188,18 @@ void draw_tricks_area(GtkWidget *area, card **stich)
     {
         if (stich[i])
         {
+            /* draw card image */
             cairo_set_source_surface(cr, stich[i]->img, x, y);
             cairo_paint(cr);
+
+            /* draw card owner's name */
+            cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
+            cairo_select_font_face(cr, "sans-serif",
+                    CAIRO_FONT_SLANT_NORMAL,
+                    CAIRO_FONT_WEIGHT_BOLD);
+            cairo_set_font_size(cr, 12);
+            cairo_move_to(cr, x, y + stich[i]->dim.h + 15);
+            cairo_show_text(cr, gskat.players[stich[i]->owner]->name);
 
             x += stich[i]->dim.w + 5;
         }
