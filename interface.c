@@ -1047,80 +1047,14 @@ void draw_player(player *player, cairo_t *cr)
 }
 
 /**
- * @brief Draw the game area with its players and their cards
+ * @brief Draw the table background
+ *
+ * @param area  GtkDrawingArea widget the background is drawn on
+ * @param cr    Cairo drawing object
  */
-void draw_area()
+void draw_table(GtkWidget *area, cairo_t *cr)
 {
-    gint i;
-    cairo_t *cr;
-    cairo_pattern_t *pat;
-    player *player;
-
-    GdkRectangle rect =
-    {
-        0, 0,
-        gskat.area->allocation.width,
-        gskat.area->allocation.height
-    };
-
-    gdk_window_begin_paint_rect(gskat.area->window, &rect);
-
-    cr = gdk_cairo_create(gskat.area->window);
-
-    if (gskat.bg)
-    {
-        pat = cairo_pattern_create_for_surface(gskat.bg);
-        cairo_pattern_set_extend (pat, CAIRO_EXTEND_REPEAT);
-
-        cairo_set_source(cr, pat);
-
-    }
-    else
-        cairo_set_source_rgb(cr, 0, 0, 0);
-
-    cairo_rectangle(cr, 0, 0,
-            gskat.area->allocation.width,
-            gskat.area->allocation.height);
-    cairo_fill(cr);
-
-    if (gskat.skat)
-        draw_cards(gskat.skat, cr);
-
-    if (gskat.table)
-        draw_cards(gskat.table, cr);
-
-    if (gskat.players)
-    {
-        for (i=0; i<3; ++i)
-        {
-            player = gskat.players[i];
-            draw_cards(player->cards, cr);
-            draw_player(player, cr);
-        }
-    }
-
-    if (pat)
-        cairo_pattern_destroy(pat);
-    cairo_destroy(cr);
-
-    gdk_window_end_paint(gskat.area->window);
-}
-
-void draw_tricks_area(GtkWidget *area)
-{
-    cairo_t *cr;
-    cairo_pattern_t *pat;
-
-    GdkRectangle rect =
-    {
-        0, 0,
-        area->allocation.width,
-        area->allocation.height
-    };
-
-    gdk_window_begin_paint_rect(area->window, &rect);
-
-    cr = gdk_cairo_create(area->window);
+    cairo_pattern_t *pat = NULL;
 
     if (gskat.bg)
     {
@@ -1140,6 +1074,73 @@ void draw_tricks_area(GtkWidget *area)
 
     if (pat)
         cairo_pattern_destroy(pat);
+}
+
+/**
+ * @brief Draw the game area with its players and their cards
+ */
+void draw_area()
+{
+    gint i;
+    cairo_t *cr;
+    player *player;
+
+    GdkRectangle rect =
+    {
+        0, 0,
+        gskat.area->allocation.width,
+        gskat.area->allocation.height
+    };
+
+    gdk_window_begin_paint_rect(gskat.area->window, &rect);
+
+    cr = gdk_cairo_create(gskat.area->window);
+
+    draw_table(gskat.area, cr);
+
+    if (gskat.skat)
+        draw_cards(gskat.skat, cr);
+
+    if (gskat.table)
+        draw_cards(gskat.table, cr);
+
+    if (gskat.players)
+    {
+        for (i=0; i<3; ++i)
+        {
+            player = gskat.players[i];
+            draw_cards(player->cards, cr);
+            draw_player(player, cr);
+        }
+    }
+
+    cairo_destroy(cr);
+
+    gdk_window_end_paint(gskat.area->window);
+}
+
+/**
+ * @brief Draw the tricks in the show last tricks dialog window
+ *
+ * @param area  GtkDrawingArea widget the cards are drawn on
+ */
+void draw_tricks_area(GtkWidget *area)
+{
+    cairo_t *cr;
+
+    GdkRectangle rect =
+    {
+        0, 0,
+        area->allocation.width,
+        area->allocation.height
+    };
+
+    gdk_window_begin_paint_rect(area->window, &rect);
+
+    cr = gdk_cairo_create(area->window);
+
+    draw_table(area, cr);
+
     cairo_destroy(cr);
 
     gdk_window_end_paint(area->window);
