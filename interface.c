@@ -152,6 +152,8 @@ void show_last_tricks()
     gtk_window_set_title(GTK_WINDOW(window), "Letzter Stich");
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_window_set_transient_for(GTK_WINDOW(window),
+            GTK_WINDOW(gskat.allwidgets[0]));
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -244,6 +246,8 @@ void show_config_window()
     gtk_window_set_title(GTK_WINDOW(window), "Einstellungen");
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_widget_set_size_request(window, 300, 200);
+    gtk_window_set_transient_for(GTK_WINDOW(window),
+            GTK_WINDOW(gskat.allwidgets[0]));
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
