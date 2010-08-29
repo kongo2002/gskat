@@ -100,10 +100,8 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
 {
     stich_view *sv = (stich_view *) data;
 
-    sv->cur--;
-
     /* refresh the stich pointer */
-    sv->stich = gskat.stiche[sv->cur];
+    sv->stich = gskat.stiche[--sv->cur];
 
     /* deactivate button if on the first played stich of the round */
     if (sv->cur <= 0)
@@ -126,10 +124,8 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
 {
     stich_view *sv = (stich_view *) data;
 
-    sv->cur++;
-
     /* refresh the stich pointer */
-    sv->stich = gskat.stiche[sv->cur];
+    sv->stich = gskat.stiche[++sv->cur];
 
     /* deactivate button if on the last played stich of the round */
     if (sv->cur >= (gskat.stich - 2))
