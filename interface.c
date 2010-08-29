@@ -172,6 +172,10 @@ void show_last_tricks()
     prev_button = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
     gtk_box_pack_start(GTK_BOX(hbox_button), prev_button, FALSE, FALSE, 2);
 
+    /* deactivate previous button if the first stich is already shown */
+    if (cur == 0)
+        gtk_widget_set_sensitive(prev_button, FALSE);
+
     /* close/ok button */
     button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
     gtk_box_pack_start(GTK_BOX(hbox_button), button, FALSE, FALSE, 2);
@@ -188,12 +192,14 @@ void show_last_tricks()
     sv->cur = cur;
     sv->stich = stich;
     sv->window = window;
+    sv->area = area;
     sv->prevb = prev_button;
     sv->nextb = next_button;
 
-    /* connect signals with callback functions */
-    /* TODO: we need to free the stich_view structure if the
-     * dialog window is closed via the window manager as well */
+    /* connect signals with callback functions
+     *
+     * TODO: we need to free the stich_view structure as well if the
+     * dialog window is closed via the window manager */
     g_signal_connect(G_OBJECT(button), "clicked",
             G_CALLBACK(close_show_trick), (gpointer) sv);
     g_signal_connect(G_OBJECT(prev_button), "clicked",
@@ -346,7 +352,10 @@ void show_config_window()
     gtk_box_pack_start(GTK_BOX(hbox_buttons), cancel_button, FALSE, FALSE, 0);
 
     /* allocate configuration widgets
-     * this array is freed in either 'save_config' or 'close_config' */
+     * this array is freed in either 'save_config' or 'close_config'
+     *
+     * TODO: the array has to be freed as well if the window is closed
+     * via the window manager */
     gskat.confwidgets = (GtkWidget **) g_malloc(6 * sizeof(GtkWidget *));
 
     gskat.confwidgets[0] = player_entry[0];

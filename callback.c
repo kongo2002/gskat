@@ -102,12 +102,18 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
 
     sv->cur--;
 
+    /* refresh the stich pointer */
+    sv->stich = gskat.stiche[sv->cur];
+
     /* deactivate button if on the first played stich of the round */
     if (sv->cur <= 0)
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate next stich button */
     gtk_widget_set_sensitive(sv->nextb, TRUE);
+
+    /* trigger stich drawing */
+    draw_tricks_area(sv->area, sv);
 
     return TRUE;
 }
@@ -122,12 +128,18 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
 
     sv->cur++;
 
+    /* refresh the stich pointer */
+    sv->stich = gskat.stiche[sv->cur];
+
     /* deactivate button if on the last played stich of the round */
     if (sv->cur >= (gskat.stich - 2))
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate previous stich button */
     gtk_widget_set_sensitive(sv->prevb, TRUE);
+
+    /* trigger stich drawing */
+    draw_tricks_area(sv->area, sv);
 
     return TRUE;
 }
