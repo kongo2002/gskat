@@ -122,6 +122,7 @@ void show_last_tricks()
     GtkWidget *window;
     GtkWidget *vbox;
     GtkWidget *area;
+    GtkWidget *hbox_button;
     GtkWidget *button;
     card **stich = NULL;
 
@@ -144,9 +145,12 @@ void show_last_tricks()
     gtk_widget_set_size_request(area, 450, 500);
     gtk_widget_set_double_buffered(area, TRUE);
 
+    hbox_button = gtk_hbox_new(TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_button, FALSE, FALSE, 2);
+
     /* close/ok button */
     button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 2);
+    gtk_box_pack_start(GTK_BOX(hbox_button), button, FALSE, FALSE, 2);
     g_signal_connect(G_OBJECT(button), "clicked",
             G_CALLBACK(close_show_trick), (gpointer) window);
 

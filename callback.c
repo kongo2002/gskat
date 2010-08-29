@@ -221,7 +221,7 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
         }
     }
     /* right mouse button click */
-    else if (event->button == 3 && gskat.state == PLAYING)
+    else if (event->button == 3)
     {
         show_last_tricks();
         return TRUE;
