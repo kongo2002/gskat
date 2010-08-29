@@ -18,7 +18,6 @@ MINOR POINTS
 * rewrite/update configuration if the old config is not valid
 * change the mouse cursor shape depending on the cursor position
   (valid card, non-valid card, table ...)
-* connect review of played trick(s) with a configuration rule/setting
 * show point distribution graph dialog
 * slow down bidding process between computer players
 * improve card movement animation
@@ -27,6 +26,7 @@ MINOR POINTS
   distribution
 * use XDG base directory specification for config/data files                DONE
 * improve game summary display                                              DONE
+* connect review of played trick(s) with a configuration rule/setting       DONE
 
 IMPROVEMENTS
 
