@@ -15,6 +15,8 @@ MAJOR FEATURES
 
 MINOR POINTS
 
+* change the mouse cursor shape depending on the cursor position
+  (valid card, non-valid card, table ...)
 * connect review of played trick(s) with a configuration rule/setting
 * show point distribution graph dialog
 * slow down bidding process between computer players
