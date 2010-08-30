@@ -21,6 +21,23 @@
 #include "def.h"
 #include "config.h"
 
+/* convenience functions */
+#define INT_PROP(address)    { .type = INT   , .ptr.i = &(address) }
+#define DOUBLE_PROP(address) { .type = DOUBLE, .ptr.d = &(address) }
+#define BOOL_PROP(address)   { .type = BOOL  , .ptr.b = &(address) }
+#define LIST_PROP(address)   { .type = LIST  , .ptr.s = &(address) }
+
+/* configuration value table */
+static const property config_values[] = {
+    { "player_names"    , LIST_PROP(gskat.conf.player_names) },
+    { "gui"             , BOOL_PROP(gskat.conf.gui) },
+    { "animation"       , BOOL_PROP(gskat.conf.animation) },
+    { "show_tricks"     , BOOL_PROP(gskat.conf.show_tricks) },
+    { "num_show_tricks" , INT_PROP(gskat.conf.num_show_tricks) },
+    { "anim_duration"   , INT_PROP(gskat.conf.anim_duration) },
+    { "debug"           , BOOL_PROP(gskat.conf.debug) }
+};
+
 /**
  * @brief Load the gskat configuration file
  *
@@ -101,6 +118,17 @@ void set_default_config()
     /* set player names */
     const gchar *user_name = g_getenv("USER");
 
+    /* allocate config structure if necessary */
+    if (!gskat.conf)
+        alloc_config();
+
+    /* free allocated player names before setting the new ones */
+    if (gskat.conf->player_names)
+    {
+        g_strfreev(gskat.conf->player_names);
+        gskat.conf->player_names = NULL;
+    }
+
     gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
 
     gskat.conf->player_names[0] = g_strdup(user_name ? user_name : "Player");
@@ -169,9 +197,10 @@ gboolean write_config()
  */
 gboolean read_config()
 {
+    gint i;
     gsize length;
     gchar *filename = gskat.conf->filename;
-    gboolean done = FALSE;
+    gboolean done = FALSE, failed = FALSE;
     GError *error = NULL;
     GKeyFile *keyfile = NULL;
 
@@ -188,78 +217,46 @@ gboolean read_config()
             g_clear_error(&error);
         }
 
-        /* TODO: this needs to be refactored/modularized */
+#define READ_CONFIG_LEN(var, type, name) gskat.conf->var =                    \
+        g_key_file_get_##type(keyfile, "gskat", name, &length, &error);       \
+        if (error)                                                            \
+        {                                                                     \
+            g_fprintf(stderr, "Failed to read '" name "' from config file\n"); \
+            g_clear_error(&error);                                            \
+            failed = TRUE;                                                    \
+        }
+
+#define READ_CONFIG(var, type, name) gskat.conf->var =                        \
+        g_key_file_get_##type(keyfile, "gskat", name, &error);                \
+        if (error)                                                            \
+        {                                                                     \
+            g_fprintf(stderr, "Failed to read '" name "' from config file\n"); \
+            g_clear_error(&error);                                            \
+            failed = TRUE;                                                    \
+        }
+
         if (done)
         {
             /* read player names */
-            gskat.conf->player_names = g_key_file_get_string_list(keyfile,
-                    "gskat", "player_names", &length, &error);
-
-            if (error)
-            {
-                DPRINT(("Failed to read player names.\n"));
-                g_clear_error(&error);
-            }
+            READ_CONFIG_LEN(player_names, string_list, "player_names");
 
             /* read other values */
-            gskat.conf->gui = g_key_file_get_boolean(keyfile, "gskat",
-                    "gui", &error);
+            READ_CONFIG(gui, boolean, "gui");
+            READ_CONFIG(animation, boolean, "animation");
+            READ_CONFIG(anim_duration, integer, "anim_duration");
+            READ_CONFIG(show_tricks, boolean, "show_tricks");
+            READ_CONFIG(num_show_tricks, integer, "num_show_tricks");
+            READ_CONFIG(debug, boolean, "debug");
+        }
 
-            if (error)
-            {
-                DPRINT(("Failed to read 'gui' value from config file.\n"));
-                g_clear_error(&error);
-            }
+#undef READ_CONFIG_LEN
+#undef READ_CONFIG
 
-            gskat.conf->animation = g_key_file_get_boolean(keyfile, "gskat",
-                    "animation", &error);
-
-            if (error)
-            {
-                DPRINT(("Failed to read 'animation' value from config \
-                            file.\n"));
-                g_clear_error(&error);
-            }
-
-            gskat.conf->anim_duration = g_key_file_get_integer(keyfile, "gskat",
-                    "anim_duration", &error);
-
-            if (error)
-            {
-                DPRINT(("Failed to read 'anim_duration' value from config \
-                            file.\n"));
-                g_clear_error(&error);
-            }
-
-            gskat.conf->show_tricks = g_key_file_get_boolean(keyfile, "gskat",
-                    "show_tricks", &error);
-
-            if (error)
-            {
-                DPRINT(("Failed to read 'show_tricks' value from config \
-                            file.\n"));
-                g_clear_error(&error);
-            }
-
-            gskat.conf->num_show_tricks = g_key_file_get_integer(keyfile,
-                    "gskat", "num_show_tricks", &error);
-
-            if (error)
-            {
-                DPRINT(("Failed to read 'num_show_tricks' value from config \
-                            file.\n"));
-                g_clear_error(&error);
-            }
-
-            gskat.conf->debug = g_key_file_get_boolean(keyfile, "gskat",
-                    "debug", &error);
-
-            if (error)
-            {
-                DPRINT(("Failed to read 'debug' value from config file.\n"));
-                g_clear_error(&error);
-            }
-
+        /* rewrite config if not all values could be read successfully */
+        if (!done || failed)
+        {
+            DPRINT(("Rewriting config file.\n"));
+            write_config();
         }
 
         g_key_file_free(keyfile);

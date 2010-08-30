@@ -23,6 +23,43 @@
 
 #include "def.h"
 
+/**
+ * @brief Enumeration of different configuration value types
+ */
+typedef enum
+{
+    INT,
+    DOUBLE,
+    BOOL,
+    LIST
+} property_type;
+
+/**
+ * @brief Configuration value structure
+ */
+typedef struct
+{
+    property_type type;
+    union
+    {
+        gint *i;
+        gdouble *d;
+        gboolean *b;
+        gchar ***s;
+    } ptr;
+} property_value;
+
+/**
+ * @brief Configuration element structure
+ *
+ * These elements are stored inside a hash table
+ */
+typedef struct
+{
+    const gchar *name;
+    property_value pval;
+} property;
+
 void load_config();
 
 gboolean create_conf_dir(const gchar *config_dir);

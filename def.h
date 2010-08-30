@@ -281,7 +281,7 @@ typedef struct _app
     /** Null game */
     gboolean null;
     /** Configuration */
-    config *conf;
+    config conf;
 } app;
 
 extern app gskat;

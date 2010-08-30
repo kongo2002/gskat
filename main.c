@@ -111,8 +111,8 @@ int main(int argc, const char *argv[])
             return 0;
         }
 
-        /* allocate configuration */
-        alloc_config();
+        /* initialize configuration */
+        set_default_config();
 
         /* load configuration */
         load_config();
