@@ -128,9 +128,11 @@ gboolean write_config()
 
     if (keys)
     {
+        /* write player names into keyfile */
         g_key_file_set_string_list(keys, "gskat", "player_names",
                 (const gchar **) gskat.conf.player_names, 3);
 
+        /* add all remaining config values to keyfile content */
         for (i=0; config_values[i].name != NULL; ++i)
             get_config_value(keys, (property *) &config_values[i]);
 
