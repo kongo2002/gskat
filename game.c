@@ -1236,7 +1236,7 @@ void throw_card(card *_card)
     index = g_list_length(gskat.table) - 1;
     stich[index] = _card;
 
-    if (gskat.conf->gui && gskat.conf->animation)
+    if (gskat.conf.gui && gskat.conf.animation)
     {
         /* initiate card movement animation */
         _card->status = CS_MOVING;

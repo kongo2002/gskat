@@ -280,7 +280,7 @@ typedef struct _app
     gboolean hand;
     /** Null game */
     gboolean null;
-    /** Configuration */
+    /** Configuration structure */
     config conf;
 } app;
 

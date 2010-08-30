@@ -104,7 +104,7 @@ void alloc_app()
     if (gskat.players)
     {
         for (i=0; i<3; ++i)
-            gskat.players[i] = init_player(i, gskat.conf->player_names[i],
+            gskat.players[i] = init_player(i, gskat.conf.player_names[i],
                     i ? FALSE : TRUE);
     }
     else
@@ -177,8 +177,8 @@ void show_last_tricks()
     /* deactivate previous button if the first stich is already shown
      * or if 'show_tricks' is turned off
      * or if 'num_show_tricks' == 1 */
-    if (cur == 0 || !gskat.conf->show_tricks ||
-            gskat.conf->num_show_tricks <= 1)
+    if (cur == 0 || !gskat.conf.show_tricks ||
+            gskat.conf.num_show_tricks <= 1)
         gtk_widget_set_sensitive(prev_button, FALSE);
 
     /* close/ok button */
@@ -287,7 +287,7 @@ void show_config_window()
 
         player_entry[i] = gtk_entry_new();
         gtk_entry_set_text(GTK_ENTRY(player_entry[i]),
-                gskat.conf->player_names[i]);
+                gskat.conf.player_names[i]);
         gtk_table_attach_defaults(GTK_TABLE(names_table),
                 player_entry[i],
                 1, 2, i, i+1);
@@ -303,7 +303,7 @@ void show_config_window()
 
     show_tricks_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_tricks_check),
-            gskat.conf->show_tricks);
+            gskat.conf.show_tricks);
     g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
             G_CALLBACK(show_tricks_toggle), NULL);
 
@@ -320,8 +320,8 @@ void show_config_window()
     num_show_tricks = gtk_spin_button_new_with_range(1, 11, 1.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(num_show_tricks), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(num_show_tricks),
-            gskat.conf->num_show_tricks);
-    gtk_widget_set_sensitive(num_show_tricks, gskat.conf->show_tricks);
+            gskat.conf.num_show_tricks);
+    gtk_widget_set_sensitive(num_show_tricks, gskat.conf.show_tricks);
 
     gtk_table_attach_defaults(GTK_TABLE(rules_table),
             num_show_tricks_label,
@@ -344,7 +344,7 @@ void show_config_window()
 
     animation_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_check),
-            gskat.conf->animation);
+            gskat.conf.animation);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -352,7 +352,7 @@ void show_config_window()
     /* animation duration */
     animation_dur_label = gtk_label_new("Animationsdauer:");
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
-    gtk_widget_set_sensitive(animation_dur_label, gskat.conf->animation);
+    gtk_widget_set_sensitive(animation_dur_label, gskat.conf.animation);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_dur_label,
             0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
@@ -360,8 +360,8 @@ void show_config_window()
     animation_duration = gtk_spin_button_new_with_range(25, 5000, 10.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
-            gskat.conf->anim_duration);
-    gtk_widget_set_sensitive(animation_duration, gskat.conf->animation);
+            gskat.conf.anim_duration);
+    gtk_widget_set_sensitive(animation_duration, gskat.conf.animation);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -378,7 +378,7 @@ void show_config_window()
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
-            gskat.conf->debug);
+            gskat.conf.debug);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -646,9 +646,9 @@ void create_interface()
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
         gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-        lb_rank_p1_left = gtk_label_new(gskat.conf->player_names[0]);
-        lb_rank_p2_left = gtk_label_new(gskat.conf->player_names[1]);
-        lb_rank_p3_left = gtk_label_new(gskat.conf->player_names[2]);
+        lb_rank_p1_left = gtk_label_new(gskat.conf.player_names[0]);
+        lb_rank_p2_left = gtk_label_new(gskat.conf.player_names[1]);
+        lb_rank_p3_left = gtk_label_new(gskat.conf.player_names[2]);
 
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
                 lb_rank_p1_left,
@@ -1039,7 +1039,7 @@ void set_card_move_step(card_move *cm)
     gint dy = abs(ptr->dim.y - cm->dest_y);
     gint diff_max = (dx < dy) ? dx : dy;
 
-    cm->move = diff_max / ((gdouble) gskat.conf->anim_duration / 25);
+    cm->move = diff_max / ((gdouble) gskat.conf.anim_duration / 25);
 }
 
 /**
@@ -1365,14 +1365,11 @@ void free_app()
     gskat.played = NULL;
 
     /* free player names */
-    g_strfreev(gskat.conf->player_names);
-    gskat.conf->player_names = NULL;
+    g_strfreev(gskat.conf.player_names);
+    gskat.conf.player_names = NULL;
 
-    g_free(gskat.conf->filename);
-    gskat.conf->filename = NULL;
-
-    g_free(gskat.conf);
-    gskat.conf = NULL;
+    g_free(gskat.conf.filename);
+    gskat.conf.filename = NULL;
 
     /* free played stiche */
     for (i=0; i<10; ++i)

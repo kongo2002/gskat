@@ -76,7 +76,6 @@ void initialize()
     gskat.stich       = 1;
     gskat.hand        = FALSE;
     gskat.null        = FALSE;
-    gskat.conf        = NULL;
 }
 
 int main(int argc, const char *argv[])
@@ -119,11 +118,11 @@ int main(int argc, const char *argv[])
 
         /* toggle gui if desired */
         if (cli_mode)
-            gskat.conf->gui = FALSE;
+            gskat.conf.gui = FALSE;
 
         /* disable card animation if desired */
         if (no_animation)
-            gskat.conf->animation = FALSE;
+            gskat.conf.animation = FALSE;
 
         /* initialize interface */
         create_interface();

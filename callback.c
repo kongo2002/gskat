@@ -131,7 +131,7 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
     /* deactivate button if on the first played stich of the round
      * or if the maximum number of viewable tricks is reached
      * according to the 'num_show_tricks' config value */
-    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= gskat.conf->num_show_tricks)
+    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= gskat.conf.num_show_tricks)
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate next stich button */
@@ -196,26 +196,26 @@ gboolean save_config(GtkButton *button, gpointer data)
     {
         cptr = gtk_entry_get_text(GTK_ENTRY(gskat.confwidgets[i]));
 
-        if (strcmp(gskat.conf->player_names[i], cptr))
+        if (strcmp(gskat.conf.player_names[i], cptr))
         {
-            g_free(gskat.conf->player_names[i]);
-            gskat.conf->player_names[i] = g_strdup(cptr);
+            g_free(gskat.conf.player_names[i]);
+            gskat.conf.player_names[i] = g_strdup(cptr);
         }
     }
 
-    gskat.conf->animation = gtk_toggle_button_get_active(
+    gskat.conf.animation = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[3]));
 
-    gskat.conf->anim_duration = gtk_spin_button_get_value_as_int(
+    gskat.conf.anim_duration = gtk_spin_button_get_value_as_int(
             GTK_SPIN_BUTTON(gskat.confwidgets[4]));
 
-    gskat.conf->show_tricks = gtk_toggle_button_get_active(
+    gskat.conf.show_tricks = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[6]));
 
-    gskat.conf->num_show_tricks = gtk_spin_button_get_value_as_int(
+    gskat.conf.num_show_tricks = gtk_spin_button_get_value_as_int(
             GTK_SPIN_BUTTON(gskat.confwidgets[7]));
 
-    gskat.conf->debug = gtk_toggle_button_get_active(
+    gskat.conf.debug = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[5]));
 
     write_config();
@@ -331,7 +331,7 @@ gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
     /* right mouse button click */
     else if (event->button == 3)
         /* show last trick(s) if activated in configuration */
-        if (gskat.conf->show_tricks)
+        if (gskat.conf.show_tricks)
             show_last_tricks();
 
     return found;

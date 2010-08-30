@@ -25,17 +25,17 @@
 #define INT_PROP(address)    { .type = INT   , .ptr.i = &(address) }
 #define DOUBLE_PROP(address) { .type = DOUBLE, .ptr.d = &(address) }
 #define BOOL_PROP(address)   { .type = BOOL  , .ptr.b = &(address) }
-#define LIST_PROP(address)   { .type = LIST  , .ptr.s = &(address) }
+#define STR_PROP(address)    { .type = STR   , .ptr.s = &(address) }
 
 /* configuration value table */
 static const property config_values[] = {
-    { "player_names"    , LIST_PROP(gskat.conf.player_names) },
     { "gui"             , BOOL_PROP(gskat.conf.gui) },
     { "animation"       , BOOL_PROP(gskat.conf.animation) },
     { "show_tricks"     , BOOL_PROP(gskat.conf.show_tricks) },
     { "num_show_tricks" , INT_PROP(gskat.conf.num_show_tricks) },
     { "anim_duration"   , INT_PROP(gskat.conf.anim_duration) },
-    { "debug"           , BOOL_PROP(gskat.conf.debug) }
+    { "debug"           , BOOL_PROP(gskat.conf.debug) },
+    { NULL              , { .type = INT, .ptr.i = NULL } }
 };
 
 /**
@@ -61,13 +61,13 @@ void load_config()
         config_dir = (gchar *) home_dir;
     }
 
-    if (!gskat.conf->filename)
+    if (!gskat.conf.filename)
     {
         filename = g_strconcat(config_dir, "/gskat/gskat.conf", NULL);
-        gskat.conf->filename = filename;
+        gskat.conf.filename = filename;
     }
     else
-        filename = gskat.conf->filename;
+        filename = gskat.conf.filename;
 
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
@@ -81,32 +81,9 @@ void load_config()
         DPRINT(("Failed to load config from '%s'\n", filename));
         DPRINT(("Using default settings instead.\n"));
 
-        /* set default values */
-        set_default_config();
-
         /* try to save config */
         if (create_conf_dir(config_dir))
             write_config();
-    }
-}
-
-/**
- * @brief Allocate the configuration structure and set the default values
- */
-void alloc_config()
-{
-    gskat.conf = (config *) g_malloc(sizeof(config));
-
-    if (gskat.conf)
-    {
-        gskat.conf->player_names = NULL;
-        gskat.conf->gui = TRUE;
-        gskat.conf->animation = TRUE;
-        gskat.conf->anim_duration = 200;
-        gskat.conf->show_tricks = TRUE;
-        gskat.conf->num_show_tricks = 1;
-        gskat.conf->debug = FALSE;
-        gskat.conf->filename = NULL;
     }
 }
 
@@ -115,26 +92,23 @@ void alloc_config()
  */
 void set_default_config()
 {
-    /* set player names */
     const gchar *user_name = g_getenv("USER");
 
-    /* allocate config structure if necessary */
-    if (!gskat.conf)
-        alloc_config();
+    gskat.conf.gui = TRUE;
+    gskat.conf.animation = TRUE;
+    gskat.conf.anim_duration = 200;
+    gskat.conf.show_tricks = TRUE;
+    gskat.conf.num_show_tricks = 1;
+    gskat.conf.debug = FALSE;
+    gskat.conf.filename = NULL;
 
-    /* free allocated player names before setting the new ones */
-    if (gskat.conf->player_names)
-    {
-        g_strfreev(gskat.conf->player_names);
-        gskat.conf->player_names = NULL;
-    }
+    /* set player names */
+    gskat.conf.player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
 
-    gskat.conf->player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
-
-    gskat.conf->player_names[0] = g_strdup(user_name ? user_name : "Player");
-    gskat.conf->player_names[1] = g_strdup("Cuyo");
-    gskat.conf->player_names[2] = g_strdup("Dozo");
-    gskat.conf->player_names[3] = NULL;
+    gskat.conf.player_names[0] = g_strdup(user_name ? user_name : "Player");
+    gskat.conf.player_names[1] = g_strdup("Cuyo");
+    gskat.conf.player_names[2] = g_strdup("Dozo");
+    gskat.conf.player_names[3] = NULL;
 }
 
 /**
@@ -142,8 +116,9 @@ void set_default_config()
  */
 gboolean write_config()
 {
+    gint i;
     gsize length;
-    gchar *filename = gskat.conf->filename;
+    gchar *filename = gskat.conf.filename;
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
     GKeyFile *keys = NULL;
@@ -154,18 +129,10 @@ gboolean write_config()
     if (keys)
     {
         g_key_file_set_string_list(keys, "gskat", "player_names",
-                (const gchar **) gskat.conf->player_names, 3);
+                (const gchar **) gskat.conf.player_names, 3);
 
-        g_key_file_set_boolean(keys, "gskat", "gui", gskat.conf->gui);
-        g_key_file_set_boolean(keys, "gskat", "animation",
-                gskat.conf->animation);
-        g_key_file_set_integer(keys, "gskat", "anim_duration",
-                gskat.conf->anim_duration);
-        g_key_file_set_boolean(keys, "gskat", "show_tricks",
-                gskat.conf->show_tricks);
-        g_key_file_set_integer(keys, "gskat", "num_show_tricks",
-                gskat.conf->num_show_tricks);
-        g_key_file_set_boolean(keys, "gskat", "debug", gskat.conf->debug);
+        for (i=0; config_values[i].name != NULL; ++i)
+            get_config_value(keys, (property *) &config_values[i]);
 
         key_file_content = g_key_file_to_data(keys, &length, NULL);
 
@@ -193,13 +160,98 @@ gboolean write_config()
 }
 
 /**
+ * @brief Write a configuration value in a keyfile in order to
+ * write a new config file to disk
+ *
+ * @param keyfile  GKeyfile containing the new values
+ * @param prop     property element of the config_values array
+ */
+void get_config_value(GKeyFile *keyfile, property *prop)
+{
+    if (!prop)
+        return;
+
+    switch (prop->pval.type)
+    {
+        case INT:
+            g_key_file_set_integer(keyfile, "gskat", prop->name,
+                    *prop->pval.ptr.i);
+            break;
+        case BOOL:
+            g_key_file_set_boolean(keyfile, "gskat", prop->name,
+                    *prop->pval.ptr.b);
+            break;
+        case DOUBLE:
+            g_key_file_set_double(keyfile, "gskat", prop->name,
+                    *prop->pval.ptr.d);
+            break;
+        case STR:
+            g_key_file_set_string(keyfile, "gskat", prop->name,
+                    *prop->pval.ptr.s);
+            break;
+        default:
+            break;
+    }
+}
+/**
+ * @brief Read a configuration value from the keyfile and apply
+ * the new value to the global config structure
+ *
+ * @param keyfile  GKeyfile containing the parsed values
+ * @param prop     property element of the config_values array
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean set_config_value(GKeyFile *keyfile, property *prop)
+{
+    GError *error = NULL;
+
+    if (!prop)
+        return FALSE;
+
+    switch (prop->pval.type)
+    {
+        case INT:
+            *prop->pval.ptr.i = g_key_file_get_integer(keyfile, "gskat",
+                    prop->name, &error);
+            break;
+        case BOOL:
+            *prop->pval.ptr.b = g_key_file_get_boolean(keyfile, "gskat",
+                    prop->name, &error);
+            break;
+        case DOUBLE:
+            *prop->pval.ptr.d = g_key_file_get_double(keyfile, "gskat",
+                    prop->name, &error);
+            break;
+        case STR:
+            *prop->pval.ptr.s = g_key_file_get_string(keyfile, "gskat",
+                    prop->name, &error);
+            break;
+        default:
+            return FALSE;
+
+    }
+
+    if (error)
+    {
+        DPRINT(("Failed to read '%s' from config file.\n", prop->name));
+        g_clear_error(&error);
+
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+/**
  * @brief Read the configuration values from the config file
  */
 gboolean read_config()
 {
     gint i;
     gsize length;
-    gchar *filename = gskat.conf->filename;
+    gchar **names = NULL;
+    gchar *filename = gskat.conf.filename;
     gboolean done = FALSE, failed = FALSE;
     GError *error = NULL;
     GKeyFile *keyfile = NULL;
@@ -215,42 +267,32 @@ gboolean read_config()
         {
             DPRINT(("Failed to read configuration: %s\n", error->message));
             g_clear_error(&error);
+
+            return FALSE;
         }
 
-#define READ_CONFIG_LEN(var, type, name) gskat.conf->var =                    \
-        g_key_file_get_##type(keyfile, "gskat", name, &length, &error);       \
-        if (error)                                                            \
-        {                                                                     \
-            g_fprintf(stderr, "Failed to read '" name "' from config file\n"); \
-            g_clear_error(&error);                                            \
-            failed = TRUE;                                                    \
-        }
+        /* read player names */
+        names = g_key_file_get_string_list(keyfile, "gskat", "player_names",
+                &length, &error);
 
-#define READ_CONFIG(var, type, name) gskat.conf->var =                        \
-        g_key_file_get_##type(keyfile, "gskat", name, &error);                \
-        if (error)                                                            \
-        {                                                                     \
-            g_fprintf(stderr, "Failed to read '" name "' from config file\n"); \
-            g_clear_error(&error);                                            \
-            failed = TRUE;                                                    \
-        }
-
-        if (done)
+        if (error)
         {
-            /* read player names */
-            READ_CONFIG_LEN(player_names, string_list, "player_names");
-
-            /* read other values */
-            READ_CONFIG(gui, boolean, "gui");
-            READ_CONFIG(animation, boolean, "animation");
-            READ_CONFIG(anim_duration, integer, "anim_duration");
-            READ_CONFIG(show_tricks, boolean, "show_tricks");
-            READ_CONFIG(num_show_tricks, integer, "num_show_tricks");
-            READ_CONFIG(debug, boolean, "debug");
+            DPRINT(("Failed to read 'player_names' from config file.\n"));
+            failed = TRUE;
+            g_clear_error(&error);
+        }
+        else
+        {
+            g_strfreev(gskat.conf.player_names);
+            gskat.conf.player_names = names;
         }
 
-#undef READ_CONFIG_LEN
-#undef READ_CONFIG
+        /* read all remaining config values */
+        for (i=0; config_values[i].name != NULL; ++i)
+        {
+            if (!set_config_value(keyfile, (property *) &config_values[i]))
+                failed = TRUE;
+        }
 
         /* rewrite config if not all values could be read successfully */
         if (!done || failed)

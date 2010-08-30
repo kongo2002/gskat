@@ -31,7 +31,7 @@ typedef enum
     INT,
     DOUBLE,
     BOOL,
-    LIST
+    STR
 } property_type;
 
 /**
@@ -45,14 +45,12 @@ typedef struct
         gint *i;
         gdouble *d;
         gboolean *b;
-        gchar ***s;
+        gchar **s;
     } ptr;
 } property_value;
 
 /**
  * @brief Configuration element structure
- *
- * These elements are stored inside a hash table
  */
 typedef struct
 {
@@ -64,11 +62,13 @@ void load_config();
 
 gboolean create_conf_dir(const gchar *config_dir);
 
+void get_config_value(GKeyFile *keyfile, property *prop);
+
+gboolean set_config_value(GKeyFile *keyfile, property *prop);
+
 gboolean write_config();
 
 gboolean read_config();
-
-void alloc_config();
 
 void set_default_config();
 
