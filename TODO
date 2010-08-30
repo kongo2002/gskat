@@ -22,6 +22,7 @@ MINOR POINTS
 * slow down bidding process between computer players
 * improve card movement animation
 * design and implement a game icon
+* design and draw own card image set
 * integrate optional pre-round random seed definition for card
   distribution
 * use XDG base directory specification for config/data files                DONE
