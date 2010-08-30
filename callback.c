@@ -200,6 +200,9 @@ gboolean save_config(GtkButton *button, gpointer data)
         {
             g_free(gskat.conf.player_names[i]);
             gskat.conf.player_names[i] = g_strdup(cptr);
+
+            /* refresh game area when a player name has changed */
+            draw_area();
         }
     }
 
