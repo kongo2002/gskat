@@ -13,7 +13,7 @@ all: ${EXECUTABLE}
 .c.o:
 	${CC} -c ${CFLAGS} ${CPPFLAGS} $< -o $@
 
-${OBJECTS}: ${HEADS}
+${OBJECTS}: ${HEADS} Makefile
 
 ${EXECUTABLE}: ${OBJECTS}
 	${CC} ${OBJECTS} ${LDFLAGS} -o $@
