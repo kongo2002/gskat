@@ -118,6 +118,10 @@ void alloc_app()
 
     /* initialize suit icons */
     load_icons();
+
+    /* initialize alternative cursor shapes */
+    gskat.cross_cursor = gdk_cursor_new(GDK_DIAMOND_CROSS);
+    gskat.hand_cursor = gdk_cursor_new(GDK_HAND1);
 }
 
 /**
@@ -729,7 +733,7 @@ void create_interface()
         g_signal_connect(G_OBJECT(area), "button_press_event",
                 G_CALLBACK(mouse_click), NULL);
         g_signal_connect(G_OBJECT(area), "motion-notify-event",
-                G_CALLBACK(mouse_move), window);
+                G_CALLBACK(mouse_move), NULL);
     }
 }
 
@@ -1409,6 +1413,9 @@ void free_app()
     if (gskat.bg)
         cairo_surface_destroy(gskat.bg);
     gskat.bg = NULL;
+
+    gdk_cursor_unref(gskat.cross_cursor);
+    gdk_cursor_unref(gskat.hand_cursor);
 
     g_free(gskat.allwidgets);
 

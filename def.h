@@ -258,6 +258,10 @@ typedef struct _app
     cairo_surface_t *back;
     /** Background image */
     cairo_surface_t *bg;
+    /** Alternative cursor shape for unallowed action */
+    GdkCursor *cross_cursor;
+    /** Alternative cursor shape for allowed action */
+    GdkCursor *hand_cursor;
     /** Game area, is replaced by allwidgets */
     GtkWidget *area;
     /** Array of all gtk widgets used */

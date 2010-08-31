@@ -345,10 +345,11 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
 {
+    (void) data;
     gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
     GList *poss, *ptr;
-    GdkCursor *cursor = NULL;
     GdkWindow *window = area->window;
+    GdkCursor *cursor = gdk_window_get_cursor(window);
     card *card;
 
     /* check if it's the player's turn */
@@ -370,30 +371,25 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
                 if (g_list_index(poss, card) == -1)
                 {
                     /* set cross cursor if not already set */
-                    if (!gdk_window_get_cursor(window))
-                    {
-                        cursor = gdk_cursor_new(GDK_DIAMOND_CROSS);
-                        gdk_window_set_cursor(window, cursor);
-                        gdk_cursor_unref(cursor);
-                    }
+                    if (!cursor || cursor->type != GDK_DIAMOND_CROSS)
+                        gdk_window_set_cursor(window, gskat.cross_cursor);
 
                     return FALSE;
                 }
                 else
                 {
-                    /* reset to default cursor if necessary */
-                    if (gdk_window_get_cursor(window))
-                        gdk_window_set_cursor(window, NULL);
+                    /* set hand cursor if not already set */
+                    if (!cursor || cursor->type != GDK_HAND1)
+                        gdk_window_set_cursor(window, gskat.hand_cursor);
 
                     return FALSE;
                 }
             }
-
         }
     }
 
     /* reset to default cursor if necessary */
-    if (gdk_window_get_cursor(window))
+    if (cursor)
         gdk_window_set_cursor(window, NULL);
 
     return FALSE;
