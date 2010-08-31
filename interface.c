@@ -306,12 +306,12 @@ void show_config_window()
     g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
             G_CALLBACK(show_tricks_toggle), NULL);
 
-    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+    gtk_table_attach(GTK_TABLE(rules_table),
             show_tricks_label,
-            0, 1, 0, 1);
-    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+            0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+    gtk_table_attach(GTK_TABLE(rules_table),
             show_tricks_check,
-            1, 2, 0, 1);
+            1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     num_show_tricks_label = gtk_label_new("Anzahl letzter Stiche:");
     gtk_misc_set_alignment(GTK_MISC(num_show_tricks_label), 0, 0.5);
@@ -322,12 +322,12 @@ void show_config_window()
             gskat.conf.num_show_tricks);
     gtk_widget_set_sensitive(num_show_tricks, gskat.conf.show_tricks);
 
-    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+    gtk_table_attach(GTK_TABLE(rules_table),
             num_show_tricks_label,
-            0, 1, 1, 2);
-    gtk_table_attach_defaults(GTK_TABLE(rules_table),
+            0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+    gtk_table_attach(GTK_TABLE(rules_table),
             num_show_tricks,
-            1, 2, 1, 2);
+            1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* MISC TABLE */
     misc_label = gtk_label_new("Sonstiges");
