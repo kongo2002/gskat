@@ -19,7 +19,6 @@ MINOR POINTS
   (valid card, non-valid card, table ...)
 * show point distribution graph dialog
 * slow down bidding process between computer players
-* improve card movement animation
 * design and implement a game icon
 * design and draw own card image set
 * integrate optional pre-round random seed definition for card
@@ -28,6 +27,7 @@ MINOR POINTS
 * improve game summary display                                              DONE
 * connect review of played trick(s) with a configuration rule/setting       DONE
 * rewrite/update configuration if the old config is not valid               DONE
+* improve card movement animation                                           DONE
 
 IMPROVEMENTS
 
