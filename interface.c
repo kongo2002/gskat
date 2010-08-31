@@ -628,13 +628,15 @@ void create_interface()
         gtk_frame_set_shadow_type(GTK_FRAME(frame_rank), GTK_SHADOW_ETCHED_IN);
 
         scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+        gtk_container_set_border_width(GTK_CONTAINER(scrolled_win), 5);
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
-                GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
         gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_win),
                 GTK_SHADOW_NONE);
         gtk_container_add(GTK_CONTAINER(frame_rank), scrolled_win);
 
         vbox_table = gtk_vbox_new(FALSE, 2);
+        gtk_container_set_border_width(GTK_CONTAINER(vbox_table), 5);
 
         gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
                 vbox_table);
@@ -642,7 +644,7 @@ void create_interface()
         /* players' points table */
         table_rank = gtk_table_new(1, 3, TRUE);
         gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(table_rank), 10);
+        gtk_container_set_border_width(GTK_CONTAINER(table_rank), 5);
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
         gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
@@ -664,9 +666,9 @@ void create_interface()
         gtk_box_pack_start(GTK_BOX(vbox_table), hsep, FALSE, TRUE, 0);
 
         table_points = gtk_table_new(1, 3, TRUE);
-        gtk_container_set_border_width(GTK_CONTAINER(table_points), 10);
+        gtk_container_set_border_width(GTK_CONTAINER(table_points), 5);
         gtk_table_set_col_spacings(GTK_TABLE(table_points), 10);
-        gtk_table_set_row_spacings(GTK_TABLE(table_points), 5);
+        gtk_table_set_row_spacings(GTK_TABLE(table_points), 0);
 
         lb_rank_p1 = gtk_label_new("");
         lb_rank_p2 = gtk_label_new("");
