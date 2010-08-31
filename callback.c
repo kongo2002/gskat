@@ -371,8 +371,8 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
                 if (g_list_index(poss, card) == -1)
                 {
                     /* set cross cursor if not already set */
-                    if (!cursor || cursor->type != GDK_DIAMOND_CROSS)
-                        gdk_window_set_cursor(window, gskat.cross_cursor);
+                    if (!cursor || cursor->type != GDK_PIRATE)
+                        gdk_window_set_cursor(window, gskat.pirate_cursor);
 
                     if (poss)
                         g_list_free(poss);

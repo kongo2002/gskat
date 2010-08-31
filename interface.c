@@ -120,7 +120,7 @@ void alloc_app()
     load_icons();
 
     /* initialize alternative cursor shapes */
-    gskat.cross_cursor = gdk_cursor_new(GDK_DIAMOND_CROSS);
+    gskat.pirate_cursor = gdk_cursor_new(GDK_PIRATE);
     gskat.hand_cursor = gdk_cursor_new(GDK_HAND1);
 }
 
@@ -1414,7 +1414,7 @@ void free_app()
         cairo_surface_destroy(gskat.bg);
     gskat.bg = NULL;
 
-    gdk_cursor_unref(gskat.cross_cursor);
+    gdk_cursor_unref(gskat.pirate_cursor);
     gdk_cursor_unref(gskat.hand_cursor);
 
     g_free(gskat.allwidgets);

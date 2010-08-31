@@ -259,7 +259,7 @@ typedef struct _app
     /** Background image */
     cairo_surface_t *bg;
     /** Alternative cursor shape for unallowed action */
-    GdkCursor *cross_cursor;
+    GdkCursor *pirate_cursor;
     /** Alternative cursor shape for allowed action */
     GdkCursor *hand_cursor;
     /** Game area, is replaced by allwidgets */
