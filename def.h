@@ -163,8 +163,10 @@ typedef struct _card_move
     gint dest_x;
     /** y coordinate destination */
     gint dest_y;
-    /** card movement step */
-    gint move;
+    /** card movement step in x direction*/
+    gint x_move;
+    /** card movement step in y direction*/
+    gint y_move;
 } card_move;
 
 /**

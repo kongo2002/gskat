@@ -1026,8 +1026,8 @@ void set_table_position(card *card, gint *dest_x, gint *dest_y)
  * @brief Calculate the card movement step
  *
  * Calculate the card movement step depending on the configuration value
- * 'anim_duration', the drawing timeout interval of 25 ms and the mean card
- * distance to move.
+ * 'anim_duration', the drawing timeout interval of 25 ms and the card
+ * distance to move in x and y direction.
  *
  * @param cm  card_movement structure
  */
@@ -1037,9 +1037,15 @@ void set_card_move_step(card_move *cm)
 
     gint dx = abs(ptr->dim.x - cm->dest_x);
     gint dy = abs(ptr->dim.y - cm->dest_y);
-    gint diff_max = (dx < dy) ? dx : dy;
 
-    cm->move = diff_max / ((gdouble) gskat.conf.anim_duration / 25);
+    cm->x_move = (gdouble) dx / 25;
+    cm->y_move = (gdouble) dy / 25;
+
+    if (!cm->x_move)
+        cm->x_move = 1;
+
+    if (!cm->y_move)
+        cm->y_move = 1;
 }
 
 /**
@@ -1049,7 +1055,7 @@ void set_card_move_step(card_move *cm)
  * The card movement structure contains the information about what card to move,
  * the movement destination and the movement step.
  *
- * @param data card_move structure that contains the card movement information
+ * @param data  card_move structure that contains the card movement information
  *
  * @return FALSE if the card movement is finished, otherwise TRUE
  */
@@ -1059,25 +1065,26 @@ gboolean move_card(gpointer data)
     card *ptr = cm->mcard;
 
     gint step;
-    gint move = cm->move;
+    gint x_move = cm->x_move;
+    gint y_move = cm->y_move;
     gint dx = ptr->dim.x - cm->dest_x;
     gint dy = ptr->dim.y - cm->dest_y;
 
     /* adjust x coordinate */
-    if (abs(dx) < move)
+    if (abs(dx) < x_move)
         ptr->dim.x = cm->dest_x;
     else
     {
-        step = (dx > 0) ? -move : move;
+        step = (dx > 0) ? -x_move : x_move;
         ptr->dim.x += step;
     }
 
     /* adjust y coordinate */
-    if (abs(dy) < move)
+    if (abs(dy) < y_move)
         ptr->dim.y = cm->dest_y;
     else
     {
-        step = (dy > 0) ? -move : move;
+        step = (dy > 0) ? -y_move : y_move;
         ptr->dim.y += step;
     }
 
@@ -1088,8 +1095,6 @@ gboolean move_card(gpointer data)
         draw_area();
 
         g_free(cm);
-        cm = NULL;
-
         return FALSE;
     }
 
