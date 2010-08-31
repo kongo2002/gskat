@@ -332,7 +332,75 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 }
 
 /**
- * @brief Callback function of a mouse click event
+ * @brief Callback function of a mouse move event in the drawing area
+ *
+ * If the cursor is moving over a non-valid card the mouse cursor shape
+ * is changed to a cross (or something the like).
+ *
+ * @param area   GtkDrawingArea triggering the event
+ * @param event  event motion structure
+ * @param data   arbitrary user data
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
+ */
+gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
+{
+    gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
+    GList *poss, *ptr;
+    GdkCursor *cursor = NULL;
+    GdkWindow *window = area->window;
+    card *card;
+
+    /* check if it's the player's turn */
+    if (gskat.state == PLAYING && ((gskat.cplayer + num_cards) % 3 == 0))
+    {
+        /* get possible cards */
+        poss = get_possible_cards(gskat.players[0]->cards);
+
+        /* iterate over player's cards */
+        for (ptr = g_list_last(gskat.players[0]->cards); ptr; ptr = ptr->prev)
+        {
+            card = ptr->data;
+
+            if ((gint) event->x >= card->dim.x
+                    && (gint) event->y >= card->dim.y
+                    && (gint) event->x < card->dim.x + card->dim.w
+                    && (gint) event->y < card->dim.y + card->dim.h)
+            {
+                if (g_list_index(poss, card) == -1)
+                {
+                    /* set cross cursor if not already set */
+                    if (!gdk_window_get_cursor(window))
+                    {
+                        cursor = gdk_cursor_new(GDK_DIAMOND_CROSS);
+                        gdk_window_set_cursor(window, cursor);
+                        gdk_cursor_unref(cursor);
+                    }
+
+                    return FALSE;
+                }
+                else
+                {
+                    /* reset to default cursor if necessary */
+                    if (gdk_window_get_cursor(window))
+                        gdk_window_set_cursor(window, NULL);
+
+                    return FALSE;
+                }
+            }
+
+        }
+    }
+
+    /* reset to default cursor if necessary */
+    if (gdk_window_get_cursor(window))
+        gdk_window_set_cursor(window, NULL);
+
+    return FALSE;
+}
+
+/**
+ * @brief Callback function of a mouse click event in the drawing area
  *
  * Check for the current game state and trigger the appropriate action
  *
@@ -342,7 +410,7 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
  *
  * @return TRUE to not handle the event any further, otherwise FALSE
  */
-gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data)
+gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
     (void) area;
     (void) data;

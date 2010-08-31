@@ -514,9 +514,9 @@ void create_interface()
     GtkWidget *table_rank;
     GtkWidget *table_points;
     GtkWidget *hsep;
-    GtkWidget *lb_rank_p1_left;
-    GtkWidget *lb_rank_p2_left;
-    GtkWidget *lb_rank_p3_left;
+    GtkWidget *lb_rank_p1_name;
+    GtkWidget *lb_rank_p2_name;
+    GtkWidget *lb_rank_p3_name;
     GtkWidget *lb_rank_p1;
     GtkWidget *lb_rank_p2;
     GtkWidget *lb_rank_p3;
@@ -527,7 +527,7 @@ void create_interface()
     if (iconfile)
         g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 11);
+    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 14);
 
     if (gskat.allwidgets != NULL)
     {
@@ -648,18 +648,18 @@ void create_interface()
         gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
         gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-        lb_rank_p1_left = gtk_label_new(gskat.conf.player_names[0]);
-        lb_rank_p2_left = gtk_label_new(gskat.conf.player_names[1]);
-        lb_rank_p3_left = gtk_label_new(gskat.conf.player_names[2]);
+        lb_rank_p1_name = gtk_label_new(gskat.conf.player_names[0]);
+        lb_rank_p2_name = gtk_label_new(gskat.conf.player_names[1]);
+        lb_rank_p3_name = gtk_label_new(gskat.conf.player_names[2]);
 
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p1_left,
+                lb_rank_p1_name,
                 0, 1, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p2_left,
+                lb_rank_p2_name,
                 1, 2, 0, 1);
         gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p3_left,
+                lb_rank_p3_name,
                 2, 3, 0, 1);
 
         hsep = gtk_hseparator_new();
@@ -708,6 +708,9 @@ void create_interface()
         gskat.allwidgets[8] = lb_rank_p3;
         gskat.allwidgets[9] = frame_game;
         gskat.allwidgets[10] = table_rank;
+        gskat.allwidgets[11] = lb_rank_p1_name;
+        gskat.allwidgets[12] = lb_rank_p2_name;
+        gskat.allwidgets[13] = lb_rank_p3_name;
 
         /* attach signals */
         g_signal_connect(G_OBJECT(window), "destroy",
@@ -721,9 +724,12 @@ void create_interface()
         g_signal_connect(G_OBJECT(button), "clicked",
                 G_CALLBACK(next_round), NULL);
 
-        gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK);
+        gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK |
+                GDK_POINTER_MOTION_MASK);
         g_signal_connect(G_OBJECT(area), "button_press_event",
-                G_CALLBACK(button_press), NULL);
+                G_CALLBACK(mouse_click), NULL);
+        g_signal_connect(G_OBJECT(area), "motion-notify-event",
+                G_CALLBACK(mouse_move), window);
     }
 }
 

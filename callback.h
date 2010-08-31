@@ -43,7 +43,9 @@ void next_round(GtkButton *button, gpointer data);
 
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
-gboolean button_press(GtkWidget *area, GdkEventButton *event, gpointer data);
+gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data);
+
+gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data);
 
 void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data);
 
