@@ -25,11 +25,15 @@
 
 gboolean quit(GtkWidget *window, gpointer data);
 
+gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data);
+
 gboolean close_show_trick(GtkButton *button, gpointer data);
 
 gboolean prev_stich_click(GtkButton *button, gpointer data);
 
 gboolean next_stich_click(GtkButton *button, gpointer data);
+
+gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data);
 
 gboolean close_config(GtkButton *button, gpointer data);
 

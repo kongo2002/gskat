@@ -67,6 +67,24 @@ gboolean realization(GtkWidget *area, gpointer data)
 }
 
 /**
+ * @brief Wrapper function to 'close_config' because of the different
+ * function arguments of the 'delete-event' signal
+ *
+ * @param widget  widget receiving the signal
+ * @param event   widget triggering the signal
+ * @param data    config dialog window widget
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
+ */
+gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+    (void) widget;
+    (void) event;
+
+    return close_config(NULL, data);
+}
+
+/**
  * @brief Callback function of the 'cancel' button of the config
  * dialog.
  *
@@ -88,6 +106,24 @@ gboolean close_config(GtkButton *button, gpointer data)
     gtk_widget_destroy(window);
 
     return TRUE;
+}
+
+/**
+ * @brief Wrapper function to 'close_show_trick' because of the different
+ * function arguments of the 'delete-event' signal
+ *
+ * @param widget  widget receiving the signal
+ * @param event   widget triggering the signal
+ * @param data    stich_view structure
+ *
+ * @return TRUE to not handle the event any further, otherwise FALSE
+ */
+gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+    (void) widget;
+    (void) event;
+
+    return close_show_trick(NULL, data);
 }
 
 /**

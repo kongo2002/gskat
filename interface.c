@@ -201,10 +201,7 @@ void show_last_tricks()
     sv->prevb = prev_button;
     sv->nextb = next_button;
 
-    /* connect signals with callback functions
-     *
-     * TODO: we need to free the stich_view structure as well if the
-     * dialog window is closed via the window manager */
+    /* connect signals with callback functions */
     g_signal_connect(G_OBJECT(button), "clicked",
             G_CALLBACK(close_show_trick), (gpointer) sv);
     g_signal_connect(G_OBJECT(prev_button), "clicked",
@@ -213,6 +210,8 @@ void show_last_tricks()
             G_CALLBACK(next_stich_click), (gpointer) sv);
     g_signal_connect(G_OBJECT(area), "expose-event",
             G_CALLBACK(refresh_tricks), (gpointer) sv);
+    g_signal_connect(G_OBJECT(window), "delete-event",
+            G_CALLBACK(destroy_show_trick), (gpointer) sv);
 
     gtk_widget_show_all(window);
 
@@ -405,10 +404,8 @@ void show_config_window()
     gtk_box_pack_start(GTK_BOX(hbox_buttons), cancel_button, FALSE, FALSE, 0);
 
     /* allocate configuration widgets
-     * this array is freed in either 'save_config' or 'close_config'
-     *
-     * TODO: the array has to be freed as well if the window is closed
-     * via the window manager */
+     * this array is freed in either 'save_config', 'close_config'
+     * or 'destroy_config' */
     gskat.confwidgets = (GtkWidget **) g_malloc(8 * sizeof(GtkWidget *));
 
     gskat.confwidgets[0] = player_entry[0];
@@ -419,6 +416,9 @@ void show_config_window()
     gskat.confwidgets[5] = debug_check;
     gskat.confwidgets[6] = show_tricks_check;
     gskat.confwidgets[7] = num_show_tricks;
+
+    g_signal_connect(G_OBJECT(window), "delete-event",
+            G_CALLBACK(destroy_config), (gpointer) window);
 
     gtk_widget_show_all(window);
 }
