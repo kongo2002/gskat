@@ -347,7 +347,7 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
 {
     (void) data;
     gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
-    GList *poss, *ptr;
+    GList *poss = NULL, *ptr;
     GdkWindow *window = area->window;
     GdkCursor *cursor = gdk_window_get_cursor(window);
     card *card;
