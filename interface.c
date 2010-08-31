@@ -806,12 +806,9 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
  */
 gboolean load_cards(const gchar *path)
 {
-    GList **list = &(gskat.cards);
-
-    gint suits[] = { 40, 60, 80, 100 };
-    gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
-
     gint i, j, id, max = strlen(path)+30;
+    GList **list = &(gskat.cards);
+    gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
     gboolean error = FALSE;
 
     gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
@@ -823,14 +820,14 @@ gboolean load_cards(const gchar *path)
         {
             for (j=0; j<8; ++j)
             {
-                id = suits[i] + ranks[j];
+                id = SUITS[i] + ranks[j];
                 g_sprintf(cname, "%s/%d.png", path, id);
 
                 DPRINT(("Loading '%s' ... ", cname));
 
                 if (g_file_test(cname, G_FILE_TEST_EXISTS))
                 {
-                    load_card(list, cname, ranks[j], suits[i]);
+                    load_card(list, cname, ranks[j], SUITS[i]);
                     DPRINT(("OK\n"));
                 }
                 else
