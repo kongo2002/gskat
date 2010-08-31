@@ -67,6 +67,35 @@ gboolean realization(GtkWidget *area, gpointer data)
 }
 
 /**
+ * @brief Show the about dialog window
+ *
+ * @param menuitem  menu item emitting the signal
+ * @param data      arbitrary user data
+ */
+void show_about_window(GtkMenuItem *menuitem, gpointer data)
+{
+    (void) menuitem;
+    (void) data;
+
+    const gchar *authors[] =
+    {
+        "Gregor Uhlenheuer <kongo2002@googlemail.com>",
+        NULL
+    };
+
+    gtk_show_about_dialog(GTK_WINDOW(gskat.allwidgets[0]),
+            "program_name", "gskat",
+            "comments", "Gtk skat game written in C",
+            "authors", authors,
+            "artists", authors,
+            "version", "1.0-" VERSION,
+            "website", "http://github.com/kongo2002/gskat",
+            "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
+                "All Rights Reserved.",
+            NULL);
+}
+
+/**
  * @brief Wrapper function to 'close_config' because of the different
  * function arguments of the 'delete-event' signal
  *

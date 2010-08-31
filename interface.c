@@ -223,35 +223,6 @@ void show_last_tricks()
 }
 
 /**
- * @brief Show the about dialog window
- *
- * @param menuitem  menu item emitting the signal
- * @param data      arbitrary user data
- */
-void show_about_window(GtkMenuItem *menuitem, gpointer data)
-{
-    (void) menuitem;
-    (void) data;
-
-    const gchar *authors[] =
-    {
-        "Gregor Uhlenheuer <kongo2002@googlemail.com>",
-        NULL
-    };
-
-    gtk_show_about_dialog(GTK_WINDOW(gskat.allwidgets[0]),
-            "program_name", "gskat",
-            "comments", "Gtk skat game written in C",
-            "authors", authors,
-            "artists", authors,
-            "version", "1.0-" VERSION,
-            "website", "http://github.com/kongo2002/gskat",
-            "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
-                "All Rights Reserved.",
-            NULL);
-}
-
-/**
  * @brief Show the configuration dialog window and initialize the
  * widgets with the current config values
  */

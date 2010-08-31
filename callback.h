@@ -33,6 +33,8 @@ gboolean prev_stich_click(GtkButton *button, gpointer data);
 
 gboolean next_stich_click(GtkButton *button, gpointer data);
 
+void show_about_window(GtkMenuItem *menuitem, gpointer data);
+
 gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data);
 
 gboolean close_config(GtkButton *button, gpointer data);
