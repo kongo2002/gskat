@@ -374,6 +374,9 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
                     if (!cursor || cursor->type != GDK_DIAMOND_CROSS)
                         gdk_window_set_cursor(window, gskat.cross_cursor);
 
+                    if (poss)
+                        g_list_free(poss);
+
                     return FALSE;
                 }
                 else
@@ -381,6 +384,9 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
                     /* set hand cursor if not already set */
                     if (!cursor || cursor->type != GDK_HAND1)
                         gdk_window_set_cursor(window, gskat.hand_cursor);
+
+                    if (poss)
+                        g_list_free(poss);
 
                     return FALSE;
                 }
@@ -391,6 +397,9 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
     /* reset to default cursor if necessary */
     if (cursor)
         gdk_window_set_cursor(window, NULL);
+
+    if (poss)
+        g_list_free(poss);
 
     return FALSE;
 }
