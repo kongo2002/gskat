@@ -22,10 +22,15 @@
 #include "config.h"
 
 /* convenience functions */
+#ifndef PROP_MACRO
+#define PROP_MACRO
+
 #define INT_PROP(address)    { .type = INT   , .ptr.i = &(address) }
 #define DOUBLE_PROP(address) { .type = DOUBLE, .ptr.d = &(address) }
 #define BOOL_PROP(address)   { .type = BOOL  , .ptr.b = &(address) }
 #define STR_PROP(address)    { .type = STR   , .ptr.s = &(address) }
+
+#endif
 
 /* configuration value table */
 static const property config_values[] = {
