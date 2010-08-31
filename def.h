@@ -43,7 +43,7 @@
 #ifdef DEBUG
 #define DPRINT(x) g_printf x
 #else
-#define DPRINT(x) if (gskat.conf && gskat.conf->debug) g_printf x
+#define DPRINT(x) if (gskat.conf.debug) g_printf x
 #endif
 
 static const gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
