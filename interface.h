@@ -31,6 +31,8 @@ void alloc_app();
 
 void show_last_tricks();
 
+void show_about_window(GtkMenuItem *menuitem, gpointer data);
+
 void show_config_window();
 
 void update_rank_interface();
