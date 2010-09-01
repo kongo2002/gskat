@@ -24,6 +24,7 @@
 #include "utils.h"
 #include "game.h"
 #include "interface.h"
+#include "license.h"
 
 /**
  * @brief Leave the gtk main loop and exit the program
@@ -89,6 +90,7 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
             "authors", authors,
             "artists", authors,
             "version", "1.0-" VERSION,
+            "license", license_string,
             "website", "http://github.com/kongo2002/gskat",
             "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
                 "All Rights Reserved.",
