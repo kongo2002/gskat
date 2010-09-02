@@ -31,4 +31,5 @@ MINOR POINTS
 
 IMPROVEMENTS
 
+* use autotools for compile/install
 * rewrite AI concept/implementation (more flexible, dynamic)
