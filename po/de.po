@@ -1,0 +1,287 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-02 23:36+0200\n"
+"PO-Revision-Date: 2010-09-02 23:48+0100\n"
+"Last-Translator: Gregor Uhlenheuer <kongo2002@googlemail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/callback.c:88
+msgid "gskat"
+msgstr "gskat"
+
+#: src/callback.c:89
+msgid "Gtk skat game written in C"
+msgstr "Gtk Skat-Spiel programmiert in C"
+
+#: src/game.c:234
+msgid "Bidding"
+msgstr "Reizen"
+
+#: src/game.c:237
+#: src/game.c:813
+#: src/game.c:1063
+msgid "Yes"
+msgstr "Ja"
+
+#: src/game.c:238
+#: src/game.c:813
+#: src/game.c:1064
+msgid "No"
+msgstr "Nein"
+
+#: src/game.c:238
+msgid "Pass"
+msgstr "Passen"
+
+#: src/game.c:734
+#, c-format
+msgid "%s says %d:"
+msgstr "%s sagt %d:"
+
+#: src/game.c:775
+#, c-format
+msgid "Forehand: %s; Middlehand: %s\n"
+msgstr "Sager: %s; Hörer: %s\n"
+
+#: src/game.c:785
+#, c-format
+msgid "Middlehand: %s. Bid?"
+msgstr "Hörer: %s. Reizen?"
+
+#: src/game.c:808
+#, c-format
+msgid "%s says %d\n"
+msgstr "%s sagt %d\n"
+
+#: src/game.c:812
+#, c-format
+msgid "%s says %s\n"
+msgstr "%s sagt %s\n"
+
+#: src/game.c:838
+msgid "Start of bidding\n"
+msgstr "Start des Reizens\n"
+
+#: src/game.c:877
+msgid "Pronounce a game"
+msgstr "Spiel ansagen"
+
+#: src/game.c:893
+msgid ""
+"All players have passed.\n"
+"New round"
+msgstr ""
+"Alle Spieler haben gepasst.\n"
+"Neue Runde"
+
+#: src/game.c:1060
+#: src/game.c:1068
+msgid "Play hand game?"
+msgstr "Spiele Hand?"
+
+#: src/game.c:1169
+#, c-format
+msgid "%s plays %s."
+msgstr "%s spielt %s."
+
+#: src/game.c:1474
+#, c-format
+msgid ""
+"%s has overbid.\n"
+"Bidden: %d\n"
+"Game value: %d\n"
+"\t%d"
+msgstr ""
+"%s hat überreizt.\n"
+"Gereizt: %d\n"
+"Spielwert: %d\n"
+"\t%d"
+
+#: src/game.c:1485
+#, c-format
+msgid ""
+"%s wins with %d against %d points\n"
+"\t+%d"
+msgstr ""
+"%s gewinnt mit %d zu %d Punkten\n"
+"\t+%d"
+
+#: src/game.c:1504
+#, c-format
+msgid ""
+"%s lost with %d against %d points\n"
+"\t%d"
+msgstr ""
+"%s verliert mit %d zu %d Punkten\n"
+"\t%d"
+
+#: src/game.c:1524
+#, c-format
+msgid ""
+"%s lost the null game\n"
+"\t%d"
+msgstr ""
+"%s hat das Nullspiel verloren\n"
+"\t%d"
+
+#: src/game.c:1529
+#, c-format
+msgid ""
+"%s won the null game\n"
+"\t%d"
+msgstr ""
+"%s hat das Nullspiel gewonnen\n"
+"\t%d"
+
+#: src/game.c:1553
+#, c-format
+msgid "Round %d"
+msgstr "Runde %d"
+
+#: src/game.c:1604
+msgid "Really abort the current round?"
+msgstr "Aktuelle Runde wirklich abbrechen?"
+
+#: src/game.c:1699
+#: src/interface.c:452
+msgid "New round"
+msgstr "Neue Runde"
+
+#: src/interface.c:156
+msgid "Previous trick"
+msgstr "Letzter Stich"
+
+#: src/interface.c:262
+msgid "Properties"
+msgstr "Einstellungen"
+
+#: src/interface.c:276
+msgid "Player names"
+msgstr "Spieler Namen"
+
+#: src/interface.c:280
+msgid "Your name:"
+msgstr "Dein Name:"
+
+#: src/interface.c:281
+msgid "Player 1:"
+msgstr "Spieler 1:"
+
+#: src/interface.c:282
+msgid "Player 2:"
+msgstr "Spieler 2:"
+
+#: src/interface.c:300
+msgid "Rules"
+msgstr "Regeln"
+
+#: src/interface.c:304
+msgid "Show previous trick:"
+msgstr "Zeige letzten Stich:"
+
+#: src/interface.c:320
+msgid "Number of reviewable tricks:"
+msgstr "Anzahl der einsehbaren Stiche:"
+
+#: src/interface.c:337
+msgid "Misc"
+msgstr "Sonstiges"
+
+#: src/interface.c:342
+msgid "Animate card movement:"
+msgstr "Animiere Karten-Bewegungen"
+
+#: src/interface.c:356
+msgid "Animation duration:"
+msgstr "Dauer der Animation:"
+
+#: src/interface.c:376
+msgid "Print debug statements:"
+msgstr "Debug-Meldungen:"
+
+#: src/interface.c:455
+msgid "Quit"
+msgstr "Beenden"
+
+#: src/interface.c:462
+msgid "Game"
+msgstr "Spiel"
+
+#: src/interface.c:468
+msgid "Options"
+msgstr "Optionen"
+
+#: src/interface.c:475
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: src/interface.c:481
+msgid "About"
+msgstr "Über"
+
+#: src/interface.c:488
+msgid "Help"
+msgstr "Hilfe"
+
+#: src/interface.c:568
+msgid "Round 1"
+msgstr "Runde 1"
+
+#: src/interface.c:580
+msgid "Trick:"
+msgstr "Stich:"
+
+#: src/interface.c:581
+msgid "Re:"
+msgstr "Re:"
+
+#: src/interface.c:582
+msgid "Game:"
+msgstr "Spiel:"
+
+#: src/interface.c:583
+msgid "Bidden:"
+msgstr "Gereizt:"
+
+#: src/interface.c:631
+msgid "Rankings"
+msgstr "Spielstand"
+
+#: src/interface.c:699
+msgid "New Round"
+msgstr "Neue Runde"
+
+#: src/interface.c:1188
+#, c-format
+msgid "%s (Re)"
+msgstr "%s (Re)"
+
+#: src/interface.c:1307
+#, c-format
+msgid "Trick %d"
+msgstr "Stich %d"
+
+#: src/main.c:90
+msgid " - GTK Skat"
+msgstr "- GTK Skat"
+
+#: src/main.c:99
+#, c-format
+msgid "Failed to parse arguments: %s\n"
+msgstr "Fehler beim Lesen der Argumente: %s\n"
+
+#: src/main.c:109
+#, c-format
+msgid "gskat %s\n"
+msgstr "gskat %s\n"
+

@@ -153,7 +153,7 @@ void show_last_tricks()
 
     /* dialog window widgets */
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Letzter Stich");
+    gtk_window_set_title(GTK_WINDOW(window), _("Previous trick"));
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     gtk_window_set_transient_for(GTK_WINDOW(window),
@@ -259,7 +259,7 @@ void show_config_window()
     GtkWidget *cancel_button;
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Einstellungen");
+    gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_widget_set_size_request(window, 300, 200);
     gtk_window_set_transient_for(GTK_WINDOW(window),
@@ -273,13 +273,13 @@ void show_config_window()
     gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
     /* PLAYER NAMES TABLE */
-    names_label = gtk_label_new("Spieler-Namen");
+    names_label = gtk_label_new(_("Player names"));
     names_table = gtk_table_new(3, 2, TRUE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), names_table, names_label);
 
-    player_label[0] = gtk_label_new("Spieler-Name:");
-    player_label[1] = gtk_label_new("Spieler 1:");
-    player_label[2] = gtk_label_new("Spieler 2:");
+    player_label[0] = gtk_label_new(_("Your name:"));
+    player_label[1] = gtk_label_new(_("Player 1:"));
+    player_label[2] = gtk_label_new(_("Player 2:"));
 
     for (i=0; i<3; ++i)
     {
@@ -297,11 +297,11 @@ void show_config_window()
     }
 
     /* RULES TABLE */
-    rules_label = gtk_label_new("Regeln");
+    rules_label = gtk_label_new(_("Rules"));
     rules_table = gtk_table_new(2, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), rules_table, rules_label);
 
-    show_tricks_label = gtk_label_new("Zeige letzten Stich:");
+    show_tricks_label = gtk_label_new(_("Show previous trick:"));
     gtk_misc_set_alignment(GTK_MISC(show_tricks_label), 0, 0.5);
 
     show_tricks_check = gtk_check_button_new();
@@ -317,7 +317,7 @@ void show_config_window()
             show_tricks_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
-    num_show_tricks_label = gtk_label_new("Anzahl letzter Stiche:");
+    num_show_tricks_label = gtk_label_new(_("Number of reviewable tricks:"));
     gtk_misc_set_alignment(GTK_MISC(num_show_tricks_label), 0, 0.5);
 
     num_show_tricks = gtk_spin_button_new_with_range(1, 11, 1.0);
@@ -334,12 +334,12 @@ void show_config_window()
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* MISC TABLE */
-    misc_label = gtk_label_new("Sonstiges");
+    misc_label = gtk_label_new(_("Misc"));
     misc_table = gtk_table_new(3, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
 
     /* animation */
-    animation_label = gtk_label_new("Animiere Kartenbewegung:");
+    animation_label = gtk_label_new(_("Animate card movement:"));
     gtk_misc_set_alignment(GTK_MISC(animation_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_label,
@@ -353,7 +353,7 @@ void show_config_window()
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* animation duration */
-    animation_dur_label = gtk_label_new("Animationsdauer:");
+    animation_dur_label = gtk_label_new(_("Animation duration:"));
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
     gtk_widget_set_sensitive(animation_dur_label, gskat.conf.animation);
     gtk_table_attach(GTK_TABLE(misc_table),
@@ -373,7 +373,7 @@ void show_config_window()
             G_CALLBACK(animation_toggle), NULL);
 
     /* debugging */
-    debug_label = gtk_label_new("Debug Meldungen:");
+    debug_label = gtk_label_new(_("Print debug statements:"));
     gtk_misc_set_alignment(GTK_MISC(debug_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_label,
@@ -449,43 +449,43 @@ static GtkWidget *create_menu()
     menu = gtk_menu_bar_new();
 
     /* game submenu */
-    new_item = gtk_menu_item_new_with_label("Neue Runde");
+    new_item = gtk_menu_item_new_with_label(_("New round"));
     g_signal_connect(G_OBJECT(new_item), "activate",
             G_CALLBACK(next_round), NULL);
-    quit_item = gtk_menu_item_new_with_label("Beenden");
+    quit_item = gtk_menu_item_new_with_label(_("Quit"));
     g_signal_connect(G_OBJECT(quit_item), "activate", G_CALLBACK(quit), NULL);
 
     gmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quit_item);
 
-    game = gtk_menu_item_new_with_label("Spiel");
+    game = gtk_menu_item_new_with_label(_("Game"));
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(game), gmenu);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), game);
 
     /* configuration submenu */
-    options_item = gtk_menu_item_new_with_label("Optionen");
+    options_item = gtk_menu_item_new_with_label(_("Options"));
     g_signal_connect(G_OBJECT(options_item), "activate",
             G_CALLBACK(show_config_window), NULL);
 
     cmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(cmenu), options_item);
 
-    config = gtk_menu_item_new_with_label("Einstellungen");
+    config = gtk_menu_item_new_with_label(_("Preferences"));
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(config), cmenu);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), config);
 
     /* help submenu */
-    about_item = gtk_menu_item_new_with_label("Über");
+    about_item = gtk_menu_item_new_with_label(_("About"));
     g_signal_connect(G_OBJECT(about_item), "activate",
             G_CALLBACK(show_about_window), NULL);
 
     hmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(hmenu), about_item);
 
-    help = gtk_menu_item_new_with_label("Hilfe");
+    help = gtk_menu_item_new_with_label(_("Help"));
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(help), hmenu);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), help);
@@ -565,7 +565,7 @@ void create_interface()
         gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 
-        frame_game = gtk_frame_new("Runde 1");
+        frame_game = gtk_frame_new(_("Round 1"));
         gtk_frame_set_label_align(GTK_FRAME(frame_game), 0.5, 0.5);
         gtk_box_pack_start(GTK_BOX(vbox), frame_game, FALSE, TRUE, 2);
         gtk_frame_set_shadow_type(GTK_FRAME(frame_game), GTK_SHADOW_ETCHED_IN);
@@ -577,10 +577,10 @@ void create_interface()
         gtk_table_set_col_spacings(GTK_TABLE(table_game), 20);
         gtk_table_set_row_spacings(GTK_TABLE(table_game), 5);
 
-        lb_game_stich_left = gtk_label_new("Stich:");
-        lb_game_re_left = gtk_label_new("Re:");
-        lb_game_spiel_left = gtk_label_new("Spiel:");
-        lb_game_gereizt_left = gtk_label_new("Gereizt:");
+        lb_game_stich_left = gtk_label_new(_("Trick:"));
+        lb_game_re_left = gtk_label_new(_("Re:"));
+        lb_game_spiel_left = gtk_label_new(_("Game:"));
+        lb_game_gereizt_left = gtk_label_new(_("Bidden:"));
 
         /* gtk_misc_set_alignment(misc, xalign, yalign)
          * xalign: 0 (left) to 1 (right)
@@ -628,7 +628,7 @@ void create_interface()
                 1, 2, 3, 4);
 
         /* game rankings */
-        frame_rank = gtk_frame_new("Spielstand");
+        frame_rank = gtk_frame_new(_("Rankings"));
         gtk_frame_set_label_align(GTK_FRAME(frame_rank), 0.5, 0.5);
         gtk_box_pack_start(GTK_BOX(vbox), frame_rank, TRUE, TRUE, 2);
         gtk_frame_set_shadow_type(GTK_FRAME(frame_rank), GTK_SHADOW_ETCHED_IN);
@@ -696,7 +696,7 @@ void create_interface()
 
         gtk_box_pack_start(GTK_BOX(vbox_table), table_points, FALSE, TRUE, 2);
 
-        button = gtk_button_new_with_label("Neue Runde");
+        button = gtk_button_new_with_label(_("New Round"));
         gtk_widget_set_sensitive(button, FALSE);
         gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, TRUE, 2);
 
@@ -1185,7 +1185,7 @@ void draw_player(player *player, cairo_t *cr)
     name = (gchar *) g_malloc(sizeof(gchar) * strlen(player->name) + 6);
 
     if (player == gskat.re)
-        g_sprintf(name, "%s (Re)", player->name);
+        g_sprintf(name, _("%s (Re)"), player->name);
     else
         g_sprintf(name, "%s", player->name);
 
@@ -1304,7 +1304,7 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     draw_table(area, cr);
 
     /* draw current stich */
-    caption = g_strdup_printf("Stich %d", sv->cur + 1);
+    caption = g_strdup_printf(_("Trick %d"), sv->cur + 1);
 
     cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
     cairo_select_font_face(cr, "sans-serif",

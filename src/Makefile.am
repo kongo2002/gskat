@@ -1,4 +1,5 @@
-INCLUDES = $(GTK_CFLAGS)
+INCLUDES = $(GTK_CFLAGS) \
+	   -DGSKAT_LOCALEDIR=\""$(datadir)/locale"\"
 
 LIBS = $(GTK_LIBS)
 

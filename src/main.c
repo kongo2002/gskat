@@ -33,19 +33,19 @@ static GOptionEntry arguments[] =
 {
     {
         "debug", 0, 0, G_OPTION_ARG_NONE, &debug,
-        "toggle debug mode (for developing)", NULL
+        N_("toggle debug mode (for developing)"), NULL
     },
     {
         "cli_mode", 0, 0, G_OPTION_ARG_NONE, &cli_mode,
-        "disable GUI (command line only)", NULL
+        N_("disable GUI (command line only)"), NULL
     },
     {
         "no_animation", 0, 0, G_OPTION_ARG_NONE, &no_animation,
-        "disable card animations", NULL
+        N_("disable card animations"), NULL
     },
     {
         "version", 'v', 0, G_OPTION_ARG_NONE, &version_only,
-        "print version and exit", NULL
+        N_("print version and exit"), NULL
     },
     { NULL, 0, 0, 0, NULL, NULL, NULL }
 };
@@ -86,17 +86,24 @@ int main(int argc, const char *argv[])
     /* initialization of game objects */
     initialize();
 
+    /* set locale environment */
+#ifdef ENABLE_NLS
+    bindtextdomain(GETTEXT_PACKAGE, GSKAT_LOCALEDIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
+#endif
+
     /* parse command line arguments */
-    context = g_option_context_new(" - GTK Skat");
+    context = g_option_context_new(_(" - GTK Skat"));
 
     if (context)
     {
-        g_option_context_add_main_entries(context, arguments, NULL);
+        g_option_context_add_main_entries(context, arguments, GETTEXT_PACKAGE);
         g_option_context_add_group(context, gtk_get_option_group(TRUE));
 
         if (!g_option_context_parse(context, &argc, (gchar ***) &argv, &error))
         {
-            g_printerr("Failed to parse arguments: %s\n", error->message);
+            g_printerr(_("Failed to parse arguments: %s\n"), error->message);
             g_clear_error(&error);
 
             return 1;
@@ -106,7 +113,7 @@ int main(int argc, const char *argv[])
 
         if (version_only)
         {
-            g_print("gskat %s\n", VERSION);
+            g_print(_("gskat %s\n"), VERSION);
             return 0;
         }
 

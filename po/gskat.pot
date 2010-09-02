@@ -1,0 +1,267 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-02 23:36+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/callback.c:88
+msgid "gskat"
+msgstr ""
+
+#: src/callback.c:89
+msgid "Gtk skat game written in C"
+msgstr ""
+
+#: src/game.c:234
+msgid "Bidding"
+msgstr ""
+
+#: src/game.c:237 src/game.c:813 src/game.c:1063
+msgid "Yes"
+msgstr ""
+
+#: src/game.c:238 src/game.c:813 src/game.c:1064
+msgid "No"
+msgstr ""
+
+#: src/game.c:238
+msgid "Pass"
+msgstr ""
+
+#: src/game.c:734
+#, c-format
+msgid "%s says %d:"
+msgstr ""
+
+#: src/game.c:775
+#, c-format
+msgid "Forehand: %s; Middlehand: %s\n"
+msgstr ""
+
+#: src/game.c:785
+#, c-format
+msgid "Middlehand: %s. Bid?"
+msgstr ""
+
+#: src/game.c:808
+#, c-format
+msgid "%s says %d\n"
+msgstr ""
+
+#: src/game.c:812
+#, c-format
+msgid "%s says %s\n"
+msgstr ""
+
+#: src/game.c:838
+msgid "Start of bidding\n"
+msgstr ""
+
+#: src/game.c:877
+msgid "Pronounce a game"
+msgstr ""
+
+#: src/game.c:893
+msgid ""
+"All players have passed.\n"
+"New round"
+msgstr ""
+
+#: src/game.c:1060 src/game.c:1068
+msgid "Play hand game?"
+msgstr ""
+
+#: src/game.c:1169
+#, c-format
+msgid "%s plays %s."
+msgstr ""
+
+#: src/game.c:1474
+#, c-format
+msgid ""
+"%s has overbid.\n"
+"Bidden: %d\n"
+"Game value: %d\n"
+"\t%d"
+msgstr ""
+
+#: src/game.c:1485
+#, c-format
+msgid ""
+"%s wins with %d against %d points\n"
+"\t+%d"
+msgstr ""
+
+#: src/game.c:1504
+#, c-format
+msgid ""
+"%s lost with %d against %d points\n"
+"\t%d"
+msgstr ""
+
+#: src/game.c:1524
+#, c-format
+msgid ""
+"%s lost the null game\n"
+"\t%d"
+msgstr ""
+
+#: src/game.c:1529
+#, c-format
+msgid ""
+"%s won the null game\n"
+"\t%d"
+msgstr ""
+
+#: src/game.c:1553
+#, c-format
+msgid "Round %d"
+msgstr ""
+
+#: src/game.c:1604
+msgid "Really abort the current round?"
+msgstr ""
+
+#: src/game.c:1699 src/interface.c:452
+msgid "New round"
+msgstr ""
+
+#: src/interface.c:156
+msgid "Previous trick"
+msgstr ""
+
+#: src/interface.c:262
+msgid "Properties"
+msgstr ""
+
+#: src/interface.c:276
+msgid "Player names"
+msgstr ""
+
+#: src/interface.c:280
+msgid "Your name:"
+msgstr ""
+
+#: src/interface.c:281
+msgid "Player 1:"
+msgstr ""
+
+#: src/interface.c:282
+msgid "Player 2:"
+msgstr ""
+
+#: src/interface.c:300
+msgid "Rules"
+msgstr ""
+
+#: src/interface.c:304
+msgid "Show previous trick:"
+msgstr ""
+
+#: src/interface.c:320
+msgid "Number of reviewable tricks:"
+msgstr ""
+
+#: src/interface.c:337
+msgid "Misc"
+msgstr ""
+
+#: src/interface.c:342
+msgid "Animate card movement:"
+msgstr ""
+
+#: src/interface.c:356
+msgid "Animation duration:"
+msgstr ""
+
+#: src/interface.c:376
+msgid "Print debug statements:"
+msgstr ""
+
+#: src/interface.c:455
+msgid "Quit"
+msgstr ""
+
+#: src/interface.c:462
+msgid "Game"
+msgstr ""
+
+#: src/interface.c:468
+msgid "Options"
+msgstr ""
+
+#: src/interface.c:475
+msgid "Preferences"
+msgstr ""
+
+#: src/interface.c:481
+msgid "About"
+msgstr ""
+
+#: src/interface.c:488
+msgid "Help"
+msgstr ""
+
+#: src/interface.c:568
+msgid "Round 1"
+msgstr ""
+
+#: src/interface.c:580
+msgid "Trick:"
+msgstr ""
+
+#: src/interface.c:581
+msgid "Re:"
+msgstr ""
+
+#: src/interface.c:582
+msgid "Game:"
+msgstr ""
+
+#: src/interface.c:583
+msgid "Bidden:"
+msgstr ""
+
+#: src/interface.c:631
+msgid "Rankings"
+msgstr ""
+
+#: src/interface.c:699
+msgid "New Round"
+msgstr ""
+
+#: src/interface.c:1188
+#, c-format
+msgid "%s (Re)"
+msgstr ""
+
+#: src/interface.c:1307
+#, c-format
+msgid "Trick %d"
+msgstr ""
+
+#: src/main.c:90
+msgid " - GTK Skat"
+msgstr ""
+
+#: src/main.c:99
+#, c-format
+msgid "Failed to parse arguments: %s\n"
+msgstr ""
+
+#: src/main.c:109
+#, c-format
+msgid "gskat %s\n"
+msgstr ""

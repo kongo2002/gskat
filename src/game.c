@@ -231,11 +231,11 @@ gint get_provoke_response(gint value, gchar *msg, gboolean hoeren)
     gchar caption[4];
     g_sprintf(caption, "%d", value);
 
-    GtkWidget *dialog = gtk_dialog_new_with_buttons("Reizen",
+    GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Bidding"),
             GTK_WINDOW(gskat.allwidgets[0]),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            (hoeren) ? "Ja" : caption, value,
-            (hoeren) ? "Nein" : "Passen", 0,
+            (hoeren) ? _("Yes") : caption, value,
+            (hoeren) ? _("No") : _("Pass"), 0,
             NULL);
 
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
@@ -731,7 +731,7 @@ gint do_hoeren(player *player, gint value, gint sager)
     {
         msg = (gchar *) g_malloc(sizeof(gchar) *
                 (20+strlen(gskat.players[sager]->name)));
-        g_sprintf(msg, "%s sagt %d:", gskat.players[sager]->name, value);
+        g_sprintf(msg, _("%s says %d:"), gskat.players[sager]->name, value);
 
         response = get_provoke_response(value, msg, TRUE);
 
@@ -772,7 +772,7 @@ gint do_sagen(player *player, gint hoerer, gint value)
     gint max = 0;
     gchar *msg;
 
-    DPRINT(("Sager: %s; Hoerer: %s\n", player->name,
+    DPRINT((_("Forehand: %s; Middlehand: %s\n"), player->name,
                 gskat.players[hoerer]->name));
 
     /* pass immediately? */
@@ -782,7 +782,8 @@ gint do_sagen(player *player, gint hoerer, gint value)
         {
             msg = (gchar *) g_malloc(sizeof(gchar) *
                     (20+strlen(gskat.players[hoerer]->name)));
-            g_sprintf(msg, "Hoerer: %s. Sagen?", gskat.players[hoerer]->name);
+            g_sprintf(msg, _("Middlehand: %s. Bid?"),
+                    gskat.players[hoerer]->name);
 
             gereizt = get_provoke_response(value, msg, FALSE);
 
@@ -804,12 +805,12 @@ gint do_sagen(player *player, gint hoerer, gint value)
     /* hoeren */
     if (gereizt)
     {
-        DPRINT(("%s sagt %d\n", player->name, value));
+        DPRINT((_("%s says %d\n"), player->name, value));
         player->gereizt = value;
 
         response = do_hoeren(gskat.players[hoerer], value, player->id);
-        DPRINT(("%s sagt %s\n", gskat.players[hoerer]->name,
-                (response) ? "JA" : "NEIN"));
+        DPRINT((_("%s says %s\n"), gskat.players[hoerer]->name,
+                (response) ? _("Yes") : _("No")));
 
         if (response)
         {
@@ -834,7 +835,7 @@ void start_provoke()
     gint sager = (hoerer + 1) % 3;
     gint i = 18;
 
-    DPRINT(("Start of provoking\n"));
+    DPRINT((_("Start of bidding\n")));
 
     /* disable button */
     gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
@@ -872,7 +873,8 @@ void start_provoke()
 
         /* update interface */
         gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
-        gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]), "Spiel ansagen");
+        gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]),
+                _("Pronounce a game"));
         gtk_label_set_text(GTK_LABEL(gskat.allwidgets[3]), gskat.re->name);
 
         g_sprintf(msg, "%d", gskat.re->gereizt);
@@ -888,7 +890,7 @@ void start_provoke()
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
-                "Alle Spieler haben gepasst.\nNeue Runde");
+                _("All players have passed.\nNew round"));
 
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
@@ -1055,15 +1057,15 @@ void take_skat()
     {
         do
         {
-            GtkWidget *dialog = gtk_dialog_new_with_buttons("Hand spielen?",
+            GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Play hand game?"),
                     GTK_WINDOW(gskat.allwidgets[0]),
                     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-                    "Ja", 1,
-                    "Nein", 0,
+                    _("Yes"), 1,
+                    _("No"), 0,
                     NULL);
 
             gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
-                    gtk_label_new("Hand spielen?"), FALSE, TRUE, 2);
+                    gtk_label_new(_("Play hand game?")), FALSE, TRUE, 2);
             gtk_widget_show_all(dialog);
 
             result = gtk_dialog_run(GTK_DIALOG(dialog));
@@ -1164,7 +1166,7 @@ void spiel_ansagen()
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
-                "%s spielt %s.", gskat.re->name, suit_name(gskat.trump));
+                _("%s plays %s."), gskat.re->name, suit_name(gskat.trump));
 
         gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -1469,8 +1471,8 @@ void end_round(enum finish_type ft)
 
             if (player->gereizt > game)
             {
-                g_sprintf(msg, "%s hat ueberreizt.\nGereizt: %d\n"
-                        "Spielwert: %d\n\t%d",
+                g_sprintf(msg, _("%s has overbid.\nBidden: %d\n"
+                        "Game value: %d\n\t%d"),
                         player->name,
                         player->gereizt,
                         game,
@@ -1480,7 +1482,7 @@ void end_round(enum finish_type ft)
             }
             else
             {
-                g_sprintf(msg, "%s gewinnt mit %d zu %d Punkten\n\t+%d",
+                g_sprintf(msg, _("%s wins with %d against %d points\n\t+%d"),
                         player->name,
                         player->points,
                         (120 - player->points),
@@ -1499,7 +1501,7 @@ void end_round(enum finish_type ft)
 
             game = game * rank * -2;
 
-            g_sprintf(msg, "%s verliert mit %d zu %d Punkten\n\t%d",
+            g_sprintf(msg, _("%s lost with %d against %d points\n\t%d"),
                     player->name,
                     player->points,
                     (120 - player->points),
@@ -1519,12 +1521,12 @@ void end_round(enum finish_type ft)
         {
             game *= -2;
 
-            g_sprintf(msg, "%s verliert das Nullspiel\n\t%d", player->name,
+            g_sprintf(msg, _("%s lost the null game\n\t%d"), player->name,
                     game);
         }
         else
         {
-            g_sprintf(msg, "%s gewinnt das Nullspiel\n\t%d", player->name,
+            g_sprintf(msg, _("%s won the null game\n\t%d"), player->name,
                     game);
         }
 
@@ -1548,7 +1550,7 @@ void end_round(enum finish_type ft)
     /* update interface */
     update_rank_interface();
 
-    g_sprintf(msg, "Runde %d", gskat.round);
+    g_sprintf(msg, _("Round %d"), gskat.round);
     gtk_frame_set_label(GTK_FRAME(gskat.allwidgets[9]), msg);
 
     /* reset game values */
@@ -1599,7 +1601,7 @@ gboolean game_abort()
             GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_INFO,
             GTK_BUTTONS_YES_NO,
-            "Runde wirklich abbrechen?");
+            _("Really abort the current round?"));
 
     response = gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -1694,7 +1696,7 @@ void reset_game()
     gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), "-");
     gtk_label_set_text(GTK_LABEL(gskat.allwidgets[5]), "-");
     gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
-    gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]), "Neue Runde");
+    gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]), _("New round"));
 }
 
 /**
