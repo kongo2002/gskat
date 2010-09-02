@@ -89,7 +89,7 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
             "comments", "Gtk skat game written in C",
             "authors", authors,
             "artists", authors,
-            "version", "1.0-" VERSION,
+            "version", VERSION,
             "license", license_string,
             "website", "http://github.com/kongo2002/gskat",
             "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
