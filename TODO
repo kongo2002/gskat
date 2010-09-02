@@ -10,8 +10,8 @@ MAJOR FEATURES
 * save and load game and round states
 * implement integrated bug reports
 * implement 'ramsch' game
-* add localization/language support
 * review last trick(s)                                                      DONE
+* add localization/language support                                         DONE
 
 MINOR POINTS
 
@@ -31,5 +31,5 @@ MINOR POINTS
 
 IMPROVEMENTS
 
-* use autotools for compile/install
 * rewrite AI concept/implementation (more flexible, dynamic)
+* use autotools for compile/install                                         DONE
