@@ -20,7 +20,7 @@
 
 #include "def.h"
 #include "interface.h"
-#include "config.h"
+#include "configuration.h"
 
 app gskat;
 

@@ -28,7 +28,7 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
-#define DATA_DIR "/home/kongo/c/gskat/pixmaps"
+#include "config.h"
 
 #define KARO  40
 #define HERZ  60

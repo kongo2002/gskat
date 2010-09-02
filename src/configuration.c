@@ -19,7 +19,7 @@
  */
 
 #include "def.h"
-#include "config.h"
+#include "configuration.h"
 
 /* convenience functions */
 #ifndef PROP_MACRO

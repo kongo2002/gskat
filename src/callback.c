@@ -19,7 +19,7 @@
  */
 
 #include "def.h"
-#include "config.h"
+#include "configuration.h"
 #include "callback.h"
 #include "utils.h"
 #include "game.h"
