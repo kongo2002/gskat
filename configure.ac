@@ -52,6 +52,16 @@ else
         [Path to card images])
 fi
 
+# Try to define git commit hash
+commit_hash="gskat_version"
+if test -d ".git" -o -f ".git"; then
+    commit_hash="`git describe --always`"
+fi
+
+AC_DEFINE_UNQUOTED(GSKAT_COMMIT_HASH,
+    "${commit_hash}",
+    [Git commit hash])
+
 # Export compiler/linker options
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
@@ -62,10 +72,6 @@ GTK_VERSION="gtk+-2.0 >= 2.4.0"
 PKG_CHECK_MODULES([GTK], $GTK_VERSION)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
-
-# Compiler flags
-# CHECK_CFLAG([-Wall])
-# CHECK_CFLAG([-Wextra])
 
 # Generate files
 AC_CONFIG_FILES([
