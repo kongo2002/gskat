@@ -1343,7 +1343,7 @@ void calculate_stich()
         end_round(FT_LOST);
     }
 
-    DPRINT((_("%s won the stich (%d).\n"), gskat.players[winner]->name, points));
+    DPRINT((_("%s won the trick (%d).\n"), gskat.players[winner]->name, points));
 
     /* remove cards from table */
     g_list_free(gskat.table);
