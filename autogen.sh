@@ -6,6 +6,8 @@ if test -d .git; then
         git log --pretty=medium | fold -s > ChangeLog
 fi
 
+libtoolize --automake
 aclocal -I m4
-autoconf
+autoheader
 automake --add-missing --copy
+autoconf
