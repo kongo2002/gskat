@@ -27,8 +27,6 @@ AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 AC_PROG_LIBTOOL
 
-# AC_PROG_INTLTOOL
-
 # Define DATA_DIR variable
 if test "x${prefix}" = "xNONE"; then
     AC_DEFINE_UNQUOTED(DATA_DIR,
