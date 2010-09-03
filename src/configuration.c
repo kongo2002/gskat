@@ -77,14 +77,14 @@ void load_config()
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
     {
-        DPRINT(("Found config file '%s'\n", filename));
+        DPRINT((_("Found config file '%s'\n"), filename));
 
         read_config();
     }
     else
     {
-        DPRINT(("Failed to load config from '%s'\n", filename));
-        DPRINT(("Using default settings instead.\n"));
+        DPRINT((_("Failed to load config from '%s'\n"), filename));
+        DPRINT((_("Using default settings instead.\n")));
 
         /* try to save config */
         if (create_conf_dir(config_dir))
@@ -151,10 +151,10 @@ gboolean write_config()
         done = g_file_set_contents(filename, key_file_content, length, &err);
 
         if (done)
-            DPRINT(("Saved configuration: %s\n", filename));
+            DPRINT((_("Saved configuration: %s\n"), filename));
         else
         {
-            DPRINT(("Failed to save configuration: %s\n", filename));
+            DPRINT((_("Failed to save configuration: %s\n"), filename));
 
             g_printerr("%s\n", err->message);
             g_clear_error(&err);
@@ -241,7 +241,7 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
 
     if (error)
     {
-        DPRINT(("Failed to read '%s' from config file.\n", prop->name));
+        DPRINT((_("Failed to read '%s' from config file.\n"), prop->name));
         g_clear_error(&error);
 
         return FALSE;
@@ -272,7 +272,7 @@ gboolean read_config()
 
         if (error)
         {
-            DPRINT(("Failed to read configuration: %s\n", error->message));
+            DPRINT((_("Failed to read configuration: %s\n"), error->message));
             g_clear_error(&error);
 
             return FALSE;
@@ -284,7 +284,7 @@ gboolean read_config()
 
         if (error)
         {
-            DPRINT(("Failed to read 'player_names' from config file.\n"));
+            DPRINT((_("Failed to read 'player_names' from config file.\n")));
             failed = TRUE;
             g_clear_error(&error);
         }
@@ -304,7 +304,7 @@ gboolean read_config()
         /* rewrite config if not all values could be read successfully */
         if (!done || failed)
         {
-            DPRINT(("Rewriting config file.\n"));
+            DPRINT((_("Rewriting config file.\n")));
             write_config();
         }
 
@@ -328,7 +328,7 @@ gboolean create_conf_dir(const gchar *config_dir)
 
         if (!exists && g_mkdir(gtk_dir, 0755) != 0)
         {
-            DPRINT(("Unable to create directory: %s\n", gtk_dir));
+            DPRINT((_("Unable to create directory: %s\n"), gtk_dir));
         }
         else
             done = TRUE;

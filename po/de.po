@@ -7,13 +7,93 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gskat 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-03 11:29+0200\n"
+"POT-Creation-Date: 2010-09-03 13:16+0200\n"
 "PO-Revision-Date: 2010-09-03 11:31+0100\n"
 "Last-Translator: Gregor Uhlenheuer <kongo2002@googlemail.com>\n"
 "Language-Team: German <kongo2002@googlemail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/ai.c:44
+#, c-format
+msgid "%s: only 1 card possible\n"
+msgstr ""
+
+#: ../src/ai.c:94
+#, c-format
+msgid "%s: random card\n"
+msgstr ""
+
+#: ../src/ai.c:117
+#, c-format
+msgid "%s: try kurz_fehl_ass()\n"
+msgstr ""
+
+#: ../src/ai.c:158
+#, c-format
+msgid "%s: try knapp_trumpfen()\n"
+msgstr ""
+
+#: ../src/ai.c:279
+#, c-format
+msgid "%s: 10 skipped - ace not played yet\n"
+msgstr ""
+
+#: ../src/ai.c:386
+#, c-format
+msgid "%s: try trumpf_spitzen()\n"
+msgstr ""
+
+#: ../src/ai.c:419
+#, c-format
+msgid "%s: try truempfe_ziehen()\n"
+msgstr ""
+
+#: ../src/ai.c:471
+#, c-format
+msgid "%s: try kurz_aufspielen()\n"
+msgstr ""
+
+#: ../src/ai.c:536
+#, c-format
+msgid "%s: try lang_aufspielen()\n"
+msgstr ""
+
+#: ../src/ai.c:592
+#, c-format
+msgid "%s: try ai_kontra_schmieren()\n"
+msgstr ""
+
+#: ../src/ai.c:655
+#, c-format
+msgid "%s: try highest_fehl()\n"
+msgstr ""
+
+#: ../src/ai.c:692
+#, c-format
+msgid "%s: try abwerfen()\n"
+msgstr ""
+
+#: ../src/ai.c:748
+#, c-format
+msgid "%s hat %d gestochen\n"
+msgstr ""
+
+#: ../src/ai.c:819
+#, c-format
+msgid "num_truempfe_played = %d\n"
+msgstr ""
+
+#: ../src/ai.c:911
+#, c-format
+msgid "%s: len_spitzen(%d) = %d\n"
+msgstr ""
+
+#: ../src/ai.c:1125
+#, c-format
+msgid "%s: prob_stich_geht_durch() == %f\n"
+msgstr ""
 
 #: ../src/callback.c:88
 msgid "gskat"
@@ -23,19 +103,66 @@ msgstr "gskat"
 msgid "Gtk skat game written in C"
 msgstr "Gtk Skat-Spiel programmiert in C"
 
+#: ../src/configuration.c:80
+#, c-format
+msgid "Found config file '%s'\n"
+msgstr ""
+
+#: ../src/configuration.c:86
+#, c-format
+msgid "Failed to load config from '%s'\n"
+msgstr ""
+
+#: ../src/configuration.c:87
+msgid "Using default settings instead.\n"
+msgstr ""
+
+#: ../src/configuration.c:154
+#, c-format
+msgid "Saved configuration: %s\n"
+msgstr ""
+
+#: ../src/configuration.c:157
+#, fuzzy, c-format
+msgid "Failed to save configuration: %s\n"
+msgstr "Fehler beim Lesen der Argumente: %s\n"
+
+#: ../src/configuration.c:244
+#, c-format
+msgid "Failed to read '%s' from config file.\n"
+msgstr ""
+
+#: ../src/configuration.c:275
+#, fuzzy, c-format
+msgid "Failed to read configuration: %s\n"
+msgstr "Fehler beim Lesen der Argumente: %s\n"
+
+#: ../src/configuration.c:287
+msgid "Failed to read 'player_names' from config file.\n"
+msgstr ""
+
+#: ../src/configuration.c:307
+msgid "Rewriting config file.\n"
+msgstr ""
+
+#: ../src/configuration.c:331
+#, c-format
+msgid "Unable to create directory: %s\n"
+msgstr ""
+
+#: ../src/game.c:97
+msgid "Card is not possible.\n"
+msgstr ""
+
 #: ../src/game.c:234
 msgid "Bidding"
 msgstr "Reizen"
 
-#: ../src/game.c:237
-#: ../src/game.c:813
-#: ../src/game.c:1063
+#: ../src/game.c:237 ../src/game.c:813 ../src/game.c:1063
 msgid "Yes"
 msgstr "Ja"
 
-#: ../src/game.c:238
-#: ../src/game.c:813
-#: ../src/game.c:1064
+#: ../src/game.c:238 ../src/game.c:813 ../src/game.c:1064
 msgid "No"
 msgstr "Nein"
 
@@ -72,9 +199,36 @@ msgstr "%s sagt %s\n"
 msgid "Start of bidding\n"
 msgstr "Start des Reizens\n"
 
+#: ../src/game.c:848
+#, c-format
+msgid "MaxReizwert of %s: %d\n"
+msgstr ""
+
+#: ../src/game.c:850
+#, c-format
+msgid "CardRating of %s: %d\n"
+msgstr ""
+
+#: ../src/game.c:856
+#, c-format
+msgid "%s won 1. reizen with %d\n"
+msgstr ""
+
+#: ../src/game.c:868
+#, c-format
+msgid "%s won 2. reizen with %d\n"
+msgstr ""
+
 #: ../src/game.c:877
 msgid "Pronounce a game"
 msgstr "Spiel ansagen"
+
+#: ../src/game.c:887
+#, fuzzy
+msgid "All players have passed -> new round.\n"
+msgstr ""
+"Alle Spieler haben gepasst.\n"
+"Neue Runde"
 
 #: ../src/game.c:893
 msgid ""
@@ -84,15 +238,30 @@ msgstr ""
 "Alle Spieler haben gepasst.\n"
 "Neue Runde"
 
-#: ../src/game.c:1060
-#: ../src/game.c:1068
+#: ../src/game.c:1060 ../src/game.c:1068
 msgid "Play hand game?"
 msgstr "Spiele Hand?"
+
+#: ../src/game.c:1119
+msgid "Spiel ansagen.\n"
+msgstr ""
 
 #: ../src/game.c:1169
 #, c-format
 msgid "%s plays %s."
 msgstr "%s spielt %s."
+
+#: ../src/game.c:1341
+#, fuzzy, c-format
+msgid "%s lost the game (null game)\n"
+msgstr ""
+"%s hat das Nullspiel verloren\n"
+"\t%d"
+
+#: ../src/game.c:1346
+#, c-format
+msgid "%s won the stich (%d).\n"
+msgstr ""
 
 #: ../src/game.c:1474
 #, c-format
@@ -153,10 +322,22 @@ msgid "Really abort the current round?"
 msgstr "Aktuelle Runde wirklich abbrechen?"
 
 #. game submenu
-#: ../src/game.c:1699
-#: ../src/interface.c:452
+#: ../src/game.c:1699 ../src/interface.c:452
 msgid "New round"
 msgstr "Neue Runde"
+
+#: ../src/interface.c:76 ../src/interface.c:840 ../src/interface.c:876
+#, c-format
+msgid "Loading '%s' ... "
+msgstr ""
+
+#: ../src/interface.c:80 ../src/interface.c:845 ../src/interface.c:880
+msgid "OK\n"
+msgstr ""
+
+#: ../src/interface.c:85 ../src/interface.c:850 ../src/interface.c:885
+msgid "FAIL\n"
+msgstr ""
 
 #: ../src/interface.c:156
 msgid "Previous trick"
@@ -282,6 +463,11 @@ msgstr "%s (Re)"
 msgid "Trick %d"
 msgstr "Stich %d"
 
+#: ../src/interface.c:1424
+#, fuzzy
+msgid "Quit gskat\n"
+msgstr "gskat"
+
 #: ../src/main.c:36
 msgid "toggle debug mode (for developing)"
 msgstr "Debugging-Modus (nur für Entwickler)"
@@ -313,3 +499,42 @@ msgstr "Fehler beim Lesen der Argumente: %s\n"
 msgid "gskat %s\n"
 msgstr "gskat %s\n"
 
+#: ../src/utils.c:67
+msgid "Null"
+msgstr ""
+
+#: ../src/utils.c:69
+msgid "Diamonds"
+msgstr ""
+
+#: ../src/utils.c:71
+msgid "Hearts"
+msgstr ""
+
+#: ../src/utils.c:73
+msgid "Spades"
+msgstr ""
+
+#: ../src/utils.c:75
+msgid "Clubs"
+msgstr ""
+
+#: ../src/utils.c:77
+msgid "Grand"
+msgstr ""
+
+#: ../src/utils.c:93
+msgid "Ace"
+msgstr ""
+
+#: ../src/utils.c:95
+msgid "Jack"
+msgstr ""
+
+#: ../src/utils.c:97
+msgid "Queen"
+msgstr ""
+
+#: ../src/utils.c:99
+msgid "King"
+msgstr ""

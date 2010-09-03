@@ -73,16 +73,16 @@ void load_icons()
         {
             g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
 
-            DPRINT(("Loading '%s' ... ", filename));
+            DPRINT((_("Loading '%s' ... "), filename));
 
             if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
             {
-                DPRINT(("OK\n"));
+                DPRINT((_("OK\n")));
                 gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
             }
             else
             {
-                DPRINT(("FAIL\n"));
+                DPRINT((_("FAIL\n")));
                 gskat.icons[i] = NULL;
             }
         }
@@ -837,17 +837,17 @@ gboolean load_cards(const gchar *path)
                 id = SUITS[i] + ranks[j];
                 g_sprintf(cname, "%s/%d.png", path, id);
 
-                DPRINT(("Loading '%s' ... ", cname));
+                DPRINT((_("Loading '%s' ... "), cname));
 
                 if (g_file_test(cname, G_FILE_TEST_EXISTS))
                 {
                     load_card(list, cname, ranks[j], SUITS[i]);
-                    DPRINT(("OK\n"));
+                    DPRINT((_("OK\n")));
                 }
                 else
                 {
                     error = TRUE;
-                    DPRINT(("FAIL\n"));
+                    DPRINT((_("FAIL\n")));
                 }
             }
         }
@@ -873,16 +873,16 @@ gboolean load_cards(const gchar *path)
  */
 cairo_surface_t *load_image(gchar *filename)
 {
-    DPRINT(("Loading '%s' ... ", filename));
+    DPRINT((_("Loading '%s' ... "), filename));
 
     if (g_file_test(filename, G_FILE_TEST_EXISTS))
     {
-        DPRINT(("OK\n"));
+        DPRINT((_("OK\n")));
         return cairo_image_surface_create_from_png(filename);
     }
     else
     {
-        DPRINT(("FAIL\n"));
+        DPRINT((_("FAIL\n")));
         return NULL;
     }
 }
@@ -1421,7 +1421,7 @@ void free_app()
 
     g_free(gskat.allwidgets);
 
-    DPRINT(("Quit gskat\n"));
+    DPRINT((_("Quit gskat\n")));
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

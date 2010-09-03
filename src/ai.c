@@ -41,7 +41,7 @@ card *ai_select_card(player *player, GList *list)
     /* return last card */
     if (g_list_length(list) == 1)
     {
-        DPRINT(("%s: only 1 card possible\n", player->name));
+        DPRINT((_("%s: only 1 card possible\n"), player->name));
         return g_list_nth_data(list, 0);
     }
 
@@ -91,7 +91,7 @@ card *ai_select_card(player *player, GList *list)
      * all strategies are implemented yet */
     if (card == NULL)
     {
-        DPRINT(("%s: random card\n", player->name));
+        DPRINT((_("%s: random card\n"), player->name));
 
         selection = rand() % g_list_length(list);
         return g_list_nth_data(list, selection);
@@ -114,7 +114,7 @@ card *kurz_fehl_ass(player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
 
-    DPRINT(("%s: try kurz_fehl_ass()\n", player->name));
+    DPRINT((_("%s: try kurz_fehl_ass()\n"), player->name));
 
     for (i=0; i<4; ++i)
     {
@@ -155,7 +155,7 @@ card *knapp_trumpfen(player *player, GList *list)
     GList *ptr = NULL;
     card *ret = NULL, *card = NULL, *high = highest_on_table();
 
-    DPRINT(("%s: try knapp_trumpfen()\n", player->name));
+    DPRINT((_("%s: try knapp_trumpfen()\n"), player->name));
 
     /* play ace if first trick of suit */
     if (!is_trump(high))
@@ -276,7 +276,7 @@ card *ai_re_mitte(player *player, GList *list)
             num_of_suit(gskat.played, first->suit) == 1 &&
             sel->rank == 10)
     {
-        DPRINT(("%s: 10 skipped - ace not played yet\n", player->name));
+        DPRINT((_("%s: 10 skipped - ace not played yet\n"), player->name));
         card = abwerfen(player, list);
     }
     else
@@ -383,7 +383,7 @@ card *trumpf_spitzen(player *player, GList *list)
     gint spitzen = 0;
     card *card = NULL;
 
-    DPRINT(("%s: try trumpf_spitzen()\n", player->name));
+    DPRINT((_("%s: try trumpf_spitzen()\n"), player->name));
 
     if (trump)
     {
@@ -416,7 +416,7 @@ card *truempfe_ziehen(player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
-    DPRINT(("%s: try truempfe_ziehen()\n", player->name));
+    DPRINT((_("%s: try truempfe_ziehen()\n"), player->name));
 
     if (trump)
     {
@@ -468,7 +468,7 @@ card *kurz_aufspielen(player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
-    DPRINT(("%s: try kurz_aufspielen()\n", player->name));
+    DPRINT((_("%s: try kurz_aufspielen()\n"), player->name));
 
     for (i=0; i<4; ++i)
     {
@@ -533,7 +533,7 @@ card *lang_aufspielen(player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
-    DPRINT(("%s: try lang_aufspielen()\n", player->name));
+    DPRINT((_("%s: try lang_aufspielen()\n"), player->name));
 
     for (i=0; i<4; ++i)
     {
@@ -589,7 +589,7 @@ card *ai_kontra_schmieren(player *player, GList *list)
     GList *ptr = NULL, *suit = NULL;
     card *card = NULL, *ret = NULL;
 
-    DPRINT(("%s: try ai_kontra_schmieren()\n", player->name));
+    DPRINT((_("%s: try ai_kontra_schmieren()\n"), player->name));
 
     card = g_list_nth_data(list, 0);
 
@@ -652,7 +652,7 @@ card *highest_fehl(player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL;
 
-    DPRINT(("%s: try highest_fehl()\n", player->name));
+    DPRINT((_("%s: try highest_fehl()\n"), player->name));
 
     /* play only if there is no trump left */
     if (truempfe_weg(player))
@@ -689,7 +689,7 @@ card *abwerfen(player *player, GList *list)
     for (i=0; i<4; ++i)
         lengths[i] = num_of_suit(list, SUITS[i]);
 
-    DPRINT(("%s: try abwerfen()\n", player->name));
+    DPRINT((_("%s: try abwerfen()\n"), player->name));
 
     for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
     {
@@ -745,7 +745,7 @@ gboolean hat_gestochen(player *player, gint suit)
             if (stich[j] && stich[j]->owner == player->id &&
                     (stich[j]->suit != suit || is_trump(stich[j])))
             {
-                DPRINT(("%s hat %d gestochen\n", player->name, suit));
+                DPRINT((_("%s hat %d gestochen\n"), player->name, suit));
                 return TRUE;
             }
         }
@@ -816,7 +816,7 @@ gint num_truempfe_played()
             ++count;
     }
 
-    DPRINT(("num_truempfe_played = %d\n", count));
+    DPRINT((_("num_truempfe_played = %d\n"), count));
 
     return count;
 }
@@ -908,7 +908,7 @@ gint len_spitzen(player *player, GList *list, gint suit)
 
     g_list_free(pcards);
 
-    DPRINT(("%s: len_spitzen(%d) = %d\n", player->name, suit, len));
+    DPRINT((_("%s: len_spitzen(%d) = %d\n"), player->name, suit, len));
 
     return len;
 }
@@ -1122,7 +1122,7 @@ gdouble prob_stich_geht_durch(player *player)
             poss = 0.25;
     }
 
-    DPRINT(("%s: prob_stich_geht_durch() == %f\n", player->name, poss));
+    DPRINT((_("%s: prob_stich_geht_durch() == %f\n"), player->name, poss));
 
     return poss;
 }

@@ -64,17 +64,17 @@ gchar *suit_name(gint id)
     switch (id)
     {
         case -1:
-            return "Null";
+            return _("Null");
         case KARO:
-            return "Karo";
+            return _("Diamonds");
         case HERZ:
-            return "Herz";
+            return _("Hearts");
         case PIK:
-            return "Pik";
+            return _("Spades");
         case KREUZ:
-            return "Kreuz";
+            return _("Clubs");
         case 0:
-            return "Grand";
+            return _("Grand");
         default:
             return "";
     }
@@ -90,13 +90,13 @@ gchar *rank_name(gint id)
     switch (id)
     {
         case 1:
-            return "Ass";
+            return _("Ace");
         case 11:
-            return "Bube";
+            return _("Jack");
         case 12:
-            return "Dame";
+            return _("Queen");
         case 13:
-            return "König";
+            return _("King");
         default:
             g_snprintf(name, 4, "%d", id);
             return name;
@@ -134,9 +134,10 @@ void print_player_cards(player *player)
     g_print("%s:\n", player->name);
     for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
     {
+        if (card)
+            g_print(", ");
         card = ptr->data;
         print_card(card);
-        g_print(", ");
     }
     g_print("\n");
 }

@@ -94,7 +94,7 @@ gboolean play_card(GdkEventButton *event)
                 return TRUE;
             }
             else
-                DPRINT(("Card is not possible.\n"));
+                DPRINT((_("Card is not possible.\n")));
 
             if (ptr)
                 g_list_free(ptr);
@@ -845,15 +845,15 @@ void start_provoke()
     {
         gskat.players[i]->gereizt = 0;
 
-        DPRINT(("MaxReizwert of %s: %d\n", gskat.players[i]->name,
+        DPRINT((_("MaxReizwert of %s: %d\n"), gskat.players[i]->name,
                     get_max_reizwert(gskat.players[i]->cards)));
-        DPRINT(("CardRating of %s: %d\n", gskat.players[i]->name,
+        DPRINT((_("CardRating of %s: %d\n"), gskat.players[i]->name,
                     rate_cards(gskat.players[i], gskat.players[i]->cards)));
     }
 
     /* sagen */
     sager = do_sagen(gskat.players[sager], hoerer, 18);
-    DPRINT(("%s won 1. reizen with %d\n", gskat.players[sager]->name,
+    DPRINT((_("%s won 1. reizen with %d\n"), gskat.players[sager]->name,
             gskat.players[sager]->gereizt));
 
     sager = do_sagen(gskat.players[sager], (hoerer+2) % 3,
@@ -865,7 +865,7 @@ void start_provoke()
 
     if (gskat.players[sager]->gereizt)
     {
-        DPRINT(("%s won 2. reizen with %d\n", gskat.players[sager]->name,
+        DPRINT((_("%s won 2. reizen with %d\n"), gskat.players[sager]->name,
                     gskat.players[sager]->gereizt));
 
         gskat.re = gskat.players[sager];
@@ -884,7 +884,7 @@ void start_provoke()
     }
     else
     {
-        DPRINT(("All players have passed -> new round.\n"));
+        DPRINT((_("All players have passed -> new round.\n")));
 
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1116,7 +1116,7 @@ void spiel_ansagen()
     GtkWidget *button;
     card *card = NULL;
 
-    DPRINT(("Spiel ansagen.\n"));
+    DPRINT((_("Spiel ansagen.\n")));
 
     /* select game to play */
     if (gskat.re->human)
@@ -1338,12 +1338,12 @@ void calculate_stich()
      * -> he would have lost the game then */
     if (gskat.re == gskat.players[winner] && gskat.null)
     {
-        DPRINT(("%s lost the game (null game)\n", gskat.re->name));
+        DPRINT((_("%s lost the game (null game)\n"), gskat.re->name));
 
         end_round(FT_LOST);
     }
 
-    DPRINT(("%s won the stich (%d).\n", gskat.players[winner]->name, points));
+    DPRINT((_("%s won the stich (%d).\n"), gskat.players[winner]->name, points));
 
     /* remove cards from table */
     g_list_free(gskat.table);
