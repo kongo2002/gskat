@@ -1,7 +1,21 @@
 AC_PREREQ([2.59])
 
+# Set gskat version
+m4_define(gskat_major_version, 0)
+m4_define(gskat_minor_version, 0)
+m4_define(gskat_micro_version, 1)
+m4_define(gskat_version, gskat_major_version.gskat_minor_version.gskat_micro_version)
+
 # Initial project information
-AC_INIT([gskat], [0.1], [kongo2002@googlemail.com])
+AC_INIT([gskat], gskat_version, [kongo2002@googlemail.com])
+
+# Export version
+AC_DEFINE(GSKAT_MAJOR_VERSION, gskat_major_version, [gskat major version])
+AC_SUBST(GSKAT_MAJOR_VERSION, gskat_major_version)
+AC_DEFINE(GSKAT_MINOR_VERSION, gskat_minor_version, [gskat minor version])
+AC_SUBST(GSKAT_MINOR_VERSION, gskat_minor_version)
+AC_DEFINE(GSKAT_MICRO_VERSION, gskat_micro_version, [gskat micro version])
+AC_SUBST(GSKAT_MICRO_VERSION, gskat_micro_version)
 
 # Check for source folder availability
 AC_CONFIG_SRCDIR([src/main.c])
