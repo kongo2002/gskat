@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gskat 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-03 13:16+0200\n"
-"PO-Revision-Date: 2010-09-03 13:28+0100\n"
+"POT-Creation-Date: 2010-09-03 13:41+0200\n"
+"PO-Revision-Date: 2010-09-03 13:42+0100\n"
 "Last-Translator: Gregor Uhlenheuer <kongo2002@googlemail.com>\n"
 "Language-Team: German <kongo2002@googlemail.com>\n"
 "MIME-Version: 1.0\n"
@@ -77,8 +77,8 @@ msgstr "%s: versuche abwerfen()\n"
 
 #: ../src/ai.c:748
 #, c-format
-msgid "%s hat %d gestochen\n"
-msgstr "%s hat %d gestochen\n"
+msgid "%s trumped %s\n"
+msgstr "%s hat %s gestochen\n"
 
 #: ../src/ai.c:819
 #, c-format
@@ -245,7 +245,7 @@ msgid "Play hand game?"
 msgstr "Spiele Hand?"
 
 #: ../src/game.c:1119
-msgid "Spiel ansagen.\n"
+msgid "Pronounce game.\n"
 msgstr "Spiel ansagen.\n"
 
 #: ../src/game.c:1169

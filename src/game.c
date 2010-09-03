@@ -1116,7 +1116,7 @@ void spiel_ansagen()
     GtkWidget *button;
     card *card = NULL;
 
-    DPRINT((_("Spiel ansagen.\n")));
+    DPRINT((_("Pronounce game.\n")));
 
     /* select game to play */
     if (gskat.re->human)

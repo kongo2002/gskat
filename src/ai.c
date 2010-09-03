@@ -745,7 +745,7 @@ gboolean hat_gestochen(player *player, gint suit)
             if (stich[j] && stich[j]->owner == player->id &&
                     (stich[j]->suit != suit || is_trump(stich[j])))
             {
-                DPRINT((_("%s hat %d gestochen\n"), player->name, suit));
+                DPRINT((_("%s trumped %s\n"), player->name, suit_name(suit)));
                 return TRUE;
             }
         }
