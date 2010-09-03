@@ -1,9 +1,12 @@
+AC_PREREQ([2.59])
+
 # Initial project information
 AC_INIT([gskat], [0.1], [kongo2002@googlemail.com])
 
 # Check for source folder availability
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Basic compiler settings
 AC_PROG_CC
@@ -21,8 +24,10 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [GETTEXT package name])
 AC_SUBST(GETTEXT_PACKAGE)
 
 AM_GLIB_GNU_GETTEXT
+IT_PROG_INTLTOOL([0.35.0])
+AC_PROG_LIBTOOL
 
-AC_PROG_INTLTOOL
+# AC_PROG_INTLTOOL
 
 # Define DATA_DIR variable
 if test "x${prefix}" = "xNONE"; then
@@ -51,9 +56,11 @@ AC_SUBST(GTK_LIBS)
 # CHECK_CFLAG([-Wextra])
 
 # Generate files
-AC_OUTPUT([
+AC_CONFIG_FILES([
     Makefile
     src/Makefile
     data/Makefile
     po/Makefile.in
 ])
+
+AC_OUTPUT
