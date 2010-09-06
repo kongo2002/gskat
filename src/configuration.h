@@ -60,6 +60,10 @@ typedef struct
 
 void load_config();
 
+gchar *get_config_dir();
+
+void set_config_filename();
+
 gboolean create_conf_dir(const gchar *config_dir);
 
 void get_config_value(GKeyFile *keyfile, property *prop);

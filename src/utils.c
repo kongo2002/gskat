@@ -145,7 +145,7 @@ void print_player_cards(player *player)
 }
 
 /**
- * Remove the current message from the statusbar stack and
+ * @brief Remove the current message from the statusbar stack and
  * push a new message onto the message stack
  *
  * @param fmt  printf-like format-string

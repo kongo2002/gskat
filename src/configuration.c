@@ -45,6 +45,49 @@ static const property config_values[] = {
 };
 
 /**
+ * @brief Determine the configuration directory
+ *
+ * First try to get the configuration directory according to
+ * the XDG base directory specification. If that fails use the
+ * home directory.
+ *
+ * @return configuration directory string (may not be freed)
+ */
+gchar *get_config_dir()
+{
+    const gchar *base_dir;
+    static gchar *config_dir = NULL;
+
+    if (!config_dir)
+    {
+        /* get XDG config directory */
+        if ((base_dir = g_get_user_config_dir()))
+            config_dir = g_build_filename(base_dir, "gskat", NULL);
+        else
+        {
+            /* get home directory */
+            if (!(base_dir = g_getenv("HOME")))
+                base_dir = g_get_home_dir();
+
+            config_dir = g_build_filename(base_dir, ".gskat", NULL);
+        }
+    }
+
+    return config_dir;
+}
+
+/**
+ * @brief Set the config filename string inside the global
+ * configuration structure
+ */
+void set_config_filename()
+{
+    const gchar *config_dir = get_config_dir();
+
+    gskat.conf.filename = g_build_filename(config_dir, "gskat.conf", NULL);
+}
+
+/**
  * @brief Load the gskat configuration file
  *
  * If the config file cannot be found the default configuration values
@@ -52,28 +95,12 @@ static const property config_values[] = {
  */
 void load_config()
 {
-    gchar *filename, *config_dir = NULL;
-
-    /* get XDG config directory */
-    config_dir = (gchar *) g_get_user_config_dir();
-
-    if (!config_dir)
-    {
-        /* get home directory */
-        const gchar *home_dir = g_getenv("HOME");
-        if (!home_dir)
-            home_dir = g_get_home_dir();
-
-        config_dir = (gchar *) home_dir;
-    }
+    const gchar *filename;
 
     if (!gskat.conf.filename)
-    {
-        filename = g_strconcat(config_dir, "/gskat/gskat.conf", NULL);
-        gskat.conf.filename = filename;
-    }
-    else
-        filename = gskat.conf.filename;
+        set_config_filename();
+
+    filename = gskat.conf.filename;
 
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
@@ -88,7 +115,7 @@ void load_config()
         DPRINT((_("Using default settings instead.\n")));
 
         /* try to save config */
-        if (create_conf_dir(config_dir))
+        if (create_conf_dir(get_config_dir()))
             write_config();
     }
 }
@@ -120,6 +147,8 @@ void set_default_config()
 
 /**
  * @brief Write the current configuration to the config file
+ *
+ * @return TRUE on success, otherwise FALSE
  */
 gboolean write_config()
 {
@@ -254,6 +283,8 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
 
 /**
  * @brief Read the configuration values from the config file
+ *
+ * @return TRUE on success, otherwise FALSE
  */
 gboolean read_config()
 {
@@ -318,27 +349,24 @@ gboolean read_config()
 
 /**
  * @brief Create the directory for the config file if necessary
+ *
+ * @param config_dir  configuration directory string
+ *
+ * @return TRUE on success, otherwise FALSE
  */
 gboolean create_conf_dir(const gchar *config_dir)
 {
-    gboolean done = FALSE, exists = FALSE;
-    gchar *gtk_dir = g_strconcat(config_dir, "/gskat", NULL);
+    gboolean exists;
 
-    if (gtk_dir)
+    exists = g_file_test(config_dir, G_FILE_TEST_EXISTS);
+
+    if (!exists && g_mkdir(config_dir, 0755) != 0)
     {
-        exists = g_file_test(gtk_dir, G_FILE_TEST_EXISTS);
-
-        if (!exists && g_mkdir(gtk_dir, 0755) != 0)
-        {
-            DPRINT((_("Unable to create directory: %s\n"), gtk_dir));
-        }
-        else
-            done = TRUE;
-
-        g_free(gtk_dir);
+        DPRINT((_("Unable to create directory: %s\n"), config_dir));
+        return FALSE;
     }
 
-    return done;
+    return TRUE;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
