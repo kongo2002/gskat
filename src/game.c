@@ -1174,6 +1174,9 @@ void spiel_ansagen()
         gtk_widget_destroy(dialog);
     }
 
+    /* update statusbar */
+    update_sb(_("%s plays %s"), gskat.re->name, suit_name(gskat.trump));
+
     /* print game to label */
     gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), suit_name(gskat.trump));
 
@@ -1322,6 +1325,8 @@ void calculate_stich()
             winner = crd->owner;
         }
     }
+
+    update_sb(_("%s won the trick."), gskat.players[winner]->name);
 
     /* calculate points of stich */
     for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
@@ -1480,6 +1485,8 @@ void end_round(enum finish_type ft)
                         game * -2);
 
                 game *= -2;
+
+                update_sb(_("%s has overbid"), player->name);
             }
             else
             {
@@ -1488,6 +1495,8 @@ void end_round(enum finish_type ft)
                         player->points,
                         (120 - player->points),
                         game);
+
+                update_sb(_("%s won the round"), player->name);
             }
         }
         /* player has lost */
@@ -1507,6 +1516,8 @@ void end_round(enum finish_type ft)
                     player->points,
                     (120 - player->points),
                     game);
+
+            update_sb(_("%s lost the round"), player->name);
         }
     }
     else
@@ -1578,6 +1589,8 @@ void play_stich()
                 ai_play_card(gskat.players[current]);
                 play_stich();
             }
+            else
+                update_sb(_("Choose a card to play"));
         }
         else
         {
@@ -1609,6 +1622,7 @@ gboolean game_abort()
     switch (response)
     {
         case GTK_RESPONSE_YES:
+            update_sb(_("Current round aborted."));
             abort = TRUE;
             break;
         case GTK_RESPONSE_NO:
