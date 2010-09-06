@@ -131,6 +131,9 @@ int main(int argc, const char *argv[])
         if (no_animation)
             gskat.conf.animation = FALSE;
 
+        /* set game icons */
+        set_icons();
+
         /* initialize interface */
         create_interface();
 

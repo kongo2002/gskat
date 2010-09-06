@@ -166,9 +166,6 @@ void alloc_app()
     /* initialize suit icons */
     load_suit_icons();
 
-    /* set game icon */
-    set_icons();
-
     /* initialize alternative cursor shapes */
     gskat.pirate_cursor = gdk_cursor_new(GDK_PIRATE);
     gskat.hand_cursor = gdk_cursor_new(GDK_HAND1);
