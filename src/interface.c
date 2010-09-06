@@ -305,6 +305,11 @@ void show_config_window()
     GtkWidget *show_poss_label;
     GtkWidget *show_poss_check;
 
+    GtkWidget *about_label;
+    GtkWidget *about_table;
+    GtkWidget *config_loc_label;
+    GtkWidget *config_loc_entry;
+
     GtkWidget *hbox_buttons;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
@@ -459,6 +464,27 @@ void show_config_window()
     gtk_widget_set_sensitive(debug_label, FALSE);
     gtk_widget_set_sensitive(debug_check, FALSE);
 #endif
+
+    /* ABOUT TABLE */
+    about_label = gtk_label_new(_("About"));
+    about_table = gtk_table_new(1, 2, FALSE);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_table, about_label);
+    gtk_container_set_border_width(GTK_CONTAINER(about_table), 5);
+
+    config_loc_label = gtk_label_new(_("Configuration file location:"));
+    gtk_misc_set_alignment(GTK_MISC(config_loc_label), 0, 0.5);
+    gtk_table_attach(GTK_TABLE(about_table),
+            config_loc_label,
+            0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    config_loc_entry = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(config_loc_entry), gskat.conf.filename);
+    gtk_entry_set_width_chars(GTK_ENTRY(config_loc_entry),
+            strlen(gskat.conf.filename));
+    gtk_widget_set_sensitive(config_loc_entry, FALSE);
+    gtk_table_attach(GTK_TABLE(about_table),
+            config_loc_entry,
+            1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* BOTTOM BUTTONS */
     hbox_buttons = gtk_hbox_new(TRUE, 10);
