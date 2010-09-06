@@ -153,12 +153,24 @@ void print_player_cards(player *player)
  */
 void update_sb(const gchar *fmt, ...)
 {
+    gchar *msg = NULL;
     GtkStatusbar *sb = (GtkStatusbar *) gskat.allwidgets[14];
+    va_list args;
 
     if (sb)
     {
-        gtk_statusbar_pop(sb, GSKAT_CONTEXTID);
-        gtk_statusbar_push(sb, GSKAT_CONTEXTID, fmt);
+        va_start(args, fmt);
+        msg = g_strdup_vprintf(fmt, args);
+
+        if (msg)
+        {
+            gtk_statusbar_pop(sb, GSKAT_CONTEXTID);
+            gtk_statusbar_push(sb, GSKAT_CONTEXTID, msg);
+
+            g_free(msg);
+        }
+
+        va_end(args);
     }
 }
 

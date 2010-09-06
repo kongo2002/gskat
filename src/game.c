@@ -836,6 +836,8 @@ void start_provoke()
 
     DPRINT((_("Start of bidding\n")));
 
+    update_sb(_("Start of bidding"));
+
     /* disable button */
     gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
 
@@ -1718,6 +1720,8 @@ void game_start()
 
     /* activate button */
     gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
+
+    update_sb(_("New round started"));
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

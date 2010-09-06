@@ -122,6 +122,8 @@ void alloc_app()
     /* initialize alternative cursor shapes */
     gskat.pirate_cursor = gdk_cursor_new(GDK_PIRATE);
     gskat.hand_cursor = gdk_cursor_new(GDK_HAND1);
+
+    update_sb(_("gskat v%s successfully loaded."), VERSION);
 }
 
 /**
