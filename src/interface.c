@@ -55,9 +55,52 @@ player *init_player(gint id, gchar *name, gboolean human)
 }
 
 /**
+ * @brief Try to load and set the game icons
+ */
+void set_icons()
+{
+    gint i;
+    gchar *filename;
+    GList *icons = NULL;
+
+    const gchar *icon_names[] =
+    {
+        "gskat16x16.png",
+        "gskat22x22.png",
+        "gskat24x24.png",
+        "gskat32x32.png",
+        "gskat48x48.png",
+        "gskat64x64.png",
+        "gskat128x128.png",
+        NULL
+    };
+
+    /* fill the icon list with all found icon pixbufs */
+    for (i=0; icon_names[i]; ++i)
+    {
+        filename = g_build_filename(DATA_DIR, "icons", icon_names[i], NULL);
+
+        GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
+        g_free(filename);
+
+        if (pixbuf)
+            icons = g_list_prepend(icons, pixbuf);
+    }
+
+    if (icons)
+    {
+        gtk_window_set_default_icon_list(icons);
+
+        /* free pixbufs and the list object */
+        g_list_foreach(icons, (GFunc) g_object_unref, NULL);
+        g_list_free(icons);
+    }
+}
+
+/**
  * @brief Try to load the icons of the four suits
  */
-void load_icons()
+void load_suit_icons()
 {
     gint i;
     gchar *suits[] = { "club", "spade", "heart", "diamond" };
@@ -117,7 +160,10 @@ void alloc_app()
         gskat.stiche[i] = NULL;
 
     /* initialize suit icons */
-    load_icons();
+    load_suit_icons();
+
+    /* set game icon */
+    set_icons();
 
     /* initialize alternative cursor shapes */
     gskat.pirate_cursor = gdk_cursor_new(GDK_PIRATE);

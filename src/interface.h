@@ -25,7 +25,9 @@
 
 player *init_player(gint id, gchar *name, gboolean human);
 
-void load_icons();
+void load_suit_icons();
+
+void set_icons();
 
 void alloc_app();
 
