@@ -285,6 +285,9 @@ gboolean save_config(GtkButton *button, gpointer data)
     gskat.conf.num_show_tricks = gtk_spin_button_get_value_as_int(
             GTK_SPIN_BUTTON(gskat.confwidgets[7]));
 
+    gskat.conf.show_poss_cards = gtk_toggle_button_get_active(
+            GTK_TOGGLE_BUTTON(gskat.confwidgets[8]));
+
     gskat.conf.debug = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[5]));
 
@@ -382,6 +385,10 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
     GdkWindow *window = area->window;
     GdkCursor *cursor = gdk_window_get_cursor(window);
     card *card;
+
+    /* return if not enabled in configuration */
+    if (!gskat.conf.show_poss_cards)
+        return FALSE;
 
     /* check if it's the player's turn */
     if (gskat.state == PLAYING && ((gskat.cplayer + num_cards) % 3 == 0))

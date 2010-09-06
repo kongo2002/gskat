@@ -228,6 +228,8 @@ typedef struct _config
     gboolean show_tricks;
     /** Number of played tricks to show */
     gint num_show_tricks;
+    /** Indicate possible cards by changing the mouse cursor shape */
+    gboolean show_poss_cards;
     /** Card animation duration */
     gint anim_duration;
     /** Print debug statements */

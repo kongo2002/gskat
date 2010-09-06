@@ -255,6 +255,8 @@ void show_config_window()
     GtkWidget *show_tricks_check;
     GtkWidget *num_show_tricks_label;
     GtkWidget *num_show_tricks;
+    GtkWidget *show_poss_label;
+    GtkWidget *show_poss_check;
 
     GtkWidget *hbox_buttons;
     GtkWidget *ok_button;
@@ -263,7 +265,6 @@ void show_config_window()
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-    gtk_widget_set_size_request(window, 300, 200);
     gtk_window_set_transient_for(GTK_WINDOW(window),
             GTK_WINDOW(gskat.allwidgets[0]));
 
@@ -278,6 +279,7 @@ void show_config_window()
     names_label = gtk_label_new(_("Player names"));
     names_table = gtk_table_new(3, 2, TRUE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), names_table, names_label);
+    gtk_container_set_border_width(GTK_CONTAINER(names_table), 5);
 
     player_label[0] = gtk_label_new(_("Your name:"));
     player_label[1] = gtk_label_new(_("Player 1:"));
@@ -300,8 +302,9 @@ void show_config_window()
 
     /* RULES TABLE */
     rules_label = gtk_label_new(_("Rules"));
-    rules_table = gtk_table_new(2, 2, FALSE);
+    rules_table = gtk_table_new(3, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), rules_table, rules_label);
+    gtk_container_set_border_width(GTK_CONTAINER(rules_table), 5);
 
     show_tricks_label = gtk_label_new(_("Show previous trick:"));
     gtk_misc_set_alignment(GTK_MISC(show_tricks_label), 0, 0.5);
@@ -335,10 +338,25 @@ void show_config_window()
             num_show_tricks,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
+    show_poss_label = gtk_label_new(_("Change mouse cursor for possible cards:"));
+    gtk_misc_set_alignment(GTK_MISC(show_poss_label), 0, 0.5);
+
+    show_poss_check = gtk_check_button_new();
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_poss_check),
+            gskat.conf.show_poss_cards);
+
+    gtk_table_attach(GTK_TABLE(rules_table),
+            show_poss_label,
+            0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+    gtk_table_attach(GTK_TABLE(rules_table),
+            show_poss_check,
+            1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
     /* MISC TABLE */
     misc_label = gtk_label_new(_("Misc"));
     misc_table = gtk_table_new(3, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
+    gtk_container_set_border_width(GTK_CONTAINER(misc_table), 5);
 
     /* animation */
     animation_label = gtk_label_new(_("Animate card movement:"));
@@ -412,7 +430,7 @@ void show_config_window()
     /* allocate configuration widgets
      * this array is freed in either 'save_config', 'close_config'
      * or 'destroy_config' */
-    gskat.confwidgets = (GtkWidget **) g_malloc(8 * sizeof(GtkWidget *));
+    gskat.confwidgets = (GtkWidget **) g_malloc(9 * sizeof(GtkWidget *));
 
     gskat.confwidgets[0] = player_entry[0];
     gskat.confwidgets[1] = player_entry[1];
@@ -422,6 +440,7 @@ void show_config_window()
     gskat.confwidgets[5] = debug_check;
     gskat.confwidgets[6] = show_tricks_check;
     gskat.confwidgets[7] = num_show_tricks;
+    gskat.confwidgets[8] = show_poss_check;
 
     g_signal_connect(G_OBJECT(window), "delete-event",
             G_CALLBACK(destroy_config), (gpointer) window);
