@@ -78,6 +78,10 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
     (void) menuitem;
     (void) data;
 
+    gchar *img_file = g_build_filename(DATA_DIR, "icons",
+            "gskat128x128.png", NULL);
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(img_file, NULL);
+
     const gchar *authors[] =
     {
         "Gregor Uhlenheuer <kongo2002@googlemail.com>",
@@ -91,10 +95,15 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
             "artists", authors,
             "version", VERSION,
             "license", license_string,
+            "logo", pixbuf,
             "website", "http://github.com/kongo2002/gskat",
             "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
                 "All Rights Reserved.",
             NULL);
+
+    if (pixbuf)
+        g_object_unref(pixbuf);
+    g_free(img_file);
 }
 
 /**
