@@ -504,6 +504,7 @@ void create_interface()
     GtkWidget *hbox;
     GtkWidget *vbox;
     GtkWidget *area;
+    GtkWidget *statusbar;
     GtkWidget *frame_game;
     GtkWidget *table_game;
     GtkWidget *lb_game_stich_left;
@@ -533,7 +534,7 @@ void create_interface()
     if (iconfile)
         g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 14);
+    gskat.allwidgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 15);
 
     if (gskat.allwidgets != NULL)
     {
@@ -555,6 +556,9 @@ void create_interface()
         hbox = gtk_hbox_new(FALSE, 0);
         /* gtk_box_pack_start(child, expand, fill, padding) */
         gtk_box_pack_start(GTK_BOX(vboxmenu), hbox, TRUE, TRUE, 0);
+
+        statusbar = gtk_statusbar_new();
+        gtk_box_pack_start(GTK_BOX(vboxmenu), statusbar, FALSE, TRUE, 0);
 
         area = gtk_drawing_area_new();
         gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
@@ -717,6 +721,7 @@ void create_interface()
         gskat.allwidgets[11] = lb_rank_p1_name;
         gskat.allwidgets[12] = lb_rank_p2_name;
         gskat.allwidgets[13] = lb_rank_p3_name;
+        gskat.allwidgets[14] = statusbar;
 
         /* attach signals */
         g_signal_connect(G_OBJECT(window), "destroy",

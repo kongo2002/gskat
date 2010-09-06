@@ -21,6 +21,8 @@
 #include "def.h"
 #include "utils.h"
 
+#define GSKAT_CONTEXTID 42
+
 /**
  * @brief Helper function to swap two integers
  */
@@ -140,6 +142,24 @@ void print_player_cards(player *player)
         print_card(card);
     }
     g_print("\n");
+}
+
+/**
+ * Remove the current message from the statusbar stack and
+ * push a new message onto the message stack
+ *
+ * @param fmt  printf-like format-string
+ * @param ...  additional arguments
+ */
+void update_sb(const gchar *fmt, ...)
+{
+    GtkStatusbar *sb = (GtkStatusbar *) gskat.allwidgets[14];
+
+    if (sb)
+    {
+        gtk_statusbar_pop(sb, GSKAT_CONTEXTID);
+        gtk_statusbar_push(sb, GSKAT_CONTEXTID, fmt);
+    }
 }
 
 /**
