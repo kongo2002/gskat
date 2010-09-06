@@ -185,12 +185,11 @@ void give_cards()
         order[i] = i;
 
     /* generate random card order */
-    srand((unsigned) time(NULL));
     for (i=0; i<100; ++i)
     {
-        j = rand()%32;
+        j = g_random_int_range(0, 32);
         do
-            k = rand()%32;
+            k = g_random_int_range(0, 32);
         while (k == j);
         swap(&order[j], &order[k]);
     }
