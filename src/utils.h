@@ -25,6 +25,8 @@
 
 void swap(gint *a, gint *b);
 
+gint max_str_len(const gchar *first, ...);
+
 gint get_card_points(gint rank);
 
 gchar *suit_name(gint id);

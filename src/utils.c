@@ -34,6 +34,28 @@ void swap(gint *a, gint *b)
 }
 
 /**
+ * @brief Return maximum string length
+ */
+gint max_str_len(const gchar *first, ...)
+{
+    gint max = strlen(first);
+    gchar *str = NULL;
+    va_list args;
+
+    va_start(args, first);
+
+    while ((str = va_arg(args, gchar *)))
+    {
+        if (strlen(str) > max)
+            max = strlen(str);
+    }
+
+    va_end(args);
+
+    return max;
+}
+
+/**
  * @brief Get card value depending on its rank
  */
 gint get_card_points(gint rank)
