@@ -81,10 +81,14 @@ void set_icons()
         filename = g_build_filename(DATA_DIR, "icons", icon_names[i], NULL);
 
         GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
-        g_free(filename);
 
         if (pixbuf)
+        {
             icons = g_list_prepend(icons, pixbuf);
+            DPRINT((_("Loaded icon '%s'\n"), filename));
+        }
+
+        g_free(filename);
     }
 
     if (icons)

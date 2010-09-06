@@ -78,6 +78,7 @@ AC_CONFIG_FILES([
     Makefile
     src/Makefile
     data/Makefile
+    data/icons/Makefile
     po/Makefile.in
 ])
 
