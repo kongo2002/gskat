@@ -67,11 +67,23 @@ typedef struct _global_state
     player_state pstates[3];
 } global_state;
 
+typedef struct _state_group
+{
+    /** Global state structure */
+    global_state *gs;
+    /** Card states array */
+    card_state *cs;
+    /** Played cards indices */
+    gint *pc;
+} state_group;
+
 global_state *get_global_state();
 
 gboolean save_state_to_file(const gchar *filename);
 
 gboolean read_state_from_file(const gchar *filename);
+
+void apply_states(state_group *sg);
 
 #endif /* __GAMESTATE_H__ */
 

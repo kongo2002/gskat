@@ -96,6 +96,8 @@ card_state *get_card_states()
  *
  * @param filename  filename to write the states into
  *
+ * @todo This function needs some refactoring I think.
+ *
  * @return TRUE on success, otherwise FALSE
  */
 gboolean save_state_to_file(const gchar *filename)
@@ -192,6 +194,8 @@ gboolean save_state_to_file(const gchar *filename)
  *
  * @param filename  filename of the state file to read/parse
  *
+ * @todo This function needs some refactoring I think.
+ *
  * @return TRUE on success, otherwise FALSE
  */
 gboolean read_state_from_file(const gchar *filename)
@@ -201,6 +205,7 @@ gboolean read_state_from_file(const gchar *filename)
     FILE *input;
     global_state *state;
     card_state *cstates;
+    state_group *sg;
 
     /* allocate needed state structures */
     if (!(state = (global_state *) g_malloc(sizeof(global_state))))
@@ -279,6 +284,14 @@ gboolean read_state_from_file(const gchar *filename)
 
     DPRINT((_("Successfully read game state from file '%s'\n"), filename));
 
+    sg = (state_group *) g_malloc(sizeof(state_group));
+
+    sg->gs = state;
+    sg->cs = cstates;
+    sg->pc = played_cards;
+
+    apply_states(sg);
+
     fclose(input);
     g_free(state);
     g_free(cstates);
@@ -286,6 +299,58 @@ gboolean read_state_from_file(const gchar *filename)
         g_free(played_cards);
 
     return TRUE;
+}
+
+/**
+ * @brief Apply all read states to the current game state
+ *
+ * @param sg  state group structure
+ */
+void apply_states(state_group *sg)
+{
+    gint i;
+    card *crd;
+    card_state *cs;
+    player *pptr;
+    player_state *pstate;
+
+    /* set global game properties */
+    gskat.stich   = sg->gs->num_stich;
+    gskat.cplayer = sg->gs->cplayer;
+    gskat.trump   = sg->gs->trump;
+    gskat.hand    = sg->gs->hand;
+    gskat.null    = sg->gs->null;
+    gskat.re      = gskat.players[sg->gs->re_player];
+
+    /* set player values */
+    for (i=0; i<3; ++i)
+    {
+        pptr = gskat.players[i];
+        pstate = &sg->gs->pstates[i];
+
+        pptr->re         = pstate->re;
+        pptr->gereizt    = pstate->gereizt;
+        pptr->points     = pstate->points;
+        pptr->sum_points = pstate->sum_points;
+    }
+
+    /* set all card values accordingly */
+    for (i=0; i<32; ++i)
+    {
+        cs = &sg->cs[i];
+        crd = get_card_ptr(cs->suit, cs->rank);
+
+        crd->owner     = cs->owner;
+        crd->status    = cs->status;
+        crd->draw      = cs->draw;
+        crd->draw_face = cs->draw_face;
+    }
+
+    /* TODO: we have to fill the card lists accordingly here, like
+     * 'skat', 'table', 'played' and 'stiche' */
+
+    /* trigger continuation of the game */
+    gskat.state = PLAYING;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
