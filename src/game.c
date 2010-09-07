@@ -21,7 +21,6 @@
 #include "def.h"
 #include "game.h"
 #include "ai.h"
-#include "gamestate.h"
 #include "interface.h"
 #include "utils.h"
 
@@ -1720,10 +1719,6 @@ void reset_game()
  */
 void game_start()
 {
-#ifdef DEBUG
-    save_state_to_file("/home/kongo/gamestate");
-#endif
-
     /* give cards */
     gskat.state = GIVE_CARDS;
     give_cards();
@@ -1741,10 +1736,6 @@ void game_start()
     gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
 
     update_sb(_("New round started"));
-
-#ifdef DEBUG
-    read_state_from_file("/home/kongo/gamestate");
-#endif
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

@@ -23,6 +23,7 @@
 #include "callback.h"
 #include "utils.h"
 #include "game.h"
+#include "gamestate.h"
 #include "interface.h"
 #include "license.h"
 
@@ -555,6 +556,28 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
     (void) event;
 
     draw_tricks_area(area, (stich_view *) data);
+}
+
+/**
+ * @brief Load a saved game state
+ *
+ * @param menuitem  the menu item which received the signal
+ * @param data      arbitrary user data
+ */
+void load_game_cb(GtkMenuItem *menuitem, gpointer data)
+{
+    read_state_from_file("/home/kongo/gamestate");
+}
+
+/**
+ * @brief Save the current game state
+ *
+ * @param menuitem  the menu item which received the signal
+ * @param data      arbitrary user data
+ */
+void save_game_cb(GtkMenuItem *menuitem, gpointer data)
+{
+    save_state_to_file("/home/kongo/gamestate");
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

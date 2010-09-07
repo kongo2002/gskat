@@ -550,6 +550,8 @@ static GtkWidget *create_menu()
     GtkWidget *gmenu;        /* game submenu */
     GtkWidget *game;
     GtkWidget *new_item;
+    GtkWidget *load_item;
+    GtkWidget *save_item;
     GtkWidget *quit_item;
     GtkWidget *cmenu;        /* configuration submenu */
     GtkWidget *config;
@@ -564,11 +566,21 @@ static GtkWidget *create_menu()
     new_item = gtk_menu_item_new_with_label(_("New round"));
     g_signal_connect(G_OBJECT(new_item), "activate",
             G_CALLBACK(next_round), NULL);
+    load_item = gtk_menu_item_new_with_label(_("Load game state"));
+    g_signal_connect(G_OBJECT(load_item), "activate",
+            G_CALLBACK(load_game_cb), NULL);
+    save_item = gtk_menu_item_new_with_label(_("Save current game state"));
+    g_signal_connect(G_OBJECT(save_item), "activate",
+            G_CALLBACK(save_game_cb), NULL);
     quit_item = gtk_menu_item_new_with_label(_("Quit"));
     g_signal_connect(G_OBJECT(quit_item), "activate", G_CALLBACK(quit), NULL);
 
     gmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), load_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), save_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quit_item);
 
     game = gtk_menu_item_new_with_label(_("Game"));

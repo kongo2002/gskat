@@ -59,6 +59,10 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
+void load_game_cb(GtkMenuItem *menuitem, gpointer data);
+
+void save_game_cb(GtkMenuItem *menuitem, gpointer data);
+
 #endif /* __CALLBACK_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */
