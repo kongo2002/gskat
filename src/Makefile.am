@@ -10,6 +10,7 @@ gskat_headers = ai.h \
 		configuration.h \
 		def.h \
 		game.h \
+		gamestate.h \
 		interface.h \
 		license.h \
 		utils.h
@@ -18,6 +19,7 @@ gskat_SOURCES = ai.c \
 		callback.c \
 		configuration.c \
 		game.c \
+		gamestate.c \
 		interface.c \
 		main.c \
 		utils.c \
