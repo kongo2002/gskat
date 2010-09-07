@@ -35,6 +35,8 @@ void show_last_tricks();
 
 void show_config_window();
 
+void update_interface();
+
 void update_rank_interface();
 
 void create_interface();

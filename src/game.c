@@ -829,7 +829,6 @@ gint do_sagen(player *player, gint hoerer, gint value)
  */
 void start_provoke()
 {
-    gchar msg[4];
     gint hoerer = gskat.forehand;
     gint sager = (hoerer + 1) % 3;
     gint i = 18;
@@ -876,11 +875,8 @@ void start_provoke()
         gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
         gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]),
                 _("Pronounce a game"));
-        gtk_label_set_text(GTK_LABEL(gskat.widgets[3]), gskat.re->name);
 
-        g_sprintf(msg, "%d", gskat.re->gereizt);
-        gtk_label_set_text(GTK_LABEL(gskat.widgets[5]), msg);
-
+        update_interface();
         take_skat();
     }
     else
@@ -1178,8 +1174,7 @@ void spiel_ansagen()
     update_sb(_("%s plays %s"), gskat.re->name, suit_name(gskat.trump));
 
     /* print game to label */
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[4]), suit_name(gskat.trump));
-
+    update_interface();
     gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
 
     /* hide skat & redraw screen */
@@ -1289,7 +1284,6 @@ void ai_play_card(player *player)
  */
 void calculate_stich()
 {
-    gchar msg[6];
     gint winner;
     gint points = 0;
     GList *ptr = NULL;
@@ -1359,10 +1353,7 @@ void calculate_stich()
 
     /* update interface */
     if (gskat.stich <= 10)
-    {
-        g_sprintf(msg, "%d", gskat.stich);
-        gtk_label_set_text(GTK_LABEL(gskat.widgets[2]), msg);
-    }
+        update_interface();
 
     calc_card_positions();
     draw_area();
@@ -1561,9 +1552,7 @@ void end_round(enum finish_type ft)
 
     /* update interface */
     update_rank_interface();
-
-    g_sprintf(msg, _("Round %d"), gskat.round);
-    gtk_frame_set_label(GTK_FRAME(gskat.widgets[9]), msg);
+    update_interface();
 
     /* reset game values */
     reset_game();
@@ -1706,10 +1695,7 @@ void reset_game()
     }
 
     /* update interface */
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[2]), "1");
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[3]), "-");
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[4]), "-");
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[5]), "-");
+    update_interface();
     gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
     gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]), _("New round"));
 }

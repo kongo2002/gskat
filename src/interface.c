@@ -869,6 +869,45 @@ void create_interface()
 }
 
 /**
+ * @brief Update all game interface elements
+ */
+void update_interface()
+{
+    const gint len = 1024;
+    gchar *text;
+
+    /* 1024 characters should be enough ... */
+    if (!(text = (gchar *) g_malloc(sizeof(gchar) * len)))
+        return;
+
+    /* current trick label */
+    g_snprintf(text, len-1, "%d", gskat.stich);
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[2]), text);
+
+    /* re player label */
+    g_snprintf(text, len-1, "%s", (gskat.re) ? gskat.re->name : "-");
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[3]), text);
+
+    /* current game/trump label */
+    g_snprintf(text, len-1, "%s", (gskat.trump != -1) ?
+            suit_name(gskat.trump) : "-");
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[4]), text);
+
+    /* bidden value */
+    if (gskat.re)
+        g_snprintf(text, len-1, "%d", gskat.re->gereizt);
+    else
+        g_snprintf(text, len-1, "-");
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[5]), text);
+
+    /* current round label */
+    g_snprintf(text, len-1, _("Round %d"), gskat.round);
+    gtk_frame_set_label(GTK_FRAME(gskat.widgets[9]), text);
+
+    g_free(text);
+}
+
+/**
  * @brief Update the players' points on the right-hand interface
  */
 void update_rank_interface()
