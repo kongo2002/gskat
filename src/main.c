@@ -65,7 +65,7 @@ void initialize()
     gskat.back        = NULL;
     gskat.bg          = NULL;
     gskat.area        = NULL;
-    gskat.allwidgets  = NULL;
+    gskat.widgets  = NULL;
     gskat.confwidgets = NULL;
     gskat.state       = LOADING;
     gskat.re          = NULL;
@@ -138,9 +138,9 @@ int main(int argc, const char *argv[])
         create_interface();
 
         /* show all widgets after being initialized */
-        if (gskat.allwidgets != NULL)
+        if (gskat.widgets != NULL)
         {
-            gtk_widget_show_all(gskat.allwidgets[0]);
+            gtk_widget_show_all(gskat.widgets[0]);
             gtk_main();
 
             free_app();

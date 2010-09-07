@@ -265,10 +265,10 @@ typedef struct _app
     GdkCursor *pirate_cursor;
     /** Alternative cursor shape for allowed action */
     GdkCursor *hand_cursor;
-    /** Game area, is replaced by allwidgets */
+    /** Game drawing area */
     GtkWidget *area;
-    /** Array of all gtk widgets used */
-    GtkWidget **allwidgets;
+    /** Array of all used gtk widgets */
+    GtkWidget **widgets;
     /** Array of configuration widgets */
     GtkWidget **confwidgets;
     /** Current game state */

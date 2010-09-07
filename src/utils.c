@@ -176,7 +176,7 @@ void print_player_cards(player *player)
 void update_sb(const gchar *fmt, ...)
 {
     gchar *msg = NULL;
-    GtkStatusbar *sb = (GtkStatusbar *) gskat.allwidgets[14];
+    GtkStatusbar *sb = (GtkStatusbar *) gskat.widgets[14];
     va_list args;
 
     if (sb)

@@ -231,7 +231,7 @@ gint get_provoke_response(gint value, gchar *msg, gboolean hoeren)
     g_sprintf(caption, "%d", value);
 
     GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Bidding"),
-            GTK_WINDOW(gskat.allwidgets[0]),
+            GTK_WINDOW(gskat.widgets[0]),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             (hoeren) ? _("Yes") : caption, value,
             (hoeren) ? _("No") : _("Pass"), 0,
@@ -839,7 +839,7 @@ void start_provoke()
     update_sb(_("Start of bidding"));
 
     /* disable button */
-    gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
+    gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
 
     /* reset all player values */
     for (i=0; i<3; ++i)
@@ -873,13 +873,13 @@ void start_provoke()
         gskat.re->re = TRUE;
 
         /* update interface */
-        gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
-        gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]),
+        gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
+        gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]),
                 _("Pronounce a game"));
-        gtk_label_set_text(GTK_LABEL(gskat.allwidgets[3]), gskat.re->name);
+        gtk_label_set_text(GTK_LABEL(gskat.widgets[3]), gskat.re->name);
 
         g_sprintf(msg, "%d", gskat.re->gereizt);
-        gtk_label_set_text(GTK_LABEL(gskat.allwidgets[5]), msg);
+        gtk_label_set_text(GTK_LABEL(gskat.widgets[5]), msg);
 
         take_skat();
     }
@@ -887,7 +887,7 @@ void start_provoke()
     {
         DPRINT((_("All players have passed -> new round.\n")));
 
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
@@ -1059,7 +1059,7 @@ void take_skat()
         do
         {
             GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Play hand game?"),
-                    GTK_WINDOW(gskat.allwidgets[0]),
+                    GTK_WINDOW(gskat.widgets[0]),
                     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                     _("Yes"), 1,
                     _("No"), 0,
@@ -1163,7 +1163,7 @@ void spiel_ansagen()
          * i.e. grand, null */
         gskat.trump = get_best_suit(gskat.re->cards);
 
-        dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+        dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
@@ -1178,9 +1178,9 @@ void spiel_ansagen()
     update_sb(_("%s plays %s"), gskat.re->name, suit_name(gskat.trump));
 
     /* print game to label */
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), suit_name(gskat.trump));
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[4]), suit_name(gskat.trump));
 
-    gtk_widget_set_sensitive(gskat.allwidgets[1], FALSE);
+    gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
 
     /* hide skat & redraw screen */
     for (list = g_list_first(gskat.skat); list; list = list->next)
@@ -1361,7 +1361,7 @@ void calculate_stich()
     if (gskat.stich <= 10)
     {
         g_sprintf(msg, "%d", gskat.stich);
-        gtk_label_set_text(GTK_LABEL(gskat.allwidgets[2]), msg);
+        gtk_label_set_text(GTK_LABEL(gskat.widgets[2]), msg);
     }
 
     calc_card_positions();
@@ -1548,7 +1548,7 @@ void end_round(enum finish_type ft)
     set_round_points(player->id, game);
 
     /* show game summary message dialog */
-    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
             GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_INFO,
             GTK_BUTTONS_CLOSE,
@@ -1563,7 +1563,7 @@ void end_round(enum finish_type ft)
     update_rank_interface();
 
     g_sprintf(msg, _("Round %d"), gskat.round);
-    gtk_frame_set_label(GTK_FRAME(gskat.allwidgets[9]), msg);
+    gtk_frame_set_label(GTK_FRAME(gskat.widgets[9]), msg);
 
     /* reset game values */
     reset_game();
@@ -1611,7 +1611,7 @@ gboolean game_abort()
     gint response;
     GtkWidget *dialog;
 
-    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.allwidgets[0]),
+    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
             GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_INFO,
             GTK_BUTTONS_YES_NO,
@@ -1706,12 +1706,12 @@ void reset_game()
     }
 
     /* update interface */
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[2]), "1");
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[3]), "-");
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[4]), "-");
-    gtk_label_set_text(GTK_LABEL(gskat.allwidgets[5]), "-");
-    gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
-    gtk_button_set_label(GTK_BUTTON(gskat.allwidgets[1]), _("New round"));
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[2]), "1");
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[3]), "-");
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[4]), "-");
+    gtk_label_set_text(GTK_LABEL(gskat.widgets[5]), "-");
+    gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
+    gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]), _("New round"));
 }
 
 /**
@@ -1733,7 +1733,7 @@ void game_start()
     gskat.re = NULL;
 
     /* activate button */
-    gtk_widget_set_sensitive(gskat.allwidgets[1], TRUE);
+    gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
 
     update_sb(_("New round started"));
 }
