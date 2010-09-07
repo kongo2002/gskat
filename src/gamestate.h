@@ -21,6 +21,20 @@
 #ifndef __GAMESTATE_H__
 #define __GAMESTATE_H__
 
+typedef struct _card_state
+{
+    /** Card id */
+    gint id;
+    /** Owner */
+    gint owner;
+    /** Card status */
+    gint status;
+    /** Draw card? */
+    gboolean draw;
+    /** Draw face of the card? */
+    gboolean draw_face;
+} card_state;
+
 typedef struct _player_state
 {
     /** Re player? */
@@ -51,7 +65,7 @@ typedef struct _global_state
     player_state pstates[3];
 } global_state;
 
-global_state *get_current_state();
+global_state *get_global_state();
 
 gboolean save_state_to_file(const gchar *filename);
 
