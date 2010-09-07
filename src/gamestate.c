@@ -169,7 +169,7 @@ gboolean save_state_to_file(const gchar *filename)
  */
 gboolean read_state_from_file(const gchar *filename)
 {
-    gint i = 0;
+    gint i = 0, num_cards = 0;
     FILE *input;
     global_state *state;
     card_state *cstates;
@@ -201,6 +201,9 @@ gboolean read_state_from_file(const gchar *filename)
         g_free(cstates);
         return FALSE;
     }
+
+    /* get number of played cards */
+    num_cards = (state->num_stich - 1) * 3;
 
     /* read card states */
     if (fread(cstates, sizeof(card_state), 32, input) != 32)

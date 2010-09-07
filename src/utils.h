@@ -29,6 +29,10 @@ gint max_str_len(const gchar *first, ...);
 
 gint get_card_points(gint rank);
 
+card *get_card_by_id(gint id);
+
+card *get_card_ptr(gint suit, gint rank);
+
 gchar *suit_name(gint id);
 
 gchar *rank_name(gint id);

@@ -128,7 +128,53 @@ gchar *rank_name(gint id)
 }
 
 /**
+ * @brief Convenience wrapper for the get_card_ptr function
+ *
+ * @param id  id of card to fetch
+ *
+ * @return card* of found card or NULL if no matching card was found
+ */
+card *get_card_by_id(gint id)
+{
+    gint rank = id % 20;
+    gint suit = id - rank;
+
+    return get_card_ptr(suit, rank);
+}
+
+/**
+ * @brief Get pointer to the card of given suit and rank
+ *
+ * @param suit  suit of card to fetch
+ * @param rank  rank of card to fetch
+ *
+ * @return card* of found card or NULL if no matching card was found
+ */
+card *get_card_ptr(gint suit, gint rank)
+{
+    GList *ptr = NULL;
+    card *tmp;
+
+    if (!gskat.cards)
+        return NULL;
+
+    for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
+    {
+        tmp = (card *) ptr->data;
+
+        if (tmp && tmp->suit == suit && tmp->rank == rank)
+            return tmp;
+    }
+
+    return NULL;
+}
+
+/**
  * @brief Return the card's name
+ *
+ * @param card  pointer to card to get the name of
+ *
+ * @return string of card name (static gchar*)
  */
 gchar *get_card_name(card *card)
 {
@@ -141,6 +187,8 @@ gchar *get_card_name(card *card)
 
 /**
  * @brief Print the card's name to stdout
+ *
+ * @param card  pointer to card to print
  */
 void print_card(card *card)
 {
@@ -149,6 +197,8 @@ void print_card(card *card)
 
 /**
  * @brief Print player's cards to stdout
+ *
+ * @param player pointer to player to print
  */
 void print_player_cards(player *player)
 {
