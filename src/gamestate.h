@@ -23,8 +23,10 @@
 
 typedef struct _card_state
 {
-    /** Card id */
-    gint id;
+    /** Card suit */
+    gint suit;
+    /** Card rank */
+    gint rank;
     /** Owner */
     gint owner;
     /** Card status */

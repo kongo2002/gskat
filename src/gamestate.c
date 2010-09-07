@@ -19,6 +19,7 @@
  */
 
 #include "def.h"
+#include "utils.h"
 #include "gamestate.h"
 
 /**
@@ -82,7 +83,8 @@ card_state *get_card_states()
 
         cstate->draw = tmp->draw;
         cstate->draw_face = tmp->draw_face;
-        cstate->id = tmp->rank + tmp->suit;
+        cstate->suit = tmp->suit;
+        cstate->rank = tmp->rank;
         cstate->status = (gint) tmp->status;
     }
 
@@ -102,7 +104,7 @@ gboolean save_state_to_file(const gchar *filename)
     global_state *state;
     card_state *cstates;
 
-    /* open file handle for writing */
+    /* open file handle for writing (in binary mode) */
     if (!(output = g_fopen(filename, "wb")))
     {
         DPRINT((_("Error on opening file '%s' for writing.\n"), filename));
@@ -167,33 +169,61 @@ gboolean save_state_to_file(const gchar *filename)
  */
 gboolean read_state_from_file(const gchar *filename)
 {
+    gint i = 0;
     FILE *input;
     global_state *state;
+    card_state *cstates;
 
+    /* allocate needed state structures */
     if (!(state = g_malloc(sizeof(global_state))))
         return FALSE;
 
+    if (!(cstates = g_malloc(sizeof(card_state) * 32)))
+        return FALSE;
+
+    /* open file handle for reading (in binary mode) */
     if (!(input = g_fopen(filename, "rb")))
     {
         DPRINT((_("Error on opening file '%s' for reading.\n"), filename));
 
         g_free(state);
+        g_free(cstates);
         return FALSE;
     }
 
+    /* read global states */
     if (fread(state, sizeof(global_state), 1, input) != 1)
     {
         DPRINT((_("Error on reading game state from file '%s'\n"), filename));
 
         fclose(input);
         g_free(state);
+        g_free(cstates);
+        return FALSE;
+    }
+
+    /* read card states */
+    if (fread(cstates, sizeof(card_state), 32, input) != 32)
+    {
+        DPRINT((_("Error on reading card states from file '%s'\n"), filename));
+
+        fclose(input);
+        g_free(state);
+        g_free(cstates);
         return FALSE;
     }
 
     DPRINT(("%d\n%d\n%d\n", state->cplayer, state->num_stich, state->trump));
 
+    for (i=0; i<32; ++i)
+        DPRINT(("card: %s %s\tstatus: %d\n",
+                    suit_name(cstates[i].suit),
+                    rank_name(cstates[i].rank),
+                    cstates[i].status));
+
     fclose(input);
     g_free(state);
+    g_free(cstates);
     return TRUE;
 }
 
