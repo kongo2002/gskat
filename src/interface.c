@@ -909,6 +909,9 @@ void update_interface()
 
 /**
  * @brief Update the players' points on the right-hand interface
+ *
+ * @todo The table should only be extended if a game round was
+ * properly played until the end.
  */
 void update_rank_interface()
 {

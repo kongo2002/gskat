@@ -161,7 +161,6 @@ card *click_card(GdkEventButton *event, GList *list)
                 && (gint) event->x < card->dim.x + card->dim.w
                 && (gint) event->y < card->dim.y + card->dim.h)
         {
-            print_card(card);
             return card;
         }
     }
@@ -1214,11 +1213,7 @@ void throw_card(card *_card)
     _card->draw = TRUE;
     _card->draw_face = TRUE;
 
-#ifdef DEBUG
-    g_print("%s played: ", player->name);
-    print_card(_card);
-    g_print("\n");
-#endif
+    DPRINT((_("%s played: %s\n"), player->name, get_card_name(_card)));
 
     gskat.table = g_list_append(gskat.table, _card);
     gskat.played = g_list_append(gskat.played, _card);

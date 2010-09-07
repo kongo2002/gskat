@@ -81,11 +81,11 @@ card_state *get_card_states()
         tmp = (card *) ptr->data;
         cstate = &cards[i++];
 
-        cstate->draw = tmp->draw;
+        cstate->draw      = tmp->draw;
         cstate->draw_face = tmp->draw_face;
-        cstate->suit = tmp->suit;
-        cstate->rank = tmp->rank;
-        cstate->status = (gint) tmp->status;
+        cstate->suit      = tmp->suit;
+        cstate->rank      = tmp->rank;
+        cstate->status    = (gint) tmp->status;
     }
 
     return cards;
