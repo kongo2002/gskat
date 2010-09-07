@@ -100,7 +100,10 @@ card_state *get_card_states()
  */
 gboolean save_state_to_file(const gchar *filename)
 {
+    gint i, num_cards;
+    gint *card_ids;
     FILE *output;
+    card *ptr;
     global_state *state;
     card_state *cstates;
 
@@ -149,7 +152,31 @@ gboolean save_state_to_file(const gchar *filename)
         g_free(state);
         g_free(cstates);
         return FALSE;
+    }
 
+    /* write id's of all played cards into file buffer (in sequence) */
+    num_cards = (gskat.stich - 1) * 3;
+
+    if (num_cards && gskat.played)
+    {
+        card_ids = (gint *) g_malloc(sizeof(gint) * num_cards);
+
+        for (i=0; i<num_cards; ++i)
+        {
+            ptr = g_list_nth_data(gskat.played, i);
+            card_ids[i] = ptr->suit + ptr->rank;
+        }
+
+        if (fwrite(card_ids, sizeof(gint), num_cards, output) != num_cards)
+        {
+            DPRINT((_("Error on writing trick states to file '%s'\n"), filename));
+
+            fclose(output);
+            g_free(state);
+            g_free(cstates);
+            g_free(card_ids);
+            return FALSE;
+        }
     }
 
     DPRINT((_("Wrote game state to file '%s'\n"), filename));
@@ -170,6 +197,7 @@ gboolean save_state_to_file(const gchar *filename)
 gboolean read_state_from_file(const gchar *filename)
 {
     gint i = 0, num_cards = 0;
+    gint *played_cards;
     FILE *input;
     global_state *state;
     card_state *cstates;
@@ -202,9 +230,6 @@ gboolean read_state_from_file(const gchar *filename)
         return FALSE;
     }
 
-    /* get number of played cards */
-    num_cards = (state->num_stich - 1) * 3;
-
     /* read card states */
     if (fread(cstates, sizeof(card_state), 32, input) != 32)
     {
@@ -216,7 +241,37 @@ gboolean read_state_from_file(const gchar *filename)
         return FALSE;
     }
 
-    DPRINT(("%d\n%d\n%d\n", state->cplayer, state->num_stich, state->trump));
+    /* get number of played cards */
+    num_cards = (state->num_stich - 1) * 3;
+    played_cards = (gint *) g_malloc(sizeof(gint) * num_cards);
+
+    if (num_cards)
+    {
+        if (fread(played_cards, sizeof(gint), num_cards, input) != num_cards)
+        {
+            DPRINT((_("Error on reading trick states from file '%s'\n"),
+                        filename));
+
+            fclose(input);
+            g_free(state);
+            g_free(cstates);
+            g_free(played_cards);
+            return FALSE;
+        }
+
+        DPRINT(("PLAYED_CARDS: (%d)\n", num_cards));
+        for (i=0; i<num_cards; ++i)
+        {
+            DPRINT(("%d\n", played_cards[i]));
+        }
+    }
+
+    DPRINT(("cur_player: %d\n", state->cplayer));
+    DPRINT(("trick: %d\n", state->num_stich));
+    DPRINT(("trump: %d\n", state->trump));
+    DPRINT(("re_player: %d\n", state->re_player));
+    DPRINT(("hand: %d\n", state->hand));
+    DPRINT(("null: %d\n", state->null));
 
     for (i=0; i<32; ++i)
         DPRINT(("card: %s %s\tstatus: %d\n",
@@ -224,9 +279,14 @@ gboolean read_state_from_file(const gchar *filename)
                     rank_name(cstates[i].rank),
                     cstates[i].status));
 
+    DPRINT((_("Successfully read game state from file '%s'\n"), filename));
+
     fclose(input);
     g_free(state);
     g_free(cstates);
+    if (played_cards)
+        g_free(played_cards);
+
     return TRUE;
 }
 
