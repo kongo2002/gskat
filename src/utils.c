@@ -25,6 +25,9 @@
 
 /**
  * @brief Helper function to swap two integers
+ *
+ * @param a  first integer
+ * @param b  second integer
  */
 void swap(gint *a, gint *b)
 {
@@ -35,6 +38,11 @@ void swap(gint *a, gint *b)
 
 /**
  * @brief Return maximum string length
+ *
+ * @param first  first string to check
+ * @param ...    additional strings to check
+ *
+ * @return maximum string length of all given strings
  */
 gint max_str_len(const gchar *first, ...)
 {
@@ -57,6 +65,10 @@ gint max_str_len(const gchar *first, ...)
 
 /**
  * @brief Get card value depending on its rank
+ *
+ * @param rank  rank of the card
+ *
+ * @return point value of the given card rank
  */
 gint get_card_points(gint rank)
 {
@@ -82,6 +94,10 @@ gint get_card_points(gint rank)
 
 /**
  * @brief Return the card's suit name
+ *
+ * @param id  suit id of the card
+ *
+ * @return suit name
  */
 gchar *suit_name(gint id)
 {
@@ -106,6 +122,10 @@ gchar *suit_name(gint id)
 
 /**
  * @brief Return the card's rank name
+ *
+ * @param id  rank id of the card
+ *
+ * @return rank name
  */
 gchar *rank_name(gint id)
 {
