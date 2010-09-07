@@ -23,16 +23,32 @@
 
 typedef struct _player_state
 {
+    /** Re player? */
+    gboolean re;
+    /** Points the player has bidden */
+    gint gereizt;
+    /** Current points */
     gint points;
+    /** Sum of points */
+    gint sum_points;
 } player_state;
 
 typedef struct _global_state
 {
+    /** Current trick index */
     gint num_stich;
+    /** Current player index */
     gint cplayer;
+    /** Current trump suit */
     gint trump;
-    gint gereizt;
-    /* player_state pstates[3]; */
+    /** Hand game */
+    gboolean hand;
+    /** Null game */
+    gboolean null;
+    /** Re player index */
+    gint re_player;
+    /** Array of all three player states */
+    player_state pstates[3];
 } global_state;
 
 global_state *get_current_state();
@@ -41,6 +57,6 @@ gboolean save_state_to_file(const gchar *filename);
 
 gboolean read_state_from_file(const gchar *filename);
 
-#endif
+#endif /* __GAMESTATE_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

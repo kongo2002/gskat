@@ -23,15 +23,32 @@
 
 global_state *get_current_state()
 {
+    gint i;
     global_state *state;
+    player_state *pstate;
+    player *cur_player;
 
     if (!(state = g_malloc(sizeof(global_state))))
         return NULL;
 
-    state->cplayer   = 0;
-    state->gereizt   = 18;
-    state->num_stich = 2;
-    state->trump     = KREUZ;
+    /* iterate over all three players */
+    for (i=0; i<3; ++i)
+    {
+        pstate = &state->pstates[i];
+        cur_player = gskat.players[i];
+
+        pstate->gereizt = cur_player->gereizt;
+        pstate->re = cur_player->re;
+        pstate->points = cur_player->points;
+        pstate->sum_points = cur_player->sum_points;
+    }
+
+    state->cplayer   = gskat.cplayer;
+    state->num_stich = gskat.stich;
+    state->trump     = gskat.trump;
+    state->re_player = (gskat.re) ? gskat.re->id : -1;
+    state->null      = gskat.null;
+    state->hand      = gskat.hand;
 
     return state;
 }
@@ -96,8 +113,7 @@ gboolean read_state_from_file(const gchar *filename)
         return FALSE;
     }
 
-    DPRINT(("%d\n%d\n%d\n%d\n", state->cplayer, state->gereizt,
-            state->num_stich, state->trump));
+    DPRINT(("%d\n%d\n%d\n", state->cplayer, state->num_stich, state->trump));
 
     fclose(input);
     g_free(state);
