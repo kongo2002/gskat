@@ -35,7 +35,7 @@ global_state *get_global_state()
     player_state *pstate;
     player *cur_player;
 
-    if (!(state = g_malloc(sizeof(global_state))))
+    if (!(state = (global_state *) g_malloc(sizeof(global_state))))
         return NULL;
 
     /* iterate over all three players */
@@ -203,10 +203,10 @@ gboolean read_state_from_file(const gchar *filename)
     card_state *cstates;
 
     /* allocate needed state structures */
-    if (!(state = g_malloc(sizeof(global_state))))
+    if (!(state = (global_state *) g_malloc(sizeof(global_state))))
         return FALSE;
 
-    if (!(cstates = g_malloc(sizeof(card_state) * 32)))
+    if (!(cstates = (card_state *) g_malloc(sizeof(card_state) * 32)))
         return FALSE;
 
     /* open file handle for reading (in binary mode) */
@@ -261,9 +261,7 @@ gboolean read_state_from_file(const gchar *filename)
 
         DPRINT(("PLAYED_CARDS: (%d)\n", num_cards));
         for (i=0; i<num_cards; ++i)
-        {
             DPRINT(("%d\n", played_cards[i]));
-        }
     }
 
     DPRINT(("cur_player: %d\n", state->cplayer));
