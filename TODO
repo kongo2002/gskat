@@ -10,6 +10,7 @@ MAJOR FEATURES
 * save and load game and round states
 * implement integrated bug reports
 * implement 'ramsch' game
+* implement a tournament mode (i.e. play a configurable number of rounds)
 * review last trick(s)                                                      DONE
 * add localization/language support                                         DONE
 
@@ -17,10 +18,11 @@ MINOR POINTS
 
 * show point distribution graph dialog
 * slow down bidding process between computer players
-* design and implement a game icon
 * design and draw own card image set
 * integrate optional pre-round random seed definition for card
   distribution
+* add an option to automatically begin the next trick (i.e. timeout)
+* add a checksum to saved/loaded round states
 * use XDG base directory specification for config/data files                DONE
 * improve game summary display                                              DONE
 * connect review of played trick(s) with a configuration rule/setting       DONE
@@ -28,8 +30,12 @@ MINOR POINTS
 * improve card movement animation                                           DONE
 * change the mouse cursor shape depending on the cursor position            DONE
   (valid card, non-valid card, table ...)
+* design and implement a game icon                                          DONE
 
 IMPROVEMENTS
 
 * rewrite AI concept/implementation (more flexible, dynamic)
+* move from Doxygen to GtkDoc for documentation
+* write an ebuild for Gentoo Linux
+* write some basic unit test routines
 * use autotools for compile/install                                         DONE
