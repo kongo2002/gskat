@@ -220,6 +220,13 @@ gboolean save_state_to_file(const gchar *filename)
     return TRUE;
 }
 
+/**
+ * @brief Read global states from input file
+ *
+ * @param input  input file stream
+ *
+ * @return new global_state structure or NULL on error
+ */
 global_state *read_global_state(FILE *input)
 {
     global_state *state;
@@ -245,6 +252,13 @@ global_state *read_global_state(FILE *input)
     return state;
 }
 
+/**
+ * @brief Read card states from all 32 game cards
+ *
+ * @param input  input file stream
+ *
+ * @return new card_state array or NULL on error
+ */
 card_state *read_card_states(FILE *input)
 {
     gint i;
@@ -270,6 +284,14 @@ card_state *read_card_states(FILE *input)
     return state;
 }
 
+/**
+ * @brief Read all played cards from input file
+ *
+ * @param input      input file stream
+ * @param num_cards  number of played cards
+ *
+ * @return integer array containing played card ids or NULL on error
+ */
 gint *read_played_cards_state(FILE *input, gint num_cards)
 {
     gint i;
@@ -295,6 +317,15 @@ gint *read_played_cards_state(FILE *input, gint num_cards)
     return played_cards;
 }
 
+/**
+ * @brief Read players' cards from input file
+ *
+ * @param input  input file stream
+ * @param sg     state group structure
+ * @param gs     global states
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs)
 {
@@ -349,8 +380,6 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
  * @brief Read the game states saved inside a given file
  *
  * @param filename  filename of the state file to read/parse
- *
- * @todo This function needs some refactoring I think.
  *
  * @return TRUE on success, otherwise FALSE
  */
