@@ -695,6 +695,10 @@ void apply_states(state_group *sg)
     for (i=0; i<2; ++i)
         gskat.skat = g_list_append(gskat.skat, get_card_by_id(sg->gs->skat[i]));
 
+    /* populate table cards list */
+    for (i=0; i<sg->gs->num_table; ++i)
+        gskat.table = g_list_append(gskat.table, get_card_by_id(sg->table[i]));
+
     /* trigger continuation of the game */
     gskat.state = PLAYING;
 }
