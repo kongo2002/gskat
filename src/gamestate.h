@@ -61,6 +61,8 @@ typedef struct _global_state
     gint num_table;
     /** Current player index */
     gint cplayer;
+    /** Current forehand player index */
+    gint forehand;
     /** Current trump suit */
     gint trump;
     /** Hand game */

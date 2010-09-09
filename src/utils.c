@@ -186,6 +186,9 @@ card *get_card_ptr(gint suit, gint rank)
             return tmp;
     }
 
+    DPRINT((_("Could not find a matching card (Suit: %d, Rank: %d).\n"),
+                suit, rank));
+
     return NULL;
 }
 

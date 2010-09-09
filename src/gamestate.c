@@ -59,6 +59,7 @@ global_state *get_global_state()
     state->re_player  = (gskat.re) ? gskat.re->id : -1;
     state->null       = gskat.null;
     state->hand       = gskat.hand;
+    state->forehand   = gskat.forehand;
     state->num_played = g_list_length(gskat.played);
     state->num_table  = g_list_length(gskat.table);
 
@@ -92,6 +93,7 @@ card_state *get_card_states()
         tmp = (card *) ptr->data;
         cstate = &cards[i++];
 
+        cstate->owner     = tmp->owner;
         cstate->draw      = tmp->draw;
         cstate->draw_face = tmp->draw_face;
         cstate->suit      = tmp->suit;
@@ -355,6 +357,7 @@ global_state *read_global_state(FILE *input)
     }
 
     DPRINT(("cur_player: %d\n", state->cplayer));
+    DPRINT(("forehand: %d\n", state->forehand));
     DPRINT(("trick: %d\n", state->num_stich));
     DPRINT(("trump: %d\n", state->trump));
     DPRINT(("re_player: %d\n", state->re_player));
@@ -604,9 +607,9 @@ gboolean read_state_from_file(const gchar *filename)
     sg->cs = cstates;
     sg->pc = played_cards;
 
-    /* apply_states(sg); */
-
     fclose(input);
+
+    apply_states(sg);
 
     return TRUE;
 
@@ -637,12 +640,13 @@ void apply_states(state_group *sg)
     reset_game();
 
     /* set global game properties */
-    gskat.stich   = sg->gs->num_stich;
-    gskat.cplayer = sg->gs->cplayer;
-    gskat.trump   = sg->gs->trump;
-    gskat.hand    = sg->gs->hand;
-    gskat.null    = sg->gs->null;
-    gskat.re      = gskat.players[sg->gs->re_player];
+    gskat.stich    = sg->gs->num_stich;
+    gskat.cplayer  = sg->gs->cplayer;
+    gskat.forehand = sg->gs->forehand;
+    gskat.trump    = sg->gs->trump;
+    gskat.hand     = sg->gs->hand;
+    gskat.null     = sg->gs->null;
+    gskat.re       = gskat.players[sg->gs->re_player];
 
     /* set player values */
     for (i=0; i<3; ++i)
@@ -687,8 +691,13 @@ void apply_states(state_group *sg)
         i = sg->gs->num_stich - 1;
         gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
 
-        for (j=0; j<sg->gs->num_table; ++j)
-            gskat.stiche[i][j] = get_card_by_id(sg->table[j]);
+        for (j=0; j<3; ++j)
+        {
+            if (j < sg->gs->num_table)
+                gskat.stiche[i][j] = get_card_by_id(sg->table[j]);
+            else
+                gskat.stiche[i][j] = NULL;
+        }
     }
 
     /* populate players' cards list */
@@ -696,7 +705,7 @@ void apply_states(state_group *sg)
     {
         pptr = gskat.players[i];
 
-        for (j=0; j<sg->gs->pstates[3].num_cards; ++j)
+        for (j=0; j<sg->gs->pstates[i].num_cards; ++j)
         {
             pptr->cards = g_list_append(pptr->cards,
                     get_card_by_id(sg->pcards[i][j]));
@@ -710,9 +719,6 @@ void apply_states(state_group *sg)
     /* populate table cards list */
     for (i=0; i<sg->gs->num_table; ++i)
         gskat.table = g_list_append(gskat.table, get_card_by_id(sg->table[i]));
-
-    /* trigger continuation of the game */
-    gskat.state = PLAYING;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

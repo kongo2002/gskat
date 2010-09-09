@@ -566,7 +566,16 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
-    read_state_from_file("/home/kongo/gamestate");
+    if (read_state_from_file("/home/kongo/gamestate"))
+    {
+        gskat.state = PLAYING;
+
+        update_interface();
+        calc_card_positions();
+        draw_area();
+
+        play_stich();
+    }
 }
 
 /**
