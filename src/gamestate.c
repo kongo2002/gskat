@@ -31,6 +31,7 @@
 global_state *get_global_state()
 {
     gint i;
+    card *ptr;
     global_state *state;
     player_state *pstate;
     player *cur_player;
@@ -52,12 +53,20 @@ global_state *get_global_state()
     }
 
     /* get global values */
-    state->cplayer   = gskat.cplayer;
-    state->num_stich = gskat.stich;
-    state->trump     = gskat.trump;
-    state->re_player = (gskat.re) ? gskat.re->id : -1;
-    state->null      = gskat.null;
-    state->hand      = gskat.hand;
+    state->cplayer    = gskat.cplayer;
+    state->num_stich  = gskat.stich;
+    state->trump      = gskat.trump;
+    state->re_player  = (gskat.re) ? gskat.re->id : -1;
+    state->null       = gskat.null;
+    state->hand       = gskat.hand;
+    state->num_played = g_list_length(gskat.played);
+
+    /* add cards in skat */
+    for (i=0; i<2; ++i)
+    {
+        ptr = g_list_nth_data(gskat.skat, i);
+        state->skat[i] = ptr->rank + ptr->suit;
+    }
 
     return state;
 }
@@ -167,9 +176,9 @@ gboolean save_played_card_states(FILE *output)
     gint *card_ids;
     card *ptr;
 
-    num_cards = (gskat.stich - 1) * 3;
+    num_cards = g_list_length(gskat.played);
 
-    if (num_cards && gskat.played)
+    if (num_cards)
     {
         card_ids = (gint *) g_malloc(sizeof(gint) * num_cards);
 
@@ -313,6 +322,8 @@ global_state *read_global_state(FILE *input)
     DPRINT(("re_player: %d\n", state->re_player));
     DPRINT(("hand: %d\n", state->hand));
     DPRINT(("null: %d\n", state->null));
+    DPRINT(("num_played: %d\n", state->num_played));
+    DPRINT(("skat: %d\t%d\n", state->skat[0], state->skat[1]));
 
     return state;
 }
@@ -479,7 +490,7 @@ gboolean read_state_from_file(const gchar *filename)
         goto read_state_error;
 
     /* get number of played cards */
-    num_cards = (state->num_stich - 1) * 3;
+    num_cards = state->num_played;
 
     /* read played cards */
     if ((played_cards = read_played_cards_state(input, num_cards)) == NULL)
@@ -494,7 +505,6 @@ gboolean read_state_from_file(const gchar *filename)
     sg->gs = state;
     sg->cs = cstates;
     sg->pc = played_cards;
-    sg->num_played = num_cards;
 
     /* apply_states(sg); */
 
@@ -561,13 +571,15 @@ void apply_states(state_group *sg)
     }
 
     /* TODO: we have to fill the card lists accordingly here, like
-     * 'skat', 'table', 'played' and 'stiche' */
+     * TODO: 'skat', 'table', 'played' and 'stiche' */
 
     /* populate played cards list */
-    for (i=0; i<sg->num_played; ++i)
+    for (i=0; i<sg->gs->num_played; ++i)
         gskat.played = g_list_append(gskat.played, get_card_by_id(sg->pc[i]));
 
-    /* populate stiche array */
+    /* fill stiche array */
+    /* TODO: we have to add remaining cards of the last trick
+     * TODO: to the stiche array as well*/
     for (i=0; i<sg->gs->num_stich-1; ++i)
     {
         gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
@@ -575,6 +587,22 @@ void apply_states(state_group *sg)
         for (j=0; j<3; ++j)
             gskat.stiche[i][j] = get_card_by_id(sg->pc[i*3+j]);
     }
+
+    /* populate players' cards list */
+    for (i=0; i<3; ++i)
+    {
+        pptr = gskat.players[i];
+
+        for (j=0; j<sg->gs->pstates[3].num_cards; ++j)
+        {
+            pptr->cards = g_list_append(pptr->cards,
+                    get_card_by_id(sg->pcards[i][j]));
+        }
+    }
+
+    /* populate skat list */
+    for (i=0; i<2; ++i)
+        gskat.skat = g_list_append(gskat.skat, get_card_by_id(sg->gs->skat[i]));
 
     /* trigger continuation of the game */
     gskat.state = PLAYING;

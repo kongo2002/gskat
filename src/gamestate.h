@@ -53,6 +53,8 @@ typedef struct _player_state
 
 typedef struct _global_state
 {
+    /** Number of played cards */
+    gint num_played;
     /** Current trick index */
     gint num_stich;
     /** Current player index */
@@ -65,6 +67,8 @@ typedef struct _global_state
     gboolean null;
     /** Re player index */
     gint re_player;
+    /** Cards in the skat */
+    gint skat[2];
     /** Array of all three player states */
     player_state pstates[3];
 } global_state;
@@ -75,8 +79,6 @@ typedef struct _state_group
     global_state *gs;
     /** Card states array */
     card_state *cs;
-    /** Number of played cards */
-    gint num_played;
     /** Played cards indices */
     gint *pc;
     /** Players' cards */
