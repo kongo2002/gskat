@@ -60,6 +60,7 @@ global_state *get_global_state()
     state->null       = gskat.null;
     state->hand       = gskat.hand;
     state->num_played = g_list_length(gskat.played);
+    state->num_table  = g_list_length(gskat.table);
 
     /* add cards in skat */
     for (i=0; i<2; ++i)
@@ -252,6 +253,50 @@ gboolean save_players_cards_state(FILE *output)
 }
 
 /**
+ * @brief Write table cards into file buffer
+ *
+ * @param output  output file stream
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean save_table_state(FILE *output)
+{
+    gint i, len;
+    gint *table;
+    card *ptr;
+
+    len = g_list_length(gskat.table);
+
+    if (len)
+    {
+        table = (gint *) g_malloc(sizeof(gint) * len);
+
+        for (i=0; i<len; ++i)
+        {
+            ptr = g_list_nth_data(gskat.table, i);
+            table[i] = ptr->rank + ptr->suit;
+        }
+    }
+    else
+    {
+        len = 1;
+        table = (gint *) g_malloc(sizeof(gint) * len);
+        *table = 0;
+    }
+
+    if (fwrite(table, sizeof(gint), len, output) != len)
+    {
+        DPRINT((_("Failed on writing table cards state.\n")));
+
+        g_free(table);
+        return FALSE;
+    }
+
+    g_free(table);
+    return TRUE;
+}
+
+/**
  * @brief Save the current game states into a given output file
  *
  * @param filename  filename to write the states into
@@ -279,6 +324,9 @@ gboolean save_state_to_file(const gchar *filename)
         goto save_state_error;
 
     if (!save_players_cards_state(output))
+        goto save_state_error;
+
+    if (!save_table_state(output))
         goto save_state_error;
 
     DPRINT((_("Successfully wrote game state to file '%s'\n"), filename));
@@ -454,6 +502,46 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
 }
 
 /**
+ * @brief Read table cards from input file
+ *
+ * @param input  input file stream
+ * @param sg     state group structure
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
+{
+    gint i;
+
+    if (num_table)
+    {
+        sg->table = (gint *) g_malloc(sizeof(gint) * num_table);
+
+        if (fread(sg->table, sizeof(gint), num_table, input) != num_table)
+        {
+            DPRINT((_("Error on reading table cards state.\n")));
+
+            g_free(sg->table);
+            sg->table = NULL;
+
+            return FALSE;
+        }
+
+        DPRINT((_("Cards on the table: ")));
+
+        for (i=0; i<num_table; ++i)
+        {
+            if (i)
+                DPRINT((", "));
+            DPRINT(("%d", sg->table[i]));
+        }
+        DPRINT(("\n"));
+    }
+
+    return TRUE;
+}
+
+/**
  * @brief Read the game states saved inside a given file
  *
  * @param filename  filename of the state file to read/parse
@@ -498,6 +586,9 @@ gboolean read_state_from_file(const gchar *filename)
 
     /* get players' cards */
     if (!read_players_cards_state(input, sg, state))
+        goto read_state_error;
+
+    if (!read_table_state(input, sg, state->num_table))
         goto read_state_error;
 
     DPRINT((_("Successfully read game state from file '%s'\n"), filename));

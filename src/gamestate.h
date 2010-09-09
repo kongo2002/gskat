@@ -57,6 +57,8 @@ typedef struct _global_state
     gint num_played;
     /** Current trick index */
     gint num_stich;
+    /** Number of cards on the table */
+    gint num_table;
     /** Current player index */
     gint cplayer;
     /** Current trump suit */
@@ -83,6 +85,8 @@ typedef struct _state_group
     gint *pc;
     /** Players' cards */
     gint **pcards;
+    /** Cards on the table */
+    gint *table;
 } state_group;
 
 global_state *get_global_state();
@@ -97,6 +101,8 @@ gboolean save_played_card_states(FILE *output);
 
 gboolean save_players_cards_state(FILE *output);
 
+gboolean save_table_state(FILE *output);
+
 gboolean save_state_to_file(const gchar *filename);
 
 global_state *read_global_state(FILE *input);
@@ -107,6 +113,8 @@ gint *read_played_cards_state(FILE *input, gint num_cards);
 
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs);
+
+gboolean read_table_state(FILE *input, state_group *sg, gint num_table);
 
 gboolean read_state_from_file(const gchar *filename);
 
