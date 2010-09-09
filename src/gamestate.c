@@ -93,72 +93,80 @@ card_state *get_card_states()
 }
 
 /**
- * @brief Save the current game states into a given output file
+ * @brief Write global states into file buffer
  *
- * @param filename  filename to write the states into
- *
- * @todo This function needs some refactoring I think.
+ * @param output  output file stream
  *
  * @return TRUE on success, otherwise FALSE
  */
-gboolean save_state_to_file(const gchar *filename)
+gboolean save_global_state(FILE *output)
 {
-    gint i, j, len, num_cards;
-    gint *cards, *card_ids;
-    FILE *output;
-    card *ptr;
-    player *pptr;
     global_state *state;
-    card_state *cstates;
-
-    /* open file handle for writing (in binary mode) */
-    if (!(output = g_fopen(filename, "wb")))
-    {
-        DPRINT((_("Error on opening file '%s' for writing.\n"), filename));
-        return FALSE;
-    }
 
     /* try to determine global states */
     if (!(state = get_global_state()))
     {
         DPRINT((_("Could not determine current game state.\n")));
-
-        fclose(output);
         return FALSE;
     }
 
     /* write global state into file buffer */
     if (fwrite(state, sizeof(global_state), 1, output) != 1)
     {
-        DPRINT((_("Error on writing game state to file '%s'\n"), filename));
+        DPRINT((_("Error on writing game state.\n")));
 
-        fclose(output);
         g_free(state);
         return FALSE;
     }
 
+    g_free(state);
+    return TRUE;
+}
+
+/**
+ * @brief Write card states of all 32 game cards into file buffer
+ *
+ * @param output  output file stream
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean save_card_states(FILE *output)
+{
+    card_state *state;
+
     /* try to determine card states */
-    if (!(cstates = get_card_states()))
+    if (!(state = get_card_states()))
     {
         DPRINT((_("Could not determine card states.\n")));
-
-        fclose(output);
-        g_free(state);
         return FALSE;
     }
 
     /* write card states into file buffer */
-    if (fwrite(cstates, sizeof(card_state), 32, output) != 32)
+    if (fwrite(state, sizeof(card_state), 32, output) != 32)
     {
-        DPRINT((_("Error on writing card states to file '%s'\n"), filename));
+        DPRINT((_("Error on writing card states.\n")));
 
-        fclose(output);
         g_free(state);
-        g_free(cstates);
         return FALSE;
     }
 
-    /* write id's of all played cards into file buffer (in sequence) */
+    g_free(state);
+    return TRUE;
+}
+
+/**
+ * @brief Write id's of all played cards into file buffer
+ *
+ * @param output  output file stream
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean save_played_card_states(FILE *output)
+{
+    gint i, num_cards;
+    gint *card_ids;
+    card *ptr;
+
     num_cards = (gskat.stich - 1) * 3;
 
     if (num_cards && gskat.played)
@@ -173,17 +181,31 @@ gboolean save_state_to_file(const gchar *filename)
 
         if (fwrite(card_ids, sizeof(gint), num_cards, output) != num_cards)
         {
-            DPRINT((_("Error on writing trick states to file '%s'\n"), filename));
+            DPRINT((_("Error on writing trick states.\n")));
 
-            fclose(output);
-            g_free(state);
-            g_free(cstates);
             g_free(card_ids);
             return FALSE;
         }
     }
 
-    /* write players' cards into file buffer */
+    g_free(card_ids);
+    return TRUE;
+}
+
+/**
+ * @brief Write players' cards into file buffer
+ *
+ * @param output  output file stream
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean save_players_cards_state(FILE *output)
+{
+    gint i, j, len;
+    gint *cards;
+    card *ptr;
+    player *pptr;
+
     for (i=0; i<3; ++i)
     {
         pptr = gskat.players[i];
@@ -207,17 +229,60 @@ gboolean save_state_to_file(const gchar *filename)
         }
 
         if (fwrite(cards, sizeof(gint), len, output) != len)
+        {
+            DPRINT((_("Failed on writing players' cards state.\n")));
+
+            g_free(cards);
             return FALSE;
+        }
 
         g_free(cards);
     }
 
-    DPRINT((_("Wrote game state to file '%s'\n"), filename));
+    return TRUE;
+}
+
+/**
+ * @brief Save the current game states into a given output file
+ *
+ * @param filename  filename to write the states into
+ *
+ * @return TRUE on success, otherwise FALSE
+ */
+gboolean save_state_to_file(const gchar *filename)
+{
+    FILE *output;
+
+    /* open file handle for writing (in binary mode) */
+    if (!(output = g_fopen(filename, "wb")))
+    {
+        DPRINT((_("Error on opening file '%s' for writing.\n"), filename));
+        return FALSE;
+    }
+
+    if (!save_global_state(output))
+        goto save_state_error;
+
+    if (!save_card_states(output))
+        goto save_state_error;
+
+    if (!save_played_card_states(output))
+        goto save_state_error;
+
+    if (!save_players_cards_state(output))
+        goto save_state_error;
+
+    DPRINT((_("Successfully wrote game state to file '%s'\n"), filename));
 
     fclose(output);
-    g_free(state);
-    g_free(cstates);
     return TRUE;
+
+save_state_error:
+
+    DPRINT((_("Failed to write game state to file '%s'\n"), filename));
+
+    fclose(output);
+    return FALSE;
 }
 
 /**
@@ -356,6 +421,7 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
                 if (sg->pcards[j])
                     g_free(sg->pcards[j]);
             g_free(cards);
+            g_free(sg->pcards);
 
             return FALSE;
         }
