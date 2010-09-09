@@ -73,6 +73,8 @@ typedef struct _state_group
     global_state *gs;
     /** Card states array */
     card_state *cs;
+    /** Number of played cards */
+    gint num_played;
     /** Played cards indices */
     gint *pc;
 } state_group;

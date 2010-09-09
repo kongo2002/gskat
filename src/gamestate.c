@@ -289,6 +289,7 @@ gboolean read_state_from_file(const gchar *filename)
     sg->gs = state;
     sg->cs = cstates;
     sg->pc = played_cards;
+    sg->num_played = num_cards;
 
     apply_states(sg);
 
@@ -308,11 +309,14 @@ gboolean read_state_from_file(const gchar *filename)
  */
 void apply_states(state_group *sg)
 {
-    gint i;
+    gint i, j;
     card *crd;
     card_state *cs;
     player *pptr;
     player_state *pstate;
+
+    /* reset current game states */
+    reset_game();
 
     /* set global game properties */
     gskat.stich   = sg->gs->num_stich;
@@ -348,6 +352,19 @@ void apply_states(state_group *sg)
 
     /* TODO: we have to fill the card lists accordingly here, like
      * 'skat', 'table', 'played' and 'stiche' */
+
+    /* populate played cards list */
+    for (i=0; i<sg->num_played; ++i)
+        gskat.played = g_list_append(gskat.played, get_card_by_id(sg->pc[i]));
+
+    /* populate stiche array */
+    for (i=0; i<sg->gs->num_stich-1; ++i)
+    {
+        gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
+
+        for (j=0; j<3; ++j)
+            gskat.stiche[i][j] = get_card_by_id(sg->pc[i*3+j]);
+    }
 
     /* trigger continuation of the game */
     gskat.state = PLAYING;
