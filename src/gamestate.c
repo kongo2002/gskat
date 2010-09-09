@@ -196,9 +196,10 @@ gboolean save_played_card_states(FILE *output)
             g_free(card_ids);
             return FALSE;
         }
+
+        g_free(card_ids);
     }
 
-    g_free(card_ids);
     return TRUE;
 }
 
@@ -230,23 +231,17 @@ gboolean save_players_cards_state(FILE *output)
                 ptr = g_list_nth_data(pptr->cards, j);
                 cards[j] = ptr->rank + ptr->suit;
             }
-        }
-        else
-        {
-            len = 1;
-            cards = (gint *) g_malloc(sizeof(gint));
-            *cards = 0;
-        }
 
-        if (fwrite(cards, sizeof(gint), len, output) != len)
-        {
-            DPRINT((_("Failed on writing players' cards state.\n")));
+            if (fwrite(cards, sizeof(gint), len, output) != len)
+            {
+                DPRINT((_("Failed on writing players' cards state.\n")));
+
+                g_free(cards);
+                return FALSE;
+            }
 
             g_free(cards);
-            return FALSE;
         }
-
-        g_free(cards);
     }
 
     return TRUE;
@@ -276,23 +271,18 @@ gboolean save_table_state(FILE *output)
             ptr = g_list_nth_data(gskat.table, i);
             table[i] = ptr->rank + ptr->suit;
         }
-    }
-    else
-    {
-        len = 1;
-        table = (gint *) g_malloc(sizeof(gint) * len);
-        *table = 0;
-    }
 
-    if (fwrite(table, sizeof(gint), len, output) != len)
-    {
-        DPRINT((_("Failed on writing table cards state.\n")));
+        if (fwrite(table, sizeof(gint), len, output) != len)
+        {
+            DPRINT((_("Failed on writing table cards state.\n")));
+
+            g_free(table);
+            return FALSE;
+        }
 
         g_free(table);
-        return FALSE;
     }
 
-    g_free(table);
     return TRUE;
 }
 
@@ -437,6 +427,12 @@ gint *read_played_cards_state(FILE *input, gint num_cards)
         for (i=0; i<num_cards; ++i)
             DPRINT(("%d\n", played_cards[i]));
     }
+    else
+    {
+        /* TODO: this is not quite good but necessary to not return NULL */
+        played_cards = (gint *) g_malloc(sizeof(gint));
+        *played_cards = 0;
+    }
 
     return played_cards;
 }
@@ -467,35 +463,41 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
     {
         len = gs->pstates[i].num_cards;
 
-        if (!len)
-            len = 1;
-
-        cards = (gint *) g_malloc(sizeof(gint) * len);
-
-        if (fread(cards, sizeof(gint), len, input) != len)
+        if (len)
         {
-            DPRINT((_("Error on reading players' cards state.\n")));
+            cards = (gint *) g_malloc(sizeof(gint) * len);
 
-            for (j=0; j<3; ++j)
-                if (sg->pcards[j])
-                    g_free(sg->pcards[j]);
-            g_free(cards);
-            g_free(sg->pcards);
+            if (fread(cards, sizeof(gint), len, input) != len)
+            {
+                DPRINT((_("Error on reading players' cards state.\n")));
 
-            return FALSE;
+                for (j=0; j<3; ++j)
+                    if (sg->pcards[j])
+                        g_free(sg->pcards[j]);
+                g_free(cards);
+                g_free(sg->pcards);
+
+                return FALSE;
+            }
+
+            DPRINT((_("Player %d cards: "), i));
+
+            for (j=0; j<len; ++j)
+            {
+                if (j)
+                    DPRINT((", "));
+                DPRINT(("%d", cards[j]));
+            }
+            DPRINT(("\n"));
+
+            sg->pcards[i] = cards;
         }
-
-        DPRINT((_("Player %d cards: "), i));
-
-        for (j=0; j<len; ++j)
+        else
         {
-            if (j)
-                DPRINT((", "));
-            DPRINT(("%d", cards[j]));
-        }
-        DPRINT(("\n"));
+            DPRINT((_("Player %d has no cards anymore.\n"), i));
 
-        sg->pcards[i] = cards;
+            sg->pcards[i] = NULL;
+        }
     }
 
     return TRUE;
@@ -504,8 +506,9 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
 /**
  * @brief Read table cards from input file
  *
- * @param input  input file stream
- * @param sg     state group structure
+ * @param input      input file stream
+ * @param sg         state group structure
+ * @param num_table  number of cards on the table
  *
  * @return TRUE on success, otherwise FALSE
  */
@@ -537,6 +540,12 @@ gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
         }
         DPRINT(("\n"));
     }
+    else
+    {
+        DPRINT((_("There are no cards on the table.\n")));
+
+        sg->table = NULL;
+    }
 
     return TRUE;
 }
@@ -550,7 +559,6 @@ gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
  */
 gboolean read_state_from_file(const gchar *filename)
 {
-    gint num_cards;
     gint *played_cards;
     FILE *input;
     global_state *state;
@@ -577,17 +585,16 @@ gboolean read_state_from_file(const gchar *filename)
     if ((cstates = read_card_states(input)) == NULL)
         goto read_state_error;
 
-    /* get number of played cards */
-    num_cards = state->num_played;
-
     /* read played cards */
-    if ((played_cards = read_played_cards_state(input, num_cards)) == NULL)
+    if ((played_cards = read_played_cards_state(input,
+                    state->num_played)) == NULL)
         goto read_state_error;
 
     /* get players' cards */
     if (!read_players_cards_state(input, sg, state))
         goto read_state_error;
 
+    /* get cards on the table */
     if (!read_table_state(input, sg, state->num_table))
         goto read_state_error;
 
