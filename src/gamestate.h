@@ -85,7 +85,15 @@ typedef struct _state_group
 
 global_state *get_global_state();
 
+card_state *get_card_states();
+
 gboolean save_state_to_file(const gchar *filename);
+
+global_state *read_global_state(FILE *input);
+
+card_state *read_card_states(FILE *input);
+
+gint *read_played_cards_state(FILE *input, gint num_cards);
 
 gboolean read_state_from_file(const gchar *filename);
 
