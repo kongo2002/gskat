@@ -406,6 +406,9 @@ gboolean read_state_from_file(const gchar *filename)
     return TRUE;
 
 read_state_error:
+
+    DPRINT((_("Failed to read game state from file '%s'\n"), filename));
+
     fclose(input);
     g_free(sg);
 
