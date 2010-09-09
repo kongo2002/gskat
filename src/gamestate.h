@@ -47,6 +47,8 @@ typedef struct _player_state
     gint points;
     /** Sum of points */
     gint sum_points;
+    /** Number of cards */
+    gint num_cards;
 } player_state;
 
 typedef struct _global_state
@@ -77,6 +79,8 @@ typedef struct _state_group
     gint num_played;
     /** Played cards indices */
     gint *pc;
+    /** Players' cards */
+    gint **pcards;
 } state_group;
 
 global_state *get_global_state();

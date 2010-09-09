@@ -48,6 +48,7 @@ global_state *get_global_state()
         pstate->re = cur_player->re;
         pstate->points = cur_player->points;
         pstate->sum_points = cur_player->sum_points;
+        pstate->num_cards = g_list_length(cur_player->cards);
     }
 
     /* get global values */
@@ -102,10 +103,11 @@ card_state *get_card_states()
  */
 gboolean save_state_to_file(const gchar *filename)
 {
-    gint i, num_cards;
-    gint *card_ids;
+    gint i, j, len, num_cards;
+    gint *cards, *card_ids;
     FILE *output;
     card *ptr;
+    player *pptr;
     global_state *state;
     card_state *cstates;
 
@@ -181,6 +183,35 @@ gboolean save_state_to_file(const gchar *filename)
         }
     }
 
+    /* write players' cards into file buffer */
+    for (i=0; i<3; ++i)
+    {
+        pptr = gskat.players[i];
+        len = g_list_length(pptr->cards);
+
+        if (len)
+        {
+            cards = (gint *) g_malloc(sizeof(gint) * len);
+
+            for (j=0; j<len; ++j)
+            {
+                ptr = g_list_nth_data(pptr->cards, j);
+                cards[j] = ptr->rank + ptr->suit;
+            }
+        }
+        else
+        {
+            len = 1;
+            cards = (gint *) g_malloc(sizeof(gint));
+            *cards = 0;
+        }
+
+        if (fwrite(cards, sizeof(gint), len, output) != len)
+            return FALSE;
+
+        g_free(cards);
+    }
+
     DPRINT((_("Wrote game state to file '%s'\n"), filename));
 
     fclose(output);
@@ -200,12 +231,12 @@ gboolean save_state_to_file(const gchar *filename)
  */
 gboolean read_state_from_file(const gchar *filename)
 {
-    gint i = 0, num_cards = 0;
-    gint *played_cards;
+    gint i, j, len, num_cards = 0;
+    gint *cards, *played_cards;
     FILE *input;
     global_state *state;
     card_state *cstates;
-    state_group *sg;
+    state_group *sg = NULL;
 
     /* allocate needed state structures */
     if (!(state = (global_state *) g_malloc(sizeof(global_state))))
@@ -282,9 +313,36 @@ gboolean read_state_from_file(const gchar *filename)
                     rank_name(cstates[i].rank),
                     cstates[i].status));
 
-    DPRINT((_("Successfully read game state from file '%s'\n"), filename));
-
     sg = (state_group *) g_malloc(sizeof(state_group));
+    sg->pcards = (gint **) g_malloc(sizeof(gint *) * 3);
+
+    /* get players' cards */
+    for (i=0; i<3; ++i)
+    {
+        len = state->pstates[i].num_cards;
+
+        if (!len)
+            len = 1;
+
+        cards = (gint *) g_malloc(sizeof(gint) * len);
+
+        if (fread(cards, sizeof(gint), len, input) != len)
+            return FALSE;
+
+        DPRINT(("Players' cards:\n"));
+
+        for (j=0; j<len; ++j)
+        {
+            if (j)
+                DPRINT((", "));
+            DPRINT(("%d", cards[j]));
+        }
+        DPRINT(("\n"));
+
+        sg->pcards[i] = cards;
+    }
+
+    DPRINT((_("Successfully read game state from file '%s'\n"), filename));
 
     sg->gs = state;
     sg->cs = cstates;
