@@ -668,22 +668,27 @@ void apply_states(state_group *sg)
         crd->draw_face = cs->draw_face;
     }
 
-    /* TODO: we have to fill the card lists accordingly here, like
-     * TODO: 'skat', 'table', 'played' and 'stiche' */
-
     /* populate played cards list */
     for (i=0; i<sg->gs->num_played; ++i)
         gskat.played = g_list_append(gskat.played, get_card_by_id(sg->pc[i]));
 
     /* fill stiche array */
-    /* TODO: we have to add remaining cards of the last trick
-     * TODO: to the stiche array as well*/
     for (i=0; i<sg->gs->num_stich-1; ++i)
     {
         gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
 
         for (j=0; j<3; ++j)
             gskat.stiche[i][j] = get_card_by_id(sg->pc[i*3+j]);
+    }
+
+    /* add cards on the table to the stiche array */
+    if (sg->gs->num_table)
+    {
+        i = sg->gs->num_stich - 1;
+        gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
+
+        for (j=0; j<sg->gs->num_table; ++j)
+            gskat.stiche[i][j] = get_card_by_id(sg->table[j]);
     }
 
     /* populate players' cards list */
