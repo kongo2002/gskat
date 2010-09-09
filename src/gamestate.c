@@ -370,6 +370,8 @@ gboolean read_state_from_file(const gchar *filename)
     if (!(input = g_fopen(filename, "rb")))
     {
         DPRINT((_("Error on opening file '%s' for reading.\n"), filename));
+
+        g_free(sg);
         return FALSE;
     }
 
