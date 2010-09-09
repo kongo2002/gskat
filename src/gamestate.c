@@ -357,11 +357,11 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
 gboolean read_state_from_file(const gchar *filename)
 {
     gint num_cards;
-    gint *cards, *played_cards;
+    gint *played_cards;
     FILE *input;
     global_state *state;
     card_state *cstates;
-    state_group *sg = NULL;
+    state_group *sg;
 
     /* allocate memory for state group structure */
     sg = (state_group *) g_malloc(sizeof(state_group));
@@ -375,34 +375,22 @@ gboolean read_state_from_file(const gchar *filename)
 
     /* read global states */
     if ((state = read_global_state(input)) == NULL)
-    {
-        fclose(input);
-        return FALSE;
-    }
+        goto read_state_error;
 
     /* read card states */
     if ((cstates = read_card_states(input)) == NULL)
-    {
-        fclose(input);
-        return FALSE;
-    }
+        goto read_state_error;
 
     /* get number of played cards */
     num_cards = (state->num_stich - 1) * 3;
 
     /* read played cards */
     if ((played_cards = read_played_cards_state(input, num_cards)) == NULL)
-    {
-        fclose(input);
-        return FALSE;
-    }
+        goto read_state_error;
 
     /* get players' cards */
     if (!read_players_cards_state(input, sg, state))
-    {
-        fclose(input);
-        return FALSE;
-    }
+        goto read_state_error;
 
     DPRINT((_("Successfully read game state from file '%s'\n"), filename));
 
@@ -416,6 +404,12 @@ gboolean read_state_from_file(const gchar *filename)
     fclose(input);
 
     return TRUE;
+
+read_state_error:
+    fclose(input);
+    g_free(sg);
+
+    return FALSE;
 }
 
 /**
