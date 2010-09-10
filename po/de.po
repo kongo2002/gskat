@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gskat 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-10 03:10+0200\n"
-"PO-Revision-Date: 2010-09-10 03:37+0100\n"
+"POT-Creation-Date: 2010-09-10 23:31+0200\n"
+"PO-Revision-Date: 2010-09-10 23:33+0100\n"
 "Last-Translator: Gregor Uhlenheuer <kongo2002@googlemail.com>\n"
 "Language-Team: German <kongo2002@googlemail.com>\n"
 "MIME-Version: 1.0\n"
@@ -95,106 +95,106 @@ msgstr "%s: len_spitzen(%d) = %d\n"
 msgid "%s: prob_stich_geht_durch() == %f\n"
 msgstr "%s: prob_stich_geht_durch() == %f\n"
 
-#: ../src/callback.c:93
+#: ../src/callback.c:95
 msgid "gskat"
 msgstr "gskat"
 
-#: ../src/callback.c:94
+#: ../src/callback.c:96
 msgid "Gtk skat game written in C"
 msgstr "Gtk Skat-Spiel programmiert in C"
 
-#: ../src/configuration.c:108
+#: ../src/configuration.c:109
 #, c-format
 msgid "Found config file '%s'\n"
 msgstr "Konfigurationsdatei gefunden: '%s'\n"
 
-#: ../src/configuration.c:114
+#: ../src/configuration.c:115
 #, c-format
 msgid "Failed to load config from '%s'\n"
 msgstr "Fehler beim Laden der Konfigurationsdatei '%s'\n"
 
-#: ../src/configuration.c:115
+#: ../src/configuration.c:116
 msgid "Using default settings instead.\n"
 msgstr "Benutze Standard-Konfigurationswerte.\n"
 
-#: ../src/configuration.c:185
+#: ../src/configuration.c:187
 #, c-format
 msgid "Saved configuration: %s\n"
 msgstr "Speichere Konfiguration: %s\n"
 
-#: ../src/configuration.c:188
+#: ../src/configuration.c:190
 #, c-format
 msgid "Failed to save configuration: %s\n"
 msgstr "Fehler beim Speichern der Konfiguration: %s\n"
 
-#: ../src/configuration.c:275
+#: ../src/configuration.c:277
 #, c-format
 msgid "Failed to read '%s' from config file.\n"
 msgstr "Fehler beim Lesen von '%s' aus der Konfigurationsdatei.\n"
 
-#: ../src/configuration.c:308
+#: ../src/configuration.c:310
 #, c-format
 msgid "Failed to read configuration: %s\n"
 msgstr "Fehler beim Lesen der Konfiguration: %s\n"
 
-#: ../src/configuration.c:320
+#: ../src/configuration.c:322
 msgid "Failed to read 'player_names' from config file.\n"
 msgstr "Fehler beim Lesen von 'player_names' aus der Konfigurationsdatei.\n"
 
-#: ../src/configuration.c:340
+#: ../src/configuration.c:342
 msgid "Rewriting config file.\n"
 msgstr "Schreibe Konfigurationsdatei neu.\n"
 
-#: ../src/configuration.c:365
+#: ../src/configuration.c:367
 #, c-format
 msgid "Unable to create directory: %s\n"
 msgstr "Fehler beim Erstellen des Verzeichnis '%s'\n"
 
-#: ../src/game.c:97
+#: ../src/game.c:96
 msgid "Card is not possible.\n"
 msgstr "Karte ist nicht möglich.\n"
 
-#: ../src/game.c:232
+#: ../src/game.c:231
 msgid "Bidding"
 msgstr "Reizen"
 
-#: ../src/game.c:235
-#: ../src/game.c:811
-#: ../src/game.c:1059
+#: ../src/game.c:234
+#: ../src/game.c:810
+#: ../src/game.c:1060
 msgid "Yes"
 msgstr "Ja"
 
-#: ../src/game.c:236
-#: ../src/game.c:811
-#: ../src/game.c:1060
+#: ../src/game.c:235
+#: ../src/game.c:810
+#: ../src/game.c:1061
 msgid "No"
 msgstr "Nein"
 
-#: ../src/game.c:236
+#: ../src/game.c:235
 msgid "Pass"
 msgstr "Passen"
 
-#: ../src/game.c:732
+#: ../src/game.c:731
 #, c-format
 msgid "%s says %d:"
 msgstr "%s sagt %d:"
 
-#: ../src/game.c:773
+#: ../src/game.c:772
 #, c-format
 msgid "Forehand: %s; Middlehand: %s\n"
 msgstr "Sager: %s; Hörer: %s\n"
 
-#: ../src/game.c:783
+#: ../src/game.c:782
 #, c-format
 msgid "Middlehand: %s. Bid?"
 msgstr "Hörer: %s. Reizen?"
 
-#: ../src/game.c:806
+#: ../src/game.c:805
 #, c-format
 msgid "%s says %d\n"
 msgstr "%s sagt %d\n"
 
-#: ../src/game.c:810
+#: ../src/game.c:809
 #, c-format
 msgid "%s says %s\n"
 msgstr "%s sagt %s\n"
@@ -207,35 +207,35 @@ msgstr "Start des Reizens\n"
 msgid "Start of bidding"
 msgstr "Start des Reizens"
 
-#: ../src/game.c:847
+#: ../src/game.c:848
 #, c-format
 msgid "MaxReizwert of %s: %d\n"
 msgstr "MaxReizwert von %s: %d\n"
 
-#: ../src/game.c:849
+#: ../src/game.c:850
 #, c-format
 msgid "CardRating of %s: %d\n"
 msgstr "CardRating von %s: %d\n"
 
-#: ../src/game.c:855
+#: ../src/game.c:856
 #, c-format
 msgid "%s won 1. reizen with %d\n"
 msgstr "%s gewinnt 1. Reizen mit %d\n"
 
-#: ../src/game.c:867
+#: ../src/game.c:868
 #, c-format
 msgid "%s won 2. reizen with %d\n"
 msgstr "%s gewinnt 2. Reizen mit %d\n"
 
-#: ../src/game.c:876
+#: ../src/game.c:877
 msgid "Pronounce a game"
 msgstr "Spiel ansagen"
 
-#: ../src/game.c:883
+#: ../src/game.c:884
 msgid "All players have passed -> new round.\n"
 msgstr "Alle Spieler haben gepasst -> Neue Runde\n"
 
-#: ../src/game.c:889
+#: ../src/game.c:890
 msgid ""
 "All players have passed.\n"
 "New round"
@@ -243,47 +243,47 @@ msgstr ""
 "Alle Spieler haben gepasst.\n"
 "Neue Runde"
 
-#: ../src/game.c:1056
-#: ../src/game.c:1064
+#: ../src/game.c:1057
+#: ../src/game.c:1065
 msgid "Play hand game?"
 msgstr "Spiele Hand?"
 
-#: ../src/game.c:1115
+#: ../src/game.c:1116
 msgid "Pronounce game.\n"
 msgstr "Spiel ansagen.\n"
 
-#: ../src/game.c:1165
+#: ../src/game.c:1166
 #, c-format
 msgid "%s plays %s."
 msgstr "%s spielt %s."
 
 #. update statusbar
-#: ../src/game.c:1173
+#: ../src/game.c:1174
 #, c-format
 msgid "%s plays %s"
 msgstr "%s spielt %s"
 
-#: ../src/game.c:1217
+#: ../src/game.c:1221
 #, c-format
 msgid "%s played: %s\n"
 msgstr "%s spielt: %s\n"
 
-#: ../src/game.c:1319
+#: ../src/game.c:1333
 #, c-format
 msgid "%s won the trick."
 msgstr "%s gewinnt den Stich"
 
-#: ../src/game.c:1337
+#: ../src/game.c:1351
 #, c-format
 msgid "%s lost the game (null game)\n"
 msgstr "%s hat das Nullspiel verloren\n"
 
-#: ../src/game.c:1342
+#: ../src/game.c:1356
 #, c-format
 msgid "%s won the trick (%d).\n"
 msgstr "%s gewinnt den Stich (%d)\n"
 
-#: ../src/game.c:1467
+#: ../src/game.c:1481
 #, c-format
 msgid ""
 "%s has overbid.\n"
@@ -296,12 +296,12 @@ msgstr ""
 "Spielwert: %d\n"
 "\t%d"
 
-#: ../src/game.c:1476
+#: ../src/game.c:1490
 #, c-format
 msgid "%s has overbid"
 msgstr "%s hat überreizt"
 
-#: ../src/game.c:1480
+#: ../src/game.c:1494
 #, c-format
 msgid ""
 "%s wins with %d against %d points\n"
@@ -310,12 +310,12 @@ msgstr ""
 "%s gewinnt mit %d zu %d Punkten\n"
 "\t+%d"
 
-#: ../src/game.c:1486
+#: ../src/game.c:1500
 #, c-format
 msgid "%s won the round"
 msgstr "%s gewinnt die Runde"
 
-#: ../src/game.c:1501
+#: ../src/game.c:1515
 #, c-format
 msgid ""
 "%s lost with %d against %d points\n"
@@ -324,12 +324,12 @@ msgstr ""
 "%s verliert mit %d zu %d Punkten\n"
 "\t%d"
 
-#: ../src/game.c:1507
+#: ../src/game.c:1521
 #, c-format
 msgid "%s lost the round"
 msgstr "%s hat die Runde verloren"
 
-#: ../src/game.c:1523
+#: ../src/game.c:1537
 #, c-format
 msgid ""
 "%s lost the null game\n"
@@ -338,7 +338,7 @@ msgstr ""
 "%s hat das Nullspiel verloren\n"
 "\t%d"
 
-#: ../src/game.c:1528
+#: ../src/game.c:1542
 #, c-format
 msgid ""
 "%s won the null game\n"
@@ -347,25 +347,25 @@ msgstr ""
 "%s hat das Nullspiel gewonnen\n"
 "\t%d"
 
-#: ../src/game.c:1580
+#: ../src/game.c:1591
 msgid "Choose a card to play"
 msgstr "Wähle eine Karte aus"
 
-#: ../src/game.c:1605
+#: ../src/game.c:1616
 msgid "Really abort the current round?"
 msgstr "Aktuelle Runde wirklich abbrechen?"
 
-#: ../src/game.c:1612
+#: ../src/game.c:1623
 msgid "Current round aborted."
 msgstr "Runde abgebrochen."
 
 #. game submenu
-#: ../src/game.c:1698
-#: ../src/interface.c:566
+#: ../src/game.c:1709
+#: ../src/interface.c:605
 msgid "New round"
 msgstr "Neue Runde"
 
-#: ../src/game.c:1722
+#: ../src/game.c:1733
 msgid "New round started"
 msgstr "Neue Runde gestartet"
 
@@ -471,21 +471,21 @@ msgid "Loaded icon '%s'\n"
 msgstr "Icon '%s' geladen\n"
 
 #: ../src/interface.c:123
-#: ../src/interface.c:1014
-#: ../src/interface.c:1050
+#: ../src/interface.c:1053
+#: ../src/interface.c:1089
 #, c-format
 msgid "Loading '%s' ... "
 msgstr "Lade '%s' ... "
 
 #: ../src/interface.c:127
-#: ../src/interface.c:1019
-#: ../src/interface.c:1054
+#: ../src/interface.c:1058
+#: ../src/interface.c:1093
 msgid "OK\n"
 msgstr "OK\n"
 
 #: ../src/interface.c:132
-#: ../src/interface.c:1024
-#: ../src/interface.c:1059
+#: ../src/interface.c:1063
+#: ../src/interface.c:1098
 msgid "FAIL\n"
 msgstr "FEHLER\n"
 
@@ -498,185 +498,191 @@ msgstr "gskat v%s erfolgreich geladen."
 msgid "Previous trick"
 msgstr "Letzter Stich"
 
-#: ../src/interface.c:321
+#: ../src/interface.c:325
 msgid "Properties"
 msgstr "Einstellungen"
 
 #. PLAYER NAMES TABLE
-#: ../src/interface.c:334
+#: ../src/interface.c:338
 msgid "Player names"
 msgstr "Spieler Namen"
 
-#: ../src/interface.c:339
+#: ../src/interface.c:343
 msgid "Your name:"
 msgstr "Dein Name:"
 
-#: ../src/interface.c:340
+#: ../src/interface.c:344
 msgid "Player 1:"
 msgstr "Spieler 1:"
 
-#: ../src/interface.c:341
+#: ../src/interface.c:345
 msgid "Player 2:"
 msgstr "Spieler 2:"
 
 #. RULES TABLE
-#: ../src/interface.c:359
+#: ../src/interface.c:363
 msgid "Rules"
 msgstr "Regeln"
 
-#: ../src/interface.c:364
+#: ../src/interface.c:368
 msgid "Show previous trick:"
 msgstr "Zeige letzten Stich:"
 
-#: ../src/interface.c:380
+#: ../src/interface.c:384
 msgid "Number of reviewable tricks:"
 msgstr "Anzahl der einsehbaren Stiche:"
 
-#: ../src/interface.c:396
+#: ../src/interface.c:400
 msgid "Change mouse cursor for possible cards:"
 msgstr "Ändere Maus-Cursor für spielbare Karten:"
 
 #. MISC TABLE
-#: ../src/interface.c:411
+#: ../src/interface.c:415
 msgid "Misc"
 msgstr "Sonstiges"
 
 #. animation
-#: ../src/interface.c:417
+#: ../src/interface.c:421
 msgid "Animate card movement:"
 msgstr "Animiere Karten-Bewegungen"
 
 #. animation duration
-#: ../src/interface.c:431
-msgid "Animation duration:"
-msgstr "Dauer der Animation:"
+#: ../src/interface.c:435
+msgid "Animation duration (in ms):"
+msgstr "Dauer der Animation (in ms):"
+
+#. opponents reaction
+#: ../src/interface.c:455
+msgid "Delay opponents reaction:"
+msgstr "Verzögere Reaktion der Gegner:"
+
+#. reaction duration
+#: ../src/interface.c:472
+msgid "Reaction time (in ms):"
+msgstr "Reaktionszeit (in ms):"
 
 #. debugging
-#: ../src/interface.c:451
+#: ../src/interface.c:488
 msgid "Print debug statements:"
 msgstr "Debug-Meldungen:"
 
 #. ABOUT TABLE
 #. help submenu
-#: ../src/interface.c:472
-#: ../src/interface.c:606
+#: ../src/interface.c:509
+#: ../src/interface.c:645
 msgid "About"
 msgstr "Über"
 
-#: ../src/interface.c:479
+#: ../src/interface.c:516
 msgid "Configuration file location:"
 msgstr "Konfigurationsdatei-Ort:"
 
-#: ../src/interface.c:493
+#: ../src/interface.c:530
 msgid "Resource files location:"
 msgstr "Ressourcen-Dateien:"
 
-#: ../src/interface.c:569
+#: ../src/interface.c:608
 msgid "Load game state"
 msgstr "Lade Spieldaten"
 
-#: ../src/interface.c:572
+#: ../src/interface.c:611
 msgid "Save current game state"
 msgstr "Speichere aktuelle Spieldaten"
 
-#: ../src/interface.c:576
+#: ../src/interface.c:615
 msgid "Quit"
 msgstr "Beenden"
 
-#: ../src/interface.c:587
+#: ../src/interface.c:626
 msgid "Game"
 msgstr "Spiel"
 
 #. configuration submenu
-#: ../src/interface.c:593
+#: ../src/interface.c:632
 msgid "Options"
 msgstr "Optionen"
 
-#: ../src/interface.c:600
+#: ../src/interface.c:639
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: ../src/interface.c:613
+#: ../src/interface.c:652
 msgid "Help"
 msgstr "Hilfe"
 
-#: ../src/interface.c:699
+#: ../src/interface.c:738
 msgid "Round 1"
 msgstr "Runde 1"
 
-#: ../src/interface.c:711
+#: ../src/interface.c:750
 msgid "Trick:"
 msgstr "Stich:"
 
-#: ../src/interface.c:712
+#: ../src/interface.c:751
 msgid "Re:"
 msgstr "Re:"
 
-#: ../src/interface.c:713
+#: ../src/interface.c:752
 msgid "Game:"
 msgstr "Spiel:"
 
-#: ../src/interface.c:714
+#: ../src/interface.c:753
 msgid "Bidden:"
 msgstr "Gereizt:"
 
 #. game rankings
-#: ../src/interface.c:762
+#: ../src/interface.c:801
 msgid "Rankings"
 msgstr "Spielstand"
 
-#: ../src/interface.c:830
+#: ../src/interface.c:869
 msgid "New Round"
 msgstr "Neue Runde"
 
 #. current round label
-#: ../src/interface.c:907
+#: ../src/interface.c:946
 #, c-format
 msgid "Round %d"
 msgstr "Runde %d"
 
-#: ../src/interface.c:1362
+#: ../src/interface.c:1401
 #, c-format
 msgid "%s (Re)"
 msgstr "%s (Re)"
 
 #. draw current stich
-#: ../src/interface.c:1481
+#: ../src/interface.c:1520
 #, c-format
 msgid "Trick %d"
 msgstr "Stich %d"
 
-#: ../src/interface.c:1598
+#: ../src/interface.c:1637
 msgid "Quit gskat\n"
 msgstr "Beende gskat\n"
 
-#: ../src/main.c:36
+#: ../src/main.c:35
 msgid "toggle debug mode (for developing)"
 msgstr "Debugging-Modus (nur für Entwickler)"
 
-#: ../src/main.c:40
-msgid "disable GUI (command line only)"
-msgstr "GUI deaktivieren (Konsolenmodus)"
-
-#: ../src/main.c:44
+#: ../src/main.c:39
 msgid "disable card animations"
 msgstr "Karten-Bewegungen nicht animieren"
 
-#: ../src/main.c:48
+#: ../src/main.c:43
 msgid "print version and exit"
 msgstr "Versions-Informationen"
 
 #. parse command line arguments
-#: ../src/main.c:97
+#: ../src/main.c:92
 msgid " - GTK Skat"
 msgstr "- GTK Skat"
 
-#: ../src/main.c:106
+#: ../src/main.c:101
 #, c-format
 msgid "Failed to parse arguments: %s\n"
 msgstr "Fehler beim Lesen der Argumente: %s\n"
 
-#: ../src/main.c:116
+#: ../src/main.c:111
 #, c-format
 msgid "gskat %s\n"
 msgstr "gskat %s\n"
