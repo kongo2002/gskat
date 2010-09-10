@@ -25,7 +25,6 @@
 app gskat;
 
 static gboolean debug        = FALSE;
-static gboolean cli_mode     = FALSE;
 static gboolean no_animation = FALSE;
 static gboolean version_only = FALSE;
 
@@ -34,10 +33,6 @@ static GOptionEntry arguments[] =
     {
         "debug", 0, 0, G_OPTION_ARG_NONE, &debug,
         N_("toggle debug mode (for developing)"), NULL
-    },
-    {
-        "cli_mode", 0, 0, G_OPTION_ARG_NONE, &cli_mode,
-        N_("disable GUI (command line only)"), NULL
     },
     {
         "no_animation", 0, 0, G_OPTION_ARG_NONE, &no_animation,
@@ -122,10 +117,6 @@ int main(int argc, const char *argv[])
 
         /* load configuration */
         load_config();
-
-        /* toggle gui if desired */
-        if (cli_mode)
-            gskat.conf.gui = FALSE;
 
         /* disable card animation if desired */
         if (no_animation)

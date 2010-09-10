@@ -220,8 +220,6 @@ typedef struct _config
 {
     /** Array of player names */
     gchar **player_names;
-    /** GUI mode */
-    gboolean gui;
     /** Card animation */
     gboolean animation;
     /** Show played stiche? */

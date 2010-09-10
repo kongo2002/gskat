@@ -34,7 +34,6 @@
 
 /* configuration value table */
 static const property config_values[] = {
-    { "gui"             , BOOL_PROP(gskat.conf.gui) },
     { "animation"       , BOOL_PROP(gskat.conf.animation) },
     { "show_tricks"     , BOOL_PROP(gskat.conf.show_tricks) },
     { "num_show_tricks" , INT_PROP(gskat.conf.num_show_tricks) },
@@ -127,7 +126,6 @@ void set_default_config()
 {
     const gchar *user_name = g_getenv("USER");
 
-    gskat.conf.gui = TRUE;
     gskat.conf.animation = TRUE;
     gskat.conf.anim_duration = 200;
     gskat.conf.show_tricks = TRUE;
