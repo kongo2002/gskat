@@ -4,7 +4,7 @@ http://github.com/kongo2002/gskat
 ABOUT
 
 gskat allows you to play Skat against two computer controlled players.
-Since gskat is currently in alpha state you cannot expect too much AI
+Since gskat is currently in beta state you cannot expect too much AI
 from the computer opponents.  Nevertheless they strictly follow the
 rules, do not cheat and act on some major game playing principles.
 
@@ -15,20 +15,18 @@ point is probably the Wikipedia:
 
 INSTALL
 
-Currently there is only a simple Makefile assisting you to install
-gskat.  So after downloading the source files you simply do:
+All installation instructions can be found in the INSTALL file shipped
+with the package. But to put it in a nutshell, just do something like
+the following (after unpacking the archive):
 
     cd gskat
-    make
-
-After compiling the game can be started by launching the executable:
-
-    ./gskat
+    ./configure
+    make && sudo make install
 
 Your feedback, bug reports and ideas for new features are especially
 welcome.
 
-    - Project: http://github.com/kongo2002/gskat
+    - Project: http://kongo2002.github.com
 
     - Bug Reports: http://github.com/kongo2002/gskat/issues
 
