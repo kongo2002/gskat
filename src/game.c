@@ -1175,6 +1175,7 @@ void spiel_ansagen()
     /* print game to label */
     update_interface();
     gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
+    gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
 
     /* hide skat & redraw screen */
     for (list = g_list_first(gskat.skat); list; list = list->next)
@@ -1548,6 +1549,8 @@ void end_round(enum finish_type ft)
     /* update interface */
     update_rank_interface();
     update_interface();
+
+    gtk_widget_set_sensitive(gskat.widgets[15], FALSE);
 
     /* reset game values */
     reset_game();

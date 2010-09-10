@@ -570,6 +570,7 @@ static GtkWidget *create_menu()
     g_signal_connect(G_OBJECT(load_item), "activate",
             G_CALLBACK(load_game_cb), NULL);
     save_item = gtk_menu_item_new_with_label(_("Save current game state"));
+    gtk_widget_set_sensitive(save_item, FALSE);
     g_signal_connect(G_OBJECT(save_item), "activate",
             G_CALLBACK(save_game_cb), NULL);
     quit_item = gtk_menu_item_new_with_label(_("Quit"));
@@ -613,6 +614,8 @@ static GtkWidget *create_menu()
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(help), hmenu);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), help);
+
+    gskat.widgets[15] = save_item;
 
     return menu;
 }
@@ -658,7 +661,7 @@ void create_interface()
     if (iconfile)
         g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 15);
+    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 16);
 
     if (gskat.widgets != NULL)
     {
