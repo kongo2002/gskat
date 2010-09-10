@@ -64,6 +64,8 @@ gboolean realization(GtkWidget *area, gpointer data)
 
     if (load_cards(DATA_DIR))
         game_start();
+    else
+        gtk_main_quit();
 
     return FALSE;
 }
