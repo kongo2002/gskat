@@ -575,6 +575,8 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
         draw_area();
 
         play_stich();
+
+        gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
     }
 }
 
