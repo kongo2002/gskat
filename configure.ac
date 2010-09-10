@@ -3,7 +3,7 @@ AC_PREREQ([2.59])
 # Set gskat version
 m4_define(gskat_major_version, 0)
 m4_define(gskat_minor_version, 0)
-m4_define(gskat_micro_version, 1)
+m4_define(gskat_micro_version, 2)
 m4_define(gskat_version, gskat_major_version.gskat_minor_version.gskat_micro_version)
 
 # Initial project information
