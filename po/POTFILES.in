@@ -2,6 +2,7 @@ src/ai.c
 src/callback.c
 src/configuration.c
 src/game.c
+src/gamestate.c
 src/interface.c
 src/main.c
 src/utils.c
