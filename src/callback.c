@@ -566,7 +566,9 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
-    if (read_state_from_file("/home/kongo/gamestate"))
+    gchar *filename = g_build_filename(get_config_dir(), "gamestate", NULL);
+
+    if (read_state_from_file(filename))
     {
         gskat.state = PLAYING;
 
@@ -578,6 +580,8 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 
         gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
     }
+
+    g_free(filename);
 }
 
 /**
@@ -588,7 +592,11 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
  */
 void save_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
-    save_state_to_file("/home/kongo/gamestate");
+    gchar *filename = g_build_filename(get_config_dir(), "gamestate", NULL);
+
+    save_state_to_file(filename);
+
+    g_free(filename);
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
