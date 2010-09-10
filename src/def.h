@@ -222,14 +222,18 @@ typedef struct _config
     gchar **player_names;
     /** Card animation */
     gboolean animation;
+    /** Card animation duration */
+    gint anim_duration;
+    /** Delay opponents reaction? */
+    gboolean reaction;
+    /** Reaction time */
+    gint reaction_duration;
     /** Show played stiche? */
     gboolean show_tricks;
     /** Number of played tricks to show */
     gint num_show_tricks;
     /** Indicate possible cards by changing the mouse cursor shape */
     gboolean show_poss_cards;
-    /** Card animation duration */
-    gint anim_duration;
     /** Print debug statements */
     gboolean debug;
     /** Filename of the configuration file */

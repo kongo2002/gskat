@@ -1281,8 +1281,12 @@ void ai_play_card(player *player)
 
     g_list_free(ptr);
 
-    /* delay the card throw if desired */
-    g_timeout_add(500, (GSourceFunc) throw_card, (gpointer) card);
+    /* delay the card throw if configured */
+    if (gskat.conf.reaction && gskat.conf.reaction_duration > 0)
+        g_timeout_add(gskat.conf.reaction_duration, (GSourceFunc) throw_card,
+                (gpointer) card);
+    else
+        throw_card((gpointer) card);
 }
 
 /**

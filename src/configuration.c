@@ -34,13 +34,15 @@
 
 /* configuration value table */
 static const property config_values[] = {
-    { "animation"       , BOOL_PROP(gskat.conf.animation) },
-    { "show_tricks"     , BOOL_PROP(gskat.conf.show_tricks) },
-    { "num_show_tricks" , INT_PROP(gskat.conf.num_show_tricks) },
-    { "anim_duration"   , INT_PROP(gskat.conf.anim_duration) },
-    { "show_poss_cards" , BOOL_PROP(gskat.conf.show_poss_cards) },
-    { "debug"           , BOOL_PROP(gskat.conf.debug) },
-    { NULL              , { .type = INT, .ptr.i = NULL } }
+    { "animation"         , BOOL_PROP(gskat.conf.animation) },
+    { "show_tricks"       , BOOL_PROP(gskat.conf.show_tricks) },
+    { "num_show_tricks"   , INT_PROP(gskat.conf.num_show_tricks) },
+    { "anim_duration"     , INT_PROP(gskat.conf.anim_duration) },
+    { "reaction"          , BOOL_PROP(gskat.conf.reaction) },
+    { "reaction_duration" , INT_PROP(gskat.conf.reaction_duration) },
+    { "show_poss_cards"   , BOOL_PROP(gskat.conf.show_poss_cards) },
+    { "debug"             , BOOL_PROP(gskat.conf.debug) },
+    { NULL                , { .type = INT, .ptr.i = NULL } }
 };
 
 /**
@@ -128,6 +130,8 @@ void set_default_config()
 
     gskat.conf.animation = TRUE;
     gskat.conf.anim_duration = 200;
+    gskat.conf.reaction = TRUE;
+    gskat.conf.reaction_duration = 500;
     gskat.conf.show_tricks = TRUE;
     gskat.conf.num_show_tricks = 1;
     gskat.conf.show_poss_cards = TRUE;

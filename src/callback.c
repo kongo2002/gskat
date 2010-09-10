@@ -291,6 +291,9 @@ gboolean save_config(GtkButton *button, gpointer data)
     gskat.conf.anim_duration = gtk_spin_button_get_value_as_int(
             GTK_SPIN_BUTTON(gskat.confwidgets[4]));
 
+    gskat.conf.debug = gtk_toggle_button_get_active(
+            GTK_TOGGLE_BUTTON(gskat.confwidgets[5]));
+
     gskat.conf.show_tricks = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[6]));
 
@@ -300,8 +303,11 @@ gboolean save_config(GtkButton *button, gpointer data)
     gskat.conf.show_poss_cards = gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(gskat.confwidgets[8]));
 
-    gskat.conf.debug = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[5]));
+    gskat.conf.reaction = gtk_toggle_button_get_active(
+            GTK_TOGGLE_BUTTON(gskat.confwidgets[9]));
+
+    gskat.conf.reaction_duration = gtk_spin_button_get_value_as_int(
+            GTK_SPIN_BUTTON(gskat.confwidgets[10]));
 
     write_config();
 
@@ -514,6 +520,20 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
     gtk_widget_set_sensitive(gskat.confwidgets[4], active);
 }
 
+/**
+ * @brief Callback function of the 'reaction' checkbox
+ * in the config dialog
+ *
+ * @param tbutton  GtkCheckButton triggering the event
+ * @param data     arbitrary user data
+ */
+void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
+{
+    (void) data;
+    gboolean active = gtk_toggle_button_get_active(tbutton);
+
+    gtk_widget_set_sensitive(gskat.confwidgets[10], active);
+}
 /**
  * @brief Callback function of the 'animation' checkbox
  * in the config dialog

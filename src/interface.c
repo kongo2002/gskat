@@ -293,6 +293,10 @@ void show_config_window()
     GtkWidget *animation_check;
     GtkWidget *animation_dur_label;
     GtkWidget *animation_duration;
+    GtkWidget *reaction_label;
+    GtkWidget *reaction_check;
+    GtkWidget *reaction_dur_label;
+    GtkWidget *reaction_duration;
     GtkWidget *debug_label;
     GtkWidget *debug_check;
 
@@ -409,7 +413,7 @@ void show_config_window()
 
     /* MISC TABLE */
     misc_label = gtk_label_new(_("Misc"));
-    misc_table = gtk_table_new(3, 2, FALSE);
+    misc_table = gtk_table_new(5, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
     gtk_container_set_border_width(GTK_CONTAINER(misc_table), 5);
 
@@ -428,7 +432,7 @@ void show_config_window()
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* animation duration */
-    animation_dur_label = gtk_label_new(_("Animation duration:"));
+    animation_dur_label = gtk_label_new(_("Animation duration (in ms):"));
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
     gtk_widget_set_sensitive(animation_dur_label, gskat.conf.animation);
     gtk_table_attach(GTK_TABLE(misc_table),
@@ -447,19 +451,52 @@ void show_config_window()
     g_signal_connect(G_OBJECT(animation_check), "toggled",
             G_CALLBACK(animation_toggle), NULL);
 
+    /* opponents reaction */
+    reaction_label = gtk_label_new(_("Delay opponents reaction:"));
+    gtk_misc_set_alignment(GTK_MISC(reaction_label), 0, 0.5);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            reaction_label,
+            0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    reaction_check = gtk_check_button_new();
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reaction_check),
+            gskat.conf.reaction);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            reaction_check,
+            1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    g_signal_connect(G_OBJECT(reaction_check), "toggled",
+            G_CALLBACK(reaction_toggle), NULL);
+
+    /* reaction duration */
+    reaction_dur_label = gtk_label_new(_("Reaction time (in ms):"));
+    gtk_misc_set_alignment(GTK_MISC(reaction_dur_label), 0, 0.5);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            reaction_dur_label,
+            0, 1, 3, 4, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    reaction_duration = gtk_spin_button_new_with_range(100, 5000, 20.0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(reaction_duration), 0);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(reaction_duration),
+            gskat.conf.reaction_duration);
+    gtk_widget_set_sensitive(reaction_duration, gskat.conf.reaction);
+    gtk_table_attach(GTK_TABLE(misc_table),
+            reaction_duration,
+            1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
     /* debugging */
     debug_label = gtk_label_new(_("Print debug statements:"));
     gtk_misc_set_alignment(GTK_MISC(debug_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_label,
-            0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+            0, 1, 4, 5, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
             gskat.conf.debug);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
-            1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
+            1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
 #ifdef DEBUG
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check), TRUE);
@@ -521,7 +558,7 @@ void show_config_window()
     /* allocate configuration widgets
      * this array is freed in either 'save_config', 'close_config'
      * or 'destroy_config' */
-    gskat.confwidgets = (GtkWidget **) g_malloc(9 * sizeof(GtkWidget *));
+    gskat.confwidgets = (GtkWidget **) g_malloc(11 * sizeof(GtkWidget *));
 
     gskat.confwidgets[0] = player_entry[0];
     gskat.confwidgets[1] = player_entry[1];
@@ -532,6 +569,8 @@ void show_config_window()
     gskat.confwidgets[6] = show_tricks_check;
     gskat.confwidgets[7] = num_show_tricks;
     gskat.confwidgets[8] = show_poss_check;
+    gskat.confwidgets[9] = reaction_check;
+    gskat.confwidgets[10] = reaction_duration;
 
     g_signal_connect(G_OBJECT(window), "delete-event",
             G_CALLBACK(destroy_config), (gpointer) window);
