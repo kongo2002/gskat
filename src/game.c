@@ -86,8 +86,7 @@ gboolean play_card(GdkEventButton *event)
             ptr = get_possible_cards(player->cards);
             if (g_list_index(ptr, card) != -1)
             {
-                throw_card(card);
-                play_stich();
+                throw_card((gpointer) card);
 
                 g_list_free(ptr);
 
@@ -1203,11 +1202,14 @@ void spiel_ansagen()
 /**
  * @brief Throw given card on the table
  *
- * @param card  card to throw on the table
+ * @param data  card to throw on the table (cast to gpointer)
+ *
+ * @return FALSE in order to destroy the delay timeout
  */
-void throw_card(card *_card)
+gboolean throw_card(gpointer data)
 {
     gint i, index;
+    card *_card = (card *) data;
     card **stich = gskat.stiche[gskat.stich-1];
     card_move *cm = NULL;
 
@@ -1255,6 +1257,12 @@ void throw_card(card *_card)
 
     calc_card_positions();
     draw_area();
+
+    /* trigger next action
+     * either next card or new trick */
+    play_stich();
+
+    return FALSE;
 }
 
 /**
@@ -1273,7 +1281,8 @@ void ai_play_card(player *player)
 
     g_list_free(ptr);
 
-    throw_card(card);
+    /* delay the card throw if desired */
+    g_timeout_add(500, (GSourceFunc) throw_card, (gpointer) card);
 }
 
 /**
@@ -1573,10 +1582,7 @@ void play_stich()
         if (num_cards < 3)
         {
             if (!gskat.players[current]->human)
-            {
                 ai_play_card(gskat.players[current]);
-                play_stich();
-            }
             else
                 update_sb(_("Choose a card to play"));
         }

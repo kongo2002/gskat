@@ -75,7 +75,7 @@ void calculate_stich();
 
 void druecke_skat();
 
-void throw_card(card *_card);
+gboolean throw_card(gpointer data);
 
 void ai_play_card(player *player);
 
