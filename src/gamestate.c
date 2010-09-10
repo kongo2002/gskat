@@ -405,39 +405,36 @@ card_state *read_card_states(FILE *input)
  * @brief Read all played cards from input file
  *
  * @param input      input file stream
+ * @param sg         state group structure
  * @param num_cards  number of played cards
  *
  * @return integer array containing played card ids or NULL on error
  */
-gint *read_played_cards_state(FILE *input, gint num_cards)
+gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards)
 {
     gint i;
-    gint *played_cards = NULL;
+    sg->pc = NULL;
 
     if (num_cards)
     {
-        played_cards = (gint *) g_malloc(sizeof(gint) * num_cards);
+        sg->pc = (gint *) g_malloc(sizeof(gint) * num_cards);
 
-        if (fread(played_cards, sizeof(gint), num_cards, input) != num_cards)
+        if (fread(sg->pc, sizeof(gint), num_cards, input) != num_cards)
         {
             DPRINT((_("Error on reading trick states.\n")));
 
-            g_free(played_cards);
-            return NULL;
+            g_free(sg->pc);
+            sg->pc = NULL;
+
+            return FALSE;
         }
 
-        DPRINT(("PLAYED_CARDS: (%d)\n", num_cards));
+        DPRINT(("PLAYED_CARDS (%d):\n", num_cards));
         for (i=0; i<num_cards; ++i)
-            DPRINT(("%d\n", played_cards[i]));
-    }
-    else
-    {
-        /* TODO: this is not quite good but necessary to not return NULL */
-        played_cards = (gint *) g_malloc(sizeof(gint));
-        *played_cards = 0;
+            DPRINT(("%d\n", sg->pc[i]));
     }
 
-    return played_cards;
+    return TRUE;
 }
 
 /**
@@ -562,7 +559,6 @@ gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
  */
 gboolean read_state_from_file(const gchar *filename)
 {
-    gint *played_cards;
     FILE *input;
     global_state *state;
     card_state *cstates;
@@ -589,8 +585,7 @@ gboolean read_state_from_file(const gchar *filename)
         goto read_state_error;
 
     /* read played cards */
-    if ((played_cards = read_played_cards_state(input,
-                    state->num_played)) == NULL)
+    if (!read_played_cards_state(input, sg, state->num_played))
         goto read_state_error;
 
     /* get players' cards */
@@ -605,7 +600,6 @@ gboolean read_state_from_file(const gchar *filename)
 
     sg->gs = state;
     sg->cs = cstates;
-    sg->pc = played_cards;
 
     fclose(input);
 
@@ -719,6 +713,25 @@ void apply_states(state_group *sg)
     /* populate table cards list */
     for (i=0; i<sg->gs->num_table; ++i)
         gskat.table = g_list_append(gskat.table, get_card_by_id(sg->table[i]));
+
+    /* free states memory */
+    g_free(sg->gs);
+    g_free(sg->cs);
+
+    if (sg->pc)
+        g_free(sg->pc);
+
+    if (sg->table)
+        g_free(sg->table);
+
+    for (i=0; i<3; ++i)
+    {
+        if (sg->pcards[i])
+            g_free(sg->pcards[i]);
+    }
+
+    g_free(sg->pcards);
+    g_free(sg);
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

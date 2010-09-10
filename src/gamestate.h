@@ -111,7 +111,7 @@ global_state *read_global_state(FILE *input);
 
 card_state *read_card_states(FILE *input);
 
-gint *read_played_cards_state(FILE *input, gint num_cards);
+gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards);
 
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs);
