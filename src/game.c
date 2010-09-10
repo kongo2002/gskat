@@ -223,7 +223,7 @@ void give_cards()
  * @return If the user continues to provoke that value is returned.
  * Otherwise 0 is returned representing 'pass'.
  */
-gint get_provoke_response(gint value, gchar *msg, gboolean hoeren)
+gint get_bid_response(gint value, gchar *msg, gboolean hoeren)
 {
     gint result;
     gchar caption[4];
@@ -731,7 +731,7 @@ gint do_hoeren(player *player, gint value, gint sager)
                 (20+strlen(gskat.players[sager]->name)));
         g_sprintf(msg, _("%s says %d:"), gskat.players[sager]->name, value);
 
-        response = get_provoke_response(value, msg, TRUE);
+        response = get_bid_response(value, msg, TRUE);
 
         g_free(msg);
     }
@@ -758,9 +758,9 @@ gint do_hoeren(player *player, gint value, gint sager)
  *
  * @param player  saying player
  * @param hoerer  hearing player's index
- * @param value   last provoked value
+ * @param value   last bidden value
  *
- * @return provoked value
+ * @return bidden value
  */
 gint do_sagen(player *player, gint hoerer, gint value)
 {
@@ -783,7 +783,7 @@ gint do_sagen(player *player, gint hoerer, gint value)
             g_sprintf(msg, _("Middlehand: %s. Bid?"),
                     gskat.players[hoerer]->name);
 
-            gereizt = get_provoke_response(value, msg, FALSE);
+            gereizt = get_bid_response(value, msg, FALSE);
 
             g_free(msg);
         }
@@ -824,30 +824,32 @@ gint do_sagen(player *player, gint hoerer, gint value)
 }
 
 /**
- * @brief Initialize provoking process
+ * @brief Initialize bidding process
  */
-void start_provoke()
+void start_bidding()
 {
     gint hoerer = gskat.forehand;
     gint sager = (hoerer + 1) % 3;
     gint i = 18;
+    player *pptr;
 
     DPRINT((_("Start of bidding\n")));
 
     update_sb(_("Start of bidding"));
 
-    /* disable button */
+    /* disable 'new round' button */
     gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
 
     /* reset all player values */
     for (i=0; i<3; ++i)
     {
-        gskat.players[i]->gereizt = 0;
+        pptr = gskat.players[i];
+        pptr->gereizt = 0;
 
-        DPRINT((_("MaxReizwert of %s: %d\n"), gskat.players[i]->name,
-                    get_max_reizwert(gskat.players[i]->cards)));
-        DPRINT((_("CardRating of %s: %d\n"), gskat.players[i]->name,
-                    rate_cards(gskat.players[i], gskat.players[i]->cards)));
+        DPRINT((_("MaxReizwert of %s: %d\n"), pptr->name,
+                    get_max_reizwert(pptr->cards)));
+        DPRINT((_("CardRating of %s: %d\n"), pptr->name,
+                    rate_cards(pptr, pptr->cards)));
     }
 
     /* sagen */
@@ -1267,7 +1269,6 @@ void ai_play_card(player *player)
 
     ptr = get_possible_cards(player->cards);
 
-    /* TODO: implement AI logic here */
     card = ai_select_card(player, ptr);
 
     g_list_free(ptr);

@@ -41,7 +41,7 @@ gint compare_jacks(gconstpointer a, gconstpointer b);
 
 gint compare_family(gconstpointer a, gconstpointer b);
 
-gint get_provoke_response(gint value, gchar *msg, gboolean hoeren);
+gint get_bid_response(gint value, gchar *msg, gboolean hoeren);
 
 gboolean is_trump(card *card);
 
@@ -69,7 +69,7 @@ gint do_sagen(player *player, gint hoerer, gint value);
 
 void take_skat();
 
-void start_provoke();
+void start_bidding();
 
 void calculate_stich();
 
