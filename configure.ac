@@ -41,6 +41,8 @@ AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 AC_PROG_LIBTOOL
 
+GTK_DOC_CHECK([1.9],[--flavour no-tmpl])
+
 # Define DATA_DIR variable
 if test "x${prefix}" = "xNONE"; then
     AC_DEFINE_UNQUOTED(DATA_DIR,
@@ -77,6 +79,7 @@ AC_SUBST(GTK_LIBS)
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
+    docs/Makefile
     data/Makefile
     data/icons/Makefile
     po/Makefile.in
