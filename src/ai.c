@@ -1262,6 +1262,7 @@ gint num_of_trump(GList *list)
 /**
  * num_of_suit:
  * @list: List to count suit cards in
+ * @suit: Card suit to check
  *
  * Get the number of cards of the given suit
  *

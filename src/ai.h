@@ -61,7 +61,7 @@ GList *cards_out(void);
 
 gdouble prob_stich_geht_durch(player *player);
 
-gint num_poss_higher_cards(player *player, card *card);
+gint num_poss_higher_cards(player *player, card *first);
 
 gint num_jacks_played(void);
 
@@ -69,7 +69,7 @@ gboolean jacks_weg(player *player);
 
 gint num_truempfe_played(void);
 
-gboolean highest_rem_of_suit(card *card);
+gboolean highest_rem_of_suit(card *first);
 
 gboolean truempfe_weg(player *player);
 

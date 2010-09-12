@@ -23,7 +23,7 @@
 
 #include "def.h"
 
-void give_cards();
+void give_cards(void);
 
 void give_to_skat(card *card);
 
@@ -67,31 +67,31 @@ gint do_hoeren(player *player, gint value, gint sager);
 
 gint do_sagen(player *player, gint hoerer, gint value);
 
-void take_skat();
+void take_skat(void);
 
-void start_bidding();
+void start_bidding(void);
 
-void calculate_stich();
+void calculate_stich(void);
 
-void druecke_skat();
+void druecke_skat(void);
 
 gboolean throw_card(gpointer data);
 
 void ai_play_card(player *player);
 
-void spiel_ansagen();
+void spiel_ansagen(void);
 
-void reset_game();
+void reset_game(void);
 
 void set_round_points(gint winner, gint points);
 
-void end_round(enum finish_type ft);
+void end_round(finish_type ft);
 
-void play_stich();
+void play_stich(void);
 
-gboolean game_abort();
+gboolean game_abort(void);
 
-void game_start();
+void game_start(void);
 
 #endif /* __GAME_H__ */
 

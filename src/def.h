@@ -57,11 +57,11 @@ static const gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
  *
  * Enumeration of possible card positions/orientations
  */
-enum cposition {
+typedef enum {
     CP_DIAGONAL,
     CP_HORIZONTAL,
     CP_VERTICAL
-};
+} cposition;
 
 /**
  * dimension:
@@ -88,12 +88,12 @@ typedef struct _dimension {
  *
  * Enumeration of card status values
  */
-enum cstatus {
+typedef enum {
     CS_NOTAVAILABLE,
     CS_AVAILABLE,
     CS_MOVING,
     CS_DISTRIBUTED
-};
+} cstatus;
 
 /**
  * gstate:
@@ -108,7 +108,7 @@ enum cstatus {
  *
  * Enumeration of game states
  */
-enum gstate {
+typedef enum {
     LOADING,
     WAITING,
     GIVE_CARDS,
@@ -117,7 +117,7 @@ enum gstate {
     PLAYING,
     READY,
     ENDGAME
-};
+} gstate;
 
 /**
  * finish_type:
@@ -127,14 +127,11 @@ enum gstate {
  *
  * Enumeration of game finish types
  */
-enum finish_type {
-    /** game ended normally after 10 rounds */
+typedef enum {
     FT_NORMAL,
-    /** re player won the game prematurely */
     FT_WIN,
-    /** re player lost the game prematurely */
     FT_LOST
-};
+} finish_type;
 
 /**
  * card:
@@ -157,7 +154,7 @@ typedef struct _card {
     gint rank;
     gint points;
     gint owner;
-    enum cstatus status;
+    cstatus status;
     gboolean draw;
     gboolean draw_face;
 } card;
@@ -298,7 +295,7 @@ typedef struct _app {
     GtkWidget *area;
     GtkWidget **widgets;
     GtkWidget **confwidgets;
-    enum gstate state;
+    gstate state;
     player *re;
     gint forehand;
     gint cplayer;

@@ -25,10 +25,11 @@
 #include "utils.h"
 
 /**
- * @brief Give a card to player
+ * card_to_player:
+ * @player:  pointer to #player that gets the @card
+ * @card:    pointer to #card to give to @player
  *
- * @param player  pointer to player that gets the card
- * @param card    pointer to card to give to player
+ * Give a #card to @player
  */
 void card_to_player(player *player, card *card)
 {
@@ -45,9 +46,10 @@ void card_to_player(player *player, card *card)
 }
 
 /**
- * @brief Give a card into skat
+ * give_to_skat:
+ * @card:  #card to give into skat
  *
- * @param card  card to give into skat
+ * Give a card into skat
  */
 void give_to_skat(card *card)
 {
@@ -60,14 +62,15 @@ void give_to_skat(card *card)
 }
 
 /**
- * @brief Play the card clicked on
+ * play_card:
+ * @event:  #GdkEventButton structure
+ *
+ * Play the card the user clicked on
  *
  * It's checked if the clicked card is possible to play
  * and if it's the player's turn to play.
  *
- * @param event  button event pointer
- *
- * @return TRUE if the card was played, else FALSE
+ * Returns: %TRUE if the card was played, else %FALSE
  */
 gboolean play_card(GdkEventButton *event)
 {
@@ -104,11 +107,12 @@ gboolean play_card(GdkEventButton *event)
 }
 
 /**
- * @brief Swaps the clicked card with one of the cards in skat
+ * click_skat:
+ * @event:  #GdkEventButton structure
  *
- * @param event  button event pointer
+ * Swaps the clicked card with one of the cards in skat
  *
- * @return TRUE when the cards could be swapped
+ * Returns: %TRUE when the cards could be swapped, otherwise %FALSE
  */
 gboolean click_skat(GdkEventButton *event)
 {
@@ -138,13 +142,14 @@ gboolean click_skat(GdkEventButton *event)
 }
 
 /**
- * @brief Gets the card the player clicked on
+ * click_card:
+ * @event:  #GdkEventButton structure
+ * @list:   #GList of possible cards to choose from
  *
- * @param event  button event pointer
- * @param list   list of possible cards to choose from
+ * Gets the card the player clicked on
  *
- * @return pointer to the card clicked on or NULL if at the position
- * the user clicked on there is not card
+ * Returns: pointer to the #card clicked on or %NULL if at the position
+ * the user clicked on there is not #card
  */
 card *click_card(GdkEventButton *event, GList *list)
 {
@@ -167,12 +172,14 @@ card *click_card(GdkEventButton *event, GList *list)
 }
 
 /**
- * @brief Distribute the 32 cards in the deck to the players/skat
+ * give_cards:
+ *
+ * Distribute the 32 cards in the deck to the players/skat
  *
  * Every player gets 10 cards whereas the last 2 cards go into
  * the skat in the middle of the table.
  */
-void give_cards()
+void give_cards(void)
 {
     gint order[32];
     gint i, j, k;
@@ -210,17 +217,18 @@ void give_cards()
 }
 
 /**
- * @brief Gets a provoke response from the user by opening a message box
+ * get_bid_response:
+ * @value:   bid value
+ * @msg:     string containing the title of the message box
+ * @hoeren:  user has to 'hear'?
+ *
+ * Gets a provoke response from the user by opening a message box
  *
  * When the user has to 'hear' he gets the possible answers 'Yes'
  * and 'No' otherwise the next provoke value and 'Pass'.
  *
- * @param value   provoking value
- * @param msg     string containing the title of the message box
- * @param hoeren  user has to 'hear'?
- *
- * @return If the user continues to provoke that value is returned.
- * Otherwise 0 is returned representing 'pass'.
+ * Returns: If the user continues to bid that value is returned.
+ * Otherwise 0 is returned representing a 'pass'.
  */
 gint get_bid_response(gint value, gchar *msg, gboolean hoeren)
 {
@@ -246,11 +254,10 @@ gint get_bid_response(gint value, gchar *msg, gboolean hoeren)
 }
 
 /**
- * @brief Returns the next value to provoke
+ * next_reizwert:
+ * @value: current bid value
  *
- * @param value current provoke value
- *
- * @return the next value to provoke about
+ * Returns: the next value to bid
  */
 gint next_reizwert(gint value)
 {
@@ -268,12 +275,14 @@ gint next_reizwert(gint value)
 }
 
 /**
- * @brief Function comparing two cards used with a sort function
+ * compare_cards:
+ * @a:     first card
+ * @b:     second card
  *
- * @param a     first card
- * @param b     second card
+ * Function comparing two cards used with a sort function
+ * like g_list_sort()
  *
- * @return -1 if a > b; 1 if a < b; 0 if a == b
+ * Returns: -1 if @a > @b; 1 if @a < @b; 0 if @a == @b
  */
 gint compare_cards(gconstpointer a, gconstpointer b)
 {
@@ -328,12 +337,14 @@ gint compare_cards(gconstpointer a, gconstpointer b)
 }
 
 /**
- * @brief Function comparing two jacks used with a sort function
+ * compare_jacks:
+ * @a: first jack
+ * @b: second jack
  *
- * @param a first jack
- * @param b second jack
+ * Function comparing two jacks used with a sort function
+ * like g_list_sort()
  *
- * @return -1 if a > b; 1 if a < b; 0 if a == b
+ * Returns: -1 if @a > @b; 1 if @a < @b; 0 if @a == @b
  */
 gint compare_jacks(gconstpointer a, gconstpointer b)
 {
@@ -349,13 +360,14 @@ gint compare_jacks(gconstpointer a, gconstpointer b)
 }
 
 /**
- * @brief Function comparing two cards of the same suit
- * used with a sort function
+ * compare_family:
+ * @a: first card
+ * @b: second card
  *
- * @param a first card
- * @param b second card
+ * Function comparing two cards of the same suit
+ * used with a sort function like g_list_sort()
  *
- * @return -1 if a > b; 1 if a < b; 0 if a == b
+ * Returns: -1 if @a > @b; 1 if @a < @b; 0 if @a == @b
  */
 gint compare_family(gconstpointer a, gconstpointer b)
 {
@@ -379,12 +391,13 @@ gint compare_family(gconstpointer a, gconstpointer b)
 }
 
 /**
- * @brief Returns a list of jacks of a given list of cards
+ * get_jack_list:
+ * @list: #GList of cards to search jacks in
  *
- * @param list list of cards to search jacks in
+ * Returns a #GList of jacks of a given list of cards
  *
- * @return Returns a new GList* containing all jacks in 'list'.
- * If no jacks could be found NULL is returned.
+ * Returns: (transfer full): a new #GList containing all jacks in 'list'.
+ * If no jacks could be found %NULL is returned.
  */
 GList *get_jack_list(GList *list)
 {
@@ -404,13 +417,14 @@ GList *get_jack_list(GList *list)
 }
 
 /**
- * @brief Returns a list containing only cards of a specific suit
+ * get_suit_list:
+ * @list:  #GList of cards to search in
+ * @suit:  suit that is searched
  *
- * @param list  list of cards to search in
- * @param suit  suit that is searched
+ * Returns a #GList containing only cards of a specific suit
  *
- * @return Returns a new GList* containing all card of the given
- * suit. If no cards could be found NULL is returned.
+ * Returns: (transfer full): a new #GList containing all card of the given
+ * suit. If no cards could be found %NULL is returned.
  */
 GList *get_suit_list(GList *list, gint suit)
 {
@@ -439,11 +453,12 @@ GList *get_suit_list(GList *list, gint suit)
 }
 
 /**
- * @brief Checks if the given card is trump
+ * is_trump:
+ * @card:  #card to be checked
  *
- * @param card  card to be checked
+ * Checks if the given @card is trump
  *
- * @return TRUE if the card is trump, otherwise FALSE
+ * Returns: %TRUE if the @card is trump, otherwise %FALSE
  */
 gboolean is_trump(card *card)
 {
@@ -463,12 +478,13 @@ gboolean is_trump(card *card)
 }
 
 /**
- * @brief Returns a list of trump cards from the given card list
+ * get_trump_list:
+ * @list:  #GList of cards to search in
  *
- * @param list  list of cards to search in
+ * Returns a #GList of trump cards from the given card @list
  *
- * @return Returns a new GList* of all trump cards. If no trump
- * cards could be found return NULL.
+ * Returns: (transfer full): a new #GList of all trump cards. If no trump
+ * cards could be found return %NULL.
  */
 GList *get_trump_list(GList *list)
 {
@@ -500,13 +516,14 @@ GList *get_trump_list(GList *list)
 }
 
 /**
- * @brief Return a list of cards that are possible to play
+ * get_possible_cards:
+ * @list:  #GList of cards to search in for possible cards
+ *
+ * Return a #GList of cards that are possible to play
  * based on the cards currently on the table
  *
- * @param list  list of cards to search in for possible cards
- *
- * @return Returns a new GList* with all cards that are possible
- * or allowed to play.
+ * Returns: (transfer full): a new #GList with all cards that are possible
+ * or allowed to play. If no #card is possible or allowed return %NULL.
  */
 GList *get_possible_cards(GList *list)
 {
@@ -535,16 +552,17 @@ GList *get_possible_cards(GList *list)
 }
 
 /**
- * @brief Returns a rating of a given card deck
+ * rate_cards:
+ * @player:  #player to calculate the cards for
+ * @list:    #GList of the player's cards
  *
- * This function does a simply calculation of the rating of a
+ * Returns a rating of a given card deck
+ *
+ * This function does a simple calculation of the rating of a
  * player's card deck. Currently the longest suit, the number of
- * jacks and suits you can trump are respected.
+ * jacks and suits you can trump are analyzed.
  *
- * @param player  player to calculate the cards for
- * @param list    list of the player's cards
- *
- * @return card deck rating
+ * Returns: card deck rating
  */
 gint rate_cards(player *player, GList *list)
 {
@@ -586,11 +604,12 @@ gint rate_cards(player *player, GList *list)
 }
 
 /**
- * @brief find the best suit in a list of cards
+ * get_best_suit:
+ * @list: #GList of cards to search in
  *
- * @param list list of cards to search in
+ * Find the best suit in a list of cards
  *
- * @return index of the selected (best) suit
+ * Returns: index of the selected (best) suit
  */
 gint get_best_suit(GList *list)
 {
@@ -621,12 +640,13 @@ gint get_best_suit(GList *list)
 }
 
 /**
- * @brief Calculate the 'spitzen' for a given list of cards and suit
+ * get_spitzen:
+ * @list:  #GList of cards to parse
+ * @suit:  Suit to search for
  *
- * @param list  list of cards to parse
- * @param suit  suit to search for
+ * Calculate the 'spitzen' for a given #GList of cards and suit
  *
- * @return 'spitzen' value
+ * Returns: 'spitzen' value
  */
 gint get_spitzen(GList *list, gint suit)
 {
@@ -680,11 +700,12 @@ gint get_spitzen(GList *list, gint suit)
 }
 
 /**
- * @brief Returns the maximum value to provoke
+ * get_max_reizwert:
+ * @list:  #GList of cards to analyze
  *
- * @param list  list of cards to analyze
+ * Returns the maximum value to bid
  *
- * @return maximum value to provoke
+ * Returns: maximum value to bid
  */
 gint get_max_reizwert(GList *list)
 {
@@ -710,13 +731,14 @@ gint get_max_reizwert(GList *list)
 }
 
 /**
- * @brief Execute the 'hearing' process for the given player
+ * do_hoeren:
+ * @player:  hearing player
+ * @value:   bid value that is asked
+ * @sager:   saying player's index
  *
- * @param player  hearing player
- * @param value   provoke value that is asked
- * @param sager   saying player's index
+ * Execute the 'hearing' process for the given player
  *
- * @return provoked value or 0 if passed
+ * Returns: bidden value or 0 if passed
  */
 gint do_hoeren(player *player, gint value, gint sager)
 {
@@ -753,13 +775,14 @@ gint do_hoeren(player *player, gint value, gint sager)
 }
 
 /**
- * @brief Execute the 'saying' process for the given player
+ * do_sagen:
+ * @player:  saying player
+ * @hoerer:  hearing player's index
+ * @value:   last bidden value
  *
- * @param player  saying player
- * @param hoerer  hearing player's index
- * @param value   last bidden value
+ * Execute the 'saying' process for the given player
  *
- * @return bidden value
+ * Returns: bidden value
  */
 gint do_sagen(player *player, gint hoerer, gint value)
 {
@@ -823,9 +846,11 @@ gint do_sagen(player *player, gint hoerer, gint value)
 }
 
 /**
- * @brief Initialize bidding process
+ * start_bidding:
+ *
+ * Initialize bidding process
  */
-void start_bidding()
+void start_bidding(void)
 {
     gint hoerer = gskat.forehand;
     gint sager = (hoerer + 1) % 3;
@@ -898,9 +923,11 @@ void start_bidding()
 }
 
 /**
- * @brief Select cards to be put in skat
+ * druecke_skat:
+ *
+ * Select cards to be put in skat
  */
-void druecke_skat()
+void druecke_skat(void)
 {
     gint suits[] = { 40, 60, 80, 100 };
     gint count = 0;
@@ -1042,9 +1069,11 @@ void druecke_skat()
 }
 
 /**
- * @brief Take the two cards in the skat or play 'hand'
+ * take_skat:
+ *
+ * Take the two cards in the skat or play 'hand'
  */
-void take_skat()
+void take_skat(void)
 {
     gint result;
     GList *ptr = NULL;
@@ -1103,9 +1132,11 @@ void take_skat()
 }
 
 /**
- * @brief Decide and say what play should be played this round
+ * spiel_ansagen:
+ *
+ * Decide and say what game type (trump) should be played this round
  */
-void spiel_ansagen()
+void spiel_ansagen(void)
 {
     gint i, result = 0;
     GList *list = NULL;
@@ -1200,11 +1231,12 @@ void spiel_ansagen()
 }
 
 /**
- * @brief Throw given card on the table
+ * throw_card:
+ * @data:  #card to throw on the table (cast to #gpointer)
  *
- * @param data  card to throw on the table (cast to gpointer)
+ * Throw given card on the table
  *
- * @return FALSE in order to destroy the delay timeout
+ * Returns: %FALSE in order to destroy the delay timeout
  */
 gboolean throw_card(gpointer data)
 {
@@ -1266,9 +1298,10 @@ gboolean throw_card(gpointer data)
 }
 
 /**
- * @brief Trigger AI to play a card
+ * ai_play_card:
+ * @player:  pointer to AI #player
  *
- * @param player  pointer to AI player
+ * Trigger AI to play a card
  */
 void ai_play_card(player *player)
 {
@@ -1290,9 +1323,11 @@ void ai_play_card(player *player)
 }
 
 /**
- * @brief Calculate the winner and the points of the last stich
+ * calculate_stich:
+ *
+ * Calculate the winner and the points of the last played trick
  */
-void calculate_stich()
+void calculate_stich(void)
 {
     gint winner;
     gint points = 0;
@@ -1370,10 +1405,11 @@ void calculate_stich()
 }
 
 /**
- * @brief Refresh the points each player got in the played round
+ * set_round_points:
+ * @winner:  Id of the #player that won the round
+ * @points:  Game points of the round
  *
- * @param winner  Id of the player that won the round
- * @param points  Game points of the round
+ * Refresh the points each #player got in the played round
  */
 void set_round_points(gint winner, gint points)
 {
@@ -1397,10 +1433,13 @@ void set_round_points(gint winner, gint points)
 }
 
 /**
- * @brief Finalize the last round by refreshing all settings
+ * end_round:
+ * @ft: the #finish_type of the ending of the current round
+ *
+ * Finalize the last round by refreshing all settings
  * and player's points
  */
-void end_round(enum finish_type ft)
+void end_round(finish_type ft)
 {
     gint rank, game;
     gchar msg[200];
@@ -1571,9 +1610,11 @@ void end_round(enum finish_type ft)
 }
 
 /**
- * @brief Trigger the next player to play his card
+ * play_stich:
+ *
+ * Trigger the next player to play his card
  */
-void play_stich()
+void play_stich(void)
 {
     gint fh = (gskat.cplayer == -1) ? gskat.forehand : gskat.cplayer;
     gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
@@ -1601,9 +1642,14 @@ void play_stich()
 }
 
 /**
- * @brief Ask user if he really wants to abort the current game round
+ * game_abort:
+ *
+ * Ask user if the user really wants to abort the current game round
+ *
+ * Returns: %TRUE if the user wants to abort the current round,
+ * othwerise %FALSE
  */
-gboolean game_abort()
+gboolean game_abort(void)
 {
     gboolean abort = FALSE;
     gint response;
@@ -1636,9 +1682,11 @@ gboolean game_abort()
 }
 
 /**
- * @brief Reset all game settings and free the allocated memory
+ * reset_game:
+ *
+ * Reset all game settings and free the allocated memory
  */
-void reset_game()
+void reset_game(void)
 {
     gint i;
     GList *ptr = NULL;
@@ -1710,9 +1758,11 @@ void reset_game()
 }
 
 /**
- * @brief Distribute cards and start a new round
+ * game_start:
+ *
+ * Distribute cards and start a new round
  */
-void game_start()
+void game_start(void)
 {
     /* give cards */
     gskat.state = GIVE_CARDS;
