@@ -23,12 +23,14 @@
 #include "gamestate.h"
 
 /**
- * @brief Determine the current global game states like round, stich
+ * get_global_state:
+ *
+ * Determine the current global game states like round, trick
  * and players' points
  *
- * @return new global_state* structure
+ * Returns: (transfer full): new #global_state object
  */
-global_state *get_global_state()
+global_state *get_global_state(void)
 {
     gint i;
     card *ptr;
@@ -74,11 +76,13 @@ global_state *get_global_state()
 }
 
 /**
- * @brief Determine the current card states
+ * get_card_states:
  *
- * @return an array of 32 card_state elements
+ * Determine the current card states
+ *
+ * Returns: (transfer full): an array of 32 #card_state objects
  */
-card_state *get_card_states()
+card_state *get_card_states(void)
 {
     gint i = 0;
     GList *ptr;
@@ -105,11 +109,12 @@ card_state *get_card_states()
 }
 
 /**
- * @brief Write global states into file buffer
+ * save_global_state:
+ * @output:  output file stream
  *
- * @param output  output file stream
+ * Write global states into file buffer
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean save_global_state(FILE *output)
 {
@@ -136,11 +141,12 @@ gboolean save_global_state(FILE *output)
 }
 
 /**
- * @brief Write card states of all 32 game cards into file buffer
+ * save_card_states:
+ * @output:  output file stream
  *
- * @param output  output file stream
+ * Write card states of all 32 game cards into file buffer
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean save_card_states(FILE *output)
 {
@@ -167,11 +173,12 @@ gboolean save_card_states(FILE *output)
 }
 
 /**
- * @brief Write id's of all played cards into file buffer
+ * save_played_card_states:
+ * @output:  output file stream
  *
- * @param output  output file stream
+ * Write id's of all played cards into file buffer
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean save_played_card_states(FILE *output)
 {
@@ -206,11 +213,12 @@ gboolean save_played_card_states(FILE *output)
 }
 
 /**
- * @brief Write players' cards into file buffer
+ * save_players_cards_state:
+ * @output:  output file stream
  *
- * @param output  output file stream
+ * Write players' cards into file buffer
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean save_players_cards_state(FILE *output)
 {
@@ -250,11 +258,12 @@ gboolean save_players_cards_state(FILE *output)
 }
 
 /**
- * @brief Write table cards into file buffer
+ * save_table_state:
+ * @output:  output file stream
  *
- * @param output  output file stream
+ * Write table cards into file buffer
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean save_table_state(FILE *output)
 {
@@ -289,11 +298,12 @@ gboolean save_table_state(FILE *output)
 }
 
 /**
- * @brief Save the current game states into a given output file
+ * save_state_to_file:
+ * @filename:  filename to write the states into
  *
- * @param filename  filename to write the states into
+ * Save the current game states into a given output file
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean save_state_to_file(const gchar *filename)
 {
@@ -335,11 +345,12 @@ save_state_error:
 }
 
 /**
- * @brief Read global states from input file
+ * read_global_state:
+ * @input:  input file stream
  *
- * @param input  input file stream
+ * Read global states from input file
  *
- * @return new global_state structure or NULL on error
+ * Returns: (transfer full): new #global_state object or %NULL on error
  */
 global_state *read_global_state(FILE *input)
 {
@@ -370,11 +381,12 @@ global_state *read_global_state(FILE *input)
 }
 
 /**
- * @brief Read card states from all 32 game cards
+ * read_card_states:
+ * @input:  input file stream
  *
- * @param input  input file stream
+ * Read card states from all 32 game cards
  *
- * @return new card_state array or NULL on error
+ * Returns: new #card_state array or %NULL on error
  */
 card_state *read_card_states(FILE *input)
 {
@@ -402,13 +414,14 @@ card_state *read_card_states(FILE *input)
 }
 
 /**
- * @brief Read all played cards from input file
+ * read_played_cards_state:
+ * @input:      input file stream
+ * @sg:         state group structure
+ * @num_cards:  number of played cards
  *
- * @param input      input file stream
- * @param sg         state group structure
- * @param num_cards  number of played cards
+ * Read all played cards from input file
  *
- * @return integer array containing played card ids or NULL on error
+ * Returns: integer array containing played card ids or %NULL on error
  */
 gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards)
 {
@@ -438,13 +451,14 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards)
 }
 
 /**
- * @brief Read players' cards from input file
+ * read_players_cards_state:
+ * @input:  input file stream
+ * @sg:     #state_group object
+ * @gs:     #global_state object
  *
- * @param input  input file stream
- * @param sg     state group structure
- * @param gs     global states
+ * Read players' cards from input file
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs)
@@ -504,13 +518,14 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
 }
 
 /**
- * @brief Read table cards from input file
+ * read_table_state:
+ * @input:      input file stream
+ * @sg:         state group structure
+ * @num_table:  number of cards on the table
  *
- * @param input      input file stream
- * @param sg         state group structure
- * @param num_table  number of cards on the table
+ * Read table cards from input file
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
 {
@@ -551,11 +566,12 @@ gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
 }
 
 /**
- * @brief Read the game states saved inside a given file
+ * read_state_from_file:
+ * @filename:  filename of the state file to read/parse
  *
- * @param filename  filename of the state file to read/parse
+ * Read the game states saved inside a given file
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean read_state_from_file(const gchar *filename)
 {
@@ -618,9 +634,10 @@ read_state_error:
 }
 
 /**
- * @brief Apply all read states to the current game state
+ * apply_states:
+ * @sg:  #state_group object
  *
- * @param sg  state group structure
+ * Apply all read states to the current game state
  */
 void apply_states(state_group *sg)
 {

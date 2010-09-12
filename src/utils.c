@@ -24,10 +24,11 @@
 #define GSKAT_CONTEXTID 42
 
 /**
- * @brief Helper function to swap two integers
+ * swap:
+ * @a:  first integer
+ * @b:  second integer
  *
- * @param a  first integer
- * @param b  second integer
+ * Helper function to swap two integers
  */
 void swap(gint *a, gint *b)
 {
@@ -37,12 +38,13 @@ void swap(gint *a, gint *b)
 }
 
 /**
- * @brief Return maximum string length
+ * max_str_len:
+ * @first:  first string to check
+ * @...:    additional strings to check
  *
- * @param first  first string to check
- * @param ...    additional strings to check
+ * Return maximum string length
  *
- * @return maximum string length of all given strings
+ * Returns: maximum string length of all given strings
  */
 gint max_str_len(const gchar *first, ...)
 {
@@ -64,11 +66,12 @@ gint max_str_len(const gchar *first, ...)
 }
 
 /**
- * @brief Get card value depending on its rank
+ * get_card_points:
+ * @rank:  rank of the #card
  *
- * @param rank  rank of the card
+ * Get #card value depending on its rank
  *
- * @return point value of the given card rank
+ * Returns: point value of the given #card rank
  */
 gint get_card_points(gint rank)
 {
@@ -93,11 +96,12 @@ gint get_card_points(gint rank)
 }
 
 /**
- * @brief Return the card's suit name
+ * suit_name:
+ * @id:  suit id of the #card
  *
- * @param id  suit id of the card
+ * Return the card's suit name
  *
- * @return suit name
+ * Returns: (transfer none): suit name
  */
 gchar *suit_name(gint id)
 {
@@ -121,11 +125,12 @@ gchar *suit_name(gint id)
 }
 
 /**
- * @brief Return the card's rank name
+ * rank_name:
+ * @id:  rank id of the #card
  *
- * @param id  rank id of the card
+ * Return the card's rank name
  *
- * @return rank name
+ * Returns: (transfer none): rank name
  */
 gchar *rank_name(gint id)
 {
@@ -148,11 +153,12 @@ gchar *rank_name(gint id)
 }
 
 /**
- * @brief Convenience wrapper for the get_card_ptr function
+ * get_card_by_id:
+ * @id:  id of #card to fetch
  *
- * @param id  id of card to fetch
+ * Convenience wrapper for the get_card_ptr function
  *
- * @return card* of found card or NULL if no matching card was found
+ * Returns: #card of found #card or %NULL if no matching #card was found
  */
 card *get_card_by_id(gint id)
 {
@@ -163,12 +169,13 @@ card *get_card_by_id(gint id)
 }
 
 /**
- * @brief Get pointer to the card of given suit and rank
+ * get_card_ptr:
+ * @suit:  suit of #card to fetch
+ * @rank:  rank of #card to fetch
  *
- * @param suit  suit of card to fetch
- * @param rank  rank of card to fetch
+ * Get pointer to the card of given suit and rank
  *
- * @return card* of found card or NULL if no matching card was found
+ * Returns: #card of found #card or %NULL if no matching #card was found
  */
 card *get_card_ptr(gint suit, gint rank)
 {
@@ -193,11 +200,12 @@ card *get_card_ptr(gint suit, gint rank)
 }
 
 /**
- * @brief Return the card's name
+ * get_card_name:
+ * @card:  pointer to #card to get the name of
  *
- * @param card  pointer to card to get the name of
+ * Return the card's name
  *
- * @return string of card name (static gchar*)
+ * Returns: (transfer none) string of card name
  */
 gchar *get_card_name(card *card)
 {
@@ -209,9 +217,10 @@ gchar *get_card_name(card *card)
 }
 
 /**
- * @brief Print the card's name to stdout
+ * print_card:
+ * @card:  pointer to #card to print
  *
- * @param card  pointer to card to print
+ * Print the card's name to stdout
  */
 void print_card(card *card)
 {
@@ -219,9 +228,10 @@ void print_card(card *card)
 }
 
 /**
- * @brief Print player's cards to stdout
+ * print_player_cards:
+ * @player: pointer to #player to print
  *
- * @param player pointer to player to print
+ * Print player's cards to stdout
  */
 void print_player_cards(player *player)
 {
@@ -240,11 +250,12 @@ void print_player_cards(player *player)
 }
 
 /**
- * @brief Remove the current message from the statusbar stack and
- * push a new message onto the message stack
+ * update_sb:
+ * @fmt:  printf-like format-string
+ * @...:  additional arguments
  *
- * @param fmt  printf-like format-string
- * @param ...  additional arguments
+ * Remove the current message from the statusbar stack and
+ * push a new message onto the message stack
  */
 void update_sb(const gchar *fmt, ...)
 {
@@ -270,12 +281,13 @@ void update_sb(const gchar *fmt, ...)
 }
 
 /**
- * @brief Compare two cards' ranks
+ * higher_rank:
+ * @top:     #card lying on the top
+ * @bottom:  #card lying on the bottom
  *
- * @param top     card lying on the top
- * @param bottom  card lying on the bottom
+ * Compare two cards' ranks
  *
- * @return TRUE if top is higher that bottom, otherwise FALSE
+ * Returns: %TRUE if top is higher that bottom, otherwise %FALSE
  */
 gboolean higher_rank(card *top, card *bottom)
 {
@@ -313,15 +325,16 @@ gboolean higher_rank(card *top, card *bottom)
 }
 
 /**
- * @brief Check if the top card is higher than the bottom card
+ * is_greater:
+ * @top:    #card lying on the top
+ * @bottom: #card lying on the bottom
+ * @trump:  trump suit index
+ * @null:   %TRUE if it's a null game, otherwise %FALSE
+ *
+ * Check if the top #card is higher than the bottom #card
  * depending on trump and game type
  *
- * @param top card lying on the top
- * @param bottom card lying on the bottom
- * @param trump trump suit index
- * @param null TRUE if it's a null game, otherwise FALSE
- *
- * @return TRUE if top is greater than bottom, otherwise FALSE
+ * Returns: %TRUE if top is greater than bottom, otherwise %FALSE
  */
 gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
 {
