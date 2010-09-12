@@ -205,7 +205,7 @@ card *get_card_ptr(gint suit, gint rank)
  *
  * Return the card's name
  *
- * Returns: (transfer none) string of card name
+ * Returns: (transfer none): string of card name
  */
 gchar *get_card_name(card *card)
 {
