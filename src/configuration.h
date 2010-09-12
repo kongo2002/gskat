@@ -58,11 +58,11 @@ typedef struct
     property_value pval;
 } property;
 
-void load_config();
+void load_config(void);
 
-gchar *get_config_dir();
+gchar *get_config_dir(void);
 
-void set_config_filename();
+void set_config_filename(void);
 
 gboolean create_conf_dir(const gchar *config_dir);
 
@@ -70,11 +70,11 @@ void get_config_value(GKeyFile *keyfile, property *prop);
 
 gboolean set_config_value(GKeyFile *keyfile, property *prop);
 
-gboolean write_config();
+gboolean write_config(void);
 
-gboolean read_config();
+gboolean read_config(void);
 
-void set_default_config();
+void set_default_config(void);
 
 #endif /* __CONFIG_H__ */
 
