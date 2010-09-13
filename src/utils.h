@@ -57,7 +57,9 @@ gboolean higher_rank(card *top, card *bottom);
 
 gboolean is_greater(card *top, card *bottom, gint trump, gboolean null);
 
-gint get_trick_winner(GList *table);
+gint get_trick_winner(card **trick);
+
+gint get_table_winner(void);
 
 #endif /* __UTILS_H__ */
 

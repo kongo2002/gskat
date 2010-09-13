@@ -565,45 +565,49 @@ gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
 
 /**
  * get_trick_winner:
- * @table:  #GList containing the three cards on the table
+ * @trick: #card array containing one trick of three cards
  *
- * Calculate the winner of the current trick on the table
+ * Calculate the winner of the given trick
  *
- * Returns: Index of the #player that won the trick
+ * Returns: Index of the #player that won the given @trick
  */
-gint get_trick_winner(GList *table)
+gint get_trick_winner(card **trick)
 {
-    card *tmp;
-
-    if (is_greater(g_list_nth_data(table, 1),
-                g_list_nth_data(table, 0), gskat.trump, gskat.null))
+    if (is_greater(trick[1], trick[0], gskat.trump, gskat.null))
     {
-        if (is_greater(g_list_nth_data(table, 2),
-                    g_list_nth_data(table, 1), gskat.trump, gskat.null))
-        {
-            tmp = g_list_nth_data(table, 2);
-            return tmp->owner;
-        }
+        if (is_greater(trick[2], trick[1], gskat.trump, gskat.null))
+            return trick[2]->owner;
         else
-        {
-            tmp = g_list_nth_data(table, 1);
-            return tmp->owner;
-        }
+            return trick[1]->owner;
     }
     else
     {
-        if (is_greater(g_list_nth_data(table, 2),
-                    g_list_nth_data(table, 0), gskat.trump, gskat.null))
-        {
-            tmp = g_list_nth_data(table, 2);
-            return tmp->owner;
-        }
+        if (is_greater(trick[2], trick[0], gskat.trump, gskat.null))
+            return trick[2]->owner;
         else
-        {
-            tmp = g_list_nth_data(table, 0);
-            return tmp->owner;
-        }
+            return trick[0]->owner;
     }
+}
+
+/**
+ * get_trick_winner:
+ *
+ * Calculate the winner of the current trick on the table
+ *
+ * Returns: Index of the #player that won the trick on the table
+ */
+gint get_table_winner(void)
+{
+    gint i, winner;
+    card **trick = (card **) g_malloc(sizeof(card *) * 3);
+
+    for (i=0; i<3; ++i)
+        trick[i] = g_list_nth_data(gskat.table, i);
+
+    winner = get_trick_winner(trick);
+
+    g_free(trick);
+    return winner;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
