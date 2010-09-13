@@ -345,15 +345,97 @@ card *get_card_ptr(gint suit, gint rank)
  *
  * Return the card's name
  *
- * Returns: (transfer none): string of card name
+ * Returns: (transfer none): string of card name (may not be freed)
  */
 gchar *get_card_name(card *card)
 {
-    static gchar name[64];
+    switch (card->suit)
+    {
+        case KARO:
+            switch (card->rank)
+            {
+                case ASS:
+                    return "Ace of Diamonds";
+                case 7:
+                    return "7 of Diamonds";
+                case 8:
+                    return "8 of Diamonds";
+                case 9:
+                    return "9 of Diamonds";
+                case 10:
+                    return "10 of Diamonds";
+                case BUBE:
+                    return "Jack of Diamonds";
+                case DAME:
+                    return "Queen of Diamonds";
+                case KOENIG:
+                    return "King of Diamonds";
+            }
+        case HERZ:
+            switch (card->rank)
+            {
+                case ASS:
+                    return "Ace of Hearts";
+                case 7:
+                    return "7 of Hearts";
+                case 8:
+                    return "8 of Hearts";
+                case 9:
+                    return "9 of Hearts";
+                case 10:
+                    return "10 of Hearts";
+                case BUBE:
+                    return "Jack of Hearts";
+                case DAME:
+                    return "Queen of Hearts";
+                case KOENIG:
+                    return "King of Hearts";
+            }
+        case PIK:
+            switch (card->rank)
+            {
+                case ASS:
+                    return "Ace of Spades";
+                case 7:
+                    return "7 of Spades";
+                case 8:
+                    return "8 of Spades";
+                case 9:
+                    return "9 of Spades";
+                case 10:
+                    return "10 of Spades";
+                case BUBE:
+                    return "Jack of Spades";
+                case DAME:
+                    return "Queen of Spades";
+                case KOENIG:
+                    return "King of Spades";
+            }
+        case KREUZ:
+            switch (card->rank)
+            {
+                case ASS:
+                    return "Ace of Clubs";
+                case 7:
+                    return "7 of Clubs";
+                case 8:
+                    return "8 of Clubs";
+                case 9:
+                    return "9 of Clubs";
+                case 10:
+                    return "10 of Clubs";
+                case BUBE:
+                    return "Jack of Clubs";
+                case DAME:
+                    return "Queen of Clubs";
+                case KOENIG:
+                    return "King of Clubs";
+            }
+        default:
+            return "";
+    }
 
-    g_snprintf(name, 64, "%s %s", suit_name(card->suit), rank_name(card->rank));
-
-    return name;
+    return "";
 }
 
 /**
