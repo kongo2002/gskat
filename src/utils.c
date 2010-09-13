@@ -355,81 +355,81 @@ gchar *get_card_name(card *card)
             switch (card->rank)
             {
                 case ASS:
-                    return "Ace of Diamonds";
+                    return _("Ace of Diamonds");
                 case 7:
-                    return "7 of Diamonds";
+                    return _("7 of Diamonds");
                 case 8:
-                    return "8 of Diamonds";
+                    return _("8 of Diamonds");
                 case 9:
-                    return "9 of Diamonds";
+                    return _("9 of Diamonds");
                 case 10:
-                    return "10 of Diamonds";
+                    return _("10 of Diamonds");
                 case BUBE:
-                    return "Jack of Diamonds";
+                    return _("Jack of Diamonds");
                 case DAME:
-                    return "Queen of Diamonds";
+                    return _("Queen of Diamonds");
                 case KOENIG:
-                    return "King of Diamonds";
+                    return _("King of Diamonds");
             }
         case HERZ:
             switch (card->rank)
             {
                 case ASS:
-                    return "Ace of Hearts";
+                    return _("Ace of Hearts");
                 case 7:
-                    return "7 of Hearts";
+                    return _("7 of Hearts");
                 case 8:
-                    return "8 of Hearts";
+                    return _("8 of Hearts");
                 case 9:
-                    return "9 of Hearts";
+                    return _("9 of Hearts");
                 case 10:
-                    return "10 of Hearts";
+                    return _("10 of Hearts");
                 case BUBE:
-                    return "Jack of Hearts";
+                    return _("Jack of Hearts");
                 case DAME:
-                    return "Queen of Hearts";
+                    return _("Queen of Hearts");
                 case KOENIG:
-                    return "King of Hearts";
+                    return _("King of Hearts");
             }
         case PIK:
             switch (card->rank)
             {
                 case ASS:
-                    return "Ace of Spades";
+                    return _("Ace of Spades");
                 case 7:
-                    return "7 of Spades";
+                    return _("7 of Spades");
                 case 8:
-                    return "8 of Spades";
+                    return _("8 of Spades");
                 case 9:
-                    return "9 of Spades";
+                    return _("9 of Spades");
                 case 10:
-                    return "10 of Spades";
+                    return _("10 of Spades");
                 case BUBE:
-                    return "Jack of Spades";
+                    return _("Jack of Spades");
                 case DAME:
-                    return "Queen of Spades";
+                    return _("Queen of Spades");
                 case KOENIG:
-                    return "King of Spades";
+                    return _("King of Spades");
             }
         case KREUZ:
             switch (card->rank)
             {
                 case ASS:
-                    return "Ace of Clubs";
+                    return _("Ace of Clubs");
                 case 7:
-                    return "7 of Clubs";
+                    return _("7 of Clubs");
                 case 8:
-                    return "8 of Clubs";
+                    return _("8 of Clubs");
                 case 9:
-                    return "9 of Clubs";
+                    return _("9 of Clubs");
                 case 10:
-                    return "10 of Clubs";
+                    return _("10 of Clubs");
                 case BUBE:
-                    return "Jack of Clubs";
+                    return _("Jack of Clubs");
                 case DAME:
-                    return "Queen of Clubs";
+                    return _("Queen of Clubs");
                 case KOENIG:
-                    return "King of Clubs";
+                    return _("King of Clubs");
             }
         default:
             return "";
