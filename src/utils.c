@@ -84,7 +84,7 @@ gchar *get_config_dir(void)
     if (!config_dir)
     {
         /* get XDG config directory */
-        if ((base_dir = g_get_user_config_dir()))
+        if ((base_dir = g_get_user_config_dir()) && *base_dir != '\0')
             config_dir = g_build_filename(base_dir, "gskat", NULL);
         else
         {
@@ -117,8 +117,8 @@ gchar *get_data_dir(void)
 
     if (!data_dir)
     {
-        /* get XDG config directory */
-        if ((base_dir = g_get_user_config_dir()))
+        /* get XDG data directory */
+        if ((base_dir = g_get_user_data_dir()) && *base_dir != '\0')
             data_dir = g_build_filename(data_dir, "gskat", NULL);
         else
         {
@@ -151,8 +151,8 @@ gchar *get_cache_dir(void)
 
     if (!cache_dir)
     {
-        /* get XDG config directory */
-        if ((base_dir = g_get_user_config_dir()))
+        /* get XDG cache directory */
+        if ((base_dir = g_get_user_cache_dir()) && *base_dir != '\0')
             cache_dir = g_build_filename(cache_dir, "gskat", NULL);
         else
         {
