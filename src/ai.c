@@ -24,13 +24,14 @@
 #include "utils.h"
 
 /**
- * @brief Main AI function to determine the next card to play according to the
+ * ai_select_card:
+ * @player: Player to choose the next card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Main AI function to determine the next card to play according to the
  * position and the team the player is in
  *
- * @param player  player to choose the next card to play for
- * @param list    possible cards to choose from
- *
- * @return the card to play next
+ * Returns: the next card to play
  */
 card *ai_select_card(player *player, GList *list)
 {
@@ -101,12 +102,13 @@ card *ai_select_card(player *player, GList *list)
 }
 
 /**
- * @brief try to select an ace from a short numbered suit
+ * kurz_fehl_ass:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
+ * try to select an ace from a short numbered suit
  *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *kurz_fehl_ass(player *player, GList *list)
 {
@@ -143,12 +145,13 @@ card *kurz_fehl_ass(player *player, GList *list)
 }
 
 /**
- * @brief try to select a minimal card to get the trick on the table
+ * knapp_trumpfen:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
+ * try to select a minimal card to get the trick on the table
  *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *knapp_trumpfen(player *player, GList *list)
 {
@@ -191,13 +194,14 @@ card *knapp_trumpfen(player *player, GList *list)
 }
 
 /**
- * @brief Determine the strategy to play for the Re player
+ * ai_re_kommt_raus:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Re player
  * if he is the first to play
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_re_kommt_raus(player *player, GList *list)
 {
@@ -219,13 +223,14 @@ card *ai_re_kommt_raus(player *player, GList *list)
 }
 
 /**
- * @brief Determine the strategy to play for the Kontra player
+ * ai_kontra_kommt_raus:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Kontra player
  * if he is the first to play
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_kontra_kommt_raus(player *player, GList *list)
 {
@@ -252,13 +257,14 @@ card *ai_kontra_kommt_raus(player *player, GList *list)
 }
 
 /**
- * @brief Determine the strategy to play for the Re player
+ * ai_re_mitte:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Re player
  * if he is the second to play
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_re_mitte(player *player, GList *list)
 {
@@ -291,13 +297,14 @@ card *ai_re_mitte(player *player, GList *list)
 }
 
 /**
- * @brief Determine the strategy to play for the Kontra player
+ * ai_kontra_mitte:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Kontra player
  * if he is the second to play
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_kontra_mitte(player *player, GList *list)
 {
@@ -324,13 +331,14 @@ card *ai_kontra_mitte(player *player, GList *list)
 }
 
 /**
- * @brief Determine the strategy to play for the Kontra player
+ * ai_kontra_hinten:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Kontra player
  * if he is the last to play
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_kontra_hinten(player *player, GList *list)
 {
@@ -349,13 +357,14 @@ card *ai_kontra_hinten(player *player, GList *list)
 }
 
 /**
- * @brief Determine the strategy to play for the Re player
+ * ai_re_hinten:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Re player
  * if he is the last to play
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_re_hinten(player *player, GList *list)
 {
@@ -370,12 +379,13 @@ card *ai_re_hinten(player *player, GList *list)
 }
 
 /**
- * @brief Try to select one random high trump card
+ * trumpf_spitzen:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
+ * Try to select one random high trump card
  *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *trumpf_spitzen(player *player, GList *list)
 {
@@ -402,13 +412,14 @@ card *trumpf_spitzen(player *player, GList *list)
 }
 
 /**
- * @brief Try to pull some trump cards from the opponent players
+ * truempfe_ziehen:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Try to pull some trump cards from the opponent players
  * by playing a relative low trump card
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *truempfe_ziehen(player *player, GList *list)
 {
@@ -454,12 +465,13 @@ card *truempfe_ziehen(player *player, GList *list)
 }
 
 /**
- * @brief Try to play a card of a short numbered non-trump suit
+ * kurz_aufspielen:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
+ * Try to play a card of a short numbered non-trump suit
  *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *kurz_aufspielen(player *player, GList *list)
 {
@@ -520,12 +532,13 @@ card *kurz_aufspielen(player *player, GList *list)
 }
 
 /**
- * @brief Try to play a card of a long-numbered suit
+ * lang_aufspielen:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
+ * Try to play a card of a long-numbered suit
  *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *lang_aufspielen(player *player, GList *list)
 {
@@ -576,12 +589,13 @@ card *lang_aufspielen(player *player, GList *list)
 }
 
 /**
- * @brief Try to play a high points card on the Kontra team
+ * ai_kontra_schmieren:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
+ * Try to play a high points card on the Kontra team
  *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *ai_kontra_schmieren(player *player, GList *list)
 {
@@ -639,13 +653,14 @@ card *ai_kontra_schmieren(player *player, GList *list)
 }
 
 /**
- * @brief Try to play the highest non-trump card of a suit
+ * highest_fehl:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Try to play the highest non-trump card of a suit
  * if no trumps are left in the game
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *highest_fehl(player *player, GList *list)
 {
@@ -670,13 +685,14 @@ card *highest_fehl(player *player, GList *list)
 }
 
 /**
- * @brief Throw a card with minimal points and try to
+ * abwerfen:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Throw a card with minimal points and try to
  * choose a suit with minimal cards left
  *
- * @param player  player to choose a card to play for
- * @param list    possible cards to choose from
- *
- * @return the selected card or NULL
+ * Returns: the selected card or %NULL
  */
 card *abwerfen(player *player, GList *list)
 {
@@ -716,14 +732,14 @@ card *abwerfen(player *player, GList *list)
 }
 
 /**
- * @brief Check if 'player' has 'gestochen' the given suit yet
+ * hat_gestochen:
+ * @player: Player to check
+ * @suit:   Suit to check
  *
- * @param player  player to check
- * @param suit    suit to check
+ * Check if 'player' has 'gestochen' the given suit yet
+ * todo: we need to consider grand and null games here
  *
- * @todo we need to consider grand and null games here
- *
- * @return TRUE if 'player' has gestochen, otherwise FALSE
+ * Returns: %TRUE if 'player' has trumped, otherwise %FALSE
  */
 gboolean hat_gestochen(player *player, gint suit)
 {
@@ -755,9 +771,11 @@ gboolean hat_gestochen(player *player, gint suit)
 }
 
 /**
- * @brief Get the number of played jacks
+ * num_jacks_played:
  *
- * @return the number of played jacks in this current round
+ * Get the number of played jacks
+ *
+ * Returns: the number of played jacks in this current round
  */
 gint num_jacks_played(void)
 {
@@ -774,11 +792,12 @@ gint num_jacks_played(void)
 }
 
 /**
- * @brief Check if all jacks are already played
+ * jacks_weg:
+ * @player: Player that checks the jack count
  *
- * @param player  player that checks the jack count
+ * Check if all jacks are already played
  *
- * @return TRUE if all jacks are played or in player's hand, otherwise FALSE
+ * Returns: %TRUE if all jacks are played or in player's hand, otherwise %FALSE
  */
 gboolean jacks_weg(player *player)
 {
@@ -797,9 +816,11 @@ gboolean jacks_weg(player *player)
 }
 
 /**
- * @brief Get the number of played trump cards
+ * num_truempfe_played:
  *
- * @return the number of played trump cards in this round
+ * Get the number of played trump cards
+ *
+ * Returns: the number of played trump cards in this round
  */
 gint num_truempfe_played(void)
 {
@@ -822,12 +843,13 @@ gint num_truempfe_played(void)
 }
 
 /**
- * @brief Check if all trump cards are already played
+ * truempfe_weg:
+ * @player: Player that checks the trump card count
  *
- * @param player  player that checks the trump card count
+ * Check if all trump cards are already played
  *
- * @return TRUE if all trump cards are played or in player's hand,
- * otherwise FALSE
+ * Returns: %TRUE if all trump cards are played or in player's hand,
+ * otherwise %FALSE
  */
 gboolean truempfe_weg(player *player)
 {
@@ -852,13 +874,14 @@ gboolean truempfe_weg(player *player)
 }
 
 /**
- * @brief Get the length of the 'spitzen' cards of the given suit
+ * len_spitzen:
+ * @player: Player to check for the 'spitzen' cards
+ * @list:   Player's cards
+ * @suit:   Suit to check for 'spitzen' cards
  *
- * @param player  player to check for the 'spitzen' cards
- * @param list    player's cards
- * @param suit    suit to check for 'spitzen' cards
+ * Get the length of the 'spitzen' cards of the given suit
  *
- * @return the number of 'spitzen' cards
+ * Returns: the number of 'spitzen' cards
  */
 gint len_spitzen(player *player, GList *list, gint suit)
 {
@@ -914,11 +937,12 @@ gint len_spitzen(player *player, GList *list, gint suit)
 }
 
 /**
- * @brief Check if the given player has to serve the suit on the table
+ * muss_bedienen:
+ * @player: Player to check
  *
- * @param player  player to check
+ * Check if the given player has to serve the suit on the table
  *
- * @return TRUE if player has to serve, otherwise FALSE
+ * Returns: %TRUE if player has to serve, otherwise %FALSE
  */
 gboolean muss_bedienen(player *player)
 {
@@ -947,9 +971,11 @@ gboolean muss_bedienen(player *player)
 }
 
 /**
- * @brief Get the highest card on the table
+ * highest_on_table:
  *
- * @return the highest card on the table
+ * Get the highest card on the table
+ *
+ * Returns: the highest card on the table
  */
 card *highest_on_table(void)
 {
@@ -974,15 +1000,15 @@ card *highest_on_table(void)
 }
 
 /**
- * @brief Check if player has a higher card than the highest one
+ * kommt_drueber:
+ * @player: Player to check
+ * @list:   Player's cards
+ *
+ * Check if player has a higher card than the highest one
  * currently on the table
+ * todo: check if player has to serve the suit on the table
  *
- * @param player  player to check
- * @param list    player's cards
- *
- * @todo check if player has to serve the suit on the table
- *
- * @return TRUE if player has a higher card, otherwise FALSE
+ * Returns: %TRUE if player has a higher card, otherwise %FALSE
  */
 gboolean kommt_drueber(player *player, GList *list)
 {
@@ -995,12 +1021,13 @@ gboolean kommt_drueber(player *player, GList *list)
 }
 
 /**
- * @brief Try to determine if the current stich is safe
+ * kontra_stich_sicher:
+ * @player: Player that checks for stich safety
+ *
+ * Try to determine if the current stich is safe
  * for player's team to get
  *
- * @param player  player that checks for stich safety
- *
- * @return TRUE if the stich is likely to be safe, otherwise FALSE
+ * Returns: %TRUE if the stich is likely to be safe, otherwise %FALSE
  */
 gboolean kontra_stich_sicher(player *player)
 {
@@ -1030,11 +1057,12 @@ gboolean kontra_stich_sicher(player *player)
 }
 
 /**
- * @brief Check if card is the highest remaining card of its suit
+ * highest_rem_of_suit:
+ * @first: Card to check
  *
- * @param first  card to check
+ * Check if card is the highest remaining card of its suit
  *
- * @return TRUE if card is the highest remaining, otherwise FALSE
+ * Returns: %TRUE if card is the highest remaining, otherwise %FALSE
  */
 gboolean highest_rem_of_suit(card *first)
 {
@@ -1077,15 +1105,16 @@ gboolean highest_rem_of_suit(card *first)
 }
 
 /**
- * @brief Try to determine a probability that the current stich
+ * prob_stich_geht_durch:
+ * @player: Player that checks the probabilty
+ *
+ * Try to determine a probability that the current stich
  * will belong to player's team
  *
- * @param player  player that checks the probabilty
- *
- * @todo This functions needs to be improved - very rudimentary algorithms
+ * TODO: This functions needs to be improved - very rudimentary algorithms
  * at the moment.
  *
- * @return probability value
+ * Returns: probability value
  */
 gdouble prob_stich_geht_durch(player *player)
 {
@@ -1128,12 +1157,13 @@ gdouble prob_stich_geht_durch(player *player)
 }
 
 /**
- * @brief Get the number of possibly higher cards than the given card
+ * num_poss_higher_cards:
+ * @player: Player that checks
+ * @first:  Card to check
  *
- * @param player  player that checks
- * @param first   card to check
+ * Get the number of possibly higher cards than the given card
  *
- * @return count of possibly higher cards
+ * Returns: count of possibly higher cards
  */
 gint num_poss_higher_cards(player *player, card *first)
 {
@@ -1160,9 +1190,12 @@ gint num_poss_higher_cards(player *player, card *first)
 }
 
 /**
- * @brief Return a list of all cards already played in the current round
+ * cards_out:
  *
- * @return a new GList* with all cards played in the current round
+ * Return a list of all cards already played in the current round
+ *
+ * Returns: (transfer full): a new #GList with all cards played in
+ * the current round
  */
 GList *cards_out(void)
 {
@@ -1183,9 +1216,11 @@ GList *cards_out(void)
 }
 
 /**
- * @brief Return the card values currently on the table
+ * punkte_auf_tisch:
  *
- * @return sum of all card values currently on the table
+ * Return the card values currently on the table
+ *
+ * Returns: sum of all card values currently on the table
  */
 gint punkte_auf_tisch(void)
 {
@@ -1204,11 +1239,12 @@ gint punkte_auf_tisch(void)
 }
 
 /**
- * @brief Get the number of trump cards in the given list
+ * num_of_trump:
+ * @list: List to count trump cards in
  *
- * @param list  list to count trump cards in
+ * Get the number of trump cards in the given list
  *
- * @return count of trump cards
+ * Returns: count of trump cards
  */
 gint num_of_trump(GList *list)
 {
@@ -1224,11 +1260,13 @@ gint num_of_trump(GList *list)
 }
 
 /**
- * @brief Get the number of cards of the given suit
+ * num_of_suit:
+ * @list: List to count suit cards in
+ * @suit: Card suit to check
  *
- * @param list  list to count suit cards in
+ * Get the number of cards of the given suit
  *
- * @return count of cards of the given suit
+ * Returns: count of cards of the given suit
  */
 gint num_of_suit(GList *list, gint suit)
 {

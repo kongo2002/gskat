@@ -46,7 +46,9 @@ static GOptionEntry arguments[] =
 };
 
 /**
- * @brief Initialize main game objects
+ * initialize:
+ *
+ * Initialize main game objects
  */
 static void initialize()
 {

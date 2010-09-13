@@ -21,73 +21,93 @@
 #ifndef __GAMESTATE_H__
 #define __GAMESTATE_H__
 
-typedef struct _card_state
-{
-    /** Card suit */
+/**
+ * card_state:
+ * @suit:      Card suit
+ * @rank:      Card rank
+ * @owner:     Card owner
+ * @status:    Card status
+ * @draw:      Draw card?
+ * @draw_face: Draw face of the card?
+ *
+ * Structure containing card information to be stored
+ * in the state file
+ */
+typedef struct _card_state {
     gint suit;
-    /** Card rank */
     gint rank;
-    /** Owner */
     gint owner;
-    /** Card status */
     gint status;
-    /** Draw card? */
     gboolean draw;
-    /** Draw face of the card? */
     gboolean draw_face;
 } card_state;
 
-typedef struct _player_state
-{
-    /** Re player? */
+/**
+ * player_state:
+ * @re:         Re player?
+ * @gereizt:    Points the player has bidden
+ * @points:     Current points
+ * @sum_points: Sum of points
+ * @num_cards:  Number of cards
+ *
+ * Structure containing player information to be stored
+ * in the state file
+ */
+typedef struct _player_state {
     gboolean re;
-    /** Points the player has bidden */
     gint gereizt;
-    /** Current points */
     gint points;
-    /** Sum of points */
     gint sum_points;
-    /** Number of cards */
     gint num_cards;
 } player_state;
 
-typedef struct _global_state
-{
-    /** Number of played cards */
+/**
+ * global_state:
+ * @num_played: Number of played cards
+ * @num_stich:  Current trick index
+ * @num_table:  Number of cards on the table
+ * @cplayer:    Current player index
+ * @forehand:   Current forehand player index
+ * @trump:      Current trump suit
+ * @hand:       Hand game
+ * @null:       Null game
+ * @re_player:  Re player index
+ * @skat:       Cards in the skat
+ * @pstates:    Array of all three #player_state objects
+ *
+ * Structure containing all global game information to be stored
+ * in the state file
+ */
+typedef struct _global_state {
     gint num_played;
-    /** Current trick index */
     gint num_stich;
-    /** Number of cards on the table */
     gint num_table;
-    /** Current player index */
     gint cplayer;
-    /** Current forehand player index */
     gint forehand;
-    /** Current trump suit */
     gint trump;
-    /** Hand game */
     gboolean hand;
-    /** Null game */
     gboolean null;
-    /** Re player index */
     gint re_player;
-    /** Cards in the skat */
     gint skat[2];
-    /** Array of all three player states */
     player_state pstates[3];
 } global_state;
 
-typedef struct _state_group
-{
-    /** Global state structure */
+/**
+ * state_group:
+ * @gs:     #global_state object
+ * @cs:     #card_state array
+ * @pc:     Played cards indices
+ * @pcards: Players' cards
+ * @table:  Card indices on the table
+ *
+ * Structure containing all information to be stored
+ * in the state file
+ */
+typedef struct _state_group {
     global_state *gs;
-    /** Card states array */
     card_state *cs;
-    /** Played cards indices */
     gint *pc;
-    /** Players' cards */
     gint **pcards;
-    /** Cards on the table */
     gint *table;
 } state_group;
 

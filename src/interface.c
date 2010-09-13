@@ -24,13 +24,14 @@
 #include "callback.h"
 
 /**
- * @brief Allocate and initialize a new player structure
+ * init_player:
+ * @id:     player id
+ * @name:   player name
+ * @human:  %TRUE if player is a human player, otherwise %FALSE
  *
- * @param id     player id
- * @param name   player name
- * @param human  TRUE if player is a human player, otherwise FALSE
+ * Allocate and initialize a new player structure
  *
- * @return the new player object
+ * Returns: (transfer full): the new #player object
  */
 player *init_player(gint id, gchar *name, gboolean human)
 {
@@ -55,7 +56,9 @@ player *init_player(gint id, gchar *name, gboolean human)
 }
 
 /**
- * @brief Try to load and set the game icons
+ * set_icons:
+ *
+ * Try to load and set the game icons
  */
 void set_icons(void)
 {
@@ -102,7 +105,9 @@ void set_icons(void)
 }
 
 /**
- * @brief Try to load the icons of the four suits
+ * load_suit_icons:
+ *
+ * Try to load the icons of the four suits
  */
 void load_suit_icons(void)
 {
@@ -139,7 +144,9 @@ void load_suit_icons(void)
 }
 
 /**
- * @brief Allocate all game objects like players, icons and stiche array
+ * alloc_app:
+ *
+ * Allocate all game objects like players, icons and tricks array
  */
 void alloc_app(void)
 {
@@ -174,7 +181,9 @@ void alloc_app(void)
 }
 
 /**
- * @brief Show a dialog window showing the last trick(s)
+ * show_last_tricks:
+ *
+ * Show a dialog window showing the last trick(s)
  */
 void show_last_tricks(void)
 {
@@ -272,7 +281,9 @@ void show_last_tricks(void)
 }
 
 /**
- * @brief Show the configuration dialog window and initialize the
+ * show_config_window:
+ *
+ * Show the configuration dialog window and initialize the
  * widgets with the current config values
  */
 void show_config_window(void)
@@ -579,9 +590,11 @@ void show_config_window(void)
 }
 
 /**
- * @brief Create the main menu and populate it with the menu items
+ * create_menu:
  *
- * @return the new main menu GtkWidget
+ * Create the main menu and populate it with the menu items
+ *
+ * Returns: (transfer full): the new main menu #GtkWidget
  */
 static GtkWidget *create_menu(void)
 {
@@ -660,7 +673,9 @@ static GtkWidget *create_menu(void)
 }
 
 /**
- * @brief Create and allocate the main window layout
+ * create_interface:
+ *
+ * Create and allocate the main window layout
  */
 void create_interface(void)
 {
@@ -911,7 +926,9 @@ void create_interface(void)
 }
 
 /**
- * @brief Update all game interface elements
+ * update_interface:
+ *
+ * Update all game interface elements
  */
 void update_interface(void)
 {
@@ -950,9 +967,11 @@ void update_interface(void)
 }
 
 /**
- * @brief Update the players' points on the right-hand interface
+ * update_rank_interface:
  *
- * @todo The table should only be extended if a game round was
+ * Update the players' points on the right-hand interface
+ *
+ * TODO: The table should only be extended if a game round was
  * properly played until the end.
  */
 void update_rank_interface(void)
@@ -992,12 +1011,13 @@ void update_rank_interface(void)
 }
 
 /**
- * @brief Load the card image of the given rank and suit
+ * load_card:
+ * @list:  pointer to a #GList to put the loaded card into
+ * @file:  file to load the card image from
+ * @rank:  card rank
+ * @suit:  card suit
  *
- * @param list  list to put the loaded card into
- * @param file  file to load the card image from
- * @param rank  card rank
- * @param suit  card suit
+ * Load the card image of the given rank and suit
  */
 void load_card(GList **list, const gchar *file, gint rank, gint suit)
 {
@@ -1025,11 +1045,12 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
 }
 
 /**
- * @brief Allocate and initialize all 32 game cards
+ * load_cards:
+ * @path:  path to the card image files
  *
- * @param path  path to the card image files
+ * Allocate and initialize all 32 game cards
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean load_cards(const gchar *path)
 {
@@ -1080,9 +1101,12 @@ gboolean load_cards(const gchar *path)
 }
 
 /**
- * @brief Load an image and create a new cairo surface on its basis
+ * load_image:
+ * @filename:  filename of the card image to load
  *
- * @param filename  filename of the card image to load
+ * Load an image and create a new #cairo_surface_t on its basis
+ *
+ * Returns: (transfer full): the new #cairo_surface_t object
  */
 cairo_surface_t *load_image(gchar *filename)
 {
@@ -1101,12 +1125,13 @@ cairo_surface_t *load_image(gchar *filename)
 }
 
 /**
- * @brief Position the player's cards on the game table
+ * pos_player_cards:
+ * @player:  #player to position his cards for
+ * @x:       x coordinate of the starting position
+ * @y:       y coordinate of the starting position
+ * @step:    offset between the cards in x direction
  *
- * @param player  player to position his cards for
- * @param x       x coordinate of the starting position
- * @param y       y coordinate of the starting position
- * @param step    offset between the cards in x direction
+ * Position the player's cards on the game table
  */
 void pos_player_cards(player *player, gint x, gint y, gint step)
 {
@@ -1126,7 +1151,9 @@ void pos_player_cards(player *player, gint x, gint y, gint step)
 }
 
 /**
- * @brief Calculate the card positions of all three players
+ * calc_card_positions:
+ *
+ * Calculate the card positions of all three players
  * based on the game window's dimension
  */
 void calc_card_positions(void)
@@ -1213,11 +1240,12 @@ void calc_card_positions(void)
 }
 
 /**
- * @brief Set the position of the given card on the game table
+ * set_table_position:
+ * @card:    #card to set the table position for
+ * @dest_x:  x coordinate of the destination
+ * @dest_y:  y coordinate of the destination
  *
- * @param card    card to set the table position for
- * @param dest_x  x coordinate of the destination
- * @param dest_y  y coordinate of the destination
+ * Set the position of the given @card on the game table
  */
 void set_table_position(card *card, gint *dest_x, gint *dest_y)
 {
@@ -1247,13 +1275,12 @@ void set_table_position(card *card, gint *dest_x, gint *dest_y)
 }
 
 /**
- * @brief Calculate the card movement step
+ * set_card_move_step:
+ * @cm:  #card_move structure to fill
  *
  * Calculate the card movement step depending on the configuration value
  * 'anim_duration', the drawing timeout interval of 25 ms and the card
  * distance to move in x and y direction.
- *
- * @param cm  card_movement structure
  */
 void set_card_move_step(card_move *cm)
 {
@@ -1273,15 +1300,16 @@ void set_card_move_step(card_move *cm)
 }
 
 /**
- * @brief Move the given card towards its destination by the given
+ * move_card:
+ * @data:  #card_move structure that contains the card movement information
+ *
+ * Move the given card towards its destination by the given
  * movement step
  *
  * The card movement structure contains the information about what card to move,
  * the movement destination and the movement step.
  *
- * @param data  card_move structure that contains the card movement information
- *
- * @return FALSE if the card movement is finished, otherwise TRUE
+ * Returns: %FALSE if the card movement is finished, otherwise %TRUE
  */
 gboolean move_card(gpointer data)
 {
@@ -1328,10 +1356,11 @@ gboolean move_card(gpointer data)
 }
 
 /**
- * @brief Draw the cards from the last to the first
+ * draw_cards:
+ * @cards:   #GList of cards to draw
+ * @target:  #cairo_t drawing object
  *
- * @param cards   list of cards to draw
- * @param target  cairo drawing object
+ * Draw the cards from the last to the first
  */
 void draw_cards(GList *cards, cairo_t *target)
 {
@@ -1360,13 +1389,14 @@ void draw_cards(GList *cards, cairo_t *target)
 }
 
 /**
- * @brief Draw the player's name on the game surface
+ * draw_player:
+ * @player:  #player to draw the name of
+ * @cr:      #cairo_t drawing object
  *
- * The player in the forehand position is drawn in red and
+ * Draw @player's name on the game surface
+ *
+ * The #player in the forehand position is drawn in red and
  * the others in black.
- *
- * @param player  player to draw the name of
- * @param cr      cairo drawing object
  */
 void draw_player(player *player, cairo_t *cr)
 {
@@ -1417,10 +1447,11 @@ void draw_player(player *player, cairo_t *cr)
 }
 
 /**
- * @brief Draw the table background
+ * draw_table:
+ * @area:  #GtkDrawingArea widget the background is drawn on
+ * @cr:    #cairo_t drawing object
  *
- * @param area  GtkDrawingArea widget the background is drawn on
- * @param cr    Cairo drawing object
+ * Draw the table background
  */
 void draw_table(GtkWidget *area, cairo_t *cr)
 {
@@ -1447,7 +1478,9 @@ void draw_table(GtkWidget *area, cairo_t *cr)
 }
 
 /**
- * @brief Draw the game area with its players and their cards
+ * draw_area:
+ *
+ * Draw the game area with its players and their cards
  */
 void draw_area(void)
 {
@@ -1490,10 +1523,11 @@ void draw_area(void)
 }
 
 /**
- * @brief Draw the tricks in the show last tricks dialog window
+ * draw_tricks_area:
+ * @area: #GtkDrawingArea widget the cards are drawn on
+ * @sv:   trick (three cards) to draw
  *
- * @param area   GtkDrawingArea widget the cards are drawn on
- * @param stich  stich (three cards) to draw
+ * Draw the tricks in the show last tricks dialog window
  */
 void draw_tricks_area(GtkWidget *area, stich_view *sv)
 {
@@ -1559,7 +1593,9 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
 }
 
 /**
- * @brief Free all allocated in-game memory
+ * free_app:
+ *
+ * Free all allocated in-game memory
  */
 void free_app(void)
 {

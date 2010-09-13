@@ -46,13 +46,15 @@ static const property config_values[] = {
 };
 
 /**
- * @brief Determine the configuration directory
+ * get_config_dir:
+ *
+ * Determine the configuration directory
  *
  * First try to get the configuration directory according to
  * the XDG base directory specification. If that fails use the
  * home directory.
  *
- * @return configuration directory string (may not be freed)
+ * Returns: configuration directory string (may not be freed)
  */
 gchar *get_config_dir(void)
 {
@@ -78,7 +80,9 @@ gchar *get_config_dir(void)
 }
 
 /**
- * @brief Set the config filename string inside the global
+ * set_config_filename:
+ *
+ * Set the config filename string inside the global
  * configuration structure
  */
 void set_config_filename(void)
@@ -89,7 +93,9 @@ void set_config_filename(void)
 }
 
 /**
- * @brief Load the gskat configuration file
+ * load_config:
+ *
+ * Load the gskat configuration file
  *
  * If the config file cannot be found the default configuration values
  * are written to a new config file.
@@ -122,7 +128,9 @@ void load_config(void)
 }
 
 /**
- * @brief Set the configuration to the default values
+ * set_default_config:
+ *
+ * Set the configuration to the default values
  */
 void set_default_config(void)
 {
@@ -148,9 +156,11 @@ void set_default_config(void)
 }
 
 /**
- * @brief Write the current configuration to the config file
+ * write_config:
  *
- * @return TRUE on success, otherwise FALSE
+ * Write the current configuration to the config file
+ *
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean write_config(void)
 {
@@ -200,11 +210,12 @@ gboolean write_config(void)
 }
 
 /**
- * @brief Write a configuration value in a keyfile in order to
- * write a new config file to disk
+ * get_config_value:
+ * @keyfile:  #GKeyFile containing the new values
+ * @prop:     property element of the config_values array
  *
- * @param keyfile  GKeyfile containing the new values
- * @param prop     property element of the config_values array
+ * Write a configuration value in a keyfile in order to
+ * write a new config file to disk
  */
 void get_config_value(GKeyFile *keyfile, property *prop)
 {
@@ -234,13 +245,14 @@ void get_config_value(GKeyFile *keyfile, property *prop)
     }
 }
 /**
- * @brief Read a configuration value from the keyfile and apply
+ * set_config_value:
+ * @keyfile:  #GKeyFile containing the parsed values
+ * @prop:     property element of the config_values array
+ *
+ * Read a configuration value from @keyfile and apply
  * the new value to the global config structure
  *
- * @param keyfile  GKeyfile containing the parsed values
- * @param prop     property element of the config_values array
- *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean set_config_value(GKeyFile *keyfile, property *prop)
 {
@@ -284,9 +296,11 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
 }
 
 /**
- * @brief Read the configuration values from the config file
+ * read_config:
  *
- * @return TRUE on success, otherwise FALSE
+ * Read the configuration values from the config file
+ *
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean read_config(void)
 {
@@ -350,11 +364,12 @@ gboolean read_config(void)
 }
 
 /**
- * @brief Create the directory for the config file if necessary
+ * create_conf_dir:
+ * @config_dir:  configuration directory string
  *
- * @param config_dir  configuration directory string
+ * Create the directory for the config file if necessary
  *
- * @return TRUE on success, otherwise FALSE
+ * Returns: %TRUE on success, otherwise %FALSE
  */
 gboolean create_conf_dir(const gchar *config_dir)
 {

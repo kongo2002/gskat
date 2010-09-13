@@ -28,12 +28,13 @@
 #include "license.h"
 
 /**
- * @brief Leave the gtk main loop and exit the program
+ * quit:
+ * @window:  #GtkWindow triggering the event
+ * @data:    arbitrary user data
  *
- * @param window  window triggering the event
- * @param data    arbitrary user data
+ * Leave the gtk main loop and exit the program
  *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean quit(GtkWidget *window, gpointer data)
 {
@@ -46,13 +47,14 @@ gboolean quit(GtkWidget *window, gpointer data)
 }
 
 /**
- * @brief Allocate memory for game objects, load all cards
+ * realization:
+ * @area:  #GtkDrawingArea triggering the event
+ * @data:  arbitrary user data
+ *
+ * Allocate memory for game objects, load all cards
  * and start the first game round
  *
- * @param area  GtkDrawingArea triggering the event
- * @param data  arbitrary user data
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean realization(GtkWidget *area, gpointer data)
 {
@@ -71,10 +73,11 @@ gboolean realization(GtkWidget *area, gpointer data)
 }
 
 /**
- * @brief Show the about dialog window
+ * show_about_window:
+ * @menuitem:  #GtkMenuItem emitting the signal
+ * @data:      arbitrary user data
  *
- * @param menuitem  menu item emitting the signal
- * @param data      arbitrary user data
+ * Show the about dialog window
  */
 void show_about_window(GtkMenuItem *menuitem, gpointer data)
 {
@@ -110,14 +113,15 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
 }
 
 /**
- * @brief Wrapper function to 'close_config' because of the different
+ * destroy_config:
+ * @widget:  #GtkWidget receiving the signal
+ * @event:   #GdkEvent triggering the signal
+ * @data:    config dialog window widget
+ *
+ * Wrapper function to 'close_config' because of the different
  * function arguments of the 'delete-event' signal
  *
- * @param widget  widget receiving the signal
- * @param event   widget triggering the signal
- * @param data    config dialog window widget
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
@@ -128,15 +132,15 @@ gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'cancel' button of the config
- * dialog.
+ * close_config:
+ * @button:  #GtkButton that was clicked
+ * @data:    config dialog window widget
+ *
+ * Callback function of the 'cancel' button of the config dialog.
  *
  * Frees the allocated memory for the confwidgets array
  *
- * @param button  button that was clicked
- * @param data    config dialog window widget
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean close_config(GtkButton *button, gpointer data)
 {
@@ -152,14 +156,15 @@ gboolean close_config(GtkButton *button, gpointer data)
 }
 
 /**
- * @brief Wrapper function to 'close_show_trick' because of the different
+ * destroy_show_trick:
+ * @widget:  #GtkWidget receiving the signal
+ * @event:   #GdkEvent triggering the signal
+ * @data:    stich_view structure
+ *
+ * Wrapper function to 'close_show_trick' because of the different
  * function arguments of the 'delete-event' signal
  *
- * @param widget  widget receiving the signal
- * @param event   widget triggering the signal
- * @param data    stich_view structure
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
@@ -170,15 +175,16 @@ gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'show last trick' dialog window
+ * close_show_trick:
+ * @button:  #GtkButton that was clicked
+ * @data:    stich_view structure
+ *
+ * Callback function of the 'show last trick' dialog window
  *
  * Frees all allocated memory belonging to the dialog window
  * including the stich_view structure
  *
- * @param button  button that was clicked
- * @param data    stich_view structure
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean close_show_trick(GtkButton *button, gpointer data)
 {
@@ -192,13 +198,14 @@ gboolean close_show_trick(GtkButton *button, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'previous' button
+ * prev_stich_click:
+ * @button:  #GtkButton that was clicked
+ * @data:    stich_view structure
+ *
+ * Callback function of the 'previous' button
  * of the 'show last trick' dialog window
  *
- * @param button  button that was clicked
- * @param data    stich_view structure
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean prev_stich_click(GtkButton *button, gpointer data)
 {
@@ -223,13 +230,14 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'previous' button
+ * next_stich_click:
+ * @button:  #GtkButton that was clicked
+ * @data:    stich_view structure
+ *
+ * Callback function of the 'previous' button
  * of the 'show last trick' dialog window
  *
- * @param button  button that was clicked
- * @param data    stich_view structure
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean next_stich_click(GtkButton *button, gpointer data)
 {
@@ -252,16 +260,16 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'apply' button of the config
- * dialog.
+ * save_config:
+ * @button:  #GtkButton that was clicked
+ * @data:    config dialog window widget
+ *
+ * Callback function of the 'apply' button of the config dialog.
  *
  * Apply the set values and free the allocated memory of the confwidgets
  * array afterwards
  *
- * @param button  button that was clicked
- * @param data    config dialog window widget
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean save_config(GtkButton *button, gpointer data)
 {
@@ -320,11 +328,12 @@ gboolean save_config(GtkButton *button, gpointer data)
 }
 
 /**
- * @brief Start the next or first round of the game triggered
- * by a click on the 'New Round' button
+ * next_round:
+ * @button:  #GtkButton that was clicked
+ * @data:    arbitrary user data
  *
- * @param button  button that was clicked
- * @param data    arbitrary user data
+ * Start the next or first round of the game triggered
+ * by a click on the 'New Round' button
  */
 void next_round(GtkButton *button, gpointer data)
 {
@@ -363,14 +372,15 @@ void next_round(GtkButton *button, gpointer data)
 }
 
 /**
- * @brief Recalculate the card positions on the game table
+ * configure:
+ * @area:   #GtkDrawingArea triggering the event
+ * @event:  #GdkEventExpose structure
+ * @data:   arbitrary user data
+ *
+ * Recalculate the card positions on the game table
  * after the window being resized
  *
- * @param area   GtkDrawingArea triggering the event
- * @param event  expose event structure
- * @param data   arbitrary user data
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
@@ -384,16 +394,17 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 }
 
 /**
- * @brief Callback function of a mouse move event in the drawing area
+ * mouse_move:
+ * @area:   #GtkDrawingArea triggering the event
+ * @event:  #GdkEventMotion structure
+ * @data:   arbitrary user data
+ *
+ * Callback function of a mouse move event in the drawing area
  *
  * If the cursor is moving over a non-valid card the mouse cursor shape
  * is changed to a cross (or something the like).
  *
- * @param area   GtkDrawingArea triggering the event
- * @param event  event motion structure
- * @param data   arbitrary user data
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
 {
@@ -461,15 +472,16 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
 }
 
 /**
- * @brief Callback function of a mouse click event in the drawing area
+   mouse_click:
+ * @area:   #GtkDrawingArea triggering the event
+ * @event:  #GdkEventButton structure
+ * @data:   arbitrary user data
+ *
+ * Callback function of a mouse click event in the drawing area
  *
  * Check for the current game state and trigger the appropriate action
  *
- * @param area   GtkDrawingArea triggering the event
- * @param event  mouse event structure
- * @param data   arbitrary user data
- *
- * @return TRUE to not handle the event any further, otherwise FALSE
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
  */
 gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
@@ -506,11 +518,12 @@ gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'animation' checkbox
- * in the config dialog
+ * animation_toggle:
+ * @tbutton:  #GtkCheckButton triggering the event
+ * @data:     arbitrary user data
  *
- * @param tbutton  GtkCheckButton triggering the event
- * @param data     arbitrary user data
+ * Callback function of the 'animation' checkbox
+ * in the config dialog
  */
 void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 {
@@ -521,11 +534,12 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 }
 
 /**
- * @brief Callback function of the 'reaction' checkbox
- * in the config dialog
+ * reaction_toggle:
+ * @tbutton:  #GtkCheckButton triggering the event
+ * @data:     arbitrary user data
  *
- * @param tbutton  GtkCheckButton triggering the event
- * @param data     arbitrary user data
+ * Callback function of the 'reaction' checkbox
+ * in the config dialog
  */
 void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
 {
@@ -535,11 +549,12 @@ void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
     gtk_widget_set_sensitive(gskat.confwidgets[10], active);
 }
 /**
- * @brief Callback function of the 'animation' checkbox
- * in the config dialog
+ * show_tricks_toggle:
+ * @tbutton:  #GtkCheckButton triggering the event
+ * @data:     arbitrary user data
  *
- * @param tbutton  GtkCheckButton triggering the event
- * @param data     arbitrary user data
+ * Callback function of the 'animation' checkbox
+ * in the config dialog
  */
 void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
 {
@@ -550,11 +565,12 @@ void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
 }
 
 /**
- * @brief Redraw the game area on the 'expose' signal
+ * refresh:
+ * @area:   #GtkDrawingArea triggering the event
+ * @event:  #GdkEventExpose structure
+ * @data:   arbitrary user data
  *
- * @param area   GtkDrawingArea triggering the event
- * @param event  expose event structure
- * @param data   arbitrary user data
+ * Redraw the game area on the 'expose' signal
  */
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
@@ -567,11 +583,12 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 }
 
 /**
- * @brief Redraw the card drawing area in the show last tricks dialog window
+ * refresh_tricks:
+ * @area:   #GtkDrawingArea triggering the event
+ * @event:  #GdkEventExpose structure
+ * @data:   stich_view structure
  *
- * @param area   GtkDrawingArea triggering the event
- * @param event  expose event structure
- * @param data   stich_view structure
+ * Redraw the @area in the show last tricks dialog window
  */
 void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
@@ -581,10 +598,11 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 }
 
 /**
- * @brief Load a saved game state
+ * load_game_cb:
+ * @menuitem:  #GtkMenuItem which received the signal
+ * @data:      arbitrary user data
  *
- * @param menuitem  the menu item which received the signal
- * @param data      arbitrary user data
+ * Load a saved game state
  */
 void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
@@ -609,10 +627,11 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 }
 
 /**
- * @brief Save the current game state
+ * save_game_cb:
+ * @menuitem:  #GtkMenuItem which received the signal
+ * @data:      arbitrary user data
  *
- * @param menuitem  the menu item which received the signal
- * @param data      arbitrary user data
+ * Save the current game state
  */
 void save_game_cb(GtkMenuItem *menuitem, gpointer data)
 {

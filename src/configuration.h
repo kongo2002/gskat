@@ -24,10 +24,15 @@
 #include "def.h"
 
 /**
- * @brief Enumeration of different configuration value types
+ * property_type:
+ * @INT:    #gint type
+ * @DOUBLE: #gdouble type
+ * @BOOL:   #gboolean type
+ * @STR:    #gchar type
+ *
+ * Enumeration of different configuration value types
  */
-typedef enum
-{
+typedef enum {
     INT,
     DOUBLE,
     BOOL,
@@ -35,13 +40,14 @@ typedef enum
 } property_type;
 
 /**
- * @brief Configuration value structure
+ * property_value:
+ * @type: #property_type structure
+ *
+ * Configuration value structure
  */
-typedef struct
-{
+typedef struct _property_value {
     property_type type;
-    union
-    {
+    union {
         gint *i;
         gdouble *d;
         gboolean *b;
@@ -50,10 +56,13 @@ typedef struct
 } property_value;
 
 /**
- * @brief Configuration element structure
+ * property:
+ * @name: Name of the property
+ * @pval: #property_value structure containing type and pointer of the property
+ *
+ * Configuration element structure
  */
-typedef struct
-{
+typedef struct _property {
     const gchar *name;
     property_value pval;
 } property;

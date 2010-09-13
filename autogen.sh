@@ -16,6 +16,10 @@ aclocal -I m4
 libtoolize --automake
 intltoolize --automake
 
+gtkdocize || exit 1
+
 autoheader
 automake --add-missing --copy
 autoconf
+
+./configure $@

@@ -50,251 +50,268 @@
 static const gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
 
 /**
- * @brief Enumeration of possible card positions/orientations
+ * cposition:
+ * @CP_DIAGONAL:   Diagonal orientation
+ * @CP_HORIZONTAL: Horizontal orientation
+ * @CP_VERTICAL:   Vertical orientation
+ *
+ * Enumeration of possible card positions/orientations
  */
-enum cposition
-{
-    /** diagonal */
+typedef enum {
     CP_DIAGONAL,
-    /** horizontal */
     CP_HORIZONTAL,
-    /** vertical */
     CP_VERTICAL
-};
+} cposition;
 
 /**
- * @brief Structure to represent the size and position of a card
+ * dimension:
+ * @x: X coordinate
+ * @y: Y coordinate
+ * @w: Width
+ * @h: Height
+ *
+ * Structure to represent the size and position of a card
  */
-typedef struct _dimension
-{
-    /** x coordinate */
+typedef struct _dimension {
     gint x;
-    /** y coordinate */
     gint y;
-    /** width */
     gint w;
-    /** height */
     gint h;
 } dimension;
 
 /**
- * @brief Enumeration of card status values
+ * cstatus:
+ * @CS_NOTAVAILABLE: Card is not available
+ * @CS_AVAILABLE:    Card is available
+ * @CS_MOVING:       Card is moving
+ * @CS_DISTRIBUTED:  Card is distributed
+ *
+ * Enumeration of card status values
  */
-enum cstatus
-{
-    /** card is not available */
+typedef enum {
     CS_NOTAVAILABLE,
-    /** card is available */
     CS_AVAILABLE,
-    /** card is moving */
     CS_MOVING,
-    /** card is distributed */
     CS_DISTRIBUTED
-};
+} cstatus;
 
 /**
- * @brief Enumeration of game states
+ * gstate:
+ * @LOADING:    Loading game objects
+ * @WAITING:    Waiting for user action
+ * @GIVE_CARDS: Distributing cards to players and 'skat'
+ * @PROVOKE:    Players are bidding for the game
+ * @TAKESKAT:   Player takes cards from the skat
+ * @PLAYING:    Players are playing a game round
+ * @READY:      Game is loaded
+ * @ENDGAME:    End of the round
+ *
+ * Enumeration of game states
  */
-enum gstate
-{
-    /** loading game parts */
+typedef enum {
     LOADING,
-    /** waiting for user action */
     WAITING,
-    /** distributing cards to players/skat */
     GIVE_CARDS,
-    /** players are provoking */
     PROVOKE,
-    /** player takes cards from the skat */
     TAKESKAT,
-    /** players are playing a game round */
     PLAYING,
-    /** game is loaded */
     READY,
-    /** end of the game */
     ENDGAME
-};
+} gstate;
 
 /**
- * @brief Enumeration of game finish types
+ * finish_type:
+ * @FT_NORMAL: Game round ended after 10 played rounds
+ * @FT_WIN:    Re player won the game prematurely
+ * @FT_LOST:   Re player lost the game prematurely
+ *
+ * Enumeration of game finish types
  */
-enum finish_type
-{
-    /** game ended normally after 10 rounds */
+typedef enum {
     FT_NORMAL,
-    /** re player won the game prematurely */
     FT_WIN,
-    /** re player lost the game prematurely */
     FT_LOST
-};
+} finish_type;
 
 /**
- * @brief Structure representing a card
+ * card:
+ * @img:       Front image of the card
+ * @dim:       Current dimension/position of the card
+ * @suit:      Card suit
+ * @rank:      Card rank
+ * @points:    Card value
+ * @owner:     Current owner of the card
+ * @status:    Current card status
+ * @draw:      Draw the card?
+ * @draw_face: Draw the face (front) of the card?
+ *
+ * Structure representing a card
  */
-typedef struct _card
-{
-    /** front image */
+typedef struct _card {
     cairo_surface_t *img;
-    /** current dimension/position */
     dimension dim;
-    /** card suit */
     gint suit;
-    /** card rank */
     gint rank;
-    /** card value */
     gint points;
-    /** current owner of the card */
     gint owner;
-    /** current card status */
-    enum cstatus status;
-    /** draw card? */
+    cstatus status;
     gboolean draw;
-    /** draw the face of the card? */
     gboolean draw_face;
 } card;
 
 /**
- * @brief Structure containing card movement information
+ * card_move:
+ * @mcard:  #card to move
+ * @dest_x: X coordinate destination
+ * @dest_y: Y coordinate destination
+ * @x_move: card movement step in x direction
+ * @y_move: card movement step in y direction
+ *
+ * Structure containing card movement information
  */
-typedef struct _card_move
-{
-    /** card to move */
+typedef struct _card_move {
     card *mcard;
-    /** x coordinate destination */
     gint dest_x;
-    /** y coordinate destination */
     gint dest_y;
-    /** card movement step in x direction*/
     gint x_move;
-    /** card movement step in y direction*/
     gint y_move;
 } card_move;
 
 /**
- * @brief Structure containing stich view information
+ * stich_view:
+ * @cur:    Index of the currently viewed trick
+ * @stich:  #card array of the current trick
+ * @window: Dialog window widget
+ * @area:   #GtkDrawingArea widget where the cards are drawn on
+ * @prevb:  Previous #GtkButton
+ * @nextb:  Next #GtkButton
+ *
+ * Structure containing stich view information
  */
-typedef struct _stich_view
-{
-    /** index of the currently viewed stich */
+typedef struct _stich_view {
     gint cur;
-    /** card array of the current stich */
     card **stich;
-    /** dialog window widget */
     GtkWidget *window;
-    /** GtkDrawingArea where the cards are drawn */
     GtkWidget *area;
-    /** previous stich button */
     GtkWidget *prevb;
-    /** next stich button */
     GtkWidget *nextb;
 } stich_view;
 
 /**
- * @brief Structure representing a player
+ * player:
+ * @id:           Player id
+ * @name:         Player name
+ * @human:        Human player?
+ * @re:           Re player?
+ * @gereizt:      value the player bid
+ * @points:       points of the current round
+ * @round_points: points of each played round
+ * @sum_points:   points of all played rounds
+ * @cards:        #GList containing player's cards
+ *
+ * Structure representing a player
  */
 typedef struct _player {
-    /** player id */
     gint id;
-    /** player name */
     gchar *name;
-    /** human player? */
     gboolean human;
-    /** re player? */
     gboolean re;
-    /** value the player provoked */
     gint gereizt;
-    /** points of the current round */
     gint points;
-    /** points of each played round */
     GList *round_points;
-    /** points of all played rounds */
     gint sum_points;
-    /** list of player's cards */
     GList *cards;
 } player;
 
 /**
- * @brief Structure to represent all configuration values
+ * config:
+ * @player_names:      #gchar array of players' names
+ * @animation:         Card movement animation
+ * @anim_duration:     Card animation duration
+ * @reaction:          Delay opponents reaction?
+ * @reaction_duration: Reaction time
+ * @show_tricks:       Show played tricks?
+ * @num_show_tricks:   Number of showed tricks
+ * @show_poss_cards:   Indicate possible cards by changing the mouse cursor shape
+ * @debug:             Print debug statements
+ * @filename:          Configuration filename
+ *
+ * Structure representing all configuration values
  */
-typedef struct _config
-{
-    /** Array of player names */
+typedef struct _config {
     gchar **player_names;
-    /** Card animation */
     gboolean animation;
-    /** Card animation duration */
     gint anim_duration;
-    /** Delay opponents reaction? */
     gboolean reaction;
-    /** Reaction time */
     gint reaction_duration;
-    /** Show played stiche? */
     gboolean show_tricks;
-    /** Number of played tricks to show */
     gint num_show_tricks;
-    /** Indicate possible cards by changing the mouse cursor shape */
     gboolean show_poss_cards;
-    /** Print debug statements */
     gboolean debug;
-    /** Filename of the configuration file */
     gchar *filename;
 } config;
 
 /**
- * @brief Structure containing all game objects
+ * app:
+ * @cards:         #GList of all game cards
+ * @skat:          #GList of cards in the 'skat'
+ * @table:         #GList of all cards on the table
+ * @played:        #GList of played cards of the current round
+ * @stiche:        Played tricks of the current round
+ * @players:       #player array of all three players
+ * @icons:         #GdkPixbuf array of the four suits
+ * @back:          Image of the back of the game cards
+ * @bg:            Background image
+ * @pirate_cursor: Alternative cursor shape for unallowed actions
+ * @hand_cursor:   Alternative cursor shape for allowed actions
+ * @area:          Game drawing area
+ * @widgets:       #GtkWidget array of all used gtk widgets
+ * @confwidgets:   #GtkWidget array of all used configuration widgets
+ * @state:         Current game state
+ * @re:            Current re player
+ * @forehand:      Current forehand player index
+ * @cplayer:       Current player index
+ * @trump:         Current trump
+ * @round:         Current round
+ * @stich:         Current trick
+ * @hand:          Current round a hand game?
+ * @null:          Current round a null game?
+ * @conf:          #config structure of all configuration values
+ *
+ * Structure containing all game objects
  */
-typedef struct _app
-{
-    /** All cards in the game */
+typedef struct _app {
     GList *cards;
-    /** Cards in skat */
     GList *skat;
-    /** Cards on the table */
     GList *table;
-    /** Played cards of current round */
     GList *played;
-    /** Played stiche of current round */
     card ***stiche;
-    /** List of players */
     player **players;
-    /** Array of 4 cells for icons */
     GdkPixbuf **icons;
-    /** Image of the back of the cards */
     cairo_surface_t *back;
-    /** Background image */
     cairo_surface_t *bg;
-    /** Alternative cursor shape for unallowed action */
     GdkCursor *pirate_cursor;
-    /** Alternative cursor shape for allowed action */
     GdkCursor *hand_cursor;
-    /** Game drawing area */
     GtkWidget *area;
-    /** Array of all used gtk widgets */
     GtkWidget **widgets;
-    /** Array of configuration widgets */
     GtkWidget **confwidgets;
-    /** Current game state */
-    enum gstate state;
-    /** Current re player */
+    gstate state;
     player *re;
-    /** Current forehand player index */
     gint forehand;
-    /** Current player index */
     gint cplayer;
-    /** Current trump suit */
     gint trump;
-    /** Round number */
     gint round;
-    /** Stich number */
     gint stich;
-    /** Hand game */
     gboolean hand;
-    /** Null game */
     gboolean null;
-    /** Configuration structure */
     config conf;
 } app;
 
+/**
+ * gskat:
+ *
+ * Main #app game object structure
+ */
 extern app gskat;
 
 #endif /*  __DEF_H__ */
