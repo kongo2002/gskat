@@ -563,4 +563,47 @@ gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
     }
 }
 
+/**
+ * get_trick_winner:
+ * @table:  #GList containing the three cards on the table
+ *
+ * Calculate the winner of the current trick on the table
+ *
+ * Returns: Index of the #player that won the trick
+ */
+gint get_trick_winner(GList *table)
+{
+    card *tmp;
+
+    if (is_greater(g_list_nth_data(table, 1),
+                g_list_nth_data(table, 0), gskat.trump, gskat.null))
+    {
+        if (is_greater(g_list_nth_data(table, 2),
+                    g_list_nth_data(table, 1), gskat.trump, gskat.null))
+        {
+            tmp = g_list_nth_data(table, 2);
+            return tmp->owner;
+        }
+        else
+        {
+            tmp = g_list_nth_data(table, 1);
+            return tmp->owner;
+        }
+    }
+    else
+    {
+        if (is_greater(g_list_nth_data(table, 2),
+                    g_list_nth_data(table, 0), gskat.trump, gskat.null))
+        {
+            tmp = g_list_nth_data(table, 2);
+            return tmp->owner;
+        }
+        else
+        {
+            tmp = g_list_nth_data(table, 0);
+            return tmp->owner;
+        }
+    }
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */

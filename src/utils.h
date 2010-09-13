@@ -57,6 +57,8 @@ gboolean higher_rank(card *top, card *bottom);
 
 gboolean is_greater(card *top, card *bottom, gint trump, gboolean null);
 
+gint get_trick_winner(GList *table);
+
 #endif /* __UTILS_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

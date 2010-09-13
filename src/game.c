@@ -1335,36 +1335,7 @@ void calculate_stich(void)
     GList *ptr = NULL;
     card *crd = NULL;
 
-    /* calculate winner of stich */
-    if (is_greater(g_list_nth_data(gskat.table, 1),
-                g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
-    {
-        if (is_greater(g_list_nth_data(gskat.table, 2),
-                    g_list_nth_data(gskat.table, 1), gskat.trump, gskat.null))
-        {
-            crd = g_list_nth_data(gskat.table, 2);
-            winner = crd->owner;
-        }
-        else
-        {
-            crd = g_list_nth_data(gskat.table, 1);
-            winner = crd->owner;
-        }
-    }
-    else
-    {
-        if (is_greater(g_list_nth_data(gskat.table, 2),
-                    g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
-        {
-            crd = g_list_nth_data(gskat.table, 2);
-            winner = crd->owner;
-        }
-        else
-        {
-            crd = g_list_nth_data(gskat.table, 0);
-            winner = crd->owner;
-        }
-    }
+    winner = get_trick_winner(gskat.table);
 
     update_sb(_("%s won the trick."), gskat.players[winner]->name);
 
