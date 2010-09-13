@@ -57,7 +57,7 @@ player *init_player(gint id, gchar *name, gboolean human)
 /**
  * @brief Try to load and set the game icons
  */
-void set_icons()
+void set_icons(void)
 {
     gint i;
     gchar *filename;
@@ -104,7 +104,7 @@ void set_icons()
 /**
  * @brief Try to load the icons of the four suits
  */
-void load_suit_icons()
+void load_suit_icons(void)
 {
     gint i;
     gchar *suits[] = { "club", "spade", "heart", "diamond" };
@@ -141,7 +141,7 @@ void load_suit_icons()
 /**
  * @brief Allocate all game objects like players, icons and stiche array
  */
-void alloc_app()
+void alloc_app(void)
 {
     gint i;
 
@@ -176,7 +176,7 @@ void alloc_app()
 /**
  * @brief Show a dialog window showing the last trick(s)
  */
-void show_last_tricks()
+void show_last_tricks(void)
 {
     gint cur, x, y;
     GtkWidget *window;
@@ -275,7 +275,7 @@ void show_last_tricks()
  * @brief Show the configuration dialog window and initialize the
  * widgets with the current config values
  */
-void show_config_window()
+void show_config_window(void)
 {
     gint i;
     GtkWidget *window;
@@ -583,7 +583,7 @@ void show_config_window()
  *
  * @return the new main menu GtkWidget
  */
-static GtkWidget *create_menu()
+static GtkWidget *create_menu(void)
 {
     GtkWidget *menu;         /* main menu */
     GtkWidget *gmenu;        /* game submenu */
@@ -662,7 +662,7 @@ static GtkWidget *create_menu()
 /**
  * @brief Create and allocate the main window layout
  */
-void create_interface()
+void create_interface(void)
 {
     GtkWidget *window;
     GtkWidget *vboxmenu;
@@ -913,7 +913,7 @@ void create_interface()
 /**
  * @brief Update all game interface elements
  */
-void update_interface()
+void update_interface(void)
 {
     const gint len = 1024;
     gchar *text;
@@ -955,7 +955,7 @@ void update_interface()
  * @todo The table should only be extended if a game round was
  * properly played until the end.
  */
-void update_rank_interface()
+void update_rank_interface(void)
 {
     gint i, len = 0;
     gchar msg[128];
@@ -1129,7 +1129,7 @@ void pos_player_cards(player *player, gint x, gint y, gint step)
  * @brief Calculate the card positions of all three players
  * based on the game window's dimension
  */
-void calc_card_positions()
+void calc_card_positions(void)
 {
     gint x, y, win_w, win_h, card_w, card_h, step;
     GList *ptr = NULL;
@@ -1449,7 +1449,7 @@ void draw_table(GtkWidget *area, cairo_t *cr)
 /**
  * @brief Draw the game area with its players and their cards
  */
-void draw_area()
+void draw_area(void)
 {
     gint i;
     cairo_t *cr;
@@ -1561,7 +1561,7 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
 /**
  * @brief Free all allocated in-game memory
  */
-void free_app()
+void free_app(void)
 {
     GList *ptr;
     gint i;

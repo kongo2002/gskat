@@ -172,7 +172,7 @@ card *click_card(GdkEventButton *event, GList *list)
  * Every player gets 10 cards whereas the last 2 cards go into
  * the skat in the middle of the table.
  */
-void give_cards()
+void give_cards(void)
 {
     gint order[32];
     gint i, j, k;
@@ -594,7 +594,8 @@ gint rate_cards(player *player, GList *list)
  */
 gint get_best_suit(GList *list)
 {
-    gint i, max, ret, rank_count[4];
+    gint i, max, ret = 0;
+    gint rank_count[4];
     GList *ptr = NULL;
     card *card = NULL;
 
@@ -825,7 +826,7 @@ gint do_sagen(player *player, gint hoerer, gint value)
 /**
  * @brief Initialize bidding process
  */
-void start_bidding()
+void start_bidding(void)
 {
     gint hoerer = gskat.forehand;
     gint sager = (hoerer + 1) % 3;
@@ -900,7 +901,7 @@ void start_bidding()
 /**
  * @brief Select cards to be put in skat
  */
-void druecke_skat()
+void druecke_skat(void)
 {
     gint suits[] = { 40, 60, 80, 100 };
     gint count = 0;
@@ -1044,7 +1045,7 @@ void druecke_skat()
 /**
  * @brief Take the two cards in the skat or play 'hand'
  */
-void take_skat()
+void take_skat(void)
 {
     gint result;
     GList *ptr = NULL;
@@ -1105,7 +1106,7 @@ void take_skat()
 /**
  * @brief Decide and say what play should be played this round
  */
-void spiel_ansagen()
+void spiel_ansagen(void)
 {
     gint i, result = 0;
     GList *list = NULL;
@@ -1292,7 +1293,7 @@ void ai_play_card(player *player)
 /**
  * @brief Calculate the winner and the points of the last stich
  */
-void calculate_stich()
+void calculate_stich(void)
 {
     gint winner;
     gint points = 0;
@@ -1402,7 +1403,7 @@ void set_round_points(gint winner, gint points)
  */
 void end_round(enum finish_type ft)
 {
-    gint rank, game;
+    gint rank = 0, game;
     gchar msg[200];
     GList *list = NULL, *ptr = NULL;
     card *card = NULL;
@@ -1573,7 +1574,7 @@ void end_round(enum finish_type ft)
 /**
  * @brief Trigger the next player to play his card
  */
-void play_stich()
+void play_stich(void)
 {
     gint fh = (gskat.cplayer == -1) ? gskat.forehand : gskat.cplayer;
     gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
@@ -1603,7 +1604,7 @@ void play_stich()
 /**
  * @brief Ask user if he really wants to abort the current game round
  */
-gboolean game_abort()
+gboolean game_abort(void)
 {
     gboolean abort = FALSE;
     gint response;
@@ -1638,7 +1639,7 @@ gboolean game_abort()
 /**
  * @brief Reset all game settings and free the allocated memory
  */
-void reset_game()
+void reset_game(void)
 {
     gint i;
     GList *ptr = NULL;
@@ -1712,7 +1713,7 @@ void reset_game()
 /**
  * @brief Distribute cards and start a new round
  */
-void game_start()
+void game_start(void)
 {
     /* give cards */
     gskat.state = GIVE_CARDS;

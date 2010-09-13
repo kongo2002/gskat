@@ -54,7 +54,7 @@ static const property config_values[] = {
  *
  * @return configuration directory string (may not be freed)
  */
-gchar *get_config_dir()
+gchar *get_config_dir(void)
 {
     const gchar *base_dir;
     static gchar *config_dir = NULL;
@@ -81,7 +81,7 @@ gchar *get_config_dir()
  * @brief Set the config filename string inside the global
  * configuration structure
  */
-void set_config_filename()
+void set_config_filename(void)
 {
     const gchar *config_dir = get_config_dir();
 
@@ -94,7 +94,7 @@ void set_config_filename()
  * If the config file cannot be found the default configuration values
  * are written to a new config file.
  */
-void load_config()
+void load_config(void)
 {
     const gchar *filename;
 
@@ -124,7 +124,7 @@ void load_config()
 /**
  * @brief Set the configuration to the default values
  */
-void set_default_config()
+void set_default_config(void)
 {
     const gchar *user_name = g_getenv("USER");
 
@@ -152,7 +152,7 @@ void set_default_config()
  *
  * @return TRUE on success, otherwise FALSE
  */
-gboolean write_config()
+gboolean write_config(void)
 {
     gint i;
     gsize length;
@@ -288,7 +288,7 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
  *
  * @return TRUE on success, otherwise FALSE
  */
-gboolean read_config()
+gboolean read_config(void)
 {
     gint i;
     gsize length;

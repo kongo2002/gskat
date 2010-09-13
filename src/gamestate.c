@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "utils.h"
+#include "game.h"
 #include "gamestate.h"
 
 /**
@@ -28,7 +29,7 @@
  *
  * @return new global_state* structure
  */
-global_state *get_global_state()
+global_state *get_global_state(void)
 {
     gint i;
     card *ptr;
@@ -78,7 +79,7 @@ global_state *get_global_state()
  *
  * @return an array of 32 card_state elements
  */
-card_state *get_card_states()
+card_state *get_card_states(void)
 {
     gint i = 0;
     GList *ptr;
@@ -175,7 +176,7 @@ gboolean save_card_states(FILE *output)
  */
 gboolean save_played_card_states(FILE *output)
 {
-    gint i, num_cards;
+    guint i, num_cards;
     gint *card_ids;
     card *ptr;
 
@@ -214,7 +215,7 @@ gboolean save_played_card_states(FILE *output)
  */
 gboolean save_players_cards_state(FILE *output)
 {
-    gint i, j, len;
+    guint i, j, len;
     gint *cards;
     card *ptr;
     player *pptr;
@@ -258,7 +259,7 @@ gboolean save_players_cards_state(FILE *output)
  */
 gboolean save_table_state(FILE *output)
 {
-    gint i, len;
+    guint i, len;
     gint *table;
     card *ptr;
 
@@ -410,9 +411,9 @@ card_state *read_card_states(FILE *input)
  *
  * @return integer array containing played card ids or NULL on error
  */
-gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards)
+gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards)
 {
-    gint i;
+    guint i;
     sg->pc = NULL;
 
     if (num_cards)
@@ -449,7 +450,7 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards)
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs)
 {
-    gint i, j, len;
+    guint i, j, len;
     gint *cards;
 
     /* initialize player cards integer array */
@@ -512,9 +513,9 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
  *
  * @return TRUE on success, otherwise FALSE
  */
-gboolean read_table_state(FILE *input, state_group *sg, gint num_table)
+gboolean read_table_state(FILE *input, state_group *sg, guint num_table)
 {
-    gint i;
+    guint i;
 
     if (num_table)
     {

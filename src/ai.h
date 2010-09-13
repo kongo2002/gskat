@@ -47,7 +47,7 @@ card *highest_fehl(player *player, GList *list);
 
 card *kurz_fehl_ass(player *player, GList *list);
 
-card *highest_on_table();
+card *highest_on_table(void);
 
 card *knapp_trumpfen(player *player, GList *list);
 
@@ -57,17 +57,17 @@ card *trumpf_spitzen(player *player, GList *list);
 
 card *abwerfen(player *player, GList *list);
 
-GList *cards_out();
+GList *cards_out(void);
 
 gdouble prob_stich_geht_durch(player *player);
 
 gint num_poss_higher_cards(player *player, card *card);
 
-gint num_jacks_played();
+gint num_jacks_played(void);
 
 gboolean jacks_weg(player *player);
 
-gint num_truempfe_played();
+gint num_truempfe_played(void);
 
 gboolean highest_rem_of_suit(card *card);
 
@@ -77,11 +77,13 @@ gboolean hat_gestochen(player *player, gint suit);
 
 gboolean muss_bedienen(player *player);
 
+gboolean kommt_drueber(player *player, GList *list);
+
 gboolean kontra_stich_sicher(player *player);
 
 gint len_spitzen(player *player, GList *list, gint suit);
 
-gint punkte_auf_tisch();
+gint punkte_auf_tisch(void);
 
 gint num_of_trump(GList *list);
 

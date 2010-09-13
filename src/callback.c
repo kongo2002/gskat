@@ -588,6 +588,8 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
+    (void) menuitem;
+    (void) data;
     gchar *filename = g_build_filename(get_config_dir(), "gamestate", NULL);
 
     if (read_state_from_file(filename))
@@ -614,6 +616,8 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
  */
 void save_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
+    (void) menuitem;
+    (void) data;
     gchar *filename = g_build_filename(get_config_dir(), "gamestate", NULL);
 
     save_state_to_file(filename);

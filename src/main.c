@@ -48,7 +48,7 @@ static GOptionEntry arguments[] =
 /**
  * @brief Initialize main game objects
  */
-void initialize()
+static void initialize()
 {
     gskat.cards       = NULL;
     gskat.skat        = NULL;

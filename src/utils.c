@@ -46,7 +46,7 @@ void swap(gint *a, gint *b)
  */
 gint max_str_len(const gchar *first, ...)
 {
-    gint max = strlen(first);
+    guint max = strlen(first);
     gchar *str = NULL;
     va_list args;
 

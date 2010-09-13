@@ -91,9 +91,9 @@ typedef struct _state_group
     gint *table;
 } state_group;
 
-global_state *get_global_state();
+global_state *get_global_state(void);
 
-card_state *get_card_states();
+card_state *get_card_states(void);
 
 gboolean save_global_state(FILE *output);
 
@@ -111,12 +111,12 @@ global_state *read_global_state(FILE *input);
 
 card_state *read_card_states(FILE *input);
 
-gboolean read_played_cards_state(FILE *input, state_group *sg, gint num_cards);
+gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards);
 
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs);
 
-gboolean read_table_state(FILE *input, state_group *sg, gint num_table);
+gboolean read_table_state(FILE *input, state_group *sg, guint num_table);
 
 gboolean read_state_from_file(const gchar *filename);
 

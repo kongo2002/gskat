@@ -759,7 +759,7 @@ gboolean hat_gestochen(player *player, gint suit)
  *
  * @return the number of played jacks in this current round
  */
-gint num_jacks_played()
+gint num_jacks_played(void)
 {
     gint count = 0;
     GList *ptr = NULL;
@@ -801,7 +801,7 @@ gboolean jacks_weg(player *player)
  *
  * @return the number of played trump cards in this round
  */
-gint num_truempfe_played()
+gint num_truempfe_played(void)
 {
     gint count = 0;
     GList *ptr = NULL;
@@ -951,7 +951,7 @@ gboolean muss_bedienen(player *player)
  *
  * @return the highest card on the table
  */
-card *highest_on_table()
+card *highest_on_table(void)
 {
     gint len = (gskat.table) ? g_list_length(gskat.table) : 0;
 
@@ -1164,7 +1164,7 @@ gint num_poss_higher_cards(player *player, card *first)
  *
  * @return a new GList* with all cards played in the current round
  */
-GList *cards_out()
+GList *cards_out(void)
 {
     GList *ret = g_list_copy(gskat.cards);
     GList *ptr = NULL;
@@ -1187,7 +1187,7 @@ GList *cards_out()
  *
  * @return sum of all card values currently on the table
  */
-gint punkte_auf_tisch()
+gint punkte_auf_tisch(void)
 {
     gint points = 0;
     GList *ptr = NULL;

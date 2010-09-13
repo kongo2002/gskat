@@ -25,25 +25,25 @@
 
 player *init_player(gint id, gchar *name, gboolean human);
 
-void load_suit_icons();
+void load_suit_icons(void);
 
-void set_icons();
+void set_icons(void);
 
-void alloc_app();
+void alloc_app(void);
 
-void show_last_tricks();
+void show_last_tricks(void);
 
-void show_config_window();
+void show_config_window(void);
 
-void update_interface();
+void update_interface(void);
 
-void update_rank_interface();
+void update_rank_interface(void);
 
-void create_interface();
+void create_interface(void);
 
 void pos_player_cards(player *player, gint x, gint y, gint step);
 
-void calc_card_positions();
+void calc_card_positions(void);
 
 void set_table_position(card *card, gint *dest_x, gint *dest_y);
 
@@ -65,9 +65,9 @@ void draw_table(GtkWidget *area, cairo_t *cr);
 
 void draw_tricks_area(GtkWidget *area, stich_view *sv);
 
-void draw_area();
+void draw_area(void);
 
-void free_app();
+void free_app(void);
 
 #endif /* __INTERFACE_H__ */
 
