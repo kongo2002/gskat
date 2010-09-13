@@ -565,9 +565,9 @@ gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
 
 /**
  * get_trick_winner:
- * @trick: #card array containing one trick of three cards
+ * @trick: #card* array containing one trick of three cards
  *
- * Calculate the winner of the given trick
+ * Calculate the winner of the given @trick
  *
  * Returns: Index of the #player that won the given @trick
  */
@@ -592,7 +592,8 @@ gint get_trick_winner(card **trick)
 /**
  * get_trick_winner:
  *
- * Calculate the winner of the current trick on the table
+ * Calculate the winner of the current trick on the table.
+ * Wrapper around the get_trick_winner() function.
  *
  * Returns: Index of the #player that won the trick on the table
  */

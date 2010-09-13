@@ -1573,6 +1573,14 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
             cairo_set_source_surface(cr, stich[i]->img, x, y);
             cairo_paint(cr);
 
+            /* darken the non-winning cards */
+            if (stich[i]->owner != get_trick_winner(stich))
+            {
+                cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.2);
+                cairo_rectangle(cr, x, y, stich[i]->dim.w, stich[i]->dim.h);
+                cairo_fill(cr);
+            }
+
             /* draw card owner's name */
             cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
             cairo_select_font_face(cr, "sans-serif",
