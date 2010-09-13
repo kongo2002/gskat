@@ -1,9 +1,11 @@
+bin_PROGRAMS = gskat
+
 INCLUDES = $(GTK_CFLAGS) \
 	   -DGSKAT_LOCALEDIR=\""$(datadir)/locale"\"
 
 LIBS = $(GTK_LIBS)
 
-bin_PROGRAMS = gskat
+AM_CPPFLAGS=-Wall -Wextra -Wmissing-prototypes -DDEBUG
 
 gskat_headers = ai.h \
 		callback.h \
