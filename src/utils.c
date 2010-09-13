@@ -94,6 +94,11 @@ gchar *get_config_dir(void)
 
             config_dir = g_build_filename(base_dir, ".gskat", NULL);
         }
+
+        /* if the directory does not exist try to create it
+         * otherwise return an empty string */
+        if (!create_dir(config_dir))
+            config_dir = "";
     }
 
     return config_dir;
@@ -119,7 +124,7 @@ gchar *get_data_dir(void)
     {
         /* get XDG data directory */
         if ((base_dir = g_get_user_data_dir()) && *base_dir != '\0')
-            data_dir = g_build_filename(data_dir, "gskat", NULL);
+            data_dir = g_build_filename(base_dir, "gskat", NULL);
         else
         {
             /* get home directory */
@@ -128,6 +133,11 @@ gchar *get_data_dir(void)
 
             data_dir = g_build_filename(base_dir, ".gskat", NULL);
         }
+
+        /* if the directory does not exist try to create it
+         * otherwise return an empty string */
+        if (!create_dir(data_dir))
+            data_dir = "";
     }
 
     return data_dir;
@@ -153,7 +163,7 @@ gchar *get_cache_dir(void)
     {
         /* get XDG cache directory */
         if ((base_dir = g_get_user_cache_dir()) && *base_dir != '\0')
-            cache_dir = g_build_filename(cache_dir, "gskat", NULL);
+            cache_dir = g_build_filename(base_dir, "gskat", NULL);
         else
         {
             /* get home directory */
@@ -162,9 +172,37 @@ gchar *get_cache_dir(void)
 
             cache_dir = g_build_filename(base_dir, ".gskat", NULL);
         }
+
+        /* if the directory does not exist try to create it
+         * otherwise return an empty string */
+        if (!create_dir(cache_dir))
+            cache_dir = "";
     }
 
     return cache_dir;
+}
+
+/**
+ * create_dir:
+ * @dir:  directory string
+ *
+ * Create the given directory if necessary
+ *
+ * Returns: %TRUE on success, otherwise %FALSE
+ */
+gboolean create_dir(const gchar *dir)
+{
+    gboolean exists;
+
+    exists = g_file_test(dir, G_FILE_TEST_EXISTS);
+
+    if (!exists && g_mkdir(dir, 0755) != 0)
+    {
+        DPRINT((_("Unable to create directory: %s\n"), dir));
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 /**

@@ -71,8 +71,6 @@ void load_config(void);
 
 void set_config_filename(void);
 
-gboolean create_conf_dir(const gchar *config_dir);
-
 void get_config_value(GKeyFile *keyfile, property *prop);
 
 gboolean set_config_value(GKeyFile *keyfile, property *prop);

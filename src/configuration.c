@@ -89,8 +89,7 @@ void load_config(void)
         DPRINT((_("Using default settings instead.\n")));
 
         /* try to save config */
-        if (create_conf_dir(get_config_dir()))
-            write_config();
+        write_config();
     }
 }
 
@@ -328,29 +327,6 @@ gboolean read_config(void)
     }
 
     return done;
-}
-
-/**
- * create_conf_dir:
- * @config_dir:  configuration directory string
- *
- * Create the directory for the config file if necessary
- *
- * Returns: %TRUE on success, otherwise %FALSE
- */
-gboolean create_conf_dir(const gchar *config_dir)
-{
-    gboolean exists;
-
-    exists = g_file_test(config_dir, G_FILE_TEST_EXISTS);
-
-    if (!exists && g_mkdir(config_dir, 0755) != 0)
-    {
-        DPRINT((_("Unable to create directory: %s\n"), config_dir));
-        return FALSE;
-    }
-
-    return TRUE;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
