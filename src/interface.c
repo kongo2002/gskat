@@ -1531,7 +1531,7 @@ void draw_area(void)
  */
 void draw_tricks_area(GtkWidget *area, stich_view *sv)
 {
-    gint i, x, y;
+    gint i, x, y, winner;
     gchar *caption = NULL;
     cairo_t *cr;
     card **stich = sv->stich;
@@ -1543,6 +1543,8 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
         area->allocation.height
     };
 
+    /* begin drawing process
+     * used for double buffering */
     gdk_window_begin_paint_rect(area->window, &rect);
 
     cr = gdk_cairo_create(area->window);
@@ -1564,6 +1566,7 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     /* draw cards of the given stich */
     x = 5;
     y = 40;
+    winner = get_trick_winner(stich);
 
     for (i=0; i<3; ++i)
     {
@@ -1574,7 +1577,7 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
             cairo_paint(cr);
 
             /* darken the non-winning cards */
-            if (stich[i]->owner != get_trick_winner(stich))
+            if (stich[i]->owner != winner)
             {
                 cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.2);
                 cairo_rectangle(cr, x, y, stich[i]->dim.w, stich[i]->dim.h);
@@ -1597,6 +1600,8 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     cairo_destroy(cr);
     g_free(caption);
 
+    /* end drawing process
+     * used for double buffering */
     gdk_window_end_paint(area->window);
 }
 
