@@ -19,6 +19,7 @@
  */
 
 #include "def.h"
+#include "utils.h"
 #include "configuration.h"
 
 /* convenience functions */
@@ -44,40 +45,6 @@ static const property config_values[] = {
     { "debug"             , BOOL_PROP(gskat.conf.debug) },
     { NULL                , { .type = INT, .ptr.i = NULL } }
 };
-
-/**
- * get_config_dir:
- *
- * Determine the configuration directory
- *
- * First try to get the configuration directory according to
- * the XDG base directory specification. If that fails use the
- * home directory.
- *
- * Returns: configuration directory string (may not be freed)
- */
-gchar *get_config_dir(void)
-{
-    const gchar *base_dir;
-    static gchar *config_dir = NULL;
-
-    if (!config_dir)
-    {
-        /* get XDG config directory */
-        if ((base_dir = g_get_user_config_dir()))
-            config_dir = g_build_filename(base_dir, "gskat", NULL);
-        else
-        {
-            /* get home directory */
-            if (!(base_dir = g_getenv("HOME")))
-                base_dir = g_get_home_dir();
-
-            config_dir = g_build_filename(base_dir, ".gskat", NULL);
-        }
-    }
-
-    return config_dir;
-}
 
 /**
  * set_config_filename:

@@ -66,6 +66,108 @@ gint max_str_len(const gchar *first, ...)
 }
 
 /**
+ * get_config_dir:
+ *
+ * Determine the configuration directory
+ *
+ * First try to get the configuration directory according to
+ * the XDG base directory specification. If that fails use the
+ * home directory.
+ *
+ * Returns: (transfer none): configuration directory string (may not be freed)
+ */
+gchar *get_config_dir(void)
+{
+    const gchar *base_dir;
+    static gchar *config_dir = NULL;
+
+    if (!config_dir)
+    {
+        /* get XDG config directory */
+        if ((base_dir = g_get_user_config_dir()))
+            config_dir = g_build_filename(base_dir, "gskat", NULL);
+        else
+        {
+            /* get home directory */
+            if (!(base_dir = g_getenv("HOME")))
+                base_dir = g_get_home_dir();
+
+            config_dir = g_build_filename(base_dir, ".gskat", NULL);
+        }
+    }
+
+    return config_dir;
+}
+
+/**
+ * get_data_dir:
+ *
+ * Determine the data directory
+ *
+ * First try to get the data directory according to
+ * the XDG base directory specification. If that fails use the
+ * home directory.
+ *
+ * Returns: (transfer none): data directory string (may not be freed)
+ */
+gchar *get_data_dir(void)
+{
+    const gchar *base_dir;
+    static gchar *data_dir = NULL;
+
+    if (!data_dir)
+    {
+        /* get XDG config directory */
+        if ((base_dir = g_get_user_config_dir()))
+            data_dir = g_build_filename(data_dir, "gskat", NULL);
+        else
+        {
+            /* get home directory */
+            if (!(base_dir = g_getenv("HOME")))
+                base_dir = g_get_home_dir();
+
+            data_dir = g_build_filename(base_dir, ".gskat", NULL);
+        }
+    }
+
+    return data_dir;
+}
+
+/**
+ * get_cache_dir:
+ *
+ * Determine the cache directory
+ *
+ * First try to get the cache directory according to
+ * the XDG base directory specification. If that fails use the
+ * home directory.
+ *
+ * Returns: (transfer none): cache directory string (may not be freed)
+ */
+gchar *get_cache_dir(void)
+{
+    const gchar *base_dir;
+    static gchar *cache_dir = NULL;
+
+    if (!cache_dir)
+    {
+        /* get XDG config directory */
+        if ((base_dir = g_get_user_config_dir()))
+            cache_dir = g_build_filename(cache_dir, "gskat", NULL);
+        else
+        {
+            /* get home directory */
+            if (!(base_dir = g_getenv("HOME")))
+                base_dir = g_get_home_dir();
+
+            cache_dir = g_build_filename(base_dir, ".gskat", NULL);
+        }
+    }
+
+    return cache_dir;
+}
+
+/**
  * get_card_points:
  * @rank:  rank of the #card
  *

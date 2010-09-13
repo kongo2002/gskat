@@ -69,8 +69,6 @@ typedef struct _property {
 
 void load_config(void);
 
-gchar *get_config_dir(void);
-
 void set_config_filename(void);
 
 gboolean create_conf_dir(const gchar *config_dir);
