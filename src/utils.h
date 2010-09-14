@@ -51,8 +51,6 @@ void print_player_cards(player *player);
 
 void print_card(card *card);
 
-void update_sb(const gchar *fmt, ...);
-
 gboolean higher_rank(card *top, card *bottom);
 
 gboolean is_greater(card *top, card *bottom, gint trump, gboolean null);

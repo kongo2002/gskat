@@ -182,6 +182,37 @@ void alloc_app(void)
 }
 
 /**
+ * update_sb:
+ * @fmt:  printf-like format-string
+ * @...:  additional arguments
+ *
+ * Remove the current message from the statusbar stack and
+ * push a new message onto the message stack
+ */
+void update_sb(const gchar *fmt, ...)
+{
+    gchar *msg = NULL;
+    GtkStatusbar *sb = (GtkStatusbar *) gskat.widgets[14];
+    va_list args;
+
+    if (sb)
+    {
+        va_start(args, fmt);
+        msg = g_strdup_vprintf(fmt, args);
+
+        if (msg)
+        {
+            gtk_statusbar_pop(sb, GSKAT_CONTEXTID);
+            gtk_statusbar_push(sb, GSKAT_CONTEXTID, msg);
+
+            g_free(msg);
+        }
+
+        va_end(args);
+    }
+}
+
+/**
  * show_dialog:
  * @type:    a #GtkMessageType
  * @buttons: a #GtkButtonsType
