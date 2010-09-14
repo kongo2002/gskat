@@ -67,7 +67,10 @@ gboolean realization(GtkWidget *area, gpointer data)
     if (load_cards(DATA_DIR))
         game_start();
     else
-        gtk_main_quit();
+    {
+        g_printerr("Failed to load all card images. Quit gskat.\n");
+        exit(EXIT_FAILURE);
+    }
 
     return FALSE;
 }
