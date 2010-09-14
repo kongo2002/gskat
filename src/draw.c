@@ -502,3 +502,5 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
      * used for double buffering */
     gdk_window_end_paint(area->window);
 }
+
+/* vim:set et sw=4 sts=4 tw=80: */

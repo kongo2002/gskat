@@ -9,6 +9,7 @@ AM_CPPFLAGS=-Wall -Wextra -Wmissing-prototypes -DDEBUG
 
 gskat_headers = ai.h \
 		callback.h \
+		common.h \
 		configuration.h \
 		def.h \
 		draw.h \
@@ -20,6 +21,7 @@ gskat_headers = ai.h \
 
 gskat_SOURCES = ai.c \
 		callback.c \
+		common.c \
 		configuration.c \
 		draw.c \
 		game.c \

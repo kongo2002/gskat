@@ -18,29 +18,23 @@
  *
  */
 
-#ifndef __DRAW_H__
-#define __DRAW_H__
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
-void pos_player_cards(player *player, gint x, gint y, gint step);
+#include "def.h"
 
-void calc_card_positions(void);
+void swap(gint *a, gint *b);
 
-void set_table_position(card *card, gint *dest_x, gint *dest_y);
+gint max_str_len(const gchar *first, ...);
 
-void set_card_move_step(card_move *cm);
+gchar *get_config_dir(void);
 
-gboolean move_card(gpointer data);
+gchar *get_data_dir(void);
 
-void draw_cards(GList *cards, cairo_t *target);
+gchar *get_cache_dir(void);
 
-void draw_player(player *player, cairo_t *cr);
+gboolean create_dir(const gchar *dir);
 
-void draw_table(GtkWidget *area, cairo_t *cr);
-
-void draw_area(void);
-
-void draw_tricks_area(GtkWidget *area, stich_view *sv);
-
-#endif /* __DRAW_H__ */
+#endif /* __COMMON_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

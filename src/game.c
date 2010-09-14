@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "ai.h"
+#include "common.h"
 #include "draw.h"
 #include "game.h"
 #include "interface.h"
