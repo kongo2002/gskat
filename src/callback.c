@@ -19,13 +19,14 @@
  */
 
 #include "def.h"
-#include "configuration.h"
 #include "callback.h"
-#include "utils.h"
+#include "configuration.h"
+#include "draw.h"
 #include "game.h"
 #include "gamestate.h"
 #include "interface.h"
 #include "license.h"
+#include "utils.h"
 
 /**
  * quit:
