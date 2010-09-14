@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "callback.h"
+#include "common.h"
 #include "draw.h"
 #include "interface.h"
 #include "utils.h"
