@@ -18,37 +18,27 @@
  *
  */
 
-#ifndef __INTERFACE_H__
-#define __INTERFACE_H__
+#ifndef __DRAW_H__
+#define __DRAW_H__
 
-#include "def.h"
+void pos_player_cards(player *player, gint x, gint y, gint step);
 
-player *init_player(gint id, gchar *name, gboolean human);
+void calc_card_positions(void);
 
-void load_suit_icons(void);
+void set_table_position(card *card, gint *dest_x, gint *dest_y);
 
-void set_icons(void);
+void set_card_move_step(card_move *cm);
 
-void alloc_app(void);
+gboolean move_card(gpointer data);
 
-void show_last_tricks(void);
+void draw_cards(GList *cards, cairo_t *target);
 
-void show_config_window(void);
+void draw_player(player *player, cairo_t *cr);
 
-void update_interface(void);
+void draw_table(GtkWidget *area, cairo_t *cr);
 
-void update_rank_interface(void);
+void draw_area(void);
 
-void create_interface(void);
+void draw_tricks_area(GtkWidget *area, stich_view *sv);
 
-void load_card(GList **list, const gchar *file, gint rank, gint suit);
-
-cairo_surface_t *load_image(gchar *filename);
-
-gboolean load_cards(const gchar *path);
-
-void free_app(void);
-
-#endif /* __INTERFACE_H__ */
-
-/* vim:set et sw=4 sts=4 tw=80: */
+#endif /* __DRAW_H__ */

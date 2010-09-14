@@ -19,8 +19,9 @@
  */
 
 #include "def.h"
-#include "game.h"
 #include "ai.h"
+#include "draw.h"
+#include "game.h"
 #include "interface.h"
 #include "utils.h"
 

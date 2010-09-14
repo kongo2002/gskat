@@ -11,6 +11,7 @@ gskat_headers = ai.h \
 		callback.h \
 		configuration.h \
 		def.h \
+		draw.h \
 		game.h \
 		gamestate.h \
 		interface.h \
@@ -20,6 +21,7 @@ gskat_headers = ai.h \
 gskat_SOURCES = ai.c \
 		callback.c \
 		configuration.c \
+		draw.c \
 		game.c \
 		gamestate.c \
 		interface.c \
