@@ -44,13 +44,19 @@ AC_PROG_LIBTOOL
 # GTK_DOC_CHECK([1.12],[--flavour no-tmpl])
 
 # Define DATA_DIR variable
-if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(DATA_DIR,
-        "${ac_default_prefix}/share/pixmaps/${PACKAGE}",
-        [Path to card images])
+if test "x${datadir}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+        AC_DEFINE_UNQUOTED(DATA_DIR,
+            "${ac_default_prefix}/share/pixmaps/${PACKAGE}",
+            [Path to card images])
+    else
+        AC_DEFINE_UNQUOTED(DATA_DIR,
+            "${prefix}/share/pixmaps/${PACKAGE}",
+            [Path to card images])
+    fi
 else
     AC_DEFINE_UNQUOTED(DATA_DIR,
-        "${prefix}/share/pixmaps/${PACKAGE}",
+        "${datadir}/${PACKAGE}",
         [Path to card images])
 fi
 
