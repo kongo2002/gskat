@@ -23,18 +23,6 @@
 
 #include "def.h"
 
-void swap(gint *a, gint *b);
-
-gint max_str_len(const gchar *first, ...);
-
-gchar *get_config_dir(void);
-
-gchar *get_data_dir(void);
-
-gchar *get_cache_dir(void);
-
-gboolean create_dir(const gchar *dir);
-
 gint get_card_points(gint rank);
 
 card *get_card_by_id(gint id);
