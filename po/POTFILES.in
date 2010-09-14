@@ -1,6 +1,8 @@
 src/ai.c
 src/callback.c
+src/common.c
 src/configuration.c
+src/draw.c
 src/game.c
 src/gamestate.c
 src/interface.c
