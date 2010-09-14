@@ -1,6 +1,7 @@
-SUBDIRS = src data po docs
+# SUBDIRS = src data po docs
+SUBDIRS = src data po
 
-DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
+# DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
 
 ACLOCAL_AMFLAGS = -I m4
 
