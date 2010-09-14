@@ -182,6 +182,67 @@ void alloc_app(void)
 }
 
 /**
+ * show_dialog:
+ * @type:    a #GtkMessageType
+ * @buttons: a #GtkButtonsType
+ * @fmt:     a printf-like format string
+ * @args:    #va_list with optional arguments
+ *
+ * Show a modal message dialog window with a given @type, @buttons
+ * and message.
+ */
+void show_dialog(GtkMessageType type, GtkButtonsType buttons,
+        const gchar *fmt, va_list args)
+{
+    GtkWidget *dialog;
+    gchar *msg = g_strdup_vprintf(fmt, args);
+
+    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
+                GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+                type,
+                buttons,
+                msg,
+                NULL);
+
+    gtk_dialog_run(GTK_DIALOG(dialog));
+
+    gtk_widget_destroy(dialog);
+    g_free(msg);
+}
+
+/**
+ * show_dialog_info:
+ * @fmt: printf-like format string
+ * @...: optional arguments
+ *
+ * Show an info message dialog window with a given message
+ */
+void show_dialog_info(const gchar *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    show_dialog(GTK_MESSAGE_INFO, GTK_BUTTONS_OK, fmt, args);
+    va_end(args);
+}
+
+/**
+ * show_dialog_error:
+ * @fmt: printf-like format string
+ * @...: optional arguments
+ *
+ * Show an error message dialog window with a given message
+ */
+void show_dialog_error(const gchar *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    show_dialog(GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, fmt, args);
+    va_end(args);
+}
+
+/**
  * show_last_tricks:
  *
  * Show a dialog window showing the last trick(s)

@@ -31,6 +31,13 @@ void set_icons(void);
 
 void alloc_app(void);
 
+void show_dialog(GtkMessageType type, GtkButtonsType buttons,
+        const gchar *fmt, va_list args);
+
+void show_dialog_info(const gchar *fmt, ...);
+
+void show_dialog_error(const gchar *fmt, ...);
+
 void show_last_tricks(void);
 
 void show_config_window(void);
