@@ -61,6 +61,26 @@ gint get_trick_winner(card **trick);
 
 gint get_table_winner(void);
 
+gint get_game_multiplier(void);
+
+gint get_game_base_value(player *re);
+
+gint get_spitzen(GList *list, gint suit);
+
+gboolean is_trump(card *card);
+
+GList *get_trump_list(GList *list);
+
+GList *get_jack_list(GList *list);
+
+GList *get_suit_list(GList *list, gint suit);
+
+gint compare_cards(gconstpointer a, gconstpointer b);
+
+gint compare_jacks(gconstpointer a, gconstpointer b);
+
+gint compare_family(gconstpointer a, gconstpointer b);
+
 #endif /* __UTILS_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

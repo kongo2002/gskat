@@ -35,29 +35,13 @@ card *click_card(GdkEventButton *event, GList *list);
 
 void card_to_player(player *player, card *card);
 
-gint compare_cards(gconstpointer a, gconstpointer b);
-
-gint compare_jacks(gconstpointer a, gconstpointer b);
-
-gint compare_family(gconstpointer a, gconstpointer b);
-
 gint get_bid_response(gint value, gchar *msg, gboolean hoeren);
-
-gboolean is_trump(card *card);
-
-GList *get_jack_list(GList *list);
-
-GList *get_suit_list(GList *list, gint suit);
-
-GList *get_trump_list(GList *list);
 
 GList *get_possible_cards(GList *list);
 
 gint get_best_suit(GList *list);
 
 gint rate_cards(player *player, GList *list);
-
-gint get_spitzen(GList *list, gint suit);
 
 gint get_max_reizwert(GList *list);
 

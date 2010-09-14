@@ -276,247 +276,6 @@ gint next_reizwert(gint value)
 }
 
 /**
- * compare_cards:
- * @a:     first card
- * @b:     second card
- *
- * Function comparing two cards used with a sort function
- * like g_list_sort()
- *
- * Returns: -1 if @a > @b; 1 if @a < @b; 0 if @a == @b
- */
-gint compare_cards(gconstpointer a, gconstpointer b)
-{
-    card *card_a = (card *) a;
-    card *card_b = (card *) b;
-
-    if (!gskat.null)
-    {
-        if (card_a->rank == BUBE && card_b->rank == BUBE)
-        {
-            if (card_a->suit > card_b->suit)
-                return -1;
-            else
-                return 1;
-        }
-        else if (card_a->rank == BUBE)
-            return -1;
-        else if (card_b->rank == BUBE)
-            return 1;
-    }
-
-    /* change default order when trump given */
-    if (gskat.trump > 0)
-    {
-        if (card_a->suit == gskat.trump && card_b->suit != gskat.trump)
-            return -1;
-        else if (card_a->suit != gskat.trump && card_b->suit == gskat.trump)
-            return 1;
-    }
-
-    if (card_a->suit > card_b->suit)
-        return -1;
-    else if (card_a->suit == card_b->suit)
-    {
-        if (card_a->rank == ASS)
-            return -1;
-        else if (card_b->rank == ASS)
-            return 1;
-        else if (card_a->rank == 10)
-            return -1;
-        else if (card_b->rank == 10)
-            return 1;
-        else if (card_a->rank > card_b->rank)
-            return -1;
-        else
-            return 1;
-    }
-    else
-        return 1;
-
-    return 0;
-}
-
-/**
- * compare_jacks:
- * @a: first jack
- * @b: second jack
- *
- * Function comparing two jacks used with a sort function
- * like g_list_sort()
- *
- * Returns: -1 if @a > @b; 1 if @a < @b; 0 if @a == @b
- */
-gint compare_jacks(gconstpointer a, gconstpointer b)
-{
-    card *card_a = (card *) a;
-    card *card_b = (card *) b;
-
-    if (card_a->suit > card_b->suit)
-        return -1;
-    else if (card_a->suit < card_b->suit)
-        return 1;
-    else
-        return 0;
-}
-
-/**
- * compare_family:
- * @a: first card
- * @b: second card
- *
- * Function comparing two cards of the same suit
- * used with a sort function like g_list_sort()
- *
- * Returns: -1 if @a > @b; 1 if @a < @b; 0 if @a == @b
- */
-gint compare_family(gconstpointer a, gconstpointer b)
-{
-    card *card_a = (card *) a;
-    card *card_b = (card *) b;
-
-    if (card_a->rank == ASS)
-        return -1;
-    else if (card_b->rank == ASS)
-        return 1;
-    else if (card_a->rank == 10)
-        return -1;
-    else if (card_b->rank == 10)
-        return 1;
-    else if (card_a->rank > card_b->rank)
-        return -1;
-    else if (card_a->rank < card_b->rank)
-        return 1;
-    else
-        return 0;
-}
-
-/**
- * get_jack_list:
- * @list: #GList of cards to search jacks in
- *
- * Returns a #GList of jacks of a given list of cards
- *
- * Returns: (transfer full): a new #GList containing all jacks in 'list'.
- * If no jacks could be found %NULL is returned.
- */
-GList *get_jack_list(GList *list)
-{
-    GList *ptr = NULL, *jacks = NULL;
-    card *card = NULL;
-
-    for (ptr = g_list_first(list); ptr; ptr = ptr->next)
-    {
-        card = ptr->data;
-        if (card->rank == BUBE)
-            jacks = g_list_prepend(jacks, (gpointer) card);
-    }
-
-    if (jacks)
-        jacks = g_list_sort(jacks, compare_jacks);
-    return jacks;
-}
-
-/**
- * get_suit_list:
- * @list:  #GList of cards to search in
- * @suit:  suit that is searched
- *
- * Returns a #GList containing only cards of a specific suit
- *
- * Returns: (transfer full): a new #GList containing all card of the given
- * suit. If no cards could be found %NULL is returned.
- */
-GList *get_suit_list(GList *list, gint suit)
-{
-    GList *ptr = NULL, *family = NULL;
-    card *card = NULL;
-
-    for (ptr = g_list_first(list); ptr; ptr = ptr->next)
-    {
-        card = ptr->data;
-
-        if (!gskat.null)
-        {
-            if (card->suit == suit && card->rank != BUBE)
-                family = g_list_prepend(family, (gpointer) card);
-        }
-        else
-        {
-            if (card->suit == suit)
-                family = g_list_prepend(family, (gpointer) card);
-        }
-    }
-
-    if (family)
-        family = g_list_sort(family, compare_family);
-    return family;
-}
-
-/**
- * is_trump:
- * @card:  #card to be checked
- *
- * Checks if the given @card is trump
- *
- * Returns: %TRUE if the @card is trump, otherwise %FALSE
- */
-gboolean is_trump(card *card)
-{
-    if (gskat.null)
-        return FALSE;
-    if (!gskat.trump)
-    {
-        if (card->rank == BUBE)
-            return TRUE;
-    }
-    else
-    {
-        if (card->suit == gskat.trump || card->rank == BUBE)
-            return TRUE;
-    }
-    return FALSE;
-}
-
-/**
- * get_trump_list:
- * @list:  #GList of cards to search in
- *
- * Returns a #GList of trump cards from the given card @list
- *
- * Returns: (transfer full): a new #GList of all trump cards. If no trump
- * cards could be found return %NULL.
- */
-GList *get_trump_list(GList *list)
-{
-    GList *ptr = NULL, *family = NULL, *jacks = NULL;
-    card *card = NULL;
-
-    if (gskat.null)
-        return NULL;
-
-    jacks = get_jack_list(list);
-
-    if (!gskat.trump)
-        return jacks;
-
-    family = get_suit_list(list, gskat.trump);
-
-    if (jacks)
-    {
-        for (ptr = g_list_last(jacks); ptr; ptr = ptr->prev)
-        {
-            card = ptr->data;
-            family = g_list_prepend(family, card);
-        }
-
-        g_list_free(jacks);
-    }
-
-    return family;
-}
-
-/**
  * get_possible_cards:
  * @list:  #GList of cards to search in for possible cards
  *
@@ -639,66 +398,6 @@ gint get_best_suit(GList *list)
         }
     }
     return ((ret+1)*20+20);
-}
-
-/**
- * get_spitzen:
- * @list:  #GList of cards to parse
- * @suit:  Suit to search for
- *
- * Calculate the 'spitzen' for a given #GList of cards and suit
- *
- * Returns: 'spitzen' value
- */
-gint get_spitzen(GList *list, gint suit)
-{
-    gint i = 0, max = 0, back = 0;
-    GList *ptr = NULL, *cards = NULL, *pcards = NULL;
-    gboolean mit = FALSE;
-    card *card = NULL, *cmp = NULL;
-
-    /* backup trump */
-    back = gskat.trump;
-    gskat.trump = suit;
-
-    cards = get_trump_list(gskat.cards);
-    pcards = get_trump_list(list);
-
-    for (ptr = g_list_first(cards); ptr; ptr = ptr->next)
-    {
-        cmp = ptr->data;
-
-        if ((card = g_list_nth_data(pcards, i)))
-        {
-            if (card == cmp)
-            {
-                if (max == 0)
-                    mit = TRUE;
-                else if (mit == FALSE)
-                    break;
-
-                max++;
-                i++;
-                continue;
-            }
-            else if (mit == FALSE)
-            {
-                max++;
-                continue;
-            }
-        }
-        break;
-    }
-
-    g_list_free(cards);
-
-    if (pcards)
-        g_list_free(pcards);
-
-    /* restore trump */
-    gskat.trump = back;
-
-    return (max + 1);
 }
 
 /**
@@ -1414,50 +1113,19 @@ void set_round_points(gint winner, gint points)
  */
 void end_round(finish_type ft)
 {
-    gint rank = 0, game;
-    gchar msg[200];
-    GList *list = NULL, *ptr = NULL;
-    card *card = NULL;
+    gint rank, game;
+    GList *ptr;
+    card *card;
     player *player = gskat.re;
 
+    /* increase round counter */
     gskat.round += 1;
+
+    rank = get_game_multiplier();
 
     if (!gskat.null)
     {
-        switch (gskat.trump)
-        {
-            case KARO:
-                rank = 9;
-                break;
-            case HERZ:
-                rank = 10;
-                break;
-            case PIK:
-                rank = 11;
-                break;
-            case KREUZ:
-                rank = 12;
-                break;
-            case 0:
-                rank = 24;
-                break;
-        }
-
-        /* get player's cards */
-        for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
-        {
-            card = ptr->data;
-
-            if (card->owner == player->id)
-            {
-                list = g_list_prepend(list, card);
-#ifdef DEBUG
-                print_card(card);
-                g_print(", ");
-#endif
-            }
-        }
-        g_print("\n");
+        game = get_game_base_value(player);
 
         /* add points of cards in skat */
         for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
@@ -1467,14 +1135,9 @@ void end_round(finish_type ft)
             player->points += card->points;
         }
 
-        game = get_spitzen(list, gskat.trump);
-
         /* hand game */
         if (gskat.hand)
             game += 1;
-
-        g_list_free(list);
-        list = NULL;
 
         /* player has won */
         if (player->points > 60)
@@ -1490,7 +1153,7 @@ void end_round(finish_type ft)
 
             if (player->gereizt > game)
             {
-                g_sprintf(msg, _("%s has overbid.\nBidden: %d\n"
+                show_dialog_info(_("%s has overbid.\nBidden: %d\n"
                         "Game value: %d\n\t%d"),
                         player->name,
                         player->gereizt,
@@ -1503,7 +1166,7 @@ void end_round(finish_type ft)
             }
             else
             {
-                g_sprintf(msg, _("%s wins with %d against %d points\n\t+%d"),
+                show_dialog_info(_("%s wins with %d against %d points\n\t+%d"),
                         player->name,
                         player->points,
                         (120 - player->points),
@@ -1524,7 +1187,7 @@ void end_round(finish_type ft)
 
             game = game * rank * -2;
 
-            g_sprintf(msg, _("%s lost with %d against %d points\n\t%d"),
+            show_dialog_info(_("%s lost with %d against %d points\n\t%d"),
                     player->name,
                     player->points,
                     (120 - player->points),
@@ -1546,12 +1209,12 @@ void end_round(finish_type ft)
         {
             game *= -2;
 
-            g_sprintf(msg, _("%s lost the null game\n\t%d"), player->name,
+            show_dialog_info(_("%s lost the null game\n\t%d"), player->name,
                     game);
         }
         else
         {
-            g_sprintf(msg, _("%s won the null game\n\t%d"), player->name,
+            show_dialog_info(_("%s won the null game\n\t%d"), player->name,
                     game);
         }
 
@@ -1559,18 +1222,6 @@ void end_round(finish_type ft)
 
     /* refresh the new players' points */
     set_round_points(player->id, game);
-
-    /* show game summary message dialog */
-    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
-            GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_MESSAGE_INFO,
-            GTK_BUTTONS_CLOSE,
-            NULL);
-
-    gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(dialog), msg);
-
-    gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
 
     /* update interface */
     update_rank_interface();
