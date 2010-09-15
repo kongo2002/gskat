@@ -541,7 +541,6 @@ void show_config_window(void)
     /* animation duration */
     animation_dur_label = gtk_label_new(_("Animation duration (in ms):"));
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
-    gtk_widget_set_sensitive(animation_dur_label, gskat.conf.animation);
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_dur_label,
             0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
