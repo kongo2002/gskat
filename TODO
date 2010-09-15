@@ -6,9 +6,12 @@ MAJOR FEATURES
 
 * AI: properly implement 'null' and 'grand' games
 * AI: improve bidding algorithm
+* AI: implement different AI difficulty levels
+  (i.e. easy, medium, hard, [cheater])
 * save and view round/stich history
 * implement integrated bug reports
 * implement 'ramsch' game
+* implement 'bock' rounds
 * implement a tournament mode (i.e. play a configurable number of rounds)
 * review last trick(s)                                                      DONE
 * add localization/language support                                         DONE
@@ -21,6 +24,8 @@ MINOR POINTS
 * integrate optional pre-round random seed definition for card
   distribution
 * add an option to automatically begin the next trick (i.e. timeout)
+* add tooltips to GUI elements
+* make game rule 'play with spitzen' configurable
 * use XDG base directory specification for config/data files                DONE
 * improve game summary display                                              DONE
 * connect review of played trick(s) with a configuration rule/setting       DONE
@@ -34,8 +39,9 @@ MINOR POINTS
 IMPROVEMENTS
 
 * rewrite AI concept/implementation (more flexible, dynamic)
-* move from Doxygen to GtkDoc for documentation
-* write an ebuild for Gentoo Linux
 * write some basic unit test routines
+* rewrite debug/log/print functionality (i.e. log levels)
 * add a checksum to saved/loaded round states
 * use autotools for compile/install                                         DONE
+* move from Doxygen to GtkDoc for documentation                             DONE
+* write an ebuild for Gentoo Linux                                          DONE
