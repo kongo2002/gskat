@@ -421,6 +421,8 @@ void show_config_window(void)
     GtkWidget *config_loc_entry;
     GtkWidget *data_loc_label;
     GtkWidget *data_loc_entry;
+    GtkWidget *locale_loc_label;
+    GtkWidget *locale_loc_entry;
 
     GtkWidget *hbox_buttons;
     GtkWidget *ok_button;
@@ -612,11 +614,12 @@ void show_config_window(void)
 
     /* ABOUT TABLE */
     about_label = gtk_label_new(_("About"));
-    about_table = gtk_table_new(2, 2, FALSE);
+    about_table = gtk_table_new(3, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_table, about_label);
     gtk_container_set_border_width(GTK_CONTAINER(about_table), 5);
 
-    about_entry_len = max_str_len(gskat.conf.filename, DATA_DIR, NULL);
+    about_entry_len = max_str_len(gskat.conf.filename, DATA_DIR
+            GSKAT_LOCALEDIR, NULL);
 
     config_loc_label = gtk_label_new(_("Configuration file location:"));
     gtk_misc_set_alignment(GTK_MISC(config_loc_label), 0, 0.5);
@@ -645,6 +648,20 @@ void show_config_window(void)
     gtk_table_attach(GTK_TABLE(about_table),
             data_loc_entry,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    locale_loc_label = gtk_label_new(_("Localization files location:"));
+    gtk_misc_set_alignment(GTK_MISC(locale_loc_label), 0, 0.5);
+    gtk_table_attach(GTK_TABLE(about_table),
+            locale_loc_label,
+            0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    locale_loc_entry = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(locale_loc_entry), GSKAT_LOCALEDIR);
+    gtk_entry_set_width_chars(GTK_ENTRY(locale_loc_entry), about_entry_len);
+    gtk_widget_set_sensitive(locale_loc_entry, FALSE);
+    gtk_table_attach(GTK_TABLE(about_table),
+            locale_loc_entry,
+            1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* BOTTOM BUTTONS */
     hbox_buttons = gtk_hbox_new(TRUE, 10);
