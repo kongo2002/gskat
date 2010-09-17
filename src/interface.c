@@ -1299,6 +1299,11 @@ void free_app(void)
         g_free(gskat.icons);
     }
 
+    /* free bugreport log */
+    if (gskat.log)
+        g_string_free(gskat.log, TRUE);
+    gskat.log = NULL;
+
     /* free remaining objects */
     if (gskat.back)
         cairo_surface_destroy(gskat.back);

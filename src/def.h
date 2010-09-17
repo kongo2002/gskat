@@ -304,6 +304,7 @@ typedef struct _app {
     gint stich;
     gboolean hand;
     gboolean null;
+    GString *log;
     config conf;
 } app;
 

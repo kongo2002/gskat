@@ -73,18 +73,17 @@ gint max_str_len(const gchar *first, ...)
 void write_to_log(const gchar *fmt, va_list args)
 {
     gchar *str;
-    static GString *log = NULL;
 
-    if (!log)
+    if (!gskat.log)
     {
         str = g_strdup_vprintf(fmt, args);
-        log = g_string_new(str);
+        gskat.log = g_string_new(str);
 
         g_free(str);
         return;
     }
 
-    g_string_append_vprintf(log, fmt, args);
+    g_string_append_vprintf(gskat.log, fmt, args);
 }
 
 /**

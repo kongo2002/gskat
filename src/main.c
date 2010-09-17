@@ -62,7 +62,7 @@ static void initialize()
     gskat.back        = NULL;
     gskat.bg          = NULL;
     gskat.area        = NULL;
-    gskat.widgets  = NULL;
+    gskat.widgets     = NULL;
     gskat.confwidgets = NULL;
     gskat.state       = LOADING;
     gskat.re          = NULL;
@@ -73,6 +73,7 @@ static void initialize()
     gskat.stich       = 1;
     gskat.hand        = FALSE;
     gskat.null        = FALSE;
+    gskat.log         = g_string_sized_new(256);
 }
 
 int main(int argc, const char *argv[])
