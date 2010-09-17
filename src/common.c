@@ -64,6 +64,30 @@ gint max_str_len(const gchar *first, ...)
 }
 
 /**
+ * write_to_log:
+ * @fmt:   printf-like format string
+ * @args:  optional arguments
+ *
+ * Write the given string into the bugreport log string
+ */
+void write_to_log(const gchar *fmt, va_list args)
+{
+    gchar *str;
+    static GString *log = NULL;
+
+    if (!log)
+    {
+        str = g_strdup_vprintf(fmt, args);
+        log = g_string_new(str);
+
+        g_free(str);
+        return;
+    }
+
+    g_string_append_vprintf(log, fmt, args);
+}
+
+/**
  * get_config_dir:
  *
  * Determine the configuration directory
