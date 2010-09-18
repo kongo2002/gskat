@@ -179,26 +179,24 @@ void alloc_app(void)
     gskat.pirate_cursor = gdk_cursor_new(GDK_PIRATE);
     gskat.hand_cursor = gdk_cursor_new(GDK_HAND1);
 
-    update_sb(_("gskat v%s successfully loaded."), VERSION);
+    gskat_msg(MT_STATUSBAR, _("gskat v%s successfully loaded."), VERSION);
 }
 
 /**
  * update_sb:
- * @fmt:  printf-like format-string
- * @...:  additional arguments
+ * @fmt:   printf-like format-string
+ * @args:  additional arguments
  *
  * Remove the current message from the statusbar stack and
  * push a new message onto the message stack
  */
-void update_sb(const gchar *fmt, ...)
+void update_sb(const gchar *fmt, va_list args)
 {
     gchar *msg = NULL;
     GtkStatusbar *sb = (GtkStatusbar *) gskat.widgets[14];
-    va_list args;
 
-    if (sb)
+    if (sb && fmt)
     {
-        va_start(args, fmt);
         msg = g_strdup_vprintf(fmt, args);
 
         if (msg)
@@ -208,8 +206,6 @@ void update_sb(const gchar *fmt, ...)
 
             g_free(msg);
         }
-
-        va_end(args);
     }
 }
 
@@ -244,34 +240,26 @@ void show_dialog(GtkMessageType type, GtkButtonsType buttons,
 
 /**
  * show_dialog_info:
- * @fmt: printf-like format string
- * @...: optional arguments
+ * @fmt:  printf-like format string
+ * @args: optional arguments
  *
  * Show an info message dialog window with a given message
  */
-void show_dialog_info(const gchar *fmt, ...)
+void show_dialog_info(const gchar *fmt, va_list args)
 {
-    va_list args;
-
-    va_start(args, fmt);
     show_dialog(GTK_MESSAGE_INFO, GTK_BUTTONS_OK, fmt, args);
-    va_end(args);
 }
 
 /**
  * show_dialog_error:
- * @fmt: printf-like format string
- * @...: optional arguments
+ * @fmt:  printf-like format string
+ * @args: optional arguments
  *
  * Show an error message dialog window with a given message
  */
-void show_dialog_error(const gchar *fmt, ...)
+void show_dialog_error(const gchar *fmt, va_list args)
 {
-    va_list args;
-
-    va_start(args, fmt);
     show_dialog(GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, fmt, args);
-    va_end(args);
 }
 
 /**

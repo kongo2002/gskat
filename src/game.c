@@ -561,7 +561,7 @@ void start_bidding(void)
 
     DPRINT((_("Start of bidding\n")));
 
-    update_sb(_("Start of bidding"));
+    gskat_msg(MT_STATUSBAR, _("Start of bidding"));
 
     /* disable 'new round' button */
     gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
@@ -904,7 +904,8 @@ void spiel_ansagen(void)
     }
 
     /* update statusbar */
-    update_sb(_("%s plays %s"), gskat.re->name, suit_name(gskat.trump));
+    gskat_msg(MT_STATUSBAR, _("%s plays %s"), gskat.re->name,
+            suit_name(gskat.trump));
 
     /* print game to label */
     update_interface();
@@ -1038,7 +1039,8 @@ void calculate_stich(void)
 
     winner = get_table_winner();
 
-    update_sb(_("%s won the trick."), gskat.players[winner]->name);
+    gskat_msg(MT_STATUSBAR, _("%s won the trick."),
+            gskat.players[winner]->name);
 
     /* calculate points of stich */
     for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
@@ -1154,7 +1156,8 @@ void end_round(finish_type ft)
 
             if (player->gereizt > game)
             {
-                show_dialog_info(_("%s has overbid.\nBidden: %d\n"
+                gskat_msg(MT_INFO | MT_DIALOG,
+                        _("%s has overbid.\nBidden: %d\n"
                         "Game value: %d\n\t%d"),
                         player->name,
                         player->gereizt,
@@ -1163,17 +1166,18 @@ void end_round(finish_type ft)
 
                 game *= -2;
 
-                update_sb(_("%s has overbid"), player->name);
+                gskat_msg(MT_STATUSBAR, _("%s has overbid"), player->name);
             }
             else
             {
-                show_dialog_info(_("%s wins with %d against %d points\n\t+%d"),
+                gskat_msg(MT_INFO | MT_DIALOG,
+                        _("%s wins with %d against %d points\n\t+%d"),
                         player->name,
                         player->points,
                         (120 - player->points),
                         game);
 
-                update_sb(_("%s won the round"), player->name);
+                gskat_msg(MT_STATUSBAR, _("%s won the round"), player->name);
             }
         }
         /* player has lost */
@@ -1188,13 +1192,14 @@ void end_round(finish_type ft)
 
             game = game * rank * -2;
 
-            show_dialog_info(_("%s lost with %d against %d points\n\t%d"),
+            gskat_msg(MT_INFO | MT_DIALOG,
+                    _("%s lost with %d against %d points\n\t%d"),
                     player->name,
                     player->points,
                     (120 - player->points),
                     game);
 
-            update_sb(_("%s lost the round"), player->name);
+            gskat_msg(MT_STATUSBAR, _("%s lost the round"), player->name);
         }
     }
     else
@@ -1210,13 +1215,13 @@ void end_round(finish_type ft)
         {
             game *= -2;
 
-            show_dialog_info(_("%s lost the null game\n\t%d"), player->name,
-                    game);
+            gskat_msg(MT_INFO | MT_DIALOG,
+                    _("%s lost the null game\n\t%d"), player->name, game);
         }
         else
         {
-            show_dialog_info(_("%s won the null game\n\t%d"), player->name,
-                    game);
+            gskat_msg(MT_INFO | MT_DIALOG,
+                    _("%s won the null game\n\t%d"), player->name, game);
         }
 
     }
@@ -1254,7 +1259,7 @@ void play_stich(void)
             if (!gskat.players[current]->human)
                 ai_play_card(gskat.players[current]);
             else
-                update_sb(_("Choose a card to play"));
+                gskat_msg(MT_STATUSBAR, _("Choose a card to play"));
         }
         else
         {
@@ -1291,7 +1296,7 @@ gboolean game_abort(void)
     switch (response)
     {
         case GTK_RESPONSE_YES:
-            update_sb(_("Current round aborted."));
+            gskat_msg(MT_STATUSBAR, _("Current round aborted."));
             abort = TRUE;
             break;
         case GTK_RESPONSE_NO:
@@ -1405,7 +1410,7 @@ void game_start(void)
     /* activate button */
     gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
 
-    update_sb(_("New round started"));
+    gskat_msg(MT_STATUSBAR, _("New round started"));
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

@@ -36,11 +36,11 @@ void alloc_app(void);
 void show_dialog(GtkMessageType type, GtkButtonsType buttons,
         const gchar *fmt, va_list args);
 
-void update_sb(const gchar *fmt, ...);
+void update_sb(const gchar *fmt, va_list args);
 
-void show_dialog_info(const gchar *fmt, ...);
+void show_dialog_info(const gchar *fmt, va_list args);
 
-void show_dialog_error(const gchar *fmt, ...);
+void show_dialog_error(const gchar *fmt, va_list args);
 
 void show_last_tricks(void);
 

@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "common.h"
+#include "interface.h"
 
 /**
  * swap:
@@ -100,43 +101,37 @@ void write_to_log(const gchar *fmt, va_list args)
 void gskat_msg(msg_type type, const gchar *fmt, ...)
 {
     va_list args;
+    msg_type level = (type & MT_LEVEL_MASK);
 
+#ifndef DEBUG
+    if (fmt && (level <= gskat.log_level))
+#else
     if (fmt)
+#endif
     {
         va_start(args, fmt);
 
         /* check if message should be logged for the bug report */
         if (type & MT_BUGREPORT)
-        {
             write_to_log(fmt, args);
-
-            type &= ~MT_BUGREPORT;
-        }
 
         /* check if the message should be shown in the statusbar */
         if (type & MT_STATUSBAR)
-        {
-            /* TODO
-               update_sb(); */
-
-            type &= ~MT_STATUSBAR;
-        }
+            update_sb(fmt, args);
 
         /* check if a message dialog window shall be shown */
         if (type & MT_DIALOG)
         {
-            /* TODO
-               show_dialog(); */
-
-            type &= ~MT_DIALOG;
+            if (level <= MT_WARN)
+                show_dialog_error(fmt, args);
+            else
+                show_dialog_info(fmt, args);
         }
 
         /* print according to current log level */
-#ifndef DEBUG
-        if (type <= gskat.log_level)
-#endif
+        if (level)
         {
-            if (type <= MT_WARN)
+            if (level <= MT_WARN)
                 g_vfprintf(stderr, fmt, args);
             else
                 g_vfprintf(stdout, fmt, args);
