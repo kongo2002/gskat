@@ -147,14 +147,17 @@ void gskat_msg(msg_type type, const gchar *fmt, ...)
         }
 
         /* print according to current log level */
-        va_start(args, fmt);
+        if (level || (type & MT_GAME))
+        {
+            va_start(args, fmt);
 
-        if (level <= MT_WARN)
-            g_vfprintf(stderr, fmt, args);
-        else
-            g_vfprintf(stdout, fmt, args);
+            if (level <= MT_WARN)
+                g_vfprintf(stderr, fmt, args);
+            else
+                g_vfprintf(stdout, fmt, args);
 
-        va_end(args);
+            va_end(args);
+        }
     }
 }
 
