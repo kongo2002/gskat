@@ -342,10 +342,18 @@ void show_file_bugreport(void)
     gtk_label_set_selectable(GTK_LABEL(info_label), TRUE);
     gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
     gtk_label_set_line_wrap_mode(GTK_LABEL(info_label), PANGO_WRAP_WORD);
+
+#if GTK_CHECK_VERSION(2, 18, 0)
     gtk_label_set_markup(GTK_LABEL(info_label),
             _("Please send this bug report to\n<a href=\"mailto:"
                 "kongo2002@googlemail.com\" title=\"Send mail\">"
                 "kongo2002@googlemail.com</a>"));
+#else
+    gtk_label_set_markup(GTK_LABEL(info_label),
+            _("Please send this bug report to\n"
+                "kongo2002@googlemail.com"));
+#endif
+
     gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 2);
 
     /* buttons */
