@@ -44,7 +44,7 @@ card *ai_select_card(player *player, GList *list)
     if (g_list_length(list) == 1)
     {
         gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                (_("%s: only 1 card possible\n"), player->name));
+                _("%s: only 1 card possible\n"), player->name);
         return g_list_nth_data(list, 0);
     }
 
@@ -95,7 +95,7 @@ card *ai_select_card(player *player, GList *list)
     if (card == NULL)
     {
         gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                (_("%s: random card\n"), player->name));
+                _("%s: random card\n"), player->name);
 
         selection = rand() % g_list_length(list);
         return g_list_nth_data(list, selection);
@@ -120,7 +120,7 @@ card *kurz_fehl_ass(player *player, GList *list)
     card *card = NULL, *ret = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try kurz_fehl_ass()\n"), player->name));
+            _("%s: try kurz_fehl_ass()\n"), player->name);
 
     for (i=0; i<4; ++i)
     {
@@ -163,7 +163,7 @@ card *knapp_trumpfen(player *player, GList *list)
     card *ret = NULL, *card = NULL, *high = highest_on_table();
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try knapp_trumpfen()\n"), player->name));
+            _("%s: try knapp_trumpfen()\n"), player->name);
 
     /* play ace if first trick of suit */
     if (!is_trump(high))
@@ -288,7 +288,7 @@ card *ai_re_mitte(player *player, GList *list)
             sel->rank == 10)
     {
         gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                (_("%s: 10 skipped - ace not played yet\n"), player->name));
+                _("%s: 10 skipped - ace not played yet\n"), player->name);
         card = abwerfen(player, list);
     }
     else
@@ -400,7 +400,7 @@ card *trumpf_spitzen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try trumpf_spitzen()\n"), player->name));
+            _("%s: try trumpf_spitzen()\n"), player->name);
 
     if (trump)
     {
@@ -435,7 +435,7 @@ card *truempfe_ziehen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try truempfe_ziehen()\n"), player->name));
+            _("%s: try truempfe_ziehen()\n"), player->name);
 
     if (trump)
     {
@@ -489,7 +489,7 @@ card *kurz_aufspielen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try kurz_aufspielen()\n"), player->name));
+            _("%s: try kurz_aufspielen()\n"), player->name);
 
     for (i=0; i<4; ++i)
     {
@@ -556,7 +556,7 @@ card *lang_aufspielen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try lang_aufspielen()\n"), player->name));
+            _("%s: try lang_aufspielen()\n"), player->name);
 
     for (i=0; i<4; ++i)
     {
@@ -614,7 +614,7 @@ card *ai_kontra_schmieren(player *player, GList *list)
     card *card = NULL, *ret = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try ai_kontra_schmieren()\n"), player->name));
+            _("%s: try ai_kontra_schmieren()\n"), player->name);
 
     card = g_list_nth_data(list, 0);
 
@@ -679,7 +679,7 @@ card *highest_fehl(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try highest_fehl()\n"), player->name));
+            _("%s: try highest_fehl()\n"), player->name);
 
     /* play only if there is no trump left */
     if (truempfe_weg(player))
@@ -718,7 +718,7 @@ card *abwerfen(player *player, GList *list)
         lengths[i] = num_of_suit(list, SUITS[i]);
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            (_("%s: try abwerfen()\n"), player->name));
+            _("%s: try abwerfen()\n"), player->name);
 
     for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
     {

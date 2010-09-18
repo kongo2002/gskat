@@ -19,8 +19,9 @@
  */
 
 #include "def.h"
-#include "interface.h"
+#include "common.h"
 #include "configuration.h"
+#include "interface.h"
 
 app gskat;
 
@@ -102,7 +103,8 @@ int main(int argc, const char *argv[])
 
         if (!g_option_context_parse(context, &argc, (gchar ***) &argv, &error))
         {
-            g_printerr(_("Failed to parse arguments: %s\n"), error->message);
+            gskat_msg(MT_ERROR,
+                    _("Failed to parse arguments: %s\n"), error->message);
             g_clear_error(&error);
 
             return 1;

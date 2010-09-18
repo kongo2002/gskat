@@ -1156,7 +1156,7 @@ void end_round(finish_type ft)
 
             if (player->gereizt > game)
             {
-                gskat_msg(MT_INFO | MT_DIALOG,
+                gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
                         _("%s has overbid.\nBidden: %d\n"
                         "Game value: %d\n\t%d"),
                         player->name,
@@ -1170,7 +1170,7 @@ void end_round(finish_type ft)
             }
             else
             {
-                gskat_msg(MT_INFO | MT_DIALOG,
+                gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
                         _("%s wins with %d against %d points\n\t+%d"),
                         player->name,
                         player->points,
@@ -1192,7 +1192,7 @@ void end_round(finish_type ft)
 
             game = game * rank * -2;
 
-            gskat_msg(MT_INFO | MT_DIALOG,
+            gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
                     _("%s lost with %d against %d points\n\t%d"),
                     player->name,
                     player->points,
@@ -1215,12 +1215,12 @@ void end_round(finish_type ft)
         {
             game *= -2;
 
-            gskat_msg(MT_INFO | MT_DIALOG,
+            gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
                     _("%s lost the null game\n\t%d"), player->name, game);
         }
         else
         {
-            gskat_msg(MT_INFO | MT_DIALOG,
+            gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
                     _("%s won the null game\n\t%d"), player->name, game);
         }
 

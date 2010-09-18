@@ -136,6 +136,7 @@ typedef enum {
  * @MT_STATUSBAR:  Message is shown in the statusbar
  * @MT_DIALOG:     A dialog window is opened
  * @MT_BUGREPORT:  Message is stored in the bugreport log
+ * @MT_GAME:       Game message (shown regardless of current log level)
  * @MT_LEVEL_MASK: A mask including all log levels
  *
  * Enumeration of different message type flags
@@ -148,7 +149,8 @@ typedef enum {
     MT_STATUSBAR  = 1 << 4,
     MT_DIALOG     = 1 << 5,
     MT_BUGREPORT  = 1 << 6,
-    MT_LEVEL_MASK = ~(MT_STATUSBAR | MT_DIALOG | MT_BUGREPORT)
+    MT_GAME       = 1 << 7,
+    MT_LEVEL_MASK = ~(MT_STATUSBAR | MT_DIALOG | MT_BUGREPORT | MT_GAME)
 } msg_type;
 
 /**

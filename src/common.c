@@ -97,6 +97,9 @@ void write_to_log(const gchar *fmt, va_list args)
  * Furthermore the @type defines if the message is shown in the statusbar
  * or shown in a message dialog window and if the message is stored inside
  * the bugreport log.
+ *
+ * If the MT_GAME @msg_type is set then the message is printed or shown
+ * regardless of the current log level.
  */
 void gskat_msg(msg_type type, const gchar *fmt, ...)
 {
@@ -104,7 +107,7 @@ void gskat_msg(msg_type type, const gchar *fmt, ...)
     msg_type level = (type & MT_LEVEL_MASK);
 
 #ifndef DEBUG
-    if (fmt && (level <= gskat.log_level))
+    if (fmt && ((type & MT_GAME) || (level <= gskat.log_level)))
 #else
     if (fmt)
 #endif
@@ -130,7 +133,7 @@ void gskat_msg(msg_type type, const gchar *fmt, ...)
             va_end(args);
         }
 
-        /* check if a message dialog window shall be shown */
+        /* check if a message dialog window should be shown */
         if (type & MT_DIALOG)
         {
             va_start(args, fmt);
@@ -144,17 +147,14 @@ void gskat_msg(msg_type type, const gchar *fmt, ...)
         }
 
         /* print according to current log level */
-        if (level)
-        {
-            va_start(args, fmt);
+        va_start(args, fmt);
 
-            if (level <= MT_WARN)
-                g_vfprintf(stderr, fmt, args);
-            else
-                g_vfprintf(stdout, fmt, args);
+        if (level <= MT_WARN)
+            g_vfprintf(stderr, fmt, args);
+        else
+            g_vfprintf(stdout, fmt, args);
 
-            va_end(args);
-        }
+        va_end(args);
     }
 }
 
@@ -292,7 +292,7 @@ gboolean create_dir(const gchar *dir)
     if (!exists && g_mkdir(dir, 0755) != 0)
     {
         gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                (_("Unable to create directory: %s\n"), dir));
+                _("Unable to create directory: %s\n"), dir);
         return FALSE;
     }
 
