@@ -279,6 +279,46 @@ gchar *get_cache_dir(void)
 }
 
 /**
+ * get_desktop_dir:
+ *
+ * Determine the desktop directory
+ *
+ * First try to get the desktop directory according to
+ * the XDG base directory specification. If that fails use the
+ * home directory.
+ *
+ * Returns: (transfer none): desktop directory string (may not be freed)
+ */
+gchar *get_desktop_dir(void)
+{
+    const gchar *base_dir;
+    static gchar *desktop_dir = NULL;
+
+    if (!desktop_dir)
+    {
+        /* get XDG cache directory */
+        if ((base_dir = g_get_user_special_dir(G_USER_DIRECTORY_DESKTOP))
+                && *base_dir != '\0')
+            desktop_dir = g_build_filename(base_dir, "gskat", NULL);
+        else
+        {
+            /* get home directory */
+            if (!(base_dir = g_getenv("HOME")))
+                base_dir = g_get_home_dir();
+
+            desktop_dir = g_build_filename(base_dir, ".gskat", NULL);
+        }
+
+        /* if the directory does not exist try to create it
+         * otherwise return an empty string */
+        if (!create_dir(desktop_dir))
+            desktop_dir = "";
+    }
+
+    return desktop_dir;
+}
+
+/**
  * create_dir:
  * @dir:  directory string
  *

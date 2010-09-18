@@ -25,6 +25,12 @@
 
 gboolean quit(GtkWidget *window, gpointer data);
 
+gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data);
+
+gboolean save_bugreport(GtkButton *button, gpointer data);
+
+gboolean close_bugreport(GtkButton *button, gpointer data);
+
 gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data);
 
 gboolean close_show_trick(GtkButton *button, gpointer data);

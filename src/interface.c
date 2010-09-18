@@ -261,6 +261,106 @@ void show_dialog_error(const gchar *fmt, va_list args)
 }
 
 /**
+ * show_file_bugreport:
+ *
+ * Show a window to file a new bug report
+ */
+void show_file_bugreport(void)
+{
+    gchar *dir;
+    GtkWidget *window;
+    GtkWidget *vbox;
+    GtkWidget *file_frame;
+    GtkWidget *file_vbox;
+    /* GtkWidget *file_entry; */
+    GtkWidget *dir_chooser;
+    GtkWidget *desc_frame;
+    GtkWidget *desc_vbox;
+    GtkWidget *desc_text_view;
+    GtkTextBuffer *desc_text_buffer;
+    GtkWidget *hbox_button;
+    GtkWidget *ok_button;
+    GtkWidget *cancel_button;
+
+    /* determine desktop directory */
+    dir = get_desktop_dir();
+
+    /* create window widget */
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_set_size_request(window, 300, 300);
+    gtk_window_set_title(GTK_WINDOW(window), _("File bug report"));
+    gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_window_set_transient_for(GTK_WINDOW(window),
+            GTK_WINDOW(gskat.widgets[0]));
+
+    vbox = gtk_vbox_new(FALSE, 0);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+
+    /* file name frame widget */
+    file_frame = gtk_frame_new(_("Save bug report into:"));
+    gtk_box_pack_start(GTK_BOX(vbox), file_frame, FALSE, FALSE, 2);
+
+    file_vbox = gtk_vbox_new(FALSE, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(file_vbox), 5);
+    gtk_container_add(GTK_CONTAINER(file_frame), file_vbox);
+
+    dir_chooser = gtk_file_chooser_button_new(_("Choose directory"),
+            GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dir_chooser), dir);
+    gtk_box_pack_start(GTK_BOX(file_vbox), dir_chooser, FALSE, FALSE, 2);
+
+    /*
+    file_entry = gtk_entry_new();
+    gtk_widget_set_sensitive(file_entry, FALSE);
+    gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
+    gtk_box_pack_start(GTK_BOX(file_vbox), file_entry, TRUE, TRUE, 2);
+    */
+
+    /* description frame widget */
+    desc_frame = gtk_frame_new(_("Description:"));
+    gtk_box_pack_start(GTK_BOX(vbox), desc_frame, TRUE, TRUE, 2);
+
+    desc_vbox = gtk_vbox_new(FALSE, 0);
+    gtk_container_set_border_width(GTK_CONTAINER(desc_vbox), 5);
+    gtk_container_add(GTK_CONTAINER(desc_frame), desc_vbox);
+
+    /* description text view */
+    desc_text_view = gtk_text_view_new();
+    desc_text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(desc_text_view));
+    gtk_text_view_set_left_margin(GTK_TEXT_VIEW(desc_text_view), 5);
+    gtk_text_view_set_right_margin(GTK_TEXT_VIEW(desc_text_view), 5);
+    gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(desc_text_view), 5);
+    gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(desc_text_view), 5);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(desc_text_view), GTK_WRAP_WORD);
+    gtk_box_pack_start(GTK_BOX(desc_vbox), desc_text_view, TRUE, TRUE, 2);
+
+    /* buttons */
+    hbox_button = gtk_hbutton_box_new();
+    gtk_container_set_border_width(GTK_CONTAINER(hbox_button), 5);
+    gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox_button),
+            GTK_BUTTONBOX_SPREAD);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_button, FALSE, FALSE, 2);
+
+    ok_button = gtk_button_new_from_stock(GTK_STOCK_OK);
+    gtk_container_add(GTK_CONTAINER(hbox_button), ok_button);
+
+    cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+    gtk_container_add(GTK_CONTAINER(hbox_button), cancel_button);
+
+    /* connect signals */
+    g_signal_connect(G_OBJECT(ok_button), "clicked",
+            G_CALLBACK(save_bugreport), (gpointer) dir_chooser);
+    g_signal_connect(G_OBJECT(cancel_button), "clicked",
+            G_CALLBACK(close_bugreport), (gpointer) window);
+    g_signal_connect(G_OBJECT(window), "delete-event",
+            G_CALLBACK(destroy_bugreport), (gpointer) window);
+
+    gtk_widget_show_all(window);
+}
+
+/**
  * show_last_tricks:
  *
  * Show a dialog window showing the last trick(s)
@@ -704,6 +804,9 @@ static GtkWidget *create_menu(void)
     GtkWidget *cmenu;        /* configuration submenu */
     GtkWidget *config;
     GtkWidget *options_item;
+    GtkWidget *brmenu;      /* bug report submenu */
+    GtkWidget *bugreport;
+    GtkWidget *bugreport_item;
     GtkWidget *hmenu;        /* help submenu */
     GtkWidget *help;
     GtkWidget *about_item;
@@ -749,6 +852,19 @@ static GtkWidget *create_menu(void)
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(config), cmenu);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), config);
+
+    /* bug report submenu */
+    bugreport_item = gtk_menu_item_new_with_label(_("File bug report"));
+    g_signal_connect(G_OBJECT(bugreport_item), "activate",
+            G_CALLBACK(show_file_bugreport), NULL);
+
+    brmenu = gtk_menu_new();
+    gtk_menu_shell_append(GTK_MENU_SHELL(brmenu), bugreport_item);
+
+    bugreport = gtk_menu_item_new_with_label(_("Bug report"));
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(bugreport), brmenu);
+
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), bugreport);
 
     /* help submenu */
     about_item = gtk_menu_item_new_with_label(_("About"));

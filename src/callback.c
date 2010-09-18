@@ -160,6 +160,99 @@ gboolean close_config(GtkButton *button, gpointer data)
 }
 
 /**
+ * save_bugreport:
+ * @button:  #GtkButton that was clicked
+ * @data:    file chooser button widget
+ *
+ * Callback function of the 'ok' button of the bugreport dialog.
+ *
+ * Saves the bug report into the user-defined directory.
+ *
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
+ */
+gboolean save_bugreport(GtkButton *button, gpointer data)
+{
+    (void) button;
+    gchar *dir, *filename, *file;
+    gchar date_string[256];
+    GTimeVal time;
+    GtkFileChooserButton *dir_chooser = (GtkFileChooserButton *) data;
+    GtkWidget *window;
+    GDate *date;
+
+    /* get current time */
+    g_get_current_time(&time);
+
+    date = g_date_new();
+    g_date_set_time_val(date, &time);
+    g_date_strftime(date_string, 256, "%F", date);
+
+    /* construct filename with random number to avoid duplicates */
+    file = g_strdup_printf("gskat_bugreport_%s_%03d", date_string,
+            g_random_int_range(1, 1000));
+
+    /* determine bug report directory */
+    dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dir_chooser));
+
+    filename = g_build_filename(dir, file, NULL);
+
+    gskat_msg(MT_DEBUG, _("Save bug report to '%s'\n"), filename);
+
+    /* TODO: save the file here */
+
+    /* get parent window */
+    window = gtk_widget_get_ancestor(GTK_WIDGET(dir_chooser), GTK_TYPE_WINDOW);
+    gtk_widget_destroy(window);
+
+    g_free(date);
+    g_free(dir);
+    g_free(file);
+    g_free(filename);
+
+    return TRUE;
+}
+
+/**
+ * destroy_bugreport:
+ * @widget:  #GtkWidget receiving the signal
+ * @event:   #GdkEvent triggering the signal
+ * @data:    bug report dialog window widget
+ *
+ * Wrapper function to 'close_bugreport' because of the different
+ * function arguments of the 'delete-event' signal
+ *
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
+ */
+gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+    (void) widget;
+    (void) event;
+
+    return close_bugreport(NULL, data);
+}
+
+/**
+ * close_bugreport:
+ * @button:  #GtkButton that was clicked
+ * @data:    bug report window widget
+ *
+ * Callback function of the 'cancel' button of the bugreport dialog.
+ *
+ * Frees the allocated widgets of the bug report window.
+ *
+ * Returns: %TRUE to not handle the event any further, otherwise %FALSE
+ */
+gboolean close_bugreport(GtkButton *button, gpointer data)
+{
+    (void) button;
+    GtkWidget *window = (GtkWidget *) data;
+
+    gtk_widget_destroy(window);
+
+    return TRUE;
+}
+
+/**
  * destroy_show_trick:
  * @widget:  #GtkWidget receiving the signal
  * @event:   #GdkEvent triggering the signal

@@ -38,6 +38,8 @@ void show_dialog(GtkMessageType type, GtkButtonsType buttons,
 
 void update_sb(const gchar *fmt, va_list args);
 
+void show_file_bugreport(void);
+
 void show_dialog_info(const gchar *fmt, va_list args);
 
 void show_dialog_error(const gchar *fmt, va_list args);

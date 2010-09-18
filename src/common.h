@@ -37,6 +37,8 @@ gchar *get_data_dir(void);
 
 gchar *get_cache_dir(void);
 
+gchar *get_desktop_dir(void);
+
 gboolean create_dir(const gchar *dir);
 
 #endif /* __COMMON_H__ */
