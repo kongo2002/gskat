@@ -19,6 +19,7 @@
  */
 
 #include "def.h"
+#include "common.h"
 #include "utils.h"
 
 /**
@@ -149,8 +150,9 @@ card *get_card_ptr(gint suit, gint rank)
             return tmp;
     }
 
-    DPRINT((_("Could not find a matching card (Suit: %d, Rank: %d).\n"),
-                suit, rank));
+    gskat_msg(MT_DEBUG,
+            _("Could not find a matching card (Suit: %d, Rank: %d).\n"),
+            suit, rank);
 
     return NULL;
 }

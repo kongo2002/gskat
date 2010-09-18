@@ -98,7 +98,7 @@ gboolean play_card(GdkEventButton *event)
                 return TRUE;
             }
             else
-                DPRINT((_("Card is not possible.\n")));
+                gskat_msg(MT_DEBUG, _("Card is not possible.\n"));
 
             if (ptr)
                 g_list_free(ptr);
@@ -494,8 +494,9 @@ gint do_sagen(player *player, gint hoerer, gint value)
     gint max = 0;
     gchar *msg;
 
-    DPRINT((_("Forehand: %s; Middlehand: %s\n"), player->name,
-                gskat.players[hoerer]->name));
+    gskat_msg(MT_INFO | MT_BUGREPORT,
+            _("Forehand: %s; Middlehand: %s\n"), player->name,
+            gskat.players[hoerer]->name);
 
     /* pass immediately? */
     if (value != player->gereizt)
@@ -527,12 +528,14 @@ gint do_sagen(player *player, gint hoerer, gint value)
     /* hoeren */
     if (gereizt)
     {
-        DPRINT((_("%s says %d\n"), player->name, value));
+        gskat_msg(MT_INFO | MT_BUGREPORT,
+                _("%s says %d\n"), player->name, value);
         player->gereizt = value;
 
         response = do_hoeren(gskat.players[hoerer], value, player->id);
-        DPRINT((_("%s says %s\n"), gskat.players[hoerer]->name,
-                (response) ? _("Yes") : _("No")));
+        gskat_msg(MT_INFO | MT_BUGREPORT,
+                _("%s says %s\n"), gskat.players[hoerer]->name,
+                (response) ? _("Yes") : _("No"));
 
         if (response)
         {
@@ -559,9 +562,7 @@ void start_bidding(void)
     gint i = 18;
     player *pptr;
 
-    DPRINT((_("Start of bidding\n")));
-
-    gskat_msg(MT_STATUSBAR, _("Start of bidding"));
+    gskat_msg(MT_INFO | MT_STATUSBAR | MT_BUGREPORT, _("Start of bidding"));
 
     /* disable 'new round' button */
     gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
@@ -572,16 +573,19 @@ void start_bidding(void)
         pptr = gskat.players[i];
         pptr->gereizt = 0;
 
-        DPRINT((_("MaxReizwert of %s: %d\n"), pptr->name,
-                    get_max_reizwert(pptr->cards)));
-        DPRINT((_("CardRating of %s: %d\n"), pptr->name,
-                    rate_cards(pptr, pptr->cards)));
+        gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                _("MaxReizwert of %s: %d\n"), pptr->name,
+                get_max_reizwert(pptr->cards));
+        gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                _("CardRating of %s: %d\n"), pptr->name,
+                rate_cards(pptr, pptr->cards));
     }
 
     /* sagen */
     sager = do_sagen(gskat.players[sager], hoerer, 18);
-    DPRINT((_("%s won 1. reizen with %d\n"), gskat.players[sager]->name,
-            gskat.players[sager]->gereizt));
+    gskat_msg(MT_INFO | MT_BUGREPORT,
+            _("%s won 1. reizen with %d\n"), gskat.players[sager]->name,
+            gskat.players[sager]->gereizt);
 
     sager = do_sagen(gskat.players[sager], (hoerer+2) % 3,
             (gskat.players[sager]->gereizt) ? gskat.players[sager]->gereizt : 18);
@@ -592,8 +596,9 @@ void start_bidding(void)
 
     if (gskat.players[sager]->gereizt)
     {
-        DPRINT((_("%s won 2. reizen with %d\n"), gskat.players[sager]->name,
-                    gskat.players[sager]->gereizt));
+        gskat_msg(MT_INFO | MT_BUGREPORT,
+                _("%s won 2. reizen with %d\n"), gskat.players[sager]->name,
+                gskat.players[sager]->gereizt);
 
         gskat.re = gskat.players[sager];
         gskat.re->re = TRUE;
@@ -608,16 +613,8 @@ void start_bidding(void)
     }
     else
     {
-        DPRINT((_("All players have passed -> new round.\n")));
-
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
-                GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_INFO,
-                GTK_BUTTONS_CLOSE,
-                _("All players have passed.\nNew round"));
-
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+        gskat_msg(MT_INFO | MT_DIALOG | MT_BUGREPORT,
+                _("All players have passed.\nNew round.\n"));
 
         reset_game();
         game_start();
@@ -846,7 +843,7 @@ void spiel_ansagen(void)
     GtkWidget *button;
     card *card = NULL;
 
-    DPRINT((_("Pronounce game.\n")));
+    gskat_msg(MT_INFO | MT_BUGREPORT, _("Pronounce game.\n"));
 
     /* select game to play */
     if (gskat.re->human)
@@ -953,7 +950,8 @@ gboolean throw_card(gpointer data)
     _card->draw = TRUE;
     _card->draw_face = TRUE;
 
-    DPRINT((_("%s played: %s\n"), player->name, get_card_name(_card)));
+    gskat_msg(MT_INFO | MT_BUGREPORT,
+            _("%s played: %s\n"), player->name, get_card_name(_card));
 
     gskat.table = g_list_append(gskat.table, _card);
     gskat.played = g_list_append(gskat.played, _card);
@@ -1058,12 +1056,14 @@ void calculate_stich(void)
      * -> he would have lost the game then */
     if (gskat.re == gskat.players[winner] && gskat.null)
     {
-        DPRINT((_("%s lost the game (null game)\n"), gskat.re->name));
+        gskat_msg(MT_INFO | MT_BUGREPORT,
+                _("%s lost the game (null game)\n"), gskat.re->name);
 
         end_round(FT_LOST);
     }
 
-    DPRINT((_("%s won the trick (%d).\n"), gskat.players[winner]->name, points));
+    gskat_msg(MT_INFO | MT_BUGREPORT,
+            _("%s won the trick (%d).\n"), gskat.players[winner]->name, points);
 
     /* remove cards from table */
     g_list_free(gskat.table);

@@ -109,35 +109,52 @@ void gskat_msg(msg_type type, const gchar *fmt, ...)
     if (fmt)
 #endif
     {
-        va_start(args, fmt);
 
         /* check if message should be logged for the bug report */
         if (type & MT_BUGREPORT)
+        {
+            va_start(args, fmt);
+
             write_to_log(fmt, args);
+
+            va_end(args);
+        }
 
         /* check if the message should be shown in the statusbar */
         if (type & MT_STATUSBAR)
+        {
+            va_start(args, fmt);
+
             update_sb(fmt, args);
+
+            va_end(args);
+        }
 
         /* check if a message dialog window shall be shown */
         if (type & MT_DIALOG)
         {
+            va_start(args, fmt);
+
             if (level <= MT_WARN)
                 show_dialog_error(fmt, args);
             else
                 show_dialog_info(fmt, args);
+
+            va_end(args);
         }
 
         /* print according to current log level */
         if (level)
         {
+            va_start(args, fmt);
+
             if (level <= MT_WARN)
                 g_vfprintf(stderr, fmt, args);
             else
                 g_vfprintf(stdout, fmt, args);
-        }
 
-        va_end(args);
+            va_end(args);
+        }
     }
 }
 
@@ -274,7 +291,8 @@ gboolean create_dir(const gchar *dir)
 
     if (!exists && g_mkdir(dir, 0755) != 0)
     {
-        DPRINT((_("Unable to create directory: %s\n"), dir));
+        gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                (_("Unable to create directory: %s\n"), dir));
         return FALSE;
     }
 

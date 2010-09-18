@@ -90,7 +90,7 @@ void set_icons(void)
         if (pixbuf)
         {
             icons = g_list_prepend(icons, pixbuf);
-            DPRINT((_("Loaded icon '%s'\n"), filename));
+            gskat_msg(MT_INFO, _("Loaded icon '%s'\n"), filename);
         }
 
         g_free(filename);
@@ -127,16 +127,14 @@ void load_suit_icons(void)
         {
             g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
 
-            DPRINT((_("Loading '%s' ... "), filename));
-
             if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
             {
-                DPRINT((_("OK\n")));
+                gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), filename);
                 gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
             }
             else
             {
-                DPRINT((_("FAIL\n")));
+                gskat_msg(MT_ERROR, _("Failed to load icon '%s'\n"), filename);
                 gskat.icons[i] = NULL;
             }
         }
@@ -1169,17 +1167,16 @@ gboolean load_cards(const gchar *path)
                 id = SUITS[i] + ranks[j];
                 g_sprintf(cname, "%s/%d.png", path, id);
 
-                DPRINT((_("Loading '%s' ... "), cname));
 
                 if (g_file_test(cname, G_FILE_TEST_EXISTS))
                 {
                     load_card(list, cname, ranks[j], SUITS[i]);
-                    DPRINT((_("OK\n")));
+                    gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
                 }
                 else
                 {
                     error = TRUE;
-                    DPRINT((_("FAIL\n")));
+                    gskat_msg(MT_ERROR, _("Failed to load '%s'\n"), cname);
                 }
             }
         }
@@ -1208,16 +1205,15 @@ gboolean load_cards(const gchar *path)
  */
 cairo_surface_t *load_image(gchar *filename)
 {
-    DPRINT((_("Loading '%s' ... "), filename));
 
     if (g_file_test(filename, G_FILE_TEST_EXISTS))
     {
-        DPRINT((_("OK\n")));
+        gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), filename);
         return cairo_image_surface_create_from_png(filename);
     }
     else
     {
-        DPRINT((_("FAIL\n")));
+        gskat_msg(MT_ERROR, _("Failed to load image '%s'\n"), filename);
         return NULL;
     }
 }
@@ -1305,7 +1301,7 @@ void free_app(void)
 
     g_free(gskat.widgets);
 
-    DPRINT((_("Quit gskat\n")));
+    gskat_msg(MT_INFO, _("Quit gskat\n"));
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

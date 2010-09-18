@@ -19,9 +19,10 @@
  */
 
 #include "def.h"
-#include "utils.h"
+#include "common.h"
 #include "game.h"
 #include "gamestate.h"
+#include "utils.h"
 
 /**
  * get_global_state:
@@ -124,14 +125,14 @@ gboolean save_global_state(FILE *output)
     /* try to determine global states */
     if (!(state = get_global_state()))
     {
-        DPRINT((_("Could not determine current game state.\n")));
+        gskat_msg(MT_ERROR, _("Could not determine current game state.\n"));
         return FALSE;
     }
 
     /* write global state into file buffer */
     if (fwrite(state, sizeof(global_state), 1, output) != 1)
     {
-        DPRINT((_("Error on writing game state.\n")));
+        gskat_msg(MT_ERROR, _("Error on writing game state.\n"));
 
         g_free(state);
         return FALSE;
@@ -156,14 +157,14 @@ gboolean save_card_states(FILE *output)
     /* try to determine card states */
     if (!(state = get_card_states()))
     {
-        DPRINT((_("Could not determine card states.\n")));
+        gskat_msg(MT_ERROR, _("Could not determine card states.\n"));
         return FALSE;
     }
 
     /* write card states into file buffer */
     if (fwrite(state, sizeof(card_state), 32, output) != 32)
     {
-        DPRINT((_("Error on writing card states.\n")));
+        gskat_msg(MT_ERROR, _("Error on writing card states.\n"));
 
         g_free(state);
         return FALSE;
@@ -201,7 +202,7 @@ gboolean save_played_card_states(FILE *output)
 
         if (fwrite(card_ids, sizeof(gint), num_cards, output) != num_cards)
         {
-            DPRINT((_("Error on writing trick states.\n")));
+            gskat_msg(MT_ERROR, _("Error on writing trick states.\n"));
 
             g_free(card_ids);
             return FALSE;
@@ -245,7 +246,7 @@ gboolean save_players_cards_state(FILE *output)
 
             if (fwrite(cards, sizeof(gint), len, output) != len)
             {
-                DPRINT((_("Failed on writing players' cards state.\n")));
+                gskat_msg(MT_ERROR, _("Failed on writing players' cards state.\n"));
 
                 g_free(cards);
                 return FALSE;
@@ -286,7 +287,7 @@ gboolean save_table_state(FILE *output)
 
         if (fwrite(table, sizeof(gint), len, output) != len)
         {
-            DPRINT((_("Failed on writing table cards state.\n")));
+            gskat_msg(MT_ERROR, _("Failed on writing table cards state.\n"));
 
             g_free(table);
             return FALSE;
@@ -313,7 +314,8 @@ gboolean save_state_to_file(const gchar *filename)
     /* open file handle for writing (in binary mode) */
     if (!(output = g_fopen(filename, "wb")))
     {
-        DPRINT((_("Error on opening file '%s' for writing.\n"), filename));
+        gskat_msg(MT_ERROR,
+                _("Error on opening file '%s' for writing.\n"), filename);
         return FALSE;
     }
 
@@ -332,14 +334,16 @@ gboolean save_state_to_file(const gchar *filename)
     if (!save_table_state(output))
         goto save_state_error;
 
-    DPRINT((_("Successfully wrote game state to file '%s'\n"), filename));
+    gskat_msg(MT_INFO,
+            _("Successfully wrote game state to file '%s'\n"), filename);
 
     fclose(output);
     return TRUE;
 
 save_state_error:
 
-    DPRINT((_("Failed to write game state to file '%s'\n"), filename));
+    gskat_msg(MT_ERROR,
+            _("Failed to write game state to file '%s'\n"), filename);
 
     fclose(output);
     return FALSE;
@@ -362,21 +366,21 @@ global_state *read_global_state(FILE *input)
 
     if (fread(state, sizeof(global_state), 1, input) != 1)
     {
-        DPRINT((_("Error on reading game state.\n")));
+        gskat_msg(MT_ERROR, _("Error on reading game state.\n"));
 
         g_free(state);
         return NULL;
     }
 
-    DPRINT(("cur_player: %d\n", state->cplayer));
-    DPRINT(("forehand: %d\n", state->forehand));
-    DPRINT(("trick: %d\n", state->num_stich));
-    DPRINT(("trump: %d\n", state->trump));
-    DPRINT(("re_player: %d\n", state->re_player));
-    DPRINT(("hand: %d\n", state->hand));
-    DPRINT(("null: %d\n", state->null));
-    DPRINT(("num_played: %d\n", state->num_played));
-    DPRINT(("skat: %d\t%d\n", state->skat[0], state->skat[1]));
+    gskat_msg(MT_DEBUG, "cur_player: %d\n", state->cplayer);
+    gskat_msg(MT_DEBUG, "forehand: %d\n", state->forehand);
+    gskat_msg(MT_DEBUG, "trick: %d\n", state->num_stich);
+    gskat_msg(MT_DEBUG, "trump: %d\n", state->trump);
+    gskat_msg(MT_DEBUG, "re_player: %d\n", state->re_player);
+    gskat_msg(MT_DEBUG, "hand: %d\n", state->hand);
+    gskat_msg(MT_DEBUG, "null: %d\n", state->null);
+    gskat_msg(MT_DEBUG, "num_played: %d\n", state->num_played);
+    gskat_msg(MT_DEBUG, "skat: %d\t%d\n", state->skat[0], state->skat[1]);
 
     return state;
 }
@@ -399,17 +403,17 @@ card_state *read_card_states(FILE *input)
 
     if (fread(state, sizeof(card_state), 32, input) != 32)
     {
-        DPRINT((_("Error on reading card states from file.\n")));
+        gskat_msg(MT_ERROR, _("Error on reading card states from file.\n"));
 
         g_free(state);
         return NULL;
     }
 
     for (i=0; i<32; ++i)
-        DPRINT(("card: %s %s\tstatus: %d\n",
-                    suit_name(state[i].suit),
-                    rank_name(state[i].rank),
-                    state[i].status));
+        gskat_msg(MT_DEBUG, "card: %s %s\tstatus: %d\n",
+                suit_name(state[i].suit),
+                rank_name(state[i].rank),
+                state[i].status);
 
     return state;
 }
@@ -435,7 +439,7 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards)
 
         if (fread(sg->pc, sizeof(gint), num_cards, input) != num_cards)
         {
-            DPRINT((_("Error on reading trick states.\n")));
+            gskat_msg(MT_ERROR, _("Error on reading trick states.\n"));
 
             g_free(sg->pc);
             sg->pc = NULL;
@@ -443,9 +447,9 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards)
             return FALSE;
         }
 
-        DPRINT(("PLAYED_CARDS (%d):\n", num_cards));
+        gskat_msg(MT_DEBUG, "PLAYED_CARDS (%d):\n", num_cards);
         for (i=0; i<num_cards; ++i)
-            DPRINT(("%d\n", sg->pc[i]));
+            gskat_msg(MT_DEBUG, "%d\n", sg->pc[i]);
     }
 
     return TRUE;
@@ -484,7 +488,8 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
 
             if (fread(cards, sizeof(gint), len, input) != len)
             {
-                DPRINT((_("Error on reading players' cards state.\n")));
+                gskat_msg(MT_ERROR,
+                        _("Error on reading players' cards state.\n"));
 
                 for (j=0; j<3; ++j)
                     if (sg->pcards[j])
@@ -495,21 +500,21 @@ gboolean read_players_cards_state(FILE *input, state_group *sg,
                 return FALSE;
             }
 
-            DPRINT((_("Player %d cards: "), i));
+            gskat_msg(MT_DEBUG, _("Player %d cards: "), i);
 
             for (j=0; j<len; ++j)
             {
                 if (j)
-                    DPRINT((", "));
-                DPRINT(("%d", cards[j]));
+                    gskat_msg(MT_DEBUG, ", ");
+                gskat_msg(MT_DEBUG, "%d", cards[j]);
             }
-            DPRINT(("\n"));
+            gskat_msg(MT_DEBUG, "\n");
 
             sg->pcards[i] = cards;
         }
         else
         {
-            DPRINT((_("Player %d has no cards anymore.\n"), i));
+            gskat_msg(MT_DEBUG, _("Player %d has no cards anymore.\n"), i);
 
             sg->pcards[i] = NULL;
         }
@@ -538,7 +543,7 @@ gboolean read_table_state(FILE *input, state_group *sg, guint num_table)
 
         if (fread(sg->table, sizeof(gint), num_table, input) != num_table)
         {
-            DPRINT((_("Error on reading table cards state.\n")));
+            gskat_msg(MT_ERROR, _("Error on reading table cards state.\n"));
 
             g_free(sg->table);
             sg->table = NULL;
@@ -546,19 +551,19 @@ gboolean read_table_state(FILE *input, state_group *sg, guint num_table)
             return FALSE;
         }
 
-        DPRINT((_("Cards on the table: ")));
+        gskat_msg(MT_DEBUG, _("Cards on the table: "));
 
         for (i=0; i<num_table; ++i)
         {
             if (i)
-                DPRINT((", "));
-            DPRINT(("%d", sg->table[i]));
+                gskat_msg(MT_DEBUG, ", ");
+            gskat_msg(MT_DEBUG, "%d", sg->table[i]);
         }
-        DPRINT(("\n"));
+        gskat_msg(MT_DEBUG, "\n");
     }
     else
     {
-        DPRINT((_("There are no cards on the table.\n")));
+        gskat_msg(MT_DEBUG, _("There are no cards on the table.\n"));
 
         sg->table = NULL;
     }
@@ -587,7 +592,8 @@ gboolean read_state_from_file(const gchar *filename)
     /* open file handle for reading (in binary mode) */
     if (!(input = g_fopen(filename, "rb")))
     {
-        DPRINT((_("Error on opening file '%s' for reading.\n"), filename));
+        gskat_msg(MT_ERROR,
+                _("Error on opening file '%s' for reading.\n"), filename);
 
         g_free(sg);
         return FALSE;
@@ -613,7 +619,8 @@ gboolean read_state_from_file(const gchar *filename)
     if (!read_table_state(input, sg, state->num_table))
         goto read_state_error;
 
-    DPRINT((_("Successfully read game state from file '%s'\n"), filename));
+    gskat_msg(MT_INFO,
+            _("Successfully read game state from file '%s'\n"), filename);
 
     sg->gs = state;
     sg->cs = cstates;
@@ -626,7 +633,8 @@ gboolean read_state_from_file(const gchar *filename)
 
 read_state_error:
 
-    DPRINT((_("Failed to read game state from file '%s'\n"), filename));
+    gskat_msg(MT_ERROR,
+            _("Failed to read game state from file '%s'\n"), filename);
 
     fclose(input);
     g_free(sg);
