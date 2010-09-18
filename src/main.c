@@ -39,7 +39,7 @@ static GOptionEntry arguments[] =
         N_("disable card animations"), NULL
     },
     {
-        "version", 'v', 0, G_OPTION_ARG_NONE, &version_only,
+        "version", 0, 0, G_OPTION_ARG_NONE, &version_only,
         N_("print version and exit"), NULL
     },
     { NULL, 0, 0, 0, NULL, NULL, NULL }
