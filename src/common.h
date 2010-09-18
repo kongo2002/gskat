@@ -41,6 +41,8 @@ gchar *get_desktop_dir(void);
 
 gboolean create_dir(const gchar *dir);
 
+void save_bugreport_to_file(const gchar *filename, GTimeVal *time);
+
 #endif /* __COMMON_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

@@ -342,4 +342,32 @@ gboolean create_dir(const gchar *dir)
     return TRUE;
 }
 
+/**
+ * save_bugreport_to_file:
+ * @filename:  File to save the bug report to
+ * @time:      Current timestamp
+ *
+ * Write the bug report string into the given filename
+ */
+void save_bugreport_to_file(const gchar *filename, GTimeVal *time)
+{
+    FILE *output;
+
+    if ((output = g_fopen(filename, "w")))
+    {
+        g_fprintf(output, "gskat Version %s - %s\n", VERSION,
+                GSKAT_COMMIT_HASH);
+        g_fprintf(output, "%s\n", g_time_val_to_iso8601(time));
+        g_fprintf(output, "------------------------------------------\n");
+        g_fprintf(output, "%s", gskat.log->str);
+
+        gskat_msg(MT_INFO | MT_STATUSBAR,
+                _("Saved bug report to '%s'\n"), filename);
+
+        fclose(output);
+    }
+    else
+        gskat_msg(MT_ERROR, _("Failed to save bug report to '%s'\n"), filename);
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */
