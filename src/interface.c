@@ -281,6 +281,7 @@ void show_file_bugreport(void)
     GtkWidget *hbox_button;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
+    GtkWidget *info_label;
 
     /* determine desktop directory */
     dir = get_desktop_dir();
@@ -335,6 +336,15 @@ void show_file_bugreport(void)
     gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(desc_text_view), 5);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(desc_text_view), GTK_WRAP_WORD);
     gtk_box_pack_start(GTK_BOX(desc_vbox), desc_text_view, TRUE, TRUE, 2);
+
+    /* information/send label */
+    info_label = gtk_label_new(NULL);
+    gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
+    gtk_label_set_line_wrap_mode(GTK_LABEL(info_label), PANGO_WRAP_WORD);
+    gtk_label_set_markup(GTK_LABEL(info_label),
+            _("Please send this bug report to\n"
+                "<u>kongo2002@googlemail.com</u>"));
+    gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 2);
 
     /* buttons */
     hbox_button = gtk_hbutton_box_new();
