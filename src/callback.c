@@ -173,6 +173,7 @@ gboolean close_config(GtkButton *button, gpointer data)
 gboolean save_bugreport(GtkButton *button, gpointer data)
 {
     (void) button;
+    FILE *stream;
     gchar *dir, *filename, *file;
     gchar date_string[256];
     GTimeVal time;
@@ -196,9 +197,18 @@ gboolean save_bugreport(GtkButton *button, gpointer data)
 
     filename = g_build_filename(dir, file, NULL);
 
-    gskat_msg(MT_DEBUG, _("Save bug report to '%s'\n"), filename);
 
-    /* TODO: save the file here */
+    if ((stream = g_fopen(filename, "w")))
+    {
+        g_fprintf(stream, "%s", gskat.log->str);
+
+        gskat_msg(MT_INFO | MT_STATUSBAR,
+                _("Saved bug report to '%s'\n"), filename);
+
+        close(stream);
+    }
+    else
+        gskat_msg(MT_ERROR, _("Failed to save bug report to '%s'\n"), filename);
 
     /* get parent window */
     window = gtk_widget_get_ancestor(GTK_WIDGET(dir_chooser), GTK_TYPE_WINDOW);
