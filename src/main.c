@@ -73,6 +73,7 @@ static void initialize()
     gskat.stich       = 1;
     gskat.hand        = FALSE;
     gskat.null        = FALSE;
+    gskat.log_level   = MT_INFO;
     gskat.log         = g_string_sized_new(256);
 }
 

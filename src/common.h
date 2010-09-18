@@ -29,6 +29,8 @@ gint max_str_len(const gchar *first, ...);
 
 void write_to_log(const gchar *fmt, va_list args);
 
+void gskat_msg(msg_type type, const gchar *fmt, ...);
+
 gchar *get_config_dir(void);
 
 gchar *get_data_dir(void);

@@ -87,6 +87,66 @@ void write_to_log(const gchar *fmt, va_list args)
 }
 
 /**
+ * gskat_msg:
+ * @type: #msg_type defining the type of the message
+ * @fmt:  printf-like format string
+ * @...:  optional arguments
+ *
+ * Print or log a message for debug, information or error purpose.
+ * Furthermore the @type defines if the message is shown in the statusbar
+ * or shown in a message dialog window and if the message is stored inside
+ * the bugreport log.
+ */
+void gskat_msg(msg_type type, const gchar *fmt, ...)
+{
+    va_list args;
+
+    if (fmt)
+    {
+        va_start(args, fmt);
+
+        /* check if message should be logged for the bug report */
+        if (type & MT_BUGREPORT)
+        {
+            write_to_log(fmt, args);
+
+            type &= ~MT_BUGREPORT;
+        }
+
+        /* check if the message should be shown in the statusbar */
+        if (type & MT_STATUSBAR)
+        {
+            /* TODO
+               update_sb(); */
+
+            type &= ~MT_STATUSBAR;
+        }
+
+        /* check if a message dialog window shall be shown */
+        if (type & MT_DIALOG)
+        {
+            /* TODO
+               show_dialog(); */
+
+            type &= ~MT_DIALOG;
+        }
+
+        /* print according to current log level */
+#ifndef DEBUG
+        if (type <= gskat.log_level)
+#endif
+        {
+            if (type <= MT_WARN)
+                g_vfprintf(stderr, fmt, args);
+            else
+                g_vfprintf(stdout, fmt, args);
+        }
+
+        va_end(args);
+    }
+}
+
+/**
  * get_config_dir:
  *
  * Determine the configuration directory

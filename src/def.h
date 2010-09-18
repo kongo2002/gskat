@@ -134,6 +134,28 @@ typedef enum {
 } finish_type;
 
 /**
+ * msg_type:
+ * @MT_ERROR:     Error message
+ * @MT_WARN:      Warning message
+ * @MT_INFO:      Information message
+ * @MT_DEBUG:     Debugging message
+ * @MT_STATUSBAR: Message is shown in the statusbar
+ * @MT_DIALOG:    A dialog window is opened
+ * @MT_BUGREPORT: Message is stored in the bugreport log
+ *
+ * Enumeration of different message type flags
+ */
+typedef enum {
+    MT_ERROR     = 1 << 0,
+    MT_WARN      = 1 << 1,
+    MT_INFO      = 1 << 2,
+    MT_DEBUG     = 1 << 3,
+    MT_STATUSBAR = 1 << 4,
+    MT_DIALOG    = 1 << 5,
+    MT_BUGREPORT = 1 << 6
+} msg_type;
+
+/**
  * card:
  * @img:       Front image of the card
  * @dim:       Current dimension/position of the card
@@ -304,6 +326,7 @@ typedef struct _app {
     gint stich;
     gboolean hand;
     gboolean null;
+    msg_type log_level;
     GString *log;
     config conf;
 } app;
