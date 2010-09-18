@@ -339,11 +339,13 @@ void show_file_bugreport(void)
 
     /* information/send label */
     info_label = gtk_label_new(NULL);
+    gtk_label_set_selectable(GTK_LABEL(info_label), TRUE);
     gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
     gtk_label_set_line_wrap_mode(GTK_LABEL(info_label), PANGO_WRAP_WORD);
     gtk_label_set_markup(GTK_LABEL(info_label),
-            _("Please send this bug report to\n"
-                "<u>kongo2002@googlemail.com</u>"));
+            _("Please send this bug report to\n<a href=\"mailto:"
+                "kongo2002@googlemail.com\" title=\"Send mail\">"
+                "kongo2002@googlemail.com</a>"));
     gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 2);
 
     /* buttons */
