@@ -40,8 +40,7 @@ global_state *get_global_state(void)
     player_state *pstate;
     player *cur_player;
 
-    if (!(state = (global_state *) g_malloc(sizeof(global_state))))
-        return NULL;
+    state = (global_state *) g_malloc(sizeof(global_state));
 
     /* iterate over all three players */
     for (i=0; i<3; ++i)
@@ -91,8 +90,7 @@ card_state *get_card_states(void)
     card *tmp;
     card_state *cards, *cstate;
 
-    if (!(cards = (card_state *) g_malloc(sizeof(card_state) * 32)))
-        return NULL;
+    cards = (card_state *) g_malloc(sizeof(card_state) * 32);
 
     for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
     {
@@ -361,8 +359,7 @@ global_state *read_global_state(FILE *input)
 {
     global_state *state;
 
-    if (!(state = (global_state *) g_malloc(sizeof(global_state))))
-        return NULL;
+    state = (global_state *) g_malloc(sizeof(global_state));
 
     if (fread(state, sizeof(global_state), 1, input) != 1)
     {
@@ -398,8 +395,7 @@ card_state *read_card_states(FILE *input)
     gint i;
     card_state *state;
 
-    if (!(state = (card_state *) g_malloc(sizeof(card_state) * 32)))
-        return NULL;
+    state = (card_state *) g_malloc(sizeof(card_state) * 32);
 
     if (fread(state, sizeof(card_state), 32, input) != 32)
     {

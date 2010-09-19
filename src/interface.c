@@ -39,20 +39,15 @@ player *init_player(gint id, gchar *name, gboolean human)
 {
     player *new = (player *) g_malloc(sizeof(player));
 
-    if (new)
-    {
-        new->id = id;
-        new->name = name;
-        new->human = human;
-        new->re = FALSE;
-        new->points = 0;
-        new->sum_points = 0;
-        new->round_points = NULL;
-        new->gereizt = 0;
-        new->cards = NULL;
-    }
-    else
-        g_printerr("Could not create new player %s\n", name);
+    new->id = id;
+    new->name = name;
+    new->human = human;
+    new->re = FALSE;
+    new->points = 0;
+    new->sum_points = 0;
+    new->round_points = NULL;
+    new->gereizt = 0;
+    new->cards = NULL;
 
     return new;
 }
@@ -119,28 +114,25 @@ void load_suit_icons(void)
 
     filename = (gchar *) g_malloc(sizeof(gchar) * (strlen(DATA_DIR) + 20));
 
-    if (filename)
+    gskat.icons = (GdkPixbuf **) g_malloc(sizeof(GdkPixbuf *) * 4);
+
+    for (i=0; i<4; i++)
     {
-        gskat.icons = (GdkPixbuf **) g_malloc(sizeof(GdkPixbuf *) * 4);
+        g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
 
-        for (i=0; i<4; i++)
+        if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
         {
-            g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
-
-            if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
-            {
-                gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), filename);
-                gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
-            }
-            else
-            {
-                gskat_msg(MT_ERROR, _("Failed to load icon '%s'\n"), filename);
-                gskat.icons[i] = NULL;
-            }
+            gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), filename);
+            gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
         }
-
-        g_free(filename);
+        else
+        {
+            gskat_msg(MT_ERROR, _("Failed to load icon '%s'\n"), filename);
+            gskat.icons[i] = NULL;
+        }
     }
+
+    g_free(filename);
 }
 
 /**
@@ -155,14 +147,9 @@ void alloc_app(void)
     /* initialize players */
     gskat.players = (player **) g_malloc(sizeof(player *) * 3);
 
-    if (gskat.players)
-    {
-        for (i=0; i<3; ++i)
-            gskat.players[i] = init_player(i, gskat.conf.player_names[i],
-                    i ? FALSE : TRUE);
-    }
-    else
-        g_printerr("Could not create players.\n");
+    for (i=0; i<3; ++i)
+        gskat.players[i] = init_player(i, gskat.conf.player_names[i],
+                i ? FALSE : TRUE);
 
     /* initialize played cards */
     gskat.stiche = (card ***) g_malloc(sizeof(card **) * 10);
@@ -453,8 +440,7 @@ void show_last_tricks(void)
     gtk_widget_set_sensitive(next_button, FALSE);
 
     /* initialize stich_view structure */
-    if (!(sv = g_malloc(sizeof(stich_view))))
-        return;
+    sv = g_malloc(sizeof(stich_view));
 
     sv->cur = cur;
     sv->stich = stich;
@@ -944,217 +930,213 @@ void create_interface(void)
 
     gchar *iconfile = (gchar *) g_malloc(sizeof(gchar) * strlen(DATA_DIR)+20);
 
-    if (iconfile)
-        g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
+    g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
     gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 16);
 
-    if (gskat.widgets != NULL)
-    {
-        window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_title(GTK_WINDOW(window), "gskat");
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "gskat");
 
-        if (g_file_test(iconfile, G_FILE_TEST_EXISTS))
-            gtk_window_set_icon_from_file(GTK_WINDOW(window), iconfile, NULL);
+    if (g_file_test(iconfile, G_FILE_TEST_EXISTS))
+        gtk_window_set_icon_from_file(GTK_WINDOW(window), iconfile, NULL);
 
-        g_free(iconfile);
+    g_free(iconfile);
 
-        vboxmenu = gtk_vbox_new(FALSE, 0);
-        gtk_container_add(GTK_CONTAINER(window), vboxmenu);
+    vboxmenu = gtk_vbox_new(FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(window), vboxmenu);
 
-        mainmenu = create_menu();
-        if (mainmenu)
-            gtk_box_pack_start(GTK_BOX(vboxmenu), mainmenu, FALSE, FALSE, 0);
+    mainmenu = create_menu();
+    if (mainmenu)
+        gtk_box_pack_start(GTK_BOX(vboxmenu), mainmenu, FALSE, FALSE, 0);
 
-        hbox = gtk_hbox_new(FALSE, 0);
-        /* gtk_box_pack_start(child, expand, fill, padding) */
-        gtk_box_pack_start(GTK_BOX(vboxmenu), hbox, TRUE, TRUE, 0);
+    hbox = gtk_hbox_new(FALSE, 0);
+    /* gtk_box_pack_start(child, expand, fill, padding) */
+    gtk_box_pack_start(GTK_BOX(vboxmenu), hbox, TRUE, TRUE, 0);
 
-        statusbar = gtk_statusbar_new();
-        gtk_box_pack_start(GTK_BOX(vboxmenu), statusbar, FALSE, TRUE, 0);
+    statusbar = gtk_statusbar_new();
+    gtk_box_pack_start(GTK_BOX(vboxmenu), statusbar, FALSE, TRUE, 0);
 
-        area = gtk_drawing_area_new();
-        gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
-        gtk_widget_set_size_request(area, 450, 500);
-        gtk_widget_set_double_buffered(area, TRUE);
+    area = gtk_drawing_area_new();
+    gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
+    gtk_widget_set_size_request(area, 450, 500);
+    gtk_widget_set_double_buffered(area, TRUE);
 
-        vbox = gtk_vbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+    vbox = gtk_vbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 
-        frame_game = gtk_frame_new(_("Round 1"));
-        gtk_frame_set_label_align(GTK_FRAME(frame_game), 0.5, 0.5);
-        gtk_box_pack_start(GTK_BOX(vbox), frame_game, FALSE, TRUE, 2);
-        gtk_frame_set_shadow_type(GTK_FRAME(frame_game), GTK_SHADOW_ETCHED_IN);
+    frame_game = gtk_frame_new(_("Round 1"));
+    gtk_frame_set_label_align(GTK_FRAME(frame_game), 0.5, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), frame_game, FALSE, TRUE, 2);
+    gtk_frame_set_shadow_type(GTK_FRAME(frame_game), GTK_SHADOW_ETCHED_IN);
 
-        /* gtk_table_new(rows, columns, homogeneous) */
-        table_game = gtk_table_new(4, 2, FALSE);
-        gtk_container_add(GTK_CONTAINER(frame_game), table_game);
-        gtk_container_set_border_width(GTK_CONTAINER(table_game), 20);
-        gtk_table_set_col_spacings(GTK_TABLE(table_game), 20);
-        gtk_table_set_row_spacings(GTK_TABLE(table_game), 5);
+    /* gtk_table_new(rows, columns, homogeneous) */
+    table_game = gtk_table_new(4, 2, FALSE);
+    gtk_container_add(GTK_CONTAINER(frame_game), table_game);
+    gtk_container_set_border_width(GTK_CONTAINER(table_game), 20);
+    gtk_table_set_col_spacings(GTK_TABLE(table_game), 20);
+    gtk_table_set_row_spacings(GTK_TABLE(table_game), 5);
 
-        lb_game_stich_left = gtk_label_new(_("Trick:"));
-        lb_game_re_left = gtk_label_new(_("Re:"));
-        lb_game_spiel_left = gtk_label_new(_("Game:"));
-        lb_game_gereizt_left = gtk_label_new(_("Bidden:"));
+    lb_game_stich_left = gtk_label_new(_("Trick:"));
+    lb_game_re_left = gtk_label_new(_("Re:"));
+    lb_game_spiel_left = gtk_label_new(_("Game:"));
+    lb_game_gereizt_left = gtk_label_new(_("Bidden:"));
 
-        /* gtk_misc_set_alignment(misc, xalign, yalign)
-         * xalign: 0 (left) to 1 (right)
-         * yalign: 0 (top) to 1 (bottom) */
-        gtk_misc_set_alignment(GTK_MISC(lb_game_stich_left), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_game_re_left), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_left), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_game_gereizt_left), 1, 0.5);
+    /* gtk_misc_set_alignment(misc, xalign, yalign)
+     * xalign: 0 (left) to 1 (right)
+     * yalign: 0 (top) to 1 (bottom) */
+    gtk_misc_set_alignment(GTK_MISC(lb_game_stich_left), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_re_left), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_left), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_gereizt_left), 1, 0.5);
 
-        /* gtk_table_attach_defaults(parent, child, left, right, top, bottom) */
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_stich_left,
-                0, 1, 0, 1);
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_re_left,
-                0, 1, 1, 2);
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_spiel_left,
-                0, 1, 2, 3);
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_gereizt_left,
-                0, 1, 3, 4);
+    /* gtk_table_attach_defaults(parent, child, left, right, top, bottom) */
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_stich_left,
+            0, 1, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_re_left,
+            0, 1, 1, 2);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_spiel_left,
+            0, 1, 2, 3);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_gereizt_left,
+            0, 1, 3, 4);
 
-        lb_game_stich_right = gtk_label_new("1");
-        lb_game_re_right = gtk_label_new("-");
-        lb_game_spiel_right = gtk_label_new("-");
-        lb_game_gereizt_right = gtk_label_new("-");
+    lb_game_stich_right = gtk_label_new("1");
+    lb_game_re_right = gtk_label_new("-");
+    lb_game_spiel_right = gtk_label_new("-");
+    lb_game_gereizt_right = gtk_label_new("-");
 
-        gtk_misc_set_alignment(GTK_MISC(lb_game_stich_right), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_game_re_right), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_right), 1, 0.5);
-        gtk_misc_set_alignment(GTK_MISC(lb_game_gereizt_right), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_stich_right), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_re_right), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_spiel_right), 1, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(lb_game_gereizt_right), 1, 0.5);
 
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_stich_right,
-                1, 2, 0, 1);
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_re_right,
-                1, 2, 1, 2);
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_spiel_right,
-                1, 2, 2, 3);
-        gtk_table_attach_defaults(GTK_TABLE(table_game),
-                lb_game_gereizt_right,
-                1, 2, 3, 4);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_stich_right,
+            1, 2, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_re_right,
+            1, 2, 1, 2);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_spiel_right,
+            1, 2, 2, 3);
+    gtk_table_attach_defaults(GTK_TABLE(table_game),
+            lb_game_gereizt_right,
+            1, 2, 3, 4);
 
-        /* game rankings */
-        frame_rank = gtk_frame_new(_("Rankings"));
-        gtk_frame_set_label_align(GTK_FRAME(frame_rank), 0.5, 0.5);
-        gtk_box_pack_start(GTK_BOX(vbox), frame_rank, TRUE, TRUE, 2);
-        gtk_frame_set_shadow_type(GTK_FRAME(frame_rank), GTK_SHADOW_ETCHED_IN);
+    /* game rankings */
+    frame_rank = gtk_frame_new(_("Rankings"));
+    gtk_frame_set_label_align(GTK_FRAME(frame_rank), 0.5, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), frame_rank, TRUE, TRUE, 2);
+    gtk_frame_set_shadow_type(GTK_FRAME(frame_rank), GTK_SHADOW_ETCHED_IN);
 
-        scrolled_win = gtk_scrolled_window_new(NULL, NULL);
-        gtk_container_set_border_width(GTK_CONTAINER(scrolled_win), 5);
-        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
-                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-        gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_win),
-                GTK_SHADOW_NONE);
-        gtk_container_add(GTK_CONTAINER(frame_rank), scrolled_win);
+    scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_win), 5);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win),
+            GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_win),
+            GTK_SHADOW_NONE);
+    gtk_container_add(GTK_CONTAINER(frame_rank), scrolled_win);
 
-        vbox_table = gtk_vbox_new(FALSE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(vbox_table), 5);
+    vbox_table = gtk_vbox_new(FALSE, 2);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox_table), 5);
 
-        gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
-                vbox_table);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win),
+            vbox_table);
 
-        /* players' points table */
-        table_rank = gtk_table_new(1, 3, TRUE);
-        gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
-        gtk_container_set_border_width(GTK_CONTAINER(table_rank), 5);
-        gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
-        gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
+    /* players' points table */
+    table_rank = gtk_table_new(1, 3, TRUE);
+    gtk_box_pack_start(GTK_BOX(vbox_table), table_rank, FALSE, TRUE, 2);
+    gtk_container_set_border_width(GTK_CONTAINER(table_rank), 5);
+    gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
+    gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-        lb_rank_p1_name = gtk_label_new(gskat.conf.player_names[0]);
-        lb_rank_p2_name = gtk_label_new(gskat.conf.player_names[1]);
-        lb_rank_p3_name = gtk_label_new(gskat.conf.player_names[2]);
+    lb_rank_p1_name = gtk_label_new(gskat.conf.player_names[0]);
+    lb_rank_p2_name = gtk_label_new(gskat.conf.player_names[1]);
+    lb_rank_p3_name = gtk_label_new(gskat.conf.player_names[2]);
 
-        gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p1_name,
-                0, 1, 0, 1);
-        gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p2_name,
-                1, 2, 0, 1);
-        gtk_table_attach_defaults(GTK_TABLE(table_rank),
-                lb_rank_p3_name,
-                2, 3, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_rank),
+            lb_rank_p1_name,
+            0, 1, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_rank),
+            lb_rank_p2_name,
+            1, 2, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_rank),
+            lb_rank_p3_name,
+            2, 3, 0, 1);
 
-        hsep = gtk_hseparator_new();
-        gtk_box_pack_start(GTK_BOX(vbox_table), hsep, FALSE, TRUE, 0);
+    hsep = gtk_hseparator_new();
+    gtk_box_pack_start(GTK_BOX(vbox_table), hsep, FALSE, TRUE, 0);
 
-        table_points = gtk_table_new(1, 3, TRUE);
-        gtk_container_set_border_width(GTK_CONTAINER(table_points), 5);
-        gtk_table_set_col_spacings(GTK_TABLE(table_points), 10);
-        gtk_table_set_row_spacings(GTK_TABLE(table_points), 0);
+    table_points = gtk_table_new(1, 3, TRUE);
+    gtk_container_set_border_width(GTK_CONTAINER(table_points), 5);
+    gtk_table_set_col_spacings(GTK_TABLE(table_points), 10);
+    gtk_table_set_row_spacings(GTK_TABLE(table_points), 0);
 
-        lb_rank_p1 = gtk_label_new("");
-        lb_rank_p2 = gtk_label_new("");
-        lb_rank_p3 = gtk_label_new("");
+    lb_rank_p1 = gtk_label_new("");
+    lb_rank_p2 = gtk_label_new("");
+    lb_rank_p3 = gtk_label_new("");
 
-        gtk_label_set_markup(GTK_LABEL(lb_rank_p1), "<b>0</b>");
-        gtk_label_set_markup(GTK_LABEL(lb_rank_p2), "<b>0</b>");
-        gtk_label_set_markup(GTK_LABEL(lb_rank_p3), "<b>0</b>");
+    gtk_label_set_markup(GTK_LABEL(lb_rank_p1), "<b>0</b>");
+    gtk_label_set_markup(GTK_LABEL(lb_rank_p2), "<b>0</b>");
+    gtk_label_set_markup(GTK_LABEL(lb_rank_p3), "<b>0</b>");
 
-        gtk_table_attach_defaults(GTK_TABLE(table_points),
-                lb_rank_p1,
-                0, 1, 0, 1);
-        gtk_table_attach_defaults(GTK_TABLE(table_points),
-                lb_rank_p2,
-                1, 2, 0, 1);
-        gtk_table_attach_defaults(GTK_TABLE(table_points),
-                lb_rank_p3,
-                2, 3, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_points),
+            lb_rank_p1,
+            0, 1, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_points),
+            lb_rank_p2,
+            1, 2, 0, 1);
+    gtk_table_attach_defaults(GTK_TABLE(table_points),
+            lb_rank_p3,
+            2, 3, 0, 1);
 
-        gtk_box_pack_start(GTK_BOX(vbox_table), table_points, FALSE, TRUE, 2);
+    gtk_box_pack_start(GTK_BOX(vbox_table), table_points, FALSE, TRUE, 2);
 
-        button = gtk_button_new_with_label(_("New Round"));
-        gtk_widget_set_sensitive(button, FALSE);
-        gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, TRUE, 2);
+    button = gtk_button_new_with_label(_("New Round"));
+    gtk_widget_set_sensitive(button, FALSE);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, TRUE, 2);
 
-        /* set game object pointers */
-        gskat.area = area;
+    /* set game object pointers */
+    gskat.area = area;
 
-        gskat.widgets[0] = window;
-        gskat.widgets[1] = button;
-        gskat.widgets[2] = lb_game_stich_right;
-        gskat.widgets[3] = lb_game_re_right;
-        gskat.widgets[4] = lb_game_spiel_right;
-        gskat.widgets[5] = lb_game_gereizt_right;
-        gskat.widgets[6] = lb_rank_p1;
-        gskat.widgets[7] = lb_rank_p2;
-        gskat.widgets[8] = lb_rank_p3;
-        gskat.widgets[9] = frame_game;
-        gskat.widgets[10] = table_rank;
-        gskat.widgets[11] = lb_rank_p1_name;
-        gskat.widgets[12] = lb_rank_p2_name;
-        gskat.widgets[13] = lb_rank_p3_name;
-        gskat.widgets[14] = statusbar;
+    gskat.widgets[0] = window;
+    gskat.widgets[1] = button;
+    gskat.widgets[2] = lb_game_stich_right;
+    gskat.widgets[3] = lb_game_re_right;
+    gskat.widgets[4] = lb_game_spiel_right;
+    gskat.widgets[5] = lb_game_gereizt_right;
+    gskat.widgets[6] = lb_rank_p1;
+    gskat.widgets[7] = lb_rank_p2;
+    gskat.widgets[8] = lb_rank_p3;
+    gskat.widgets[9] = frame_game;
+    gskat.widgets[10] = table_rank;
+    gskat.widgets[11] = lb_rank_p1_name;
+    gskat.widgets[12] = lb_rank_p2_name;
+    gskat.widgets[13] = lb_rank_p3_name;
+    gskat.widgets[14] = statusbar;
 
-        /* attach signals */
-        g_signal_connect(G_OBJECT(window), "destroy",
-                G_CALLBACK(quit), NULL);
-        g_signal_connect(G_OBJECT(area), "realize",
-                G_CALLBACK(realization), NULL);
-        g_signal_connect(G_OBJECT(area), "configure_event",
-                G_CALLBACK(configure), NULL);
-        g_signal_connect(G_OBJECT(area), "expose_event",
-                G_CALLBACK(refresh), NULL);
-        g_signal_connect(G_OBJECT(button), "clicked",
-                G_CALLBACK(next_round), NULL);
+    /* attach signals */
+    g_signal_connect(G_OBJECT(window), "destroy",
+            G_CALLBACK(quit), NULL);
+    g_signal_connect(G_OBJECT(area), "realize",
+            G_CALLBACK(realization), NULL);
+    g_signal_connect(G_OBJECT(area), "configure_event",
+            G_CALLBACK(configure), NULL);
+    g_signal_connect(G_OBJECT(area), "expose_event",
+            G_CALLBACK(refresh), NULL);
+    g_signal_connect(G_OBJECT(button), "clicked",
+            G_CALLBACK(next_round), NULL);
 
-        gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK |
-                GDK_POINTER_MOTION_MASK);
-        g_signal_connect(G_OBJECT(area), "button_press_event",
-                G_CALLBACK(mouse_click), NULL);
-        g_signal_connect(G_OBJECT(area), "motion-notify-event",
-                G_CALLBACK(mouse_move), NULL);
-    }
+    gtk_widget_add_events(area, GDK_BUTTON_PRESS_MASK |
+            GDK_POINTER_MOTION_MASK);
+    g_signal_connect(G_OBJECT(area), "button_press_event",
+            G_CALLBACK(mouse_click), NULL);
+    g_signal_connect(G_OBJECT(area), "motion-notify-event",
+            G_CALLBACK(mouse_move), NULL);
 }
 
 /**
@@ -1168,8 +1150,7 @@ void update_interface(void)
     gchar *text;
 
     /* 1024 characters should be enough ... */
-    if (!(text = (gchar *) g_malloc(sizeof(gchar) * len)))
-        return;
+    text = (gchar *) g_malloc(sizeof(gchar) * len);
 
     /* current trick label */
     g_snprintf(text, len-1, "%d", gskat.stich);
@@ -1255,25 +1236,22 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
 {
     card *tcard = (card *) g_malloc(sizeof(card));
 
-    if (tcard != NULL)
-    {
-        tcard->rank = rank;
-        tcard->suit = suit;
-        tcard->owner = -1;
+    tcard->rank = rank;
+    tcard->suit = suit;
+    tcard->owner = -1;
 
-        tcard->points = get_card_points(rank);
+    tcard->points = get_card_points(rank);
 
-        tcard->dim.x = 0;
-        tcard->dim.y = 0;
+    tcard->dim.x = 0;
+    tcard->dim.y = 0;
 
-        tcard->draw = FALSE;
+    tcard->draw = FALSE;
 
-        tcard->img = cairo_image_surface_create_from_png(file);
-        tcard->dim.w = cairo_image_surface_get_width(tcard->img);
-        tcard->dim.h = cairo_image_surface_get_height(tcard->img);
+    tcard->img = cairo_image_surface_create_from_png(file);
+    tcard->dim.w = cairo_image_surface_get_width(tcard->img);
+    tcard->dim.h = cairo_image_surface_get_height(tcard->img);
 
-        *list = g_list_prepend(*list, (gpointer) tcard);
-    }
+    *list = g_list_prepend(*list, (gpointer) tcard);
 }
 
 /**
@@ -1294,26 +1272,23 @@ gboolean load_cards(const gchar *path)
     gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
 
     /* create all 32 cards */
-    if (cname != NULL)
+    for (i=0; i<4; ++i)
     {
-        for (i=0; i<4; ++i)
+        for (j=0; j<8; ++j)
         {
-            for (j=0; j<8; ++j)
+            id = SUITS[i] + ranks[j];
+            g_sprintf(cname, "%s/%d.png", path, id);
+
+
+            if (g_file_test(cname, G_FILE_TEST_EXISTS))
             {
-                id = SUITS[i] + ranks[j];
-                g_sprintf(cname, "%s/%d.png", path, id);
-
-
-                if (g_file_test(cname, G_FILE_TEST_EXISTS))
-                {
-                    load_card(list, cname, ranks[j], SUITS[i]);
-                    gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
-                }
-                else
-                {
-                    error = TRUE;
-                    gskat_msg(MT_ERROR, _("Failed to load '%s'\n"), cname);
-                }
+                load_card(list, cname, ranks[j], SUITS[i]);
+                gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
+            }
+            else
+            {
+                error = TRUE;
+                gskat_msg(MT_ERROR, _("Failed to load '%s'\n"), cname);
             }
         }
     }

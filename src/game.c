@@ -978,14 +978,11 @@ gboolean throw_card(gpointer data)
         /* this will be freed in the last call of 'move_card' */
         cm = (card_move *) g_malloc(sizeof(card_move));
 
-        if (cm)
-        {
-            cm->mcard = _card;
-            set_table_position(_card, &cm->dest_x, &cm->dest_y);
-            set_card_move_step(cm);
+        cm->mcard = _card;
+        set_table_position(_card, &cm->dest_x, &cm->dest_y);
+        set_card_move_step(cm);
 
-            g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
-        }
+        g_timeout_add(25, (GSourceFunc) move_card, (gpointer) cm);
     }
 
     calc_card_positions();
