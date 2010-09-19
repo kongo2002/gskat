@@ -184,8 +184,8 @@ void set_card_move_step(card_move *cm)
 {
     card *ptr = cm->mcard;
 
-    gint dx = abs(ptr->dim.x - cm->dest_x);
-    gint dy = abs(ptr->dim.y - cm->dest_y);
+    gint dx = ABS(ptr->dim.x - cm->dest_x);
+    gint dy = ABS(ptr->dim.y - cm->dest_y);
 
     cm->x_move = (gdouble) dx / 25;
     cm->y_move = (gdouble) dy / 25;
@@ -221,7 +221,7 @@ gboolean move_card(gpointer data)
     gint dy = ptr->dim.y - cm->dest_y;
 
     /* adjust x coordinate */
-    if (abs(dx) < x_move)
+    if (ABS(dx) < x_move)
         ptr->dim.x = cm->dest_x;
     else
     {
@@ -230,7 +230,7 @@ gboolean move_card(gpointer data)
     }
 
     /* adjust y coordinate */
-    if (abs(dy) < y_move)
+    if (ABS(dy) < y_move)
         ptr->dim.y = cm->dest_y;
     else
     {

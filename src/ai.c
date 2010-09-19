@@ -21,7 +21,6 @@
 #include "def.h"
 #include "ai.h"
 #include "common.h"
-#include "game.h"
 #include "utils.h"
 
 /**
@@ -97,7 +96,7 @@ card *ai_select_card(player *player, GList *list)
         gskat_msg(MT_DEBUG | MT_BUGREPORT,
                 _("%s: random card\n"), player->name);
 
-        selection = rand() % g_list_length(list);
+        selection = g_random_int_range(0, g_list_length(list));
         return g_list_nth_data(list, selection);
     }
 
@@ -409,7 +408,7 @@ card *trumpf_spitzen(player *player, GList *list)
             spitzen = len_spitzen(player, trump, gskat.trump);
 
             if (spitzen)
-                card = g_list_nth_data(trump, rand() % spitzen);
+                card = g_list_nth_data(trump, g_random_int_range(0, spitzen));
         }
 
         g_list_free(trump);
@@ -531,7 +530,7 @@ card *kurz_aufspielen(player *player, GList *list)
         ptr = get_suit_list(list, sel_suit);
 
         /* TODO: implement more logic here */
-        i = rand() % g_list_length(ptr);
+        i = g_random_int_range(0, g_list_length(ptr));
         card = g_list_nth_data(ptr, i);
 
         g_list_free(ptr);
@@ -589,7 +588,7 @@ card *lang_aufspielen(player *player, GList *list)
         ptr = get_suit_list(list, sel_suit);
 
         /* TODO: implement more logic here */
-        i = rand() % g_list_length(ptr);
+        i = g_random_int_range(0, g_list_length(ptr));
         card = g_list_nth_data(ptr, i);
 
         g_list_free(ptr);

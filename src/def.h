@@ -21,13 +21,12 @@
 #ifndef __DEF_H__
 #define __DEF_H__
 
-#include <stdlib.h>
-#include <string.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 
 #include "config.h"
 
