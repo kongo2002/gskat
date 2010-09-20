@@ -251,6 +251,7 @@ gboolean close_bugreport(GtkButton *button, gpointer data)
     br_group *bug_report_group = (br_group *) data;
 
     gtk_widget_destroy(bug_report_group->window);
+    g_free(bug_report_group);
 
     return TRUE;
 }
