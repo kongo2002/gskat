@@ -100,13 +100,13 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
 
     gtk_show_about_dialog(GTK_WINDOW(gskat.widgets[0]),
             "program_name", _("gskat"),
-            "comments", _("Gtk skat game written in C"),
+            "comments", _("Gtk Skat game written in C"),
             "authors", authors,
             "artists", authors,
             "version", VERSION,
             "license", license_string,
             "logo", pixbuf,
-            "website", "http://github.com/kongo2002/gskat",
+            "website", "http://kongo2002.github.com",
             "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
                 "All Rights Reserved.",
             NULL);
