@@ -31,7 +31,7 @@
  * Main AI function to determine the next card to play according to the
  * position and the team the player is in
  *
- * Returns: the next card to play
+ * Returns: the next #card to play
  */
 card *ai_select_card(player *player, GList *list)
 {
@@ -94,7 +94,7 @@ card *ai_select_card(player *player, GList *list)
     if (card == NULL)
     {
         gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                _("%s: random card\n"), player->name);
+                "%s: random card\n", player->name);
 
         selection = g_random_int_range(0, g_list_length(list));
         return g_list_nth_data(list, selection);
@@ -119,7 +119,7 @@ card *kurz_fehl_ass(player *player, GList *list)
     card *card = NULL, *ret = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try kurz_fehl_ass()\n"), player->name);
+            "%s: try kurz_fehl_ass()\n", player->name);
 
     for (i=0; i<4; ++i)
     {
@@ -162,7 +162,7 @@ card *knapp_trumpfen(player *player, GList *list)
     card *ret = NULL, *card = NULL, *high = highest_on_table();
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try knapp_trumpfen()\n"), player->name);
+            "%s: try knapp_trumpfen()\n", player->name);
 
     /* play ace if first trick of suit */
     if (!is_trump(high))
@@ -211,6 +211,9 @@ card *ai_re_kommt_raus(player *player, GList *list)
 {
     card *card = NULL;
 
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_re_kommt_raus()\n",
+            player->name);
+
     if ((card = highest_fehl(player, list)))
         return card;
 
@@ -239,6 +242,9 @@ card *ai_re_kommt_raus(player *player, GList *list)
 card *ai_kontra_kommt_raus(player *player, GList *list)
 {
     card *card = NULL;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_kontra_kommt_raus()\n",
+            player->name);
 
     if ((card = highest_fehl(player, list)))
         return card;
@@ -273,6 +279,8 @@ card *ai_kontra_kommt_raus(player *player, GList *list)
 card *ai_re_mitte(player *player, GList *list)
 {
     card *card = NULL, *first = NULL, *sel = NULL;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_re_mitte()\n", player->name);
 
     /* played card */
     first = g_list_nth_data(gskat.table, 0);
@@ -316,6 +324,8 @@ card *ai_kontra_mitte(player *player, GList *list)
     card *tmp = NULL;
     card *card = NULL;
 
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_kontra_mitte()\n", player->name);
+
     tmp = g_list_nth_data(gskat.table, 0);
 
     if (!gskat.players[tmp->owner]->re)
@@ -349,6 +359,9 @@ card *ai_kontra_hinten(player *player, GList *list)
 {
     card *card = NULL;
 
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_kontra_hinten()\n",
+            player->name);
+
     if (kontra_stich_sicher(player))
         return ai_kontra_schmieren(player, list);
     /* trump only if enough points on the table */
@@ -375,6 +388,8 @@ card *ai_re_hinten(player *player, GList *list)
 {
     card *card = NULL;
 
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_re_hinten()\n", player->name);
+
     if ((card = knapp_trumpfen(player, list)))
         return card;
     else
@@ -399,7 +414,7 @@ card *trumpf_spitzen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try trumpf_spitzen()\n"), player->name);
+            "%s: try trumpf_spitzen()\n", player->name);
 
     if (trump)
     {
@@ -434,7 +449,7 @@ card *truempfe_ziehen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try truempfe_ziehen()\n"), player->name);
+            "%s: try truempfe_ziehen()\n", player->name);
 
     if (trump)
     {
@@ -488,7 +503,7 @@ card *kurz_aufspielen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try kurz_aufspielen()\n"), player->name);
+            "%s: try kurz_aufspielen()\n", player->name);
 
     for (i=0; i<4; ++i)
     {
@@ -555,7 +570,7 @@ card *lang_aufspielen(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try lang_aufspielen()\n"), player->name);
+            "%s: try lang_aufspielen()\n", player->name);
 
     for (i=0; i<4; ++i)
     {
@@ -613,7 +628,7 @@ card *ai_kontra_schmieren(player *player, GList *list)
     card *card = NULL, *ret = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try ai_kontra_schmieren()\n"), player->name);
+            "%s: try ai_kontra_schmieren()\n", player->name);
 
     card = g_list_nth_data(list, 0);
 
@@ -678,7 +693,7 @@ card *highest_fehl(player *player, GList *list)
     card *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try highest_fehl()\n"), player->name);
+            "%s: try highest_fehl()\n", player->name);
 
     /* play only if there is no trump left */
     if (truempfe_weg(player))
@@ -712,12 +727,12 @@ card *abwerfen(player *player, GList *list)
     GList *ptr = NULL;
     card *card = NULL, *ret = NULL;
 
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: try abwerfen()\n", player->name);
+
     /* get lengths of card suits */
     for (i=0; i<4; ++i)
         lengths[i] = num_of_suit(list, SUITS[i]);
-
-    gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try abwerfen()\n"), player->name);
 
     for (ptr = g_list_last(list); ptr; ptr = ptr->prev)
     {
@@ -851,7 +866,7 @@ gint num_truempfe_played(void)
     }
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("num_truempfe_played = %d\n"), count);
+            "num_truempfe_played = %d\n", count);
 
     return count;
 }
@@ -946,7 +961,7 @@ gint len_spitzen(player *player, GList *list, gint suit)
     g_list_free(pcards);
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: len_spitzen(%d) = %d\n"), player->name, suit, len);
+            "%s: len_spitzen(%d) = %d\n", player->name, suit, len);
 
     return len;
 }
@@ -1167,7 +1182,7 @@ gdouble prob_stich_geht_durch(player *player)
     }
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: prob_stich_geht_durch() == %f\n"), player->name, poss);
+            "%s: prob_stich_geht_durch() == %f\n", player->name, poss);
 
     return poss;
 }
