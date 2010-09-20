@@ -26,7 +26,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <stdlib.h>
+#include <stdlib.h>         /* needed for exit() */
 
 #include "config.h"
 
