@@ -177,12 +177,20 @@ void alloc_app(void)
  */
 void update_sb(const gchar *fmt, va_list args)
 {
+    guint i;
     gchar *msg = NULL;
     GtkStatusbar *sb = (GtkStatusbar *) gskat.widgets[14];
 
     if (sb && fmt)
     {
         msg = g_strdup_vprintf(fmt, args);
+
+        /* remove '\n' from string */
+        for (i=0; i < strlen(msg); ++i)
+        {
+            if (msg[i] == '\n')
+                msg[i] = '\x20';
+        }
 
         if (msg)
         {
