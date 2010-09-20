@@ -1378,6 +1378,11 @@ void reset_game(void)
         card->status = CS_AVAILABLE;
     }
 
+    /* reset bug report log */
+    if (gskat.log)
+        g_string_free(gskat.log, TRUE);
+    gskat.log = g_string_sized_new(256);
+
     /* update interface */
     update_interface();
     gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
