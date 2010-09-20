@@ -371,6 +371,7 @@ void save_bugreport_to_file(const gchar *filename, GTimeVal *time,
                 _("Saved bug report to '%s'\n"), filename);
 
         fclose(output);
+        g_free(desc_text);
     }
     else
         gskat_msg(MT_ERROR, _("Failed to save bug report to '%s'\n"), filename);
