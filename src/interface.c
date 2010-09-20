@@ -277,6 +277,7 @@ void show_file_bugreport(void)
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
     GtkWidget *info_label;
+    br_group *bug_report_group;
 
     /* determine desktop directory */
     dir = get_desktop_dir();
@@ -364,13 +365,20 @@ void show_file_bugreport(void)
     cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
     gtk_container_add(GTK_CONTAINER(hbox_button), cancel_button);
 
+    /* initialize new bug report structure */
+    bug_report_group = (br_group *) g_malloc(sizeof(br_group));
+
+    bug_report_group->window = window;
+    bug_report_group->file_chooser = dir_chooser;
+    bug_report_group->text_buffer = desc_text_buffer;
+
     /* connect signals */
     g_signal_connect(G_OBJECT(ok_button), "clicked",
-            G_CALLBACK(save_bugreport), (gpointer) dir_chooser);
+            G_CALLBACK(save_bugreport), (gpointer) bug_report_group);
     g_signal_connect(G_OBJECT(cancel_button), "clicked",
-            G_CALLBACK(close_bugreport), (gpointer) window);
+            G_CALLBACK(close_bugreport), (gpointer) bug_report_group);
     g_signal_connect(G_OBJECT(window), "delete-event",
-            G_CALLBACK(destroy_bugreport), (gpointer) window);
+            G_CALLBACK(destroy_bugreport), (gpointer) bug_report_group);
 
     gtk_widget_show_all(window);
 }

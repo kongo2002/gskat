@@ -41,7 +41,8 @@ gchar *get_desktop_dir(void);
 
 gboolean create_dir(const gchar *dir);
 
-void save_bugreport_to_file(const gchar *filename, GTimeVal *time);
+void save_bugreport_to_file(const gchar *filename, GTimeVal *time,
+        GtkTextBuffer *text_buffer);
 
 #endif /* __COMMON_H__ */
 

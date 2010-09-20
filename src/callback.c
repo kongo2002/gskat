@@ -162,7 +162,7 @@ gboolean close_config(GtkButton *button, gpointer data)
 /**
  * save_bugreport:
  * @button:  #GtkButton that was clicked
- * @data:    file chooser button widget
+ * @data:    #br_group object
  *
  * Callback function of the 'ok' button of the bugreport dialog.
  *
@@ -176,9 +176,14 @@ gboolean save_bugreport(GtkButton *button, gpointer data)
     gchar *dir, *filename, *file;
     gchar date_string[256];
     GTimeVal time;
-    GtkFileChooserButton *dir_chooser = (GtkFileChooserButton *) data;
-    GtkWidget *window;
     GDate *date;
+
+    br_group *bug_report_group = (br_group *) data;
+
+    GtkWidget *window = bug_report_group->window;
+    GtkTextBuffer *text_buffer = bug_report_group->text_buffer;
+    GtkFileChooserButton *dir_chooser = GTK_FILE_CHOOSER_BUTTON(
+            bug_report_group->file_chooser);
 
     /* get current time */
     g_get_current_time(&time);
@@ -197,16 +202,15 @@ gboolean save_bugreport(GtkButton *button, gpointer data)
     filename = g_build_filename(dir, file, NULL);
 
     /* write bug report to file */
-    save_bugreport_to_file(filename, &time);
+    save_bugreport_to_file(filename, &time, text_buffer);
 
-    /* get parent window */
-    window = gtk_widget_get_ancestor(GTK_WIDGET(dir_chooser), GTK_TYPE_WINDOW);
     gtk_widget_destroy(window);
 
     g_free(date);
     g_free(dir);
     g_free(file);
     g_free(filename);
+    g_free(bug_report_group);
 
     return TRUE;
 }
@@ -215,7 +219,7 @@ gboolean save_bugreport(GtkButton *button, gpointer data)
  * destroy_bugreport:
  * @widget:  #GtkWidget receiving the signal
  * @event:   #GdkEvent triggering the signal
- * @data:    bug report dialog window widget
+ * @data:    #br_group object
  *
  * Wrapper function to 'close_bugreport' because of the different
  * function arguments of the 'delete-event' signal
@@ -233,7 +237,7 @@ gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data)
 /**
  * close_bugreport:
  * @button:  #GtkButton that was clicked
- * @data:    bug report window widget
+ * @data:    #br_group object
  *
  * Callback function of the 'cancel' button of the bugreport dialog.
  *
@@ -244,9 +248,9 @@ gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data)
 gboolean close_bugreport(GtkButton *button, gpointer data)
 {
     (void) button;
-    GtkWidget *window = (GtkWidget *) data;
+    br_group *bug_report_group = (br_group *) data;
 
-    gtk_widget_destroy(window);
+    gtk_widget_destroy(bug_report_group->window);
 
     return TRUE;
 }

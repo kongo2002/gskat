@@ -349,17 +349,23 @@ gboolean create_dir(const gchar *dir)
  *
  * Write the bug report string into the given filename
  */
-void save_bugreport_to_file(const gchar *filename, GTimeVal *time)
+void save_bugreport_to_file(const gchar *filename, GTimeVal *time,
+        GtkTextBuffer *text_buffer)
 {
     FILE *output;
+    gchar *desc_text;
 
     if ((output = g_fopen(filename, "w")))
     {
+        g_object_get(G_OBJECT(text_buffer), "text", &desc_text, NULL);
+
         g_fprintf(output, "gskat Version %s - %s\n", VERSION,
                 GSKAT_COMMIT_HASH);
         g_fprintf(output, "%s\n", g_time_val_to_iso8601(time));
         g_fprintf(output, "------------------------------------------\n");
         g_fprintf(output, "%s", gskat.log->str);
+        g_fprintf(output, "------------------------------------------\n");
+        g_fprintf(output, "%s\n", desc_text);
 
         gskat_msg(MT_INFO | MT_STATUSBAR,
                 _("Saved bug report to '%s'\n"), filename);
