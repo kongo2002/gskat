@@ -218,9 +218,10 @@ typedef struct _stich_view {
 
 /**
  * br_group:
- * @window:  #GtkWindow of the bug report dialog
+ * @window:       #GtkWindow of the bug report dialog
  * @file_chooser: File chooser widget of the bug report dialog
- * @text_view: #GtkTextView containing the user-defined description of the bug
+ * @text_buffer:  #GtkTextBuffer containing the user-defined
+ * description of the bug
  *
  * Structure containing the main widgets of the bug report dialog
  */
