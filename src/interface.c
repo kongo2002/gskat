@@ -826,7 +826,7 @@ static GtkWidget *create_menu(void)
     GtkWidget *cmenu;        /* configuration submenu */
     GtkWidget *config;
     GtkWidget *options_item;
-    GtkWidget *brmenu;      /* bug report submenu */
+    GtkWidget *brmenu;       /* bug report submenu */
     GtkWidget *bugreport;
     GtkWidget *bugreport_item;
     GtkWidget *hmenu;        /* help submenu */
@@ -877,6 +877,7 @@ static GtkWidget *create_menu(void)
 
     /* bug report submenu */
     bugreport_item = gtk_menu_item_new_with_label(_("File bug report"));
+    gtk_widget_set_sensitive(bugreport_item, FALSE);
     g_signal_connect(G_OBJECT(bugreport_item), "activate",
             G_CALLBACK(show_file_bugreport), NULL);
 
@@ -902,6 +903,7 @@ static GtkWidget *create_menu(void)
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), help);
 
     gskat.widgets[15] = save_item;
+    gskat.widgets[16] = bugreport_item;
 
     return menu;
 }
@@ -948,7 +950,7 @@ void create_interface(void)
 
     g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 16);
+    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 17);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "gskat");

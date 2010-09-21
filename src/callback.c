@@ -722,6 +722,7 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
         play_stich();
 
         gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
+        gtk_widget_set_sensitive(gskat.widgets[16], TRUE);
     }
 
     g_free(filename);
