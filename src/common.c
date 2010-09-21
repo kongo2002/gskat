@@ -346,6 +346,7 @@ gboolean create_dir(const gchar *dir)
  * save_bugreport_to_file:
  * @filename:  File to save the bug report to
  * @time:      Current timestamp
+ * @text_buffer: #GtkTextBuffer of the description text view
  *
  * Write the bug report string into the given filename
  */
