@@ -9,13 +9,13 @@ MAJOR FEATURES
 * AI: implement different AI difficulty levels
   (i.e. easy, medium, hard, [cheater])
 * save and view round/stich history
-* implement integrated bug reports
 * implement 'ramsch' game
 * implement 'bock' rounds
 * implement a tournament mode (i.e. play a configurable number of rounds)
 * review last trick(s)                                                      DONE
 * add localization/language support                                         DONE
 * save and load game and round states                                       DONE
+* implement integrated bug reports                                          DONE
 
 MINOR POINTS
 
@@ -26,13 +26,17 @@ MINOR POINTS
 * add an option to automatically begin the next trick (i.e. timeout)
 * add tooltips to GUI elements
 * make game rule 'play with spitzen' configurable
+* implement a game mode (+ configuration option) for the official Skat
+  Order (standard rules of D.S.K.V. and I.S.P.A.)
+* bug reports should work in loaded games as well
+  (i.e. save bug report log in game state)
 * use XDG base directory specification for config/data files                DONE
 * improve game summary display                                              DONE
 * connect review of played trick(s) with a configuration rule/setting       DONE
 * rewrite/update configuration if the old config is not valid               DONE
 * improve card movement animation                                           DONE
 * change the mouse cursor shape depending on the cursor position            DONE
-  (valid card, non-valid card, table ...)
+  (valid card, non-valid card, table ...)                                   DONE
 * design and implement a game icon                                          DONE
 * design and draw own card image set                                        DONE
 
@@ -40,8 +44,13 @@ IMPROVEMENTS
 
 * rewrite AI concept/implementation (more flexible, dynamic)
 * write some basic unit test routines
-* rewrite debug/log/print functionality (i.e. log levels)
 * add a checksum to saved/loaded round states
 * use autotools for compile/install                                         DONE
 * move from Doxygen to GtkDoc for documentation                             DONE
 * write an ebuild for Gentoo Linux                                          DONE
+* rewrite debug/log/print functionality (i.e. log levels)                   DONE
+
+MAYBE
+
+* implement network/multiplayer mode
+* implement a database (sqlite?) backend for statistics
