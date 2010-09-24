@@ -1328,6 +1328,7 @@ void reset_game(void)
     gskat.cplayer = gskat.forehand;
     gskat.trump = -1;
     gskat.hand = FALSE;
+    gskat.null = FALSE;
 
     /* remove cards from players if necessary */
     if (gskat.players)

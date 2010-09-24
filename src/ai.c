@@ -472,13 +472,18 @@ card *ai_kontra_hinten(player *player, GList *list)
  */
 card *null_kontra_hinten(player *player, GList *list)
 {
-    card *card = NULL;
+    card *tmp, *card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: null_kontra_hinten()\n",
             player->name);
 
-    if ((card = drunter_bleiben(player, list)))
-        return card;
+    tmp = highest_on_table();
+
+    if (tmp->owner == gskat.re->id)
+    {
+        if ((card = drunter_bleiben(player, list)))
+            return card;
+    }
 
     return NULL;
 }
