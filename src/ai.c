@@ -39,6 +39,9 @@ card *ai_select_card(player *player, GList *list)
     gint position;
     card *card = NULL;
 
+    /* print player's cards into debug/bug report stream */
+    print_player_cards(player);
+
     /* return last card */
     if (g_list_length(list) == 1)
     {
@@ -636,6 +639,17 @@ card *null_aufspielen(player *player, GList *list)
     /* iterate through all four suits */
     for (i=0; i<4; ++i)
     {
+        /* kontra player's should not play a suit that the
+         * re player has already trumped */
+        if (!player->re && hat_gestochen(gskat.re, SUITS[i]))
+        {
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    "Skip '%s' - Re has already trumped that one\n",
+                    suit_name(SUITS[i]));
+
+            continue;
+        }
+
         suit_l = get_suit_list(list, SUITS[i]);
 
         if (suit_l)
@@ -646,7 +660,7 @@ card *null_aufspielen(player *player, GList *list)
 
             /* choose the lowest card available and the shortest suit
              * if there are two or more of the same rank */
-            if (ret_card == NULL || ptr->rank < ret_card->rank ||
+            if (ret_card == NULL || !higher_rank(ptr, ret_card) ||
                     (ptr->rank == ret_card->rank && len < min))
             {
                 ret_card = ptr;

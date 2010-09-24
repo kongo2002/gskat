@@ -271,22 +271,27 @@ void print_card(card *card)
  * print_player_cards:
  * @player: pointer to #player to print
  *
- * Print player's cards to stdout
+ * Print player's cards into debug and bug report stream.
+ * For debugging/bug reporting purpose only!
  */
 void print_player_cards(player *player)
 {
     GList *ptr = NULL;
     card *card = NULL;
 
-    g_print("%s:\n", player->name);
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: ", player->name);
+
     for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
     {
         if (card)
-            g_print(", ");
+            gskat_msg(MT_DEBUG | MT_BUGREPORT, ", ");
+
         card = ptr->data;
-        print_card(card);
+        gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s", get_card_name(card));
     }
-    g_print("\n");
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "\n");
 }
 
 /**
