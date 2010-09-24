@@ -338,6 +338,12 @@ card *ai_kontra_mitte(player *player, GList *list)
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_kontra_mitte()\n", player->name);
 
+    if (gskat.null)
+    {
+        if ((card = niedrig_bedienen(player, list)))
+            return card;
+    }
+
     tmp = g_list_nth_data(gskat.table, 0);
 
     if (!gskat.players[tmp->owner]->re)
@@ -814,6 +820,20 @@ card *abwerfen(player *player, GList *list)
     }
 
     return ret;
+}
+
+/**
+ * niedrig_bedienen:
+ * @player: Player to choose a #card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Select a the lowest card possible
+ *
+ * Returns: the selected #card or %NULL
+ */
+card *niedrig_bedienen(player *player, GList *list)
+{
+    return g_list_nth_data(list, g_list_length(list) - 1);
 }
 
 /**

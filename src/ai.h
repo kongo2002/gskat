@@ -45,6 +45,8 @@ card *ai_kontra_schmieren(player *player, GList *list);
 
 card *ai_re_hinten(player *player, GList *list);
 
+card *niedrig_bedienen(player *player, GList *list);
+
 card *highest_fehl(player *player, GList *list);
 
 card *kurz_fehl_ass(player *player, GList *list);
