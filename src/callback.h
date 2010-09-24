@@ -23,6 +23,9 @@
 
 #include "def.h"
 
+/* macro for unused parameters */
+#define UNUSED(p) (void) p
+
 gboolean quit(GtkWidget *window, gpointer data);
 
 gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data);

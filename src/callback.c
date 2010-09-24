@@ -39,8 +39,8 @@
  */
 gboolean quit(GtkWidget *window, gpointer data)
 {
-    (void) window;
-    (void) data;
+    UNUSED(window);
+    UNUSED(data);
 
     gtk_main_quit();
 
@@ -59,8 +59,8 @@ gboolean quit(GtkWidget *window, gpointer data)
  */
 gboolean realization(GtkWidget *area, gpointer data)
 {
-    (void) area;
-    (void) data;
+    UNUSED(area);
+    UNUSED(data);
 
     /* allocate memory for application lists */
     alloc_app();
@@ -85,8 +85,8 @@ gboolean realization(GtkWidget *area, gpointer data)
  */
 void show_about_window(GtkMenuItem *menuitem, gpointer data)
 {
-    (void) menuitem;
-    (void) data;
+    UNUSED(menuitem);
+    UNUSED(data);
 
     gchar *img_file = g_build_filename(DATA_DIR, "icons",
             "gskat128x128.png", NULL);
@@ -129,8 +129,8 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
  */
 gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-    (void) widget;
-    (void) event;
+    UNUSED(widget);
+    UNUSED(event);
 
     return close_config(NULL, data);
 }
@@ -148,7 +148,8 @@ gboolean destroy_config(GtkWidget *widget, GdkEvent *event, gpointer data)
  */
 gboolean close_config(GtkButton *button, gpointer data)
 {
-    (void) button;
+    UNUSED(button);
+
     GtkWidget *window = (GtkWidget *) data;
 
     g_free(gskat.confwidgets);
@@ -172,7 +173,8 @@ gboolean close_config(GtkButton *button, gpointer data)
  */
 gboolean save_bugreport(GtkButton *button, gpointer data)
 {
-    (void) button;
+    UNUSED(button);
+
     gchar *dir, *filename, *file;
     gchar date_string[256];
     GTimeVal time;
@@ -228,8 +230,8 @@ gboolean save_bugreport(GtkButton *button, gpointer data)
  */
 gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-    (void) widget;
-    (void) event;
+    UNUSED(widget);
+    UNUSED(event);
 
     return close_bugreport(NULL, data);
 }
@@ -247,7 +249,8 @@ gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data)
  */
 gboolean close_bugreport(GtkButton *button, gpointer data)
 {
-    (void) button;
+    UNUSED(button);
+
     br_group *bug_report_group = (br_group *) data;
 
     gtk_widget_destroy(bug_report_group->window);
@@ -269,8 +272,8 @@ gboolean close_bugreport(GtkButton *button, gpointer data)
  */
 gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-    (void) widget;
-    (void) event;
+    UNUSED(widget);
+    UNUSED(event);
 
     return close_show_trick(NULL, data);
 }
@@ -289,7 +292,8 @@ gboolean destroy_show_trick(GtkWidget *widget, GdkEvent *event, gpointer data)
  */
 gboolean close_show_trick(GtkButton *button, gpointer data)
 {
-    (void) button;
+    UNUSED(button);
+
     stich_view *sv = (stich_view *) data;
 
     gtk_widget_destroy(sv->window);
@@ -374,7 +378,8 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
  */
 gboolean save_config(GtkButton *button, gpointer data)
 {
-    (void) button;
+    UNUSED(button);
+
     gint i;
     const gchar *cptr = NULL;
     GtkWidget *window = (GtkWidget *) data;
@@ -485,9 +490,9 @@ void next_round(GtkButton *button, gpointer data)
  */
 gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
-    (void) area;
-    (void) event;
-    (void) data;
+    UNUSED(area);
+    UNUSED(event);
+    UNUSED(data);
 
     calc_card_positions();
 
@@ -509,7 +514,8 @@ gboolean configure(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
 {
-    (void) data;
+    UNUSED(data);
+
     gint num_cards = (gskat.table) ? g_list_length(gskat.table) : 0;
     GList *poss = NULL, *ptr;
     GdkWindow *window = area->window;
@@ -586,8 +592,9 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
  */
 gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
-    (void) area;
-    (void) data;
+    UNUSED(area);
+    UNUSED(data);
+
     gboolean found = FALSE;
 
     /* left mouse button click */
@@ -628,7 +635,8 @@ gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
  */
 void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 {
-    (void) data;
+    UNUSED(data);
+
     gboolean active = gtk_toggle_button_get_active(tbutton);
 
     gtk_widget_set_sensitive(gskat.confwidgets[4], active);
@@ -644,7 +652,8 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
  */
 void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
 {
-    (void) data;
+    UNUSED(data);
+
     gboolean active = gtk_toggle_button_get_active(tbutton);
 
     gtk_widget_set_sensitive(gskat.confwidgets[10], active);
@@ -659,7 +668,8 @@ void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
  */
 void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
 {
-    (void) data;
+    UNUSED(data);
+
     gboolean active = gtk_toggle_button_get_active(tbutton);
 
     gtk_widget_set_sensitive(gskat.confwidgets[7], active);
@@ -675,9 +685,9 @@ void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
  */
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
-    (void) area;
-    (void) event;
-    (void) data;
+    UNUSED(area);
+    UNUSED(event);
+    UNUSED(data);
 
     if (gskat.area && gskat.area->window)
         draw_area();
@@ -693,7 +703,7 @@ void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 {
-    (void) event;
+    UNUSED(event);
 
     draw_tricks_area(area, (stich_view *) data);
 }
@@ -707,8 +717,9 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
  */
 void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
-    (void) menuitem;
-    (void) data;
+    UNUSED(menuitem);
+    UNUSED(data);
+
     gchar *filename = g_build_filename(get_data_dir(), "gamestate", NULL);
 
     if (read_state_from_file(filename))
@@ -737,8 +748,9 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
  */
 void save_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
-    (void) menuitem;
-    (void) data;
+    UNUSED(menuitem);
+    UNUSED(data);
+
     gchar *filename = g_build_filename(get_data_dir(), "gamestate", NULL);
 
     save_state_to_file(filename);
