@@ -775,9 +775,9 @@ gint compare_cards(gconstpointer a, gconstpointer b)
             return -1;
         else if (card_b->rank == ASS)
             return 1;
-        else if (card_a->rank == 10)
+        else if (!gskat.null && card_a->rank == 10)
             return -1;
-        else if (card_b->rank == 10)
+        else if (!gskat.null && card_b->rank == 10)
             return 1;
         else if (card_a->rank > card_b->rank)
             return -1;
