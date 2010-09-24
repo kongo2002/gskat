@@ -41,7 +41,7 @@ void print_card(card *card);
 
 gboolean higher_rank(card *top, card *bottom);
 
-gboolean is_greater(card *top, card *bottom, gint trump, gboolean null);
+gboolean is_greater(card *top, card *bottom);
 
 gint get_trick_winner(card **trick);
 

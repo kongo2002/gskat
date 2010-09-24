@@ -337,16 +337,17 @@ gboolean higher_rank(card *top, card *bottom)
  * is_greater:
  * @top:    #card lying on the top
  * @bottom: #card lying on the bottom
- * @trump:  trump suit index
- * @null:   %TRUE if it's a null game, otherwise %FALSE
  *
  * Check if the top #card is higher than the bottom #card
  * depending on trump and game type
  *
  * Returns: %TRUE if top is greater than bottom, otherwise %FALSE
  */
-gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
+gboolean is_greater(card *top, card *bottom)
 {
+    gint trump = gskat.trump;
+    gboolean null = gskat.null;
+
     /* null (ramsch) */
     if (null)
     {
@@ -442,16 +443,16 @@ gboolean is_greater(card *top, card *bottom, gint trump, gboolean null)
  */
 gint get_trick_winner(card **trick)
 {
-    if (is_greater(trick[1], trick[0], gskat.trump, gskat.null))
+    if (is_greater(trick[1], trick[0]))
     {
-        if (is_greater(trick[2], trick[1], gskat.trump, gskat.null))
+        if (is_greater(trick[2], trick[1]))
             return trick[2]->owner;
         else
             return trick[1]->owner;
     }
     else
     {
-        if (is_greater(trick[2], trick[0], gskat.trump, gskat.null))
+        if (is_greater(trick[2], trick[0]))
             return trick[2]->owner;
         else
             return trick[0]->owner;

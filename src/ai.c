@@ -174,7 +174,7 @@ card *knapp_trumpfen(player *player, GList *list)
                 card = g_list_nth_data(list, 0);
 
                 if (card->rank == ASS &&
-                        is_greater(card, high, gskat.trump, gskat.null))
+                        is_greater(card, high))
                 {
                     g_list_free(ptr);
                     return card;
@@ -191,7 +191,7 @@ card *knapp_trumpfen(player *player, GList *list)
     {
         card = ptr->data;
 
-        if (is_greater(card, high, gskat.trump, gskat.null))
+        if (is_greater(card, high))
             ret = card;
     }
     return ret;
@@ -855,7 +855,7 @@ card *drunter_bleiben(player *player, GList *list)
     {
         tmp = (card *) ptr->data;
 
-        if (!is_greater(tmp, high, gskat.trump, gskat.null))
+        if (!is_greater(tmp, high))
             return tmp;
     }
 
@@ -1122,8 +1122,7 @@ card *highest_on_table(void)
         else
         {
             if (is_greater(g_list_nth_data(gskat.table, 1),
-                        g_list_nth_data(gskat.table, 0),
-                        gskat.trump, gskat.null))
+                        g_list_nth_data(gskat.table, 0)))
                 return g_list_nth_data(gskat.table, 1);
             else
                 return g_list_nth_data(gskat.table, 0);
@@ -1149,7 +1148,7 @@ gboolean kommt_drueber(player *player, GList *list)
     (void) player;
     card *card = highest_on_table();
 
-    if (is_greater(g_list_nth_data(list, 0), card, gskat.trump, gskat.null))
+    if (is_greater(g_list_nth_data(list, 0), card))
         return TRUE;
     return FALSE;
 }
@@ -1170,7 +1169,7 @@ gboolean kontra_stich_sicher(player *player)
     if (g_list_length(gskat.table) == 2)
     {
         if (is_greater(g_list_nth_data(gskat.table, 1),
-                    g_list_nth_data(gskat.table, 0), gskat.trump, gskat.null))
+                    g_list_nth_data(gskat.table, 0)))
             card = g_list_nth_data(gskat.table, 1);
         else
             card = g_list_nth_data(gskat.table, 0);
@@ -1232,7 +1231,7 @@ gboolean highest_rem_of_suit(card *first)
         return TRUE;
 
     if (high && (high == first
-                || is_greater(first, high, gskat.trump, gskat.null)))
+                || is_greater(first, high)))
         return TRUE;
     else
         return FALSE;
@@ -1313,8 +1312,7 @@ gint num_poss_higher_cards(player *player, card *first)
         {
             new = ptr->data;
 
-            if (is_greater(new, first, gskat.trump, gskat.null) &&
-                    new->owner != player->id)
+            if (is_greater(new, first) && new->owner != player->id)
                 ++len;
         }
 
