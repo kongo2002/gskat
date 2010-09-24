@@ -1543,4 +1543,26 @@ gint num_of_suit(GList *list, gint suit)
     return num;
 }
 
+/**
+ * re_sitzt_hinten:
+ *
+ * Check if the re player sits at the last position
+ * of the table
+ *
+ * Returns: %TRUE if re player sits in backhand, otherwise %FALSE
+ */
+gboolean re_sitzt_hinten(void)
+{
+    gint forehand = (gskat.cplayer == -1) ? gskat.forehand : gskat.cplayer;
+    gboolean retval = FALSE;
+
+    if (((forehand + 2) % 3) == gskat.re->id)
+        retval = TRUE;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, (retval) ? "Re sitzt hinten\n" :
+            "Re sitzt nicht hinten\n");
+
+    return retval;
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */

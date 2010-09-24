@@ -105,6 +105,8 @@ gint num_of_trump(GList *list);
 
 gint num_of_suit(GList *list, gint suit);
 
+gboolean re_sitzt_hinten(void);
+
 #endif /* __AI_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */
