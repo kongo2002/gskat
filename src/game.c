@@ -224,10 +224,10 @@ void give_cards(void)
  * @msg:     string containing the title of the message box
  * @hoeren:  user has to 'hear'?
  *
- * Gets a provoke response from the user by opening a message box
+ * Gets a bid response from the user by opening a message box
  *
  * When the user has to 'hear' he gets the possible answers 'Yes'
- * and 'No' otherwise the next provoke value and 'Pass'.
+ * and 'No' otherwise the next bid value and 'Pass'.
  *
  * Returns: If the user continues to bid that value is returned.
  * Otherwise 0 is returned representing a 'pass'.

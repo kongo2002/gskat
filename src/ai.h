@@ -35,6 +35,8 @@ card *ai_kontra_mitte(player *player, GList *list);
 
 card *ai_kontra_hinten(player *player, GList *list);
 
+card *null_aufspielen(player *player, GList *list);
+
 card *kurz_aufspielen(player *player, GList *list);
 
 card *lang_aufspielen(player *player, GList *list);

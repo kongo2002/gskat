@@ -214,6 +214,12 @@ card *ai_re_kommt_raus(player *player, GList *list)
     gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_re_kommt_raus()\n",
             player->name);
 
+    if (gskat.null)
+    {
+        if ((card = null_aufspielen(player, list)))
+            return card;
+    }
+
     if ((card = highest_fehl(player, list)))
         return card;
 
@@ -245,6 +251,12 @@ card *ai_kontra_kommt_raus(player *player, GList *list)
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: ai_kontra_kommt_raus()\n",
             player->name);
+
+    if (gskat.null)
+    {
+        if ((card = null_aufspielen(player, list)))
+            return card;
+    }
 
     if ((card = highest_fehl(player, list)))
         return card;
@@ -487,13 +499,59 @@ card *truempfe_ziehen(player *player, GList *list)
 }
 
 /**
+ * null_aufspielen:
+ * @player: Player to choose a #card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Play the lowest card available and the one of the shortest suit
+ * if there are two or more card of the same (low) rank.
+ *
+ * Returns: the selected #card or %NULL
+ */
+card *null_aufspielen(player *player, GList *list)
+{
+    gint i, len, min = -1;
+    GList *suit_l;
+    card *ptr, *ret_card = NULL;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            _("%s: try null_aufspielen()\n"), player->name);
+
+    /* try to find the lowest card available */
+    for (i=0; i<4; ++i)
+    {
+        suit_l = get_suit_list(list, SUITS[i]);
+
+        if (suit_l)
+        {
+            /* get lowest card of the current suit */
+            len = g_list_length(suit_l);
+            ptr = g_list_nth_data(suit_l, len - 1);
+
+            /* choose the lowest card available and the shortest suit
+             * if there are two or more of the same rank */
+            if (ret_card == NULL || ptr->rank < ret_card->rank ||
+                    (ptr->rank == ret_card->rank && len < min))
+            {
+                ret_card = ptr;
+                min = len;
+            }
+
+            g_list_free(suit_l);
+        }
+    }
+
+    return ret_card;
+}
+
+/**
  * kurz_aufspielen:
  * @player: Player to choose a card to play for
  * @list:   A #GList with all possible cards to choose from
  *
  * Try to play a card of a short numbered non-trump suit
  *
- * Returns: the selected card or %NULL
+ * Returns: the selected #card or %NULL
  */
 card *kurz_aufspielen(player *player, GList *list)
 {
