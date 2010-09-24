@@ -725,7 +725,7 @@ void show_config_window(void)
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_table, about_label);
     gtk_container_set_border_width(GTK_CONTAINER(about_table), 5);
 
-    about_entry_len = max_str_len(gskat.conf.filename, DATA_DIR
+    about_entry_len = max_str_len(gskat.conf.filename, DATA_DIR,
             GSKAT_LOCALEDIR, NULL);
 
     config_loc_label = gtk_label_new(_("Configuration file location:"));
