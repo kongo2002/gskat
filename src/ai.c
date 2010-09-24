@@ -515,9 +515,9 @@ card *null_aufspielen(player *player, GList *list)
     card *ptr, *ret_card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
-            _("%s: try null_aufspielen()\n"), player->name);
+            "%s: try null_aufspielen()\n", player->name);
 
-    /* try to find the lowest card available */
+    /* iterate through all four suits */
     for (i=0; i<4; ++i)
     {
         suit_l = get_suit_list(list, SUITS[i]);
