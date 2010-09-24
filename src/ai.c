@@ -69,7 +69,10 @@ card *ai_select_card(player *player, GList *list)
         /* player is the last to play */
         else
         {
-            card = ai_re_hinten(player, list);
+            if (gskat.null)
+                card = null_re_hinten(player, list);
+            else
+                card = ai_re_hinten(player, list);
         }
     }
     /* kontra player */
@@ -94,7 +97,10 @@ card *ai_select_card(player *player, GList *list)
         /* player is the last to play */
         else
         {
-            card = ai_kontra_hinten(player, list);
+            if (gskat.null)
+                card = null_kontra_hinten(player, list);
+            else
+                card = ai_kontra_hinten(player, list);
         }
     }
 
@@ -452,6 +458,29 @@ card *ai_kontra_hinten(player *player, GList *list)
 }
 
 /**
+ * null_kontra_hinten:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Kontra player
+ * if he is the last to play and it's a null game.
+ *
+ * Returns: the selected card or %NULL
+ */
+card *null_kontra_hinten(player *player, GList *list)
+{
+    card *card = NULL;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: null_kontra_hinten()\n",
+            player->name);
+
+    if ((card = drunter_bleiben(player, list)))
+        return card;
+
+    return NULL;
+}
+
+/**
  * ai_re_hinten:
  * @player: Player to choose a card to play for
  * @list:   A #GList with all possible cards to choose from
@@ -473,6 +502,28 @@ card *ai_re_hinten(player *player, GList *list)
         card = abwerfen(player, list);
 
     return card;
+}
+
+/**
+ * null_re_hinten:
+ * @player: Player to choose a card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Determine the strategy to play for the Re player
+ * if he is the last to play and it's a null game.
+ *
+ * Returns: the selected card or %NULL
+ */
+card *null_re_hinten(player *player, GList *list)
+{
+    card *card = NULL;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: null_re_hinten()\n", player->name);
+
+    if ((card = drunter_bleiben(player, list)))
+        return card;
+
+    return NULL;
 }
 
 /**
