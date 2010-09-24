@@ -40,6 +40,9 @@
 #define DAME   12
 #define KOENIG 13
 
+/* macro for unused parameters */
+#define UNUSED(p) (void) p
+
 static const gint SUITS[] = { KREUZ, PIK, HERZ, KARO };
 
 /**

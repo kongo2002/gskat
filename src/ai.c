@@ -833,6 +833,8 @@ card *abwerfen(player *player, GList *list)
  */
 card *niedrig_bedienen(player *player, GList *list)
 {
+    UNUSED(player);
+
     return g_list_nth_data(list, g_list_length(list) - 1);
 }
 
@@ -847,7 +849,8 @@ card *niedrig_bedienen(player *player, GList *list)
  */
 card *drunter_bleiben(player *player, GList *list)
 {
-    gint i;
+    UNUSED(player);
+
     GList *ptr;
     card *tmp, *high = highest_on_table();
 
