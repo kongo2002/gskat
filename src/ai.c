@@ -943,7 +943,8 @@ card *abwerfen(player *player, GList *list)
  */
 card *niedrig_bedienen(player *player, GList *list)
 {
-    UNUSED(player);
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: try niedrig_bedienen()\n", player->name);
 
     return g_list_nth_data(list, g_list_length(list) - 1);
 }
@@ -959,10 +960,11 @@ card *niedrig_bedienen(player *player, GList *list)
  */
 card *drunter_bleiben(player *player, GList *list)
 {
-    UNUSED(player);
-
     GList *ptr;
     card *tmp, *high = highest_on_table();
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: try drunter_bleiben()\n", player->name);
 
     for (ptr = g_list_first(list); ptr; ptr = ptr->next)
     {
