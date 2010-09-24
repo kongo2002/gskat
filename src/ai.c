@@ -837,6 +837,32 @@ card *niedrig_bedienen(player *player, GList *list)
 }
 
 /**
+ * drunter_bleiben:
+ * @player: Player to choose a #card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Try to find a lower card than the highest on the table
+ *
+ * Returns: the selected #card or %NULL
+ */
+card *drunter_bleiben(player *player, GList *list)
+{
+    gint i;
+    GList *ptr;
+    card *tmp, *high = highest_on_table();
+
+    for (ptr = g_list_first(list); ptr; ptr = ptr->next)
+    {
+        tmp = (card *) ptr->data;
+
+        if (!is_greater(tmp, high, gskat.trump, gskat.null))
+            return tmp;
+    }
+
+    return NULL;
+}
+
+/**
  * hat_gestochen:
  * @player: Player to check
  * @suit:   Suit to check
