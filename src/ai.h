@@ -91,6 +91,8 @@ gint num_of_suit(GList *list, gint suit);
 
 gboolean re_sitzt_hinten(void);
 
+GList *get_short_suit(GList *list, gint number);
+
 #endif /* __AI_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

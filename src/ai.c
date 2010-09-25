@@ -1341,4 +1341,84 @@ gboolean re_sitzt_hinten(void)
     return retval;
 }
 
+/**
+ * compare_suit_lengths:
+ * @a: pointer to first #GList
+ * @b: pointer to second #GList
+ *
+ * Function comparing two #GList of cards. The lists are sorted
+ * ascending by their lengths. For use with g_ptr_array_sort()
+ *
+ * Returns: -1, 0 or 1
+ */
+static gint compare_suit_lengths(gconstpointer a, gconstpointer b)
+{
+    gint alen, blen;
+    GList **alist = (GList **) a;
+    GList **blist = (GList **) b;
+
+    /* get list lengths */
+    alen = g_list_length(*alist);
+    blen = g_list_length(*blist);
+
+    if (alen < blen)
+        return -1;
+    else if (alen > blen)
+        return 1;
+    else
+        return 0;
+}
+
+/**
+ * get_short_suit:
+ * @list: #GList of cards to choose from
+ * @number: Index of shortest suit (0 -> shortest, 1 -> 2nd shortest)
+ *
+ * Get the shortest numbered suit from a given card list
+ *
+ * Returns: a new #GList or %NULL
+ */
+GList *get_short_suit(GList *list, gint number)
+{
+    gint i;
+    GPtrArray *suit_lengths;
+    GList *ptr, *ret_list;
+
+    if (number < 0 || number >= 4)
+    {
+        gskat_msg(MT_DEBUG, "get_short_suit(): Index out of bounds: %d\n",
+                number);
+        return NULL;
+    }
+
+    suit_lengths = g_ptr_array_new_with_free_func((GDestroyNotify) g_list_free);
+
+    /* store suit list pointers in pointer array */
+    for (i=0; i<4; ++i)
+    {
+        ptr = get_suit_list(list, SUITS[i]);
+
+        if (ptr)
+            g_ptr_array_add(suit_lengths, (gpointer) ptr);
+    }
+
+    if ((guint) number >= suit_lengths->len)
+    {
+        gskat_msg(MT_DEBUG, "get_short_suit(): Index out of bounds: %d\n",
+                number);
+
+        g_ptr_array_free(suit_lengths, TRUE);
+        return NULL;
+    }
+
+    /* sort lists ascending by their lengths */
+    g_ptr_array_sort(suit_lengths, compare_suit_lengths);
+
+    ret_list = g_list_copy(g_ptr_array_index(suit_lengths, number));
+
+    g_ptr_array_free(suit_lengths, TRUE);
+
+    return ret_list;
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */

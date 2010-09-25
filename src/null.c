@@ -143,8 +143,16 @@ card *null_kontra_mitte(player *player, GList *list)
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: null_kontra_mitte()\n", player->name);
 
-    if ((card = niedrig_bedienen(player, list)))
-        return card;
+    if (muss_bedienen(player))
+    {
+        if ((card = niedrig_bedienen(player, list)))
+            return card;
+    }
+    else
+    {
+        if ((card = null_hoch_abwerfen(player, list)))
+            return card;
+    }
 
     return card;
 }
@@ -170,8 +178,16 @@ card *null_kontra_hinten(player *player, GList *list)
 
     if (tmp->owner == gskat.re->id)
     {
-        if ((card = drunter_bleiben(player, list)))
-            return card;
+        if (muss_bedienen(player))
+        {
+            if ((card = drunter_bleiben(player, list)))
+                return card;
+        }
+        else
+        {
+            if ((card = null_hoch_abwerfen(player, list)))
+                return card;
+        }
     }
     else
     {
@@ -318,29 +334,22 @@ card *drunter_bleiben(player *player, GList *list)
  */
 card *null_hoch_abwerfen(player *player, GList *list)
 {
-    gint i, len, suit = 0, min = -1;
     GList *suit_l;
-    card *tmp, *ret_card = NULL;
+    card *ret_card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
             "%s: try null_hoch_abwerfen()\n", player->name);
 
+    /* if player has to serve the suit
+     * simply play the highest available */
+    if (muss_bedienen(player))
+        return (card *) list->data;
+
     /* get shortest suit */
-    for (i=0; i<4; ++i)
+    suit_l = get_short_suit(list, 0);
+
+    if (suit_l)
     {
-        len = get_suit_len(list, SUITS[i]);
-
-        if (len && (min == -1 || min > len))
-        {
-            min = len;
-            suit = SUITS[i];
-        }
-    }
-
-    if (suit)
-    {
-        suit_l = get_suit_list(list, suit);
-
         ret_card = (card *) suit_l->data;
 
         /* do not choose a card with no points (7, 8, 9) */
