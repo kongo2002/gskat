@@ -17,6 +17,7 @@ gskat_headers = ai.h \
 		gamestate.h \
 		interface.h \
 		license.h \
+		null.h \
 		utils.h
 
 gskat_SOURCES = ai.c \
@@ -28,5 +29,6 @@ gskat_SOURCES = ai.c \
 		gamestate.c \
 		interface.c \
 		main.c \
+		null.c \
 		utils.c \
 		$(gskat_headers)

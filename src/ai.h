@@ -27,27 +27,15 @@ card *ai_select_card(player *player, GList *list);
 
 card *ai_re_kommt_raus(player *player, GList *list);
 
-card *null_re_kommt_raus(player *player, GList *list);
-
 card *ai_kontra_kommt_raus(player *player, GList *list);
-
-card *null_kontra_kommt_raus(player *player, GList *list);
 
 card *ai_re_mitte(player *player, GList *list);
 
 card *ai_kontra_mitte(player *player, GList *list);
 
-card *null_kontra_mitte(player *player, GList *list);
-
 card *ai_kontra_hinten(player *player, GList *list);
 
-card *null_kontra_hinten(player *player, GList *list);
-
 card *ai_re_hinten(player *player, GList *list);
-
-card *null_re_hinten(player *player, GList *list);
-
-card *null_aufspielen(player *player, GList *list);
 
 card *kurz_aufspielen(player *player, GList *list);
 
