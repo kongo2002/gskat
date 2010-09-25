@@ -24,6 +24,17 @@
 #include "null.h"
 #include "utils.h"
 
+/**
+ * null_select_card:
+ * @player:   Player to choose the next card to play for
+ * @list:     A #GList with all possible cards to choose from
+ * @position: Player's position on the table
+ *
+ * Null game AI function to determine the next card to play according to the
+ * position and the team the player is in
+ *
+ * Returns: a #card to play or %NULL if no suitable #card could be found
+ */
 card *null_select_card(player *player, GList *list, gint position)
 {
     card *card = NULL;
