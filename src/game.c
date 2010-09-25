@@ -1194,9 +1194,9 @@ void end_round(finish_type ft)
                     game);
         }
     }
+    /* null game */
     else
     {
-        /* TODO: implement null game */
         if (gskat.hand)
             game = 35;
         else
@@ -1212,6 +1212,7 @@ void end_round(finish_type ft)
         }
         else
         {
+            /* player has overbid the 'null' game */
             if (player->gereizt > game)
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
@@ -1224,6 +1225,7 @@ void end_round(finish_type ft)
 
                 game *= -2;
             }
+            /* player has won the 'null' game */
             else
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
@@ -1233,7 +1235,7 @@ void end_round(finish_type ft)
 
     }
 
-    /* refresh the new players' points */
+    /* refresh the players' new points */
     set_round_points(player->id, game);
 
     /* update interface */
