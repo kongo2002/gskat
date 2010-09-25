@@ -340,9 +340,9 @@ card *null_hoch_abwerfen(player *player, GList *list)
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
             "%s: try null_hoch_abwerfen()\n", player->name);
 
-    /* if player has to serve the suit
+    /* if player has to serve the suit or has only one suit left
      * simply play the highest available */
-    if (muss_bedienen(player))
+    if (muss_bedienen(player) || num_different_suits(list) == 1)
         return (card *) list->data;
 
     /* get shortest suit */

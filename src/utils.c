@@ -754,6 +754,27 @@ gint get_suit_len(GList *list, gint suit)
 }
 
 /**
+ * num_different_suits:
+ * @list: #GList of cards to search in
+ *
+ * Get the number of different suit cards in a given card list
+ *
+ * Returns: Number of different suits
+ */
+gint num_different_suits(GList *list)
+{
+    gint i, num = 0;
+
+    for (i=0; i<4; ++i)
+    {
+        if (get_suit_len(list, SUITS[i]))
+            num++;
+    }
+
+    return num;
+}
+
+/**
  * compare_cards:
  * @a:     first card
  * @b:     second card

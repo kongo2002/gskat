@@ -1057,7 +1057,7 @@ void calculate_stich(void)
         gskat_msg(MT_INFO | MT_BUGREPORT,
                 _("%s lost the game (null game)\n"), gskat.re->name);
 
-        end_round(FT_LOST);
+        return end_round(FT_LOST);
     }
 
     gskat_msg(MT_INFO | MT_BUGREPORT,
@@ -1163,8 +1163,6 @@ void end_round(finish_type ft)
                         game * -2);
 
                 game *= -2;
-
-                gskat_msg(MT_STATUSBAR, _("%s has overbid"), player->name);
             }
             else
             {
@@ -1174,8 +1172,6 @@ void end_round(finish_type ft)
                         player->points,
                         (120 - player->points),
                         game);
-
-                gskat_msg(MT_STATUSBAR, _("%s won the round"), player->name);
             }
         }
         /* player has lost */
@@ -1196,8 +1192,6 @@ void end_round(finish_type ft)
                     player->points,
                     (120 - player->points),
                     game);
-
-            gskat_msg(MT_STATUSBAR, _("%s lost the round"), player->name);
         }
     }
     else
@@ -1218,8 +1212,23 @@ void end_round(finish_type ft)
         }
         else
         {
-            gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
-                    _("%s won the null game\n\t%d"), player->name, game);
+            if (player->gereizt > game)
+            {
+                gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
+                        _("%s has overbid.\nBidden: %d\n"
+                        "Game value: %d\n\t%d"),
+                        player->name,
+                        player->gereizt,
+                        game,
+                        game * -2);
+
+                game *= -2;
+            }
+            else
+            {
+                gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
+                        _("%s won the null game\n\t%d"), player->name, game);
+            }
         }
 
     }
@@ -1236,6 +1245,9 @@ void end_round(finish_type ft)
 
     /* reset game values */
     reset_game();
+
+    calc_card_positions();
+    draw_area();
 }
 
 /**

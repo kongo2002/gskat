@@ -63,6 +63,8 @@ GList *get_suit_list(GList *list, gint suit);
 
 gint get_suit_len(GList *list, gint suit);
 
+gint num_different_suits(GList *list);
+
 gint compare_cards(gconstpointer a, gconstpointer b);
 
 gint compare_jacks(gconstpointer a, gconstpointer b);
