@@ -729,6 +729,31 @@ GList *get_suit_list(GList *list, gint suit)
 }
 
 /**
+ * get_suit_len:
+ * @list:  #GList of cards to search in
+ * @suit:  suit that is searched
+ *
+ * Get the number of cards of the given suit
+ *
+ * Returns: count of cards of @suit
+ */
+gint get_suit_len(GList *list, gint suit)
+{
+    gint retval = 0;
+    GList *ptr;
+
+    ptr = get_suit_list(list, suit);
+
+    if (ptr)
+    {
+        retval = g_list_length(ptr);
+        g_list_free(ptr);
+    }
+
+    return retval;
+}
+
+/**
  * compare_cards:
  * @a:     first card
  * @b:     second card

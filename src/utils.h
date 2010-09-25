@@ -61,6 +61,8 @@ GList *get_jack_list(GList *list);
 
 GList *get_suit_list(GList *list, gint suit);
 
+gint get_suit_len(GList *list, gint suit);
+
 gint compare_cards(gconstpointer a, gconstpointer b);
 
 gint compare_jacks(gconstpointer a, gconstpointer b);

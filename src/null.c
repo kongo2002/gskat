@@ -173,6 +173,11 @@ card *null_kontra_hinten(player *player, GList *list)
         if ((card = drunter_bleiben(player, list)))
             return card;
     }
+    else
+    {
+        if ((card = null_hoch_abwerfen(player, list)))
+            return card;
+    }
 
     return NULL;
 }
@@ -299,6 +304,53 @@ card *drunter_bleiben(player *player, GList *list)
     }
 
     return NULL;
+}
+
+/**
+ * null_hoch_abwerfen:
+ * @player: Player to choose a #card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Select a high card to throw away - if possible from a short
+ * numbered suit.
+ *
+ * Returns: the selected #card or %NULL
+ */
+card *null_hoch_abwerfen(player *player, GList *list)
+{
+    gint i, len, suit = 0, min = -1;
+    GList *suit_l;
+    card *tmp, *ret_card = NULL;
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: try null_hoch_abwerfen()\n", player->name);
+
+    /* get shortest suit */
+    for (i=0; i<4; ++i)
+    {
+        len = get_suit_len(list, SUITS[i]);
+
+        if (len && (min == -1 || min > len))
+        {
+            min = len;
+            suit = SUITS[i];
+        }
+    }
+
+    if (suit)
+    {
+        suit_l = get_suit_list(list, suit);
+
+        ret_card = (card *) suit_l->data;
+
+        /* do not choose a card with no points (7, 8, 9) */
+        if (!ret_card->points)
+            ret_card = NULL;
+
+        g_list_free(suit_l);
+    }
+
+    return ret_card;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

@@ -41,6 +41,8 @@ card *niedrig_bedienen(player *player, GList *list);
 
 card *drunter_bleiben(player *player, GList *list);
 
+card *null_hoch_abwerfen(player *player, GList *list);
+
 #endif /* __NULL_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */
