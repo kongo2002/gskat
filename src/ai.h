@@ -43,10 +43,6 @@ card *lang_aufspielen(player *player, GList *list);
 
 card *ai_kontra_schmieren(player *player, GList *list);
 
-card *niedrig_bedienen(player *player, GList *list);
-
-card *drunter_bleiben(player *player, GList *list);
-
 card *highest_fehl(player *player, GList *list);
 
 card *kurz_fehl_ass(player *player, GList *list);

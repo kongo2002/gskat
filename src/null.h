@@ -37,6 +37,10 @@ card *null_re_hinten(player *player, GList *list);
 
 card *null_aufspielen(player *player, GList *list);
 
+card *niedrig_bedienen(player *player, GList *list);
+
+card *drunter_bleiben(player *player, GList *list);
+
 #endif /* __NULL_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */

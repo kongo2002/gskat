@@ -256,4 +256,49 @@ card *null_aufspielen(player *player, GList *list)
     return ret_card;
 }
 
+/**
+ * niedrig_bedienen:
+ * @player: Player to choose a #card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Select a the lowest card possible
+ *
+ * Returns: the selected #card or %NULL
+ */
+card *niedrig_bedienen(player *player, GList *list)
+{
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: try niedrig_bedienen()\n", player->name);
+
+    return g_list_nth_data(list, g_list_length(list) - 1);
+}
+
+/**
+ * drunter_bleiben:
+ * @player: Player to choose a #card to play for
+ * @list:   A #GList with all possible cards to choose from
+ *
+ * Try to find a lower card than the highest on the table
+ *
+ * Returns: the selected #card or %NULL
+ */
+card *drunter_bleiben(player *player, GList *list)
+{
+    GList *ptr;
+    card *tmp, *high = highest_on_table();
+
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: try drunter_bleiben()\n", player->name);
+
+    for (ptr = g_list_first(list); ptr; ptr = ptr->next)
+    {
+        tmp = (card *) ptr->data;
+
+        if (!is_greater(tmp, high))
+            return tmp;
+    }
+
+    return NULL;
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */
