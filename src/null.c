@@ -139,14 +139,30 @@ card *null_kontra_kommt_raus(player *player, GList *list)
  */
 card *null_kontra_mitte(player *player, GList *list)
 {
-    card *card = NULL;
+    card *table_card, *card = NULL;
 
-    gskat_msg(MT_DEBUG | MT_BUGREPORT, "%s: null_kontra_mitte()\n", player->name);
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            "%s: null_kontra_mitte()\n", player->name);
+
+    table_card = g_list_nth_data(gskat.table, 0);
 
     if (muss_bedienen(player))
     {
-        if ((card = niedrig_bedienen(player, list)))
-            return card;
+        if (table_card->owner == gskat.re->id)
+        {
+            if ((card = drunter_bleiben(player, list)))
+                return card;
+
+            /* if player has no lower card
+             * he should take a high one */
+            if ((card = null_hoch_abwerfen(player, list)))
+                return card;
+        }
+        else
+        {
+            if ((card = niedrig_bedienen(player, list)))
+                return card;
+        }
     }
     else
     {
@@ -181,6 +197,11 @@ card *null_kontra_hinten(player *player, GList *list)
         if (muss_bedienen(player))
         {
             if ((card = drunter_bleiben(player, list)))
+                return card;
+
+            /* if player has no lower card
+             * he should take a high one */
+            if ((card = null_hoch_abwerfen(player, list)))
                 return card;
         }
         else

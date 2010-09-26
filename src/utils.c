@@ -305,37 +305,52 @@ void print_player_cards(player *player)
  */
 gboolean higher_rank(card *top, card *bottom)
 {
-    /* top = jack */
-    if (top->rank == BUBE)
+    if (!gskat.null)
     {
-        if (bottom->rank != BUBE)
-            return TRUE;
-        else if (top->suit > bottom->suit)
-            return TRUE;
+        /* top = jack */
+        if (top->rank == BUBE)
+        {
+            if (bottom->rank != BUBE)
+                return TRUE;
+            else if (top->suit > bottom->suit)
+                return TRUE;
+            else
+                return FALSE;
+        }
+        /* no jack */
+        else if (bottom->rank != BUBE)
+        {
+            /* ace */
+            if (top->rank == ASS && bottom->rank != ASS)
+                return TRUE;
+            else if (bottom->rank == ASS)
+                return FALSE;
+            /* ten */
+            else if (top->rank == 10 && bottom->rank != 10)
+                return TRUE;
+            else if (bottom->rank == 10)
+                return FALSE;
+            else if (top->rank > bottom->rank)
+                return TRUE;
+            else
+                return FALSE;
+        }
+        /* bottom = jack */
         else
             return FALSE;
     }
-    /* no jack */
-    else if (bottom->rank != BUBE)
+    /* null game */
+    else
     {
-        /* ace */
         if (top->rank == ASS && bottom->rank != ASS)
             return TRUE;
         else if (bottom->rank == ASS)
-            return FALSE;
-        /* ten */
-        else if (top->rank == 10 && bottom->rank != 10)
-            return TRUE;
-        else if (bottom->rank == 10)
             return FALSE;
         else if (top->rank > bottom->rank)
             return TRUE;
         else
             return FALSE;
     }
-    /* bottom = jack */
-    else
-        return FALSE;
 }
 
 /**
