@@ -764,37 +764,10 @@ gint get_suit_len(GList *list, gint suit)
 gint num_different_suits(GList *list)
 {
     gint i, num = 0;
-    gint suit_lengths[4];
-    GList *ptr;
-    card *tmp;
-
-    for (i=0; i<4; ++i)
-        suit_lengths[i] = 0;
-
-    for (ptr = g_list_first(list); ptr; ptr = ptr->next)
-    {
-        tmp = (card *) ptr->data;
-
-        switch (tmp->suit)
-        {
-            case KREUZ:
-                suit_lengths[0]++;
-                break;
-            case PIK:
-                suit_lengths[1]++;
-                break;
-            case HERZ:
-                suit_lengths[2]++;
-                break;
-            case KARO:
-                suit_lengths[3]++;
-                break;
-        }
-    }
 
     for (i=0; i<4; ++i)
     {
-        if (suit_lengths[i] > 0)
+        if (get_suit_len(list, SUITS[i]) > 0)
             num++;
     }
 
