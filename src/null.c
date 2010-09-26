@@ -254,11 +254,15 @@ card *null_re_hinten(player *player, GList *list)
 card *null_aufspielen(player *player, GList *list)
 {
     gint i, len, min = -1;
-    GList *suit_l;
+    GList *suit_l, *cards;
     card *ptr, *ret_card = NULL;
 
     gskat_msg(MT_DEBUG | MT_BUGREPORT,
             "%s: try null_aufspielen()\n", player->name);
+
+    /* remove ace cards from possible cards */
+    cards = g_list_copy(list);
+    cards = cards_filter_rank(cards, ASS);
 
     /* iterate through all four suits */
     for (i=0; i<4; ++i)
@@ -274,7 +278,7 @@ card *null_aufspielen(player *player, GList *list)
             continue;
         }
 
-        suit_l = get_suit_list(list, SUITS[i]);
+        suit_l = get_suit_list(cards, SUITS[i]);
 
         if (suit_l)
         {
@@ -294,6 +298,8 @@ card *null_aufspielen(player *player, GList *list)
             g_list_free(suit_l);
         }
     }
+
+    g_list_free(cards);
 
     return ret_card;
 }
