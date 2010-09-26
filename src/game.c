@@ -503,9 +503,7 @@ gint do_sagen(player *player, gint hoerer, gint value)
     {
         if (player->human)
         {
-            msg = (gchar *) g_malloc(sizeof(gchar) *
-                    (20+strlen(gskat.players[hoerer]->name)));
-            g_sprintf(msg, _("Middlehand: %s. Bid?"),
+            msg = g_strdup_printf(_("Middlehand: %s. Bid?"),
                     gskat.players[hoerer]->name);
 
             gereizt = get_bid_response(value, msg, FALSE);
