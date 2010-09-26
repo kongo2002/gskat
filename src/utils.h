@@ -65,6 +65,12 @@ gint get_suit_len(GList *list, gint suit);
 
 gint num_different_suits(GList *list);
 
+GList *cards_filter_suit(GList *list, gint suit);
+
+GList *cards_filter_trump(GList *list);
+
+GList *cards_filter_rank(GList *list, gint rank);
+
 gint compare_cards(gconstpointer a, gconstpointer b);
 
 gint compare_jacks(gconstpointer a, gconstpointer b);

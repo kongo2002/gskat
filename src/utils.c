@@ -860,6 +860,85 @@ gint compare_jacks(gconstpointer a, gconstpointer b)
 }
 
 /**
+ * cards_filter_suit:
+ * @list: #GList of cards to filter
+ * @suit: Suit to filter out
+ *
+ * Filter out a suit of a given #card list
+ *
+ * Returns: #GList or %NULL
+ */
+GList *cards_filter_suit(GList *list, gint suit)
+{
+    GList *ptr, *suit_list;
+
+    suit_list = get_suit_list(list, suit);
+
+    if (suit_list)
+    {
+        for (ptr = g_list_first(suit_list); ptr; ptr = ptr->next)
+            list = g_list_remove(list, ptr->data);
+
+        g_list_free(suit_list);
+    }
+
+    return list;
+}
+
+/**
+ * cards_filter_trump:
+ * @list: #GList of cards to filter
+ *
+ * Filter out trump cards of a given #card list
+ *
+ * Returns: #GList or %NULL
+ */
+GList *cards_filter_trump(GList *list)
+{
+    GList *ptr, *trump_list;
+
+    trump_list = get_trump_list(list);
+
+    if (trump_list)
+    {
+        for (ptr = g_list_first(trump_list); ptr; ptr = ptr->next)
+            list = g_list_remove(list, ptr->data);
+
+        g_list_free(trump_list);
+    }
+
+    return list;
+}
+
+/**
+ * cards_filter_rank:
+ * @list: #GList of cards to filter
+ * @rank: Card rank to filter out
+ *
+ * Filter out cards with a specific rank of a given #card list
+ *
+ * Returns: #GList or %NULL
+ */
+GList *cards_filter_rank(GList *list, gint rank)
+{
+    GList *ptr, *tmp;
+    card *card;
+
+    tmp = g_list_copy(list);
+
+    for (ptr = g_list_first(tmp); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+
+        if (card->rank == rank)
+            list = g_list_remove(list, card);
+    }
+
+    g_list_free(tmp);
+    return list;
+}
+
+/**
  * compare_family:
  * @a: first card
  * @b: second card
