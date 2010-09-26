@@ -573,12 +573,8 @@ void start_bidding(void)
         gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE1\n");
 
         gskat.state = PROVOKE2;
-
-        hoerer = gskat.forehand;
-        sager = (hoerer + 1) % 3;
-
-        gskat.hoerer = hoerer;
-        gskat.sager = sager;
+        gskat.hoerer = gskat.forehand;
+        gskat.sager = (gskat.hoerer + 1) % 3;
         gskat.bidden = 0;
 
         gskat_msg(MT_INFO | MT_STATUSBAR | MT_BUGREPORT, _("Start of bidding"));
@@ -609,13 +605,8 @@ void start_bidding(void)
 
         gskat.state = PROVOKE3;
 
-        sager = gskat.sager;
-        hoerer = gskat.hoerer;
-
-        do_sagen(gskat.players[sager], hoerer,
+        do_sagen(gskat.players[gskat.sager], gskat.hoerer,
                 (gskat.bidden) ? gskat.bidden : 18);
-
-        gskat.state = PROVOKE3;
     }
     else if (gskat.state == PROVOKE3)
     {
