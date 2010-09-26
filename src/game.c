@@ -450,9 +450,8 @@ gint do_hoeren(player *player, gint value, gint sager)
 
     if (player->human)
     {
-        msg = (gchar *) g_malloc(sizeof(gchar) *
-                (20+strlen(gskat.players[sager]->name)));
-        g_sprintf(msg, _("%s says %d:"), gskat.players[sager]->name, value);
+        msg = g_strdup_printf(_("%s says %d:"), gskat.players[sager]->name,
+                value);
 
         response = get_bid_response(value, msg, TRUE);
 
