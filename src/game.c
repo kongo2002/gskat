@@ -444,37 +444,53 @@ gint get_max_reizwert(GList *list)
  *
  * Returns: bidden value or 0 if passed
  */
-gint do_hoeren(player *player, gint value, gint sager)
+void do_hoeren(player *player, gint value, gint sager)
 {
     gint max = 0;
-    gint response = 0;
     gchar *msg;
 
-    if (player->human)
-    {
-        msg = g_strdup_printf(_("%s says %d:"), gskat.players[sager]->name,
-                value);
-
-        response = get_bid_response(value, msg, TRUE);
-
-        g_free(msg);
-    }
-    else
+    if (!player->human)
     {
         max = get_max_reizwert(player->cards);
 
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
+            gskat.hoerer = player->id;
             player->gereizt = value;
-            return value;
+
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("%s says 'yes' to %d\n"), player->name, value);
+
+            /* all players have passed */
+            if (player->id == sager)
+                return;
+
+            do_sagen(gskat.players[sager], player->id, next_reizwert(value));
         }
         else
-            return 0;
-    }
+        {
+            gskat.sager = (gskat.forehand + 2) % 3;
+            gskat.hoerer = sager;
 
-    if (response)
-        player->gereizt = value;
-    return response;
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("%s passes at %d\n"), player->name, value);
+
+            /* all players have passed */
+            if (player->id == sager)
+                return;
+
+            start_bidding();
+        }
+    }
+    else
+    {
+        msg = g_strdup_printf(_("%s says %d. Do you bid %d?"),
+                gskat.players[sager]->name, value, value);
+
+        show_bid_infobar(value, msg, TRUE);
+
+        g_free(msg);
+    }
 }
 
 /**
@@ -487,66 +503,58 @@ gint do_hoeren(player *player, gint value, gint sager)
  *
  * Returns: bidden value
  */
-gint do_sagen(player *player, gint hoerer, gint value)
+void do_sagen(player *player, gint hoerer, gint value)
 {
-    gint response = 0;
-    gint gereizt = 0;
-    gint id = 0;
     gint max = 0;
     gchar *msg;
 
     gskat_msg(MT_INFO | MT_BUGREPORT,
-            _("Forehand: %s; Middlehand: %s\n"), player->name,
+            _("Sayer: %s; Hearer: %s\n"), player->name,
             gskat.players[hoerer]->name);
 
-    /* pass immediately? */
-    if (value != player->gereizt)
+    if (!player->human)
     {
-        if (player->human)
+        max = get_max_reizwert(player->cards);
+
+        /* check if player wants to bid (further) */
+        if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
-            msg = g_strdup_printf(_("Middlehand: %s. Bid?"),
-                    gskat.players[hoerer]->name);
-
-            gereizt = get_bid_response(value, msg, FALSE);
-
-            g_free(msg);
+            gskat.sager = player->id;
+            gskat.bidden = value;
+            player->gereizt = value;
         }
+        /* player passes */
         else
         {
-            max = get_max_reizwert(player->cards);
+            gskat.sager = (gskat.forehand + 2) % 3;
+            gskat.hoerer = hoerer;
 
-            if (rate_cards(player, player->cards) >= 7 && value <= max)
-                gereizt = value;
-            else
-                gereizt = 0;
+            /* set saying player to hearing player if first two
+             * players have already passed */
+            if (gskat.sager == player->id)
+                gskat.sager = hoerer;
+
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("%s passes at %d\n"), player->name, value);
+
+            return start_bidding();
         }
-    }
-    else
-        gereizt = player->gereizt;
 
-    /* hoeren */
-    if (gereizt)
-    {
         gskat_msg(MT_INFO | MT_BUGREPORT,
                 _("%s says %d\n"), player->name, value);
-        player->gereizt = value;
 
-        response = do_hoeren(gskat.players[hoerer], value, player->id);
-        gskat_msg(MT_INFO | MT_BUGREPORT,
-                _("%s says %s\n"), gskat.players[hoerer]->name,
-                (response) ? _("Yes") : _("No"));
-
-        if (response)
-        {
-            id = do_sagen(player, hoerer, next_reizwert(value));
-        }
-        else
-            return player->id;
+        /* ask the hearing player */
+        do_hoeren(gskat.players[hoerer], value, player->id);
     }
+    else
+    {
+        msg = g_strdup_printf(_("Hearer: %s\nDo you bid %d?\n"),
+                gskat.players[hoerer]->name, value);
 
-    if (player->gereizt == gskat.players[hoerer]->gereizt)
-        return hoerer;
-    return id;
+        show_bid_infobar(value, msg, FALSE);
+
+        g_free(msg);
+    }
 }
 
 /**
@@ -556,71 +564,95 @@ gint do_sagen(player *player, gint hoerer, gint value)
  */
 void start_bidding(void)
 {
-    gint hoerer = gskat.forehand;
-    gint sager = (hoerer + 1) % 3;
-    gint i = 18;
+    gint i, hoerer, sager;
     player *pptr;
 
-    gskat_msg(MT_INFO | MT_STATUSBAR | MT_BUGREPORT, _("Start of bidding"));
-
-    /* disable 'new round' button */
-    gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
-
-    /* reset all player values */
-    for (i=0; i<3; ++i)
+    /* first bidding phase */
+    if (gskat.state == PROVOKE1)
     {
-        pptr = gskat.players[i];
-        pptr->gereizt = 0;
+        gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE1\n");
 
-        gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                _("MaxReizwert of %s: %d\n"), pptr->name,
-                get_max_reizwert(pptr->cards));
-        gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                _("CardRating of %s: %d\n"), pptr->name,
-                rate_cards(pptr, pptr->cards));
+        gskat.state = PROVOKE2;
+
+        hoerer = gskat.forehand;
+        sager = (hoerer + 1) % 3;
+
+        gskat.hoerer = hoerer;
+        gskat.sager = sager;
+        gskat.bidden = 0;
+
+        gskat_msg(MT_INFO | MT_STATUSBAR | MT_BUGREPORT, _("Start of bidding"));
+
+        /* disable 'new round' button */
+        gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
+
+        /* reset all player values */
+        for (i=0; i<3; ++i)
+        {
+            pptr = gskat.players[i];
+            pptr->gereizt = 0;
+
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("MaxReizwert of %s: %d\n"), pptr->name,
+                    get_max_reizwert(pptr->cards));
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("CardRating of %s: %d\n"), pptr->name,
+                    rate_cards(pptr, pptr->cards));
+        }
+
+        do_sagen(gskat.players[sager], hoerer, 18);
     }
-
-    /* sagen */
-    sager = do_sagen(gskat.players[sager], hoerer, 18);
-    gskat_msg(MT_INFO | MT_BUGREPORT,
-            _("%s won 1. reizen with %d\n"), gskat.players[sager]->name,
-            gskat.players[sager]->gereizt);
-
-    gskat.state = PROVOKE2;
-
-    sager = do_sagen(gskat.players[sager], (hoerer+2) % 3,
-            (gskat.players[sager]->gereizt) ? gskat.players[sager]->gereizt : 18);
-
-    gskat.state = PROVOKE3;
-
-    /* first two players have passed */
-    if (gskat.players[sager]->gereizt == 0)
-        do_hoeren(gskat.players[sager], 18, sager);
-
-    if (gskat.players[sager]->gereizt)
+    /* second bidding phase */
+    else if (gskat.state == PROVOKE2)
     {
-        gskat_msg(MT_INFO | MT_BUGREPORT,
-                _("%s won 2. reizen with %d\n"), gskat.players[sager]->name,
-                gskat.players[sager]->gereizt);
+        gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE2\n");
 
-        gskat.re = gskat.players[sager];
-        gskat.re->re = TRUE;
+        gskat.state = PROVOKE3;
 
-        /* update interface */
-        gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
-        gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]),
-                _("Pronounce a game"));
+        sager = gskat.sager;
+        hoerer = gskat.hoerer;
 
-        update_interface();
-        take_skat();
+        do_sagen(gskat.players[sager], hoerer,
+                (gskat.bidden) ? gskat.bidden : 18);
+
+        gskat.state = PROVOKE3;
     }
-    else
+    else if (gskat.state == PROVOKE3)
     {
-        gskat_msg(MT_INFO | MT_DIALOG | MT_BUGREPORT,
-                _("All players have passed.\nNew round.\n"));
+        gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE3\n");
 
-        reset_game();
-        game_start();
+        sager = gskat.sager;
+        hoerer = gskat.hoerer;
+
+        /* first two players have passed */
+        if (!gskat.bidden)
+            do_hoeren(gskat.players[sager], 18, sager);
+
+        if (gskat.bidden)
+        {
+            /* TODO: this does not like very nice... */
+            gskat.re = (gskat.players[sager]->gereizt >
+                    gskat.players[hoerer]->gereizt) ?
+                gskat.players[sager] : gskat.players[hoerer];
+
+            gskat.re->re = TRUE;
+
+            /* update interface */
+            gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
+            gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]),
+                    _("Pronounce a game"));
+
+            update_interface();
+            take_skat();
+        }
+        else
+        {
+            gskat_msg(MT_INFO | MT_DIALOG | MT_BUGREPORT,
+                    _("All players have passed.\nNew round.\n"));
+
+            reset_game();
+            game_start();
+        }
     }
 }
 

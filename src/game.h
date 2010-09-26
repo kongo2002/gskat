@@ -47,9 +47,9 @@ gint get_max_reizwert(GList *list);
 
 gint next_reizwert(gint value);
 
-gint do_hoeren(player *player, gint value, gint sager);
+void do_hoeren(player *player, gint value, gint sager);
 
-gint do_sagen(player *player, gint hoerer, gint value);
+void do_sagen(player *player, gint hoerer, gint value);
 
 void take_skat(void);
 

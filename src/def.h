@@ -312,6 +312,9 @@ typedef struct _config {
  * @re:            Current re player
  * @forehand:      Current forehand player index
  * @cplayer:       Current player index
+ * @sager:         Current 'saying' player
+ * @hoerer:        Current 'hearing' player
+ * @bidden:        Current bidden value
  * @trump:         Current trump
  * @round:         Current round
  * @stich:         Current trick
@@ -340,6 +343,9 @@ typedef struct _app {
     player *re;
     gint forehand;
     gint cplayer;
+    gint sager;
+    gint hoerer;
+    gint bidden;
     gint trump;
     gint round;
     gint stich;

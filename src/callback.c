@@ -762,17 +762,37 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data)
  * infobar_bid_response:
  * @ib:       #GtkInfoBar widget emitting the signal
  * @response: Response of the user
- * @data:     arbitrary user data
+ * @data:     #gboolean hoeren cast to #gpointer
  *
  * Get the bidding response from the user
  */
 void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
 {
-    UNUSED(data);
-
-    gskat_msg(MT_DEBUG, "User responded with %d\n", response);
+    gboolean hoeren = GPOINTER_TO_INT(data);
 
     gtk_widget_destroy(GTK_WIDGET(ib));
+
+    if (response)
+    {
+        gskat.players[0]->gereizt = response;
+
+        if (hoeren)
+            do_sagen(gskat.players[gskat.sager], gskat.hoerer,
+                    next_reizwert(response));
+        else
+        {
+            gskat.bidden = response;
+            do_hoeren(gskat.players[gskat.hoerer], response, 0);
+        }
+    }
+    else
+    {
+        if (hoeren)
+            gskat.hoerer = gskat.sager;
+
+        gskat.sager = (gskat.forehand + 2) % 3;
+        start_bidding();
+    }
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
