@@ -758,4 +758,21 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data)
     g_free(filename);
 }
 
+/**
+ * infobar_bid_response:
+ * @ib:       #GtkInfoBar widget emitting the signal
+ * @response: Response of the user
+ * @data:     arbitrary user data
+ *
+ * Get the bidding response from the user
+ */
+void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
+{
+    UNUSED(data);
+
+    gskat_msg(MT_DEBUG, "User responded with %d\n", response);
+
+    gtk_widget_destroy(GTK_WIDGET(ib));
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */

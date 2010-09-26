@@ -406,6 +406,9 @@ void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
             value, (hoeren) ? _("No") : _("Pass"), 0, NULL);
     gtk_info_bar_set_message_type(GTK_INFO_BAR(infobar), GTK_MESSAGE_QUESTION);
 
+    g_signal_connect(infobar, "response", G_CALLBACK(infobar_bid_response),
+            NULL);
+
     message = gtk_label_new(msg);
 
     content = gtk_info_bar_get_content_area(GTK_INFO_BAR(infobar));

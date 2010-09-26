@@ -71,6 +71,8 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data);
 
 void save_game_cb(GtkMenuItem *menuitem, gpointer data);
 
+void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data);
+
 #endif /* __CALLBACK_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */
