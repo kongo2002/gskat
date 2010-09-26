@@ -96,7 +96,9 @@ typedef enum {
  * @LOADING:    Loading game objects
  * @WAITING:    Waiting for user action
  * @GIVE_CARDS: Distributing cards to players and 'skat'
- * @PROVOKE:    Players are bidding for the game
+ * @PROVOKE1:   Players start to bid for the game
+ * @PROVOKE2:   Start of the second bid 'round'
+ * @PROVOKE3:   Two players already passed - does the third player want to play?
  * @TAKESKAT:   Player takes cards from the skat
  * @PLAYING:    Players are playing a game round
  * @READY:      Game is loaded
@@ -108,7 +110,9 @@ typedef enum {
     LOADING,
     WAITING,
     GIVE_CARDS,
-    PROVOKE,
+    PROVOKE1,
+    PROVOKE2,
+    PROVOKE3,
     TAKESKAT,
     PLAYING,
     READY,

@@ -453,7 +453,7 @@ void next_round(GtkButton *button, gpointer data)
     }
     else if (gskat.state == WAITING)
     {
-        gskat.state = PROVOKE;
+        gskat.state = PROVOKE1;
 
         start_bidding();
     }

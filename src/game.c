@@ -587,8 +587,12 @@ void start_bidding(void)
             _("%s won 1. reizen with %d\n"), gskat.players[sager]->name,
             gskat.players[sager]->gereizt);
 
+    gskat.state = PROVOKE2;
+
     sager = do_sagen(gskat.players[sager], (hoerer+2) % 3,
             (gskat.players[sager]->gereizt) ? gskat.players[sager]->gereizt : 18);
+
+    gskat.state = PROVOKE3;
 
     /* first two players have passed */
     if (gskat.players[sager]->gereizt == 0)
