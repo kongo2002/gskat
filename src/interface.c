@@ -384,6 +384,38 @@ void show_file_bugreport(void)
 }
 
 /**
+ * show_bid_infobar:
+ * @value: Bid value
+ * @msg:   String containing the message for the #GtkInfoBar
+ * @hoeren: User has to 'hear'?
+ *
+ * Shows a new #GtkInfoBar widget on the main game interface.
+ * The callback functions return the respective value the player
+ * wants to bid.
+ */
+void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
+{
+    gchar caption[4];
+    GtkWidget *infobar;
+    GtkWidget *content;
+    GtkWidget *message;
+
+    g_sprintf(caption, "%d", value);
+
+    infobar = gtk_info_bar_new_with_buttons((hoeren) ? _("Yes") : caption,
+            value, (hoeren) ? _("No") : _("Pass"), 0, NULL);
+    gtk_info_bar_set_message_type(GTK_INFO_BAR(infobar), GTK_MESSAGE_QUESTION);
+
+    message = gtk_label_new(msg);
+
+    content = gtk_info_bar_get_content_area(GTK_INFO_BAR(infobar));
+    gtk_container_add(GTK_CONTAINER(content), message);
+
+    gtk_box_pack_start(GTK_BOX(gskat.widgets[17]), infobar, FALSE, FALSE, 2);
+    gtk_widget_show_all(infobar);
+}
+
+/**
  * show_last_tricks:
  *
  * Show a dialog window showing the last trick(s)
@@ -950,7 +982,7 @@ void create_interface(void)
 
     g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 17);
+    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 18);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "gskat");
@@ -1136,6 +1168,7 @@ void create_interface(void)
     gskat.widgets[12] = lb_rank_p2_name;
     gskat.widgets[13] = lb_rank_p3_name;
     gskat.widgets[14] = statusbar;
+    gskat.widgets[17] = vboxmenu;
 
     /* attach signals */
     g_signal_connect(G_OBJECT(window), "destroy",

@@ -238,6 +238,8 @@ gint get_bid_response(gint value, gchar *msg, gboolean hoeren)
     gchar caption[4];
     g_sprintf(caption, "%d", value);
 
+    show_bid_infobar(value, msg, hoeren);
+
     GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Bidding"),
             GTK_WINDOW(gskat.widgets[0]),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
