@@ -53,29 +53,34 @@ static GOptionEntry arguments[] =
  */
 static void initialize()
 {
-    gskat.cards       = NULL;
-    gskat.skat        = NULL;
-    gskat.table       = NULL;
-    gskat.players     = NULL;
-    gskat.stiche      = NULL;
-    gskat.players     = NULL;
-    gskat.icons       = NULL;
-    gskat.back        = NULL;
-    gskat.bg          = NULL;
-    gskat.area        = NULL;
-    gskat.widgets     = NULL;
-    gskat.confwidgets = NULL;
-    gskat.state       = LOADING;
-    gskat.re          = NULL;
-    gskat.forehand    = 2;
-    gskat.cplayer     = -1;
-    gskat.trump       = -1;
-    gskat.round       = 1;
-    gskat.stich       = 1;
-    gskat.hand        = FALSE;
-    gskat.null        = FALSE;
-    gskat.log_level   = MT_INFO;
-    gskat.log         = g_string_sized_new(256);
+    gskat.cards         = NULL;
+    gskat.skat          = NULL;
+    gskat.table         = NULL;
+    gskat.players       = NULL;
+    gskat.stiche        = NULL;
+    gskat.players       = NULL;
+    gskat.icons         = NULL;
+    gskat.back          = NULL;
+    gskat.bg            = NULL;
+    gskat.area          = NULL;
+    gskat.widgets       = NULL;
+    gskat.confwidgets   = NULL;
+    gskat.state         = LOADING;
+    gskat.re            = NULL;
+    gskat.forehand      = 2;
+    gskat.cplayer       = -1;
+    gskat.trump         = -1;
+    gskat.round         = 1;
+    gskat.stich         = 1;
+    gskat.bidden        = 0;
+    gskat.sager         = -1;
+    gskat.hoerer        = -1;
+    gskat.hand          = FALSE;
+    gskat.null          = FALSE;
+    gskat.hand_cursor   = NULL;
+    gskat.pirate_cursor = NULL;
+    gskat.log_level     = MT_INFO;
+    gskat.log           = g_string_sized_new(256);
 }
 
 int main(int argc, const char *argv[])
