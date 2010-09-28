@@ -414,7 +414,10 @@ void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
     content = gtk_info_bar_get_content_area(GTK_INFO_BAR(infobar));
     gtk_container_add(GTK_CONTAINER(content), message);
 
-    gtk_box_pack_start(GTK_BOX(gskat.widgets[17]), infobar, FALSE, FALSE, 2);
+    gtk_table_attach_defaults(GTK_TABLE(gskat.widgets[17]),
+            infobar,
+            0, 1, 0, 1);
+
     gtk_widget_show_all(infobar);
 }
 
@@ -955,6 +958,7 @@ void create_interface(void)
     GtkWidget *mainmenu;
     GtkWidget *hbox;
     GtkWidget *vbox;
+    GtkWidget *vtable;
     GtkWidget *area;
     GtkWidget *statusbar;
     GtkWidget *frame_game;
@@ -1009,10 +1013,16 @@ void create_interface(void)
     statusbar = gtk_statusbar_new();
     gtk_box_pack_start(GTK_BOX(vboxmenu), statusbar, FALSE, TRUE, 0);
 
+    vtable = gtk_table_new(2, 1, FALSE);
+    gtk_box_pack_start(GTK_BOX(hbox), vtable, TRUE, TRUE, 2);
+
     area = gtk_drawing_area_new();
-    gtk_box_pack_start(GTK_BOX(hbox), area, TRUE, TRUE, 2);
     gtk_widget_set_size_request(area, 450, 500);
     gtk_widget_set_double_buffered(area, TRUE);
+
+    gtk_table_attach_defaults(GTK_TABLE(vtable),
+            area,
+            0, 1, 1, 2);
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 2);
@@ -1171,7 +1181,7 @@ void create_interface(void)
     gskat.widgets[12] = lb_rank_p2_name;
     gskat.widgets[13] = lb_rank_p3_name;
     gskat.widgets[14] = statusbar;
-    gskat.widgets[17] = vboxmenu;
+    gskat.widgets[17] = vtable;
 
     /* attach signals */
     g_signal_connect(G_OBJECT(window), "destroy",

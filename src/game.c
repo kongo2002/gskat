@@ -564,7 +564,7 @@ void do_sagen(player *player, gint hoerer, gint value)
  */
 void start_bidding(void)
 {
-    gint i, hoerer, sager;
+    gint i, hoerer = 0, sager = 0;
     player *pptr;
 
     /* first bidding phase */
