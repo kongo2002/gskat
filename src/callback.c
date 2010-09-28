@@ -769,34 +769,31 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data)
 void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
 {
     gboolean hoeren = GPOINTER_TO_INT(data);
+    player *self = gskat.players[0];
 
     gtk_widget_destroy(GTK_WIDGET(ib));
 
     /* TODO: this whole function has to be improved! */
     if (response)
     {
-        gskat.players[0]->gereizt = response;
+        self->gereizt = response;
+        gskat.bidden = response;
 
         if (hoeren)
         {
+            /* last call */
             if (!gskat.bidden)
-            {
-                gskat.bidden = response;
                 start_bidding();
-            }
 
             do_sagen(gskat.players[gskat.sager], gskat.hoerer,
                     next_reizwert(response));
         }
         else
-        {
-            gskat.bidden = response;
-            do_hoeren(gskat.players[gskat.hoerer], response, 0);
-        }
+            do_hoeren(gskat.players[gskat.hoerer], response, self->id);
     }
     else
     {
-        gskat.players[0]->gereizt = -1;
+        self->gereizt = -1;
 
         if (hoeren)
             gskat.hoerer = gskat.sager;

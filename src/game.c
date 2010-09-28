@@ -441,8 +441,6 @@ gint get_max_reizwert(GList *list)
  * @sager:   saying player's index
  *
  * Execute the 'hearing' process for the given player
- *
- * Returns: bidden value or 0 if passed
  */
 void do_hoeren(player *player, gint value, gint sager)
 {
@@ -455,22 +453,22 @@ void do_hoeren(player *player, gint value, gint sager)
 
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
-            gskat.hoerer = player->id;
-            player->gereizt = value;
-
             gskat_msg(MT_DEBUG | MT_BUGREPORT,
                     _("%s says 'yes' to %d\n"), player->name, value);
+
+            player->gereizt = value;
+            gskat.hoerer = player->id;
 
             do_sagen(gskat.players[sager], player->id, next_reizwert(value));
         }
         else
         {
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("%s passes at %d\n"), player->name, value);
+
             player->gereizt = -1;
             gskat.sager = (gskat.forehand + 2) % 3;
             gskat.hoerer = sager;
-
-            gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                    _("%s passes at %d\n"), player->name, value);
 
             start_bidding();
         }
@@ -502,6 +500,7 @@ void do_last_call(void)
     {
         if (gskat.players[i]->gereizt != -1)
         {
+            gskat.hoerer = i;
             rem = gskat.players[i];
             break;
         }
@@ -517,6 +516,7 @@ void do_last_call(void)
 
             rem->gereizt = 18;
             gskat.bidden = 18;
+
             start_bidding();
         }
     }
@@ -531,16 +531,14 @@ void do_last_call(void)
  * @value:   last bidden value
  *
  * Execute the 'saying' process for the given player
- *
- * Returns: bidden value
  */
 void do_sagen(player *player, gint hoerer, gint value)
 {
     gint max = 0;
     gchar *msg;
 
-    gskat_msg(MT_INFO | MT_BUGREPORT,
-            _("Sayer: %s; Hearer: %s\n"), player->name,
+    gskat_msg(MT_DEBUG | MT_BUGREPORT,
+            _("do_sagen(): %s asks %s\n"), player->name,
             gskat.players[hoerer]->name);
 
     if (!player->human)
@@ -550,33 +548,28 @@ void do_sagen(player *player, gint hoerer, gint value)
         /* check if player wants to bid (further) */
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
+            gskat_msg(MT_INFO | MT_BUGREPORT,
+                    _("%s says %d\n"), player->name, value);
+
+            player->gereizt = value;
             gskat.sager = player->id;
             gskat.bidden = value;
-            player->gereizt = value;
+
+            /* ask the hearing player */
+            do_hoeren(gskat.players[hoerer], value, player->id);
         }
         /* player passes */
         else
         {
+            gskat_msg(MT_DEBUG | MT_BUGREPORT,
+                    _("%s passes at %d\n"), player->name, value);
+
             player->gereizt = -1;
             gskat.sager = (gskat.forehand + 2) % 3;
             gskat.hoerer = hoerer;
 
-            /* set saying player to hearing player if first two
-             * players have already passed */
-            if (gskat.sager == player->id)
-                gskat.sager = hoerer;
-
-            gskat_msg(MT_DEBUG | MT_BUGREPORT,
-                    _("%s passes at %d\n"), player->name, value);
-
             return start_bidding();
         }
-
-        gskat_msg(MT_INFO | MT_BUGREPORT,
-                _("%s says %d\n"), player->name, value);
-
-        /* ask the hearing player */
-        do_hoeren(gskat.players[hoerer], value, player->id);
     }
     else
     {
