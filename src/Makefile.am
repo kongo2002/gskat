@@ -5,7 +5,12 @@ INCLUDES = $(GTK_CFLAGS) \
 
 LIBS = $(GTK_LIBS)
 
-AM_CPPFLAGS=-Wall -Wextra -Wmissing-prototypes -DDEBUG
+AM_CPPFLAGS=-Wall -Wextra -Wmissing-prototypes \
+	    -DDEBUG \
+	    -DG_DISABLE_DEPRECATED \
+	    -DGTK_DISABLE_DEPRECATED \
+	    -DGDK_DISABLE_DEPRECATED \
+	    -DGDK_PIXBUF_DEPRECATED
 
 gskat_headers = ai.h \
 		callback.h \
