@@ -47,6 +47,8 @@ gint get_max_reizwert(GList *list);
 
 gint next_reizwert(gint value);
 
+void do_player_bid(gint response, gboolean hoeren);
+
 void do_hoeren(player *player, gint value, gint sager);
 
 void do_sagen(player *player, gint hoerer, gint value);

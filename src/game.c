@@ -20,7 +20,6 @@
 
 #include "def.h"
 #include "ai.h"
-#include "callback.h"
 #include "common.h"
 #include "draw.h"
 #include "game.h"
@@ -432,6 +431,46 @@ gint get_max_reizwert(GList *list)
             return max * 12;
     }
     return 0;
+}
+
+/**
+ * do_player_bid:
+ * @response: Player's response
+ * @hoeren:   Is the player on the hearing position?
+ *
+ * Execute the player's bidding process
+ */
+void do_player_bid(gint response, gboolean hoeren)
+{
+    player *self = gskat.players[0];
+
+    if (response)
+    {
+        self->gereizt = response;
+        gskat.bidden = response;
+
+        if (hoeren)
+        {
+            /* last call */
+            if (!gskat.bidden)
+                start_bidding();
+
+            do_sagen(gskat.players[gskat.sager], gskat.hoerer,
+                    next_reizwert(response));
+        }
+        else
+            do_hoeren(gskat.players[gskat.hoerer], response, self->id);
+    }
+    else
+    {
+        self->gereizt = -1;
+
+        if (hoeren)
+            gskat.hoerer = gskat.sager;
+
+        gskat.sager = (gskat.forehand + 2) % 3;
+        start_bidding();
+    }
 }
 
 /**

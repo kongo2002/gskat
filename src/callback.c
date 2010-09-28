@@ -775,44 +775,4 @@ void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
     do_player_bid(response, hoeren);
 }
 
-/**
- * do_player_bid:
- * @response: Player's response
- * @hoeren:   Is the player on the hearing position?
- *
- * Execute the player's bidding process
- */
-void do_player_bid(gint response, gboolean hoeren)
-{
-    player *self = gskat.players[0];
-
-    if (response)
-    {
-        self->gereizt = response;
-        gskat.bidden = response;
-
-        if (hoeren)
-        {
-            /* last call */
-            if (!gskat.bidden)
-                start_bidding();
-
-            do_sagen(gskat.players[gskat.sager], gskat.hoerer,
-                    next_reizwert(response));
-        }
-        else
-            do_hoeren(gskat.players[gskat.hoerer], response, self->id);
-    }
-    else
-    {
-        self->gereizt = -1;
-
-        if (hoeren)
-            gskat.hoerer = gskat.sager;
-
-        gskat.sager = (gskat.forehand + 2) % 3;
-        start_bidding();
-    }
-}
-
 /* vim:set et sw=4 sts=4 tw=80: */
