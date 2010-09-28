@@ -232,13 +232,11 @@ void give_cards(void)
  * Returns: If the user continues to bid that value is returned.
  * Otherwise 0 is returned representing a 'pass'.
  */
-gint get_bid_response(gint value, gchar *msg, gboolean hoeren)
+void get_bid_response(gint value, gchar *msg, gboolean hoeren)
 {
     gint result;
     gchar caption[4];
     g_sprintf(caption, "%d", value);
-
-    show_bid_infobar(value, msg, hoeren);
 
     GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Bidding"),
             GTK_WINDOW(gskat.widgets[0]),
@@ -254,7 +252,8 @@ gint get_bid_response(gint value, gchar *msg, gboolean hoeren)
     result = gtk_dialog_run(GTK_DIALOG(dialog));
 
     gtk_widget_destroy(dialog);
-    return result;
+
+    do_player_bid(result, hoeren);
 }
 
 /**
@@ -478,7 +477,11 @@ void do_hoeren(player *player, gint value, gint sager)
         msg = g_strdup_printf(_("%s says %d. Do you accept?"),
                 gskat.players[sager]->name, value);
 
+#if GTK_CHECK_VERSION(2, 18, 0)
         show_bid_infobar(value, msg, TRUE);
+#else
+        get_bid_response(value, msg, TRUE);
+#endif
 
         g_free(msg);
     }

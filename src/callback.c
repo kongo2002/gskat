@@ -769,11 +769,23 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data)
 void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
 {
     gboolean hoeren = GPOINTER_TO_INT(data);
-    player *self = gskat.players[0];
 
     gtk_widget_destroy(GTK_WIDGET(ib));
 
-    /* TODO: this whole function has to be improved! */
+    do_player_bid(response, hoeren);
+}
+
+/**
+ * do_player_bid:
+ * @response: Player's response
+ * @hoeren:   Is the player on the hearing position?
+ *
+ * Execute the player's bidding process
+ */
+void do_player_bid(gint response, gboolean hoeren)
+{
+    player *self = gskat.players[0];
+
     if (response)
     {
         self->gereizt = response;

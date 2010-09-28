@@ -35,7 +35,7 @@ card *click_card(GdkEventButton *event, GList *list);
 
 void card_to_player(player *player, card *card);
 
-gint get_bid_response(gint value, gchar *msg, gboolean hoeren);
+void get_bid_response(gint value, gchar *msg, gboolean hoeren);
 
 GList *get_possible_cards(GList *list);
 

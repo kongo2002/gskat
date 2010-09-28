@@ -73,6 +73,8 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data);
 
 void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data);
 
+void do_player_bid(gint response, gboolean hoeren);
+
 #endif /* __CALLBACK_H__ */
 
 /* vim:set et sw=4 sts=4 tw=80: */
