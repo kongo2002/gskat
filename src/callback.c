@@ -772,13 +772,22 @@ void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
 
     gtk_widget_destroy(GTK_WIDGET(ib));
 
+    /* TODO: this whole function has to be improved! */
     if (response)
     {
         gskat.players[0]->gereizt = response;
 
         if (hoeren)
+        {
+            if (!gskat.bidden)
+            {
+                gskat.bidden = response;
+                start_bidding();
+            }
+
             do_sagen(gskat.players[gskat.sager], gskat.hoerer,
                     next_reizwert(response));
+        }
         else
         {
             gskat.bidden = response;

@@ -99,6 +99,7 @@ typedef enum {
  * @PROVOKE1:   Players start to bid for the game
  * @PROVOKE2:   Start of the second bid 'round'
  * @PROVOKE3:   Two players already passed - does the third player want to play?
+ * @PROVOKE4:   How leads the game as Re player?
  * @TAKESKAT:   Player takes cards from the skat
  * @PLAYING:    Players are playing a game round
  * @READY:      Game is loaded
@@ -113,6 +114,7 @@ typedef enum {
     PROVOKE1,
     PROVOKE2,
     PROVOKE3,
+    PROVOKE4,
     TAKESKAT,
     PLAYING,
     READY,

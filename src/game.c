@@ -463,7 +463,10 @@ void do_hoeren(player *player, gint value, gint sager)
 
             /* all players have passed */
             if (player->id == sager)
-                return;
+            {
+                gskat.bidden = value;
+                return start_bidding();
+            }
 
             do_sagen(gskat.players[sager], player->id, next_reizwert(value));
         }
@@ -474,10 +477,6 @@ void do_hoeren(player *player, gint value, gint sager)
 
             gskat_msg(MT_DEBUG | MT_BUGREPORT,
                     _("%s passes at %d\n"), player->name, value);
-
-            /* all players have passed */
-            if (player->id == sager)
-                return;
 
             start_bidding();
         }
@@ -612,16 +611,22 @@ void start_bidding(void)
     {
         gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE3\n");
 
+        gskat.state = PROVOKE4;
+
         sager = gskat.sager;
         hoerer = gskat.hoerer;
 
         /* first two players have passed */
         if (!gskat.bidden)
             do_hoeren(gskat.players[sager], 18, sager);
-
+        else
+            start_bidding();
+    }
+    else if (gskat.state == PROVOKE4)
+    {
         if (gskat.bidden)
         {
-            /* TODO: this does not like very nice... */
+            /* TODO: this does not look very nice... */
             gskat.re = (gskat.players[sager]->gereizt >
                     gskat.players[hoerer]->gereizt) ?
                 gskat.players[sager] : gskat.players[hoerer];
