@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "ai.h"
+#include "callback.h"
 #include "common.h"
 #include "draw.h"
 #include "game.h"
@@ -524,7 +525,11 @@ void do_last_call(void)
         }
     }
     else
+#if GTK_CHECK_VERSION(2, 18, 0)
         show_bid_infobar(18, _("Do you want to bid 18?"), TRUE);
+#else
+        get_bid_response(18, _("Do you want to bid 18?"), TRUE);
+#endif
 }
 
 /**
@@ -578,7 +583,11 @@ void do_sagen(player *player, gint hoerer, gint value)
     {
         msg = g_strdup_printf(_("Do you want to bid %d?"), value);
 
+#if GTK_CHECK_VERSION(2, 18, 0)
         show_bid_infobar(value, msg, FALSE);
+#else
+        get_bid_response(value, msg, FALSE);
+#endif
 
         g_free(msg);
     }
