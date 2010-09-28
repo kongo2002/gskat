@@ -461,17 +461,11 @@ void do_hoeren(player *player, gint value, gint sager)
             gskat_msg(MT_DEBUG | MT_BUGREPORT,
                     _("%s says 'yes' to %d\n"), player->name, value);
 
-            /* all players have passed */
-            if (player->id == sager)
-            {
-                gskat.bidden = value;
-                return start_bidding();
-            }
-
             do_sagen(gskat.players[sager], player->id, next_reizwert(value));
         }
         else
         {
+            player->gereizt = -1;
             gskat.sager = (gskat.forehand + 2) % 3;
             gskat.hoerer = sager;
 
@@ -490,6 +484,44 @@ void do_hoeren(player *player, gint value, gint sager)
 
         g_free(msg);
     }
+}
+
+/**
+ * do_last_call:
+ *
+ * Ask the last remaining player if he wants to play lead the game
+ * as Re player. The two other players have passed beforehand.
+ */
+void do_last_call(void)
+{
+    gint i, max;
+    player *rem = NULL;
+
+    /* determine remaining player to ask */
+    for (i=0; i<3; ++i)
+    {
+        if (gskat.players[i]->gereizt != -1)
+        {
+            rem = gskat.players[i];
+            break;
+        }
+    }
+
+    if (!rem->human)
+    {
+        max = get_max_reizwert(rem->cards);
+
+        if (rate_cards(rem, rem->cards) >= 7 && 18 <= max)
+        {
+            gskat_msg(MT_DEBUG | MT_BUGREPORT, _("%s says 18\n"), rem->name);
+
+            rem->gereizt = 18;
+            gskat.bidden = 18;
+            start_bidding();
+        }
+    }
+    else
+        show_bid_infobar(18, _("Do you want to bid 18?"), TRUE);
 }
 
 /**
@@ -525,6 +557,7 @@ void do_sagen(player *player, gint hoerer, gint value)
         /* player passes */
         else
         {
+            player->gereizt = -1;
             gskat.sager = (gskat.forehand + 2) % 3;
             gskat.hoerer = hoerer;
 
@@ -563,7 +596,7 @@ void do_sagen(player *player, gint hoerer, gint value)
  */
 void start_bidding(void)
 {
-    gint i, hoerer = 0, sager = 0;
+    gint i;
     player *pptr;
 
     /* first bidding phase */
@@ -613,12 +646,9 @@ void start_bidding(void)
 
         gskat.state = PROVOKE4;
 
-        sager = gskat.sager;
-        hoerer = gskat.hoerer;
-
         /* first two players have passed */
         if (!gskat.bidden)
-            do_hoeren(gskat.players[sager], 18, sager);
+            do_last_call();
         else
             start_bidding();
     }
@@ -626,10 +656,9 @@ void start_bidding(void)
     {
         if (gskat.bidden)
         {
-            /* TODO: this does not look very nice... */
-            gskat.re = (gskat.players[sager]->gereizt >
-                    gskat.players[hoerer]->gereizt) ?
-                gskat.players[sager] : gskat.players[hoerer];
+            gskat.re = (gskat.players[gskat.sager]->gereizt >
+                    gskat.players[gskat.hoerer]->gereizt) ?
+                gskat.players[gskat.sager] : gskat.players[gskat.hoerer];
 
             gskat.re->re = TRUE;
 

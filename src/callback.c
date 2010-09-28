@@ -796,6 +796,8 @@ void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
     }
     else
     {
+        gskat.players[0]->gereizt = -1;
+
         if (hoeren)
             gskat.hoerer = gskat.sager;
 

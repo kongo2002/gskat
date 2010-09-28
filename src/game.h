@@ -51,6 +51,8 @@ void do_hoeren(player *player, gint value, gint sager);
 
 void do_sagen(player *player, gint hoerer, gint value);
 
+void do_last_call(void);
+
 void take_skat(void);
 
 void start_bidding(void);
