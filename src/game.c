@@ -596,7 +596,7 @@ void start_bidding(void)
                     rate_cards(pptr, pptr->cards));
         }
 
-        do_sagen(gskat.players[sager], hoerer, 18);
+        do_sagen(gskat.players[gskat.sager], gskat.hoerer, 18);
     }
     /* second bidding phase */
     else if (gskat.state == PROVOKE2)
