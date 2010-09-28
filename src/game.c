@@ -477,8 +477,8 @@ void do_hoeren(player *player, gint value, gint sager)
     }
     else
     {
-        msg = g_strdup_printf(_("%s says %d. Do you bid %d?"),
-                gskat.players[sager]->name, value, value);
+        msg = g_strdup_printf(_("%s says %d. Do you accept?"),
+                gskat.players[sager]->name, value);
 
         show_bid_infobar(value, msg, TRUE);
 
@@ -580,8 +580,7 @@ void do_sagen(player *player, gint hoerer, gint value)
     }
     else
     {
-        msg = g_strdup_printf(_("Hearer: %s\nDo you bid %d?\n"),
-                gskat.players[hoerer]->name, value);
+        msg = g_strdup_printf(_("Do you want to bid %d?"), value);
 
         show_bid_infobar(value, msg, FALSE);
 
@@ -602,14 +601,10 @@ void start_bidding(void)
     /* first bidding phase */
     if (gskat.state == PROVOKE1)
     {
-        gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE1\n");
-
         gskat.state = PROVOKE2;
         gskat.hoerer = gskat.forehand;
         gskat.sager = (gskat.hoerer + 1) % 3;
         gskat.bidden = 0;
-
-        gskat_msg(MT_INFO | MT_STATUSBAR | MT_BUGREPORT, _("Start of bidding"));
 
         /* disable 'new round' button */
         gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
@@ -633,8 +628,6 @@ void start_bidding(void)
     /* second bidding phase */
     else if (gskat.state == PROVOKE2)
     {
-        gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE2\n");
-
         gskat.state = PROVOKE3;
 
         do_sagen(gskat.players[gskat.sager], gskat.hoerer,
@@ -642,8 +635,6 @@ void start_bidding(void)
     }
     else if (gskat.state == PROVOKE3)
     {
-        gskat_msg(MT_DEBUG | MT_BUGREPORT, "PROVOKE3\n");
-
         gskat.state = PROVOKE4;
 
         /* first two players have passed */
