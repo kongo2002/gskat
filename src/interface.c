@@ -1305,9 +1305,13 @@ gboolean load_cards(const gchar **paths)
                 id = SUITS[i] + ranks[j];
                 g_sprintf(cname, "%s/%d.png", path, id);
 
-
                 if (g_file_test(cname, G_FILE_TEST_EXISTS))
                 {
+                    /* TODO: this is not perfectly safe because multiple
+                     * identical cards could be loaded here!
+                     *
+                     * We have to check somewhere if the current card was
+                     * loaded already */
                     load_card(list, cname, ranks[j], SUITS[i]);
                     gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
                 }
