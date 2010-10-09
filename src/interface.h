@@ -58,7 +58,7 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit);
 
 cairo_surface_t *load_image(gchar *filename);
 
-gboolean load_cards(const gchar *path);
+gboolean load_cards(const gchar **paths);
 
 void free_app(void);
 

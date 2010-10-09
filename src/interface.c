@@ -1274,50 +1274,68 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
 
 /**
  * load_cards:
- * @path:  path to the card image files
+ * @paths:  several possible paths to search the card image files in
  *
  * Allocate and initialize all 32 game cards
  *
  * Returns: %TRUE on success, otherwise %FALSE
  */
-gboolean load_cards(const gchar *path)
+gboolean load_cards(const gchar **paths)
 {
-    gint i, j, id, max = strlen(path)+30;
-    GList **list = &(gskat.cards);
+    gint i, j, id, max = strlen(DATA_DIR)+30;
     gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
+    const gchar *path;
+    GList **list = &(gskat.cards);
     gboolean error = FALSE;
 
     gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
 
-    /* create all 32 cards */
-    for (i=0; i<4; ++i)
+    /* try all given paths if necessary */
+    for (path = *paths; path; path = *paths++)
     {
-        for (j=0; j<8; ++j)
+        error = FALSE;
+
+        if (!g_file_test(path, G_FILE_TEST_EXISTS))
+            continue;
+
+        for (i=0; i<4; ++i)
         {
-            id = SUITS[i] + ranks[j];
-            g_sprintf(cname, "%s/%d.png", path, id);
+            for (j=0; j<8; ++j)
+            {
+                id = SUITS[i] + ranks[j];
+                g_sprintf(cname, "%s/%d.png", path, id);
 
 
-            if (g_file_test(cname, G_FILE_TEST_EXISTS))
-            {
-                load_card(list, cname, ranks[j], SUITS[i]);
-                gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
-            }
-            else
-            {
-                error = TRUE;
-                gskat_msg(MT_ERROR, _("Failed to load '%s'\n"), cname);
+                if (g_file_test(cname, G_FILE_TEST_EXISTS))
+                {
+                    load_card(list, cname, ranks[j], SUITS[i]);
+                    gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
+                }
+                else
+                {
+                    error = TRUE;
+                    gskat_msg(MT_ERROR, _("Failed to load '%s'\n"), cname);
+                }
             }
         }
+
+        /* load back of cards */
+        if (!gskat.back)
+        {
+            g_sprintf(cname, "%s/back.png", path);
+            gskat.back = load_image(cname);
+        }
+
+        /* load back of cards */
+        if (!gskat.bg)
+        {
+            g_sprintf(cname, "%s/bg.png", path);
+            gskat.bg = load_image(cname);
+        }
+
+        if (!error)
+            break;
     }
-
-    /* load back of cards */
-    g_sprintf(cname, "%s/back.png", path);
-    gskat.back = load_image(cname);
-
-    /* load back of cards */
-    g_sprintf(cname, "%s/bg.png", path);
-    gskat.bg = load_image(cname);
 
     g_free(cname);
 

@@ -61,11 +61,12 @@ gboolean realization(GtkWidget *area, gpointer data)
 {
     UNUSED(area);
     UNUSED(data);
+    const gchar *dirs[] = { "img", "cards", DATA_DIR, NULL };
 
     /* allocate memory for application lists */
     alloc_app();
 
-    if (load_cards(DATA_DIR))
+    if (load_cards(dirs))
         game_start();
     else
     {
