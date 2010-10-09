@@ -1336,6 +1336,9 @@ gboolean load_cards(const gchar **paths)
 
     gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
 
+    /* save all loaded card ids in here so we don't load the same card twice */
+    gint *loaded = (gint *) g_malloc0(sizeof(gint) * 120);
+
     /* try all given paths if necessary */
     for (path = *paths; path; path = *paths++)
     {
@@ -1349,16 +1352,17 @@ gboolean load_cards(const gchar **paths)
             for (j=0; j<8; ++j)
             {
                 id = SUITS[i] + ranks[j];
+
+                /* skip already loaded cards */
+                if (loaded[id])
+                    continue;
+
                 g_sprintf(cname, "%s/%d.png", path, id);
 
                 if (g_file_test(cname, G_FILE_TEST_EXISTS))
                 {
-                    /* TODO: this is not perfectly safe because multiple
-                     * identical cards could be loaded here!
-                     *
-                     * We have to check somewhere if the current card was
-                     * loaded already */
                     load_card(list, cname, ranks[j], SUITS[i]);
+                    loaded[id] = 1;
                     gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), cname);
                 }
                 else
@@ -1388,6 +1392,7 @@ gboolean load_cards(const gchar **paths)
     }
 
     g_free(cname);
+    g_free(loaded);
 
     return !error;
 }
