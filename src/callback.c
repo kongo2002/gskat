@@ -454,7 +454,7 @@ void next_round(GtkButton *button, gpointer data)
     }
     else if (gskat.state == WAITING)
     {
-        gskat.state = PROVOKE;
+        gskat.state = PROVOKE1;
 
         start_bidding();
     }
@@ -757,6 +757,23 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data)
     save_state_to_file(filename);
 
     g_free(filename);
+}
+
+/**
+ * infobar_bid_response:
+ * @ib:       #GtkInfoBar widget emitting the signal
+ * @response: Response of the user
+ * @data:     #gboolean hoeren cast to #gpointer
+ *
+ * Get the bidding response from the user
+ */
+void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
+{
+    gboolean hoeren = GPOINTER_TO_INT(data);
+
+    gtk_widget_destroy(GTK_WIDGET(ib));
+
+    do_player_bid(response, hoeren);
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

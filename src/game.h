@@ -35,7 +35,7 @@ card *click_card(GdkEventButton *event, GList *list);
 
 void card_to_player(player *player, card *card);
 
-gint get_bid_response(gint value, gchar *msg, gboolean hoeren);
+void get_bid_response(gint value, gchar *msg, gboolean hoeren);
 
 GList *get_possible_cards(GList *list);
 
@@ -47,9 +47,13 @@ gint get_max_reizwert(GList *list);
 
 gint next_reizwert(gint value);
 
-gint do_hoeren(player *player, gint value, gint sager);
+void do_player_bid(gint response, gboolean hoeren);
 
-gint do_sagen(player *player, gint hoerer, gint value);
+void do_hoeren(player *player, gint value, gint sager);
+
+void do_sagen(player *player, gint hoerer, gint value);
+
+void do_last_call(void);
 
 void take_skat(void);
 
