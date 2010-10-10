@@ -415,9 +415,65 @@ void draw_area(void)
         }
     }
 
+    if (gskat.state >= PROVOKE1 && gskat.state <= PROVOKE4)
+        draw_provoke_value(cr);
+
     cairo_destroy(cr);
 
     gdk_window_end_paint(gskat.area->window);
+}
+
+void draw_provoke_value(cairo_t *cr)
+{
+    gint i, x, y, len, card_w, card_h;
+    gint win_w = gskat.area->allocation.width;
+    gint win_h = gskat.area->allocation.height;
+    gchar *caption;
+    GList *ptr;
+    player *player;
+    card *card;
+
+    /* obtain card dimensions */
+    ptr = g_list_first(gskat.cards);
+    card = ptr->data;
+
+    card_w = card->dim.w;
+    card_h = card->dim.h;
+
+    for (i=1; i<3; ++i)
+    {
+        player = gskat.players[i];
+        len = g_list_length(player->cards);
+
+        if (player->gereizt == -1)
+            continue;
+
+        /* calculate drawing position depending on player id */
+        switch (player->id)
+        {
+            case 1:
+                x = 5 + (len * 10) - 80;
+                y = card_h / 2;
+                break;
+
+            case 2:
+                x = win_w - (5 + (len * 10));
+                y = card_h / 2;
+                break;
+        }
+
+        caption = g_strdup_printf(_("%d"), player->gereizt);
+
+        cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.5);
+        cairo_select_font_face(cr, "sans-serif",
+                CAIRO_FONT_SLANT_NORMAL,
+                CAIRO_FONT_WEIGHT_BOLD);
+        cairo_set_font_size(cr, 48);
+        cairo_move_to(cr, x, y);
+        cairo_show_text(cr, caption);
+
+        g_free(caption);
+    }
 }
 
 /**

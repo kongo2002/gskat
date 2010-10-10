@@ -33,6 +33,8 @@ void set_card_move_step(card_move *cm);
 
 gboolean move_card(gpointer data);
 
+void draw_provoke_value(cairo_t *cr);
+
 void draw_cards(GList *cards, cairo_t *target);
 
 void draw_player(player *player, cairo_t *cr);
