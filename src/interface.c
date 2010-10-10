@@ -1254,7 +1254,7 @@ void update_interface(void)
 void update_rank_interface(void)
 {
     gint i, len = 0;
-    gchar msg[8];
+    gchar msg[32];
     player *cur;
     GtkWidget *rank_label;
     GtkTable *table = GTK_TABLE(gskat.widgets[10]);
