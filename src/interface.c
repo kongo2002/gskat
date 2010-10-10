@@ -1328,7 +1328,7 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit)
  */
 gboolean load_cards(const gchar **paths)
 {
-    gint i, j, id, max = strlen(DATA_DIR)+30;
+    gint i, j, id, max = max_str_lenv(paths) + 30;
     gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
     const gchar *path;
     GList **list = &(gskat.cards);

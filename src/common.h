@@ -27,6 +27,8 @@ void swap(gint *a, gint *b);
 
 gint max_str_len(const gchar *first, ...);
 
+gint max_str_lenv(const gchar **args);
+
 void write_to_log(const gchar *fmt, va_list args);
 
 void gskat_msg(msg_type type, const gchar *fmt, ...);

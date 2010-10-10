@@ -37,6 +37,47 @@ void swap(gint *a, gint *b)
 }
 
 /**
+ * max_str_l:
+ * @first:  first string to check
+ * @args:   additional strings to check
+ * @array:  %NULL-terminated string array
+ *
+ * Return maximum string length
+ *
+ * Returns: maximum string length of all given strings
+ */
+static gint max_str_l(const gchar *first, va_list *args, const gchar **array)
+{
+    gint i, len, max = -1;
+    const gchar *str;
+
+    if (array)
+    {
+        for (i=0; array[i]; ++i)
+        {
+            len = strlen(array[i]);
+
+            if (max == -1 || len > max)
+                max = len;
+        }
+    }
+    else
+    {
+        max = strlen(first);
+
+        while ((str = va_arg(*args, gchar *)))
+        {
+            len = strlen(str);
+
+            if (len > max)
+                max = len;
+        }
+    }
+
+    return max;
+}
+
+/**
  * max_str_len:
  * @first:  first string to check
  * @...:    additional strings to check
@@ -47,21 +88,27 @@ void swap(gint *a, gint *b)
  */
 gint max_str_len(const gchar *first, ...)
 {
-    guint max = strlen(first);
-    gchar *str = NULL;
+    gint max;
     va_list args;
 
     va_start(args, first);
-
-    while ((str = va_arg(args, gchar *)))
-    {
-        if (strlen(str) > max)
-            max = strlen(str);
-    }
-
+    max = max_str_l(first, &args, NULL);
     va_end(args);
 
     return max;
+}
+
+/**
+ * max_str_lenv:
+ * @args:  %NULL-terminated string array
+ *
+ * Return maximum string length
+ *
+ * Returns: maximum string length of all given strings
+ */
+gint max_str_lenv(const gchar **args)
+{
+    return max_str_l(NULL, NULL, args);
 }
 
 /**
