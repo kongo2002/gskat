@@ -48,30 +48,25 @@ void swap(gint *a, gint *b)
  */
 static gint max_str_l(const gchar *first, va_list *args, const gchar **array)
 {
-    gint i, len, max = -1;
+    gint len, max = -1;
     const gchar *str;
 
     if (array)
-    {
-        for (i=0; array[i]; ++i)
-        {
-            len = strlen(array[i]);
-
-            if (max == -1 || len > max)
-                max = len;
-        }
-    }
+        str = *array;
     else
+        str = first;
+
+    while (str)
     {
-        max = strlen(first);
+        len = strlen(str);
 
-        while ((str = va_arg(*args, gchar *)))
-        {
-            len = strlen(str);
+        if (max == -1 || len > max)
+            max = len;
 
-            if (len > max)
-                max = len;
-        }
+        if (array)
+            str = *array++;
+        else
+            str = va_arg(*args, gchar *);
     }
 
     return max;
