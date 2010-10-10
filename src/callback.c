@@ -61,6 +61,7 @@ gboolean realization(GtkWidget *area, gpointer data)
 {
     UNUSED(area);
     UNUSED(data);
+    gint i;
     const gchar *dirs[] = { "img", "cards", DATA_DIR, NULL };
 
     /* allocate memory for application lists */
@@ -70,7 +71,14 @@ gboolean realization(GtkWidget *area, gpointer data)
         game_start();
     else
     {
-        g_printerr("Failed to load all card images. Quit gskat.\n");
+        g_printerr("Failed to load all card images. "
+                "Images were searched inside:\n");
+
+        for (i=0; dirs[i]; i++)
+            g_printerr("- %s\n", dirs[i]);
+
+        g_printerr("Quit gskat.\n");
+
         exit(EXIT_FAILURE);
     }
 

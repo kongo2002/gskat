@@ -1332,7 +1332,7 @@ gboolean load_cards(const gchar **paths)
     gint ranks[] = { 1, 7, 8, 9, 10, 11, 12, 13 };
     const gchar *path;
     GList **list = &(gskat.cards);
-    gboolean error = FALSE;
+    gboolean error = TRUE;
 
     gchar *cname = (gchar *) g_malloc(sizeof(gchar) * max);
 
@@ -1342,10 +1342,10 @@ gboolean load_cards(const gchar **paths)
     /* try all given paths if necessary */
     for (path = *paths; path; path = *paths++)
     {
-        error = FALSE;
-
         if (!g_file_test(path, G_FILE_TEST_EXISTS))
             continue;
+
+        error = FALSE;
 
         for (i=0; i<4; ++i)
         {
