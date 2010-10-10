@@ -21,6 +21,8 @@
 #ifndef __GAMESTATE_H__
 #define __GAMESTATE_H__
 
+G_BEGIN_DECLS
+
 /**
  * card_state:
  * @suit:      Card suit
@@ -141,6 +143,8 @@ gboolean read_table_state(FILE *input, state_group *sg, guint num_table);
 gboolean read_state_from_file(const gchar *filename);
 
 void apply_states(state_group *sg);
+
+G_END_DECLS
 
 #endif /* __GAMESTATE_H__ */
 

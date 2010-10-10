@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 void swap(gint *a, gint *b);
 
 gint max_str_len(const gchar *first, ...);
@@ -45,6 +47,8 @@ gboolean create_dir(const gchar *dir);
 
 void save_bugreport_to_file(const gchar *filename, GTimeVal *time,
         GtkTextBuffer *text_buffer);
+
+G_END_DECLS
 
 #endif /* __COMMON_H__ */
 

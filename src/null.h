@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 card *null_select_card(player *player, GList *list, gint position);
 
 card *null_re_kommt_raus(player *player, GList *list);
@@ -42,6 +44,8 @@ card *niedrig_bedienen(player *player, GList *list);
 card *drunter_bleiben(player *player, GList *list);
 
 card *null_hoch_abwerfen(player *player, GList *list);
+
+G_END_DECLS
 
 #endif /* __NULL_H__ */
 

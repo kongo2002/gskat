@@ -30,6 +30,8 @@
 
 #include "config.h"
 
+G_BEGIN_DECLS
+
 #define KARO  40
 #define HERZ  60
 #define PIK   80
@@ -364,6 +366,8 @@ typedef struct _app {
  * Main #app game object structure
  */
 extern app gskat;
+
+G_END_DECLS
 
 #endif /*  __DEF_H__ */
 

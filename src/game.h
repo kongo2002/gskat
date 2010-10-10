@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 void give_cards(void);
 
 void give_to_skat(card *card);
@@ -80,6 +82,8 @@ void play_stich(void);
 gboolean game_abort(void);
 
 void game_start(void);
+
+G_END_DECLS
 
 #endif /* __GAME_H__ */
 

@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 gint get_card_points(gint rank);
 
 card *get_card_by_id(gint id);
@@ -76,6 +78,8 @@ gint compare_cards(gconstpointer a, gconstpointer b);
 gint compare_jacks(gconstpointer a, gconstpointer b);
 
 gint compare_family(gconstpointer a, gconstpointer b);
+
+G_END_DECLS
 
 #endif /* __UTILS_H__ */
 

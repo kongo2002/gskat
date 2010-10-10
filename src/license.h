@@ -1,6 +1,8 @@
 #ifndef __LICENSE_H__
 #define __LICENSE_H__
 
+G_BEGIN_DECLS
+
 static const gchar license_string[] = "\
                     GNU GENERAL PUBLIC LICENSE\n\
                        Version 3, 29 June 2007\n\
@@ -676,5 +678,7 @@ may consider it more useful to permit linking proprietary applications with\n\
 the library.  If this is what you want to do, use the GNU Lesser General\n\
 Public License instead of this License.  But first, please read\n\
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.\n";
+
+G_END_DECLS
 
 #endif /* __LICENSE_H__ */

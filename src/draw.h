@@ -21,6 +21,8 @@
 #ifndef __DRAW_H__
 #define __DRAW_H__
 
+G_BEGIN_DECLS
+
 void pos_player_cards(player *player, gint x, gint y, gint step);
 
 void calc_card_positions(void);
@@ -40,6 +42,8 @@ void draw_table(GtkWidget *area, cairo_t *cr);
 void draw_area(void);
 
 void draw_tricks_area(GtkWidget *area, stich_view *sv);
+
+G_END_DECLS
 
 #endif /* __DRAW_H__ */
 

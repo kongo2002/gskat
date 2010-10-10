@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 /**
  * property_type:
  * @INT:    #gint type
@@ -80,6 +82,8 @@ gboolean write_config(void);
 gboolean read_config(void);
 
 void set_default_config(void);
+
+G_END_DECLS
 
 #endif /* __CONFIG_H__ */
 

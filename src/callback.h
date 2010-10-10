@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 gboolean quit(GtkWidget *window, gpointer data);
 
 gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -72,6 +74,8 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data);
 void save_game_cb(GtkMenuItem *menuitem, gpointer data);
 
 void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data);
+
+G_END_DECLS
 
 #endif /* __CALLBACK_H__ */
 

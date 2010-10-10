@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 #define GSKAT_CONTEXTID 42
 
 player *init_player(gint id, gchar *name, gboolean human);
@@ -63,6 +65,8 @@ cairo_surface_t *load_image(gchar *filename);
 gboolean load_cards(const gchar **paths);
 
 void free_app(void);
+
+G_END_DECLS
 
 #endif /* __INTERFACE_H__ */
 

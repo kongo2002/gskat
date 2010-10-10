@@ -23,6 +23,8 @@
 
 #include "def.h"
 
+G_BEGIN_DECLS
+
 card *ai_select_card(player *player, GList *list);
 
 card *ai_re_kommt_raus(player *player, GList *list);
@@ -92,6 +94,8 @@ gint num_of_suit(GList *list, gint suit);
 gboolean re_sitzt_hinten(void);
 
 GList *get_short_suit(GList *list, gint number);
+
+G_END_DECLS
 
 #endif /* __AI_H__ */
 
