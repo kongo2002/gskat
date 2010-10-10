@@ -11,7 +11,7 @@ if test -d .git; then
             sed -e 's/^[ \t]\+/\t* /g' > ChangeLog
 fi
 
-aclocal -I m4
+aclocal
 
 libtoolize --automake
 intltoolize --automake
@@ -19,7 +19,7 @@ intltoolize --automake
 # gtkdocize || exit 1
 
 autoheader
-automake --add-missing --copy
+automake --add-missing --foreign --copy
 autoconf
 
 ./configure $@
