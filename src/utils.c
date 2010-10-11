@@ -139,8 +139,7 @@ card *get_card_ptr(gint suit, gint rank)
     GList *ptr = NULL;
     card *tmp;
 
-    if (!gskat.cards)
-        return NULL;
+    g_return_val_if_fail(gskat.cards, NULL);
 
     for (ptr = g_list_first(gskat.cards); ptr; ptr = ptr->next)
     {

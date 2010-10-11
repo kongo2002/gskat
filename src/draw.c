@@ -36,15 +36,14 @@ void pos_player_cards(player *player, gint x, gint y, gint step)
     GList *ptr = NULL;
     card *card = NULL;
 
-    if (player->cards)
+    g_return_if_fail(player->cards);
+
+    for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
     {
-        for (ptr = g_list_first(player->cards); ptr; ptr = ptr->next)
-        {
-            card = ptr->data;
-            card->dim.y = y;
-            card->dim.x = x;
-            x += step;
-        }
+        card = ptr->data;
+        card->dim.y = y;
+        card->dim.x = x;
+        x += step;
     }
 }
 

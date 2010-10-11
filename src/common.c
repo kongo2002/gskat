@@ -154,7 +154,6 @@ void gskat_msg(msg_type type, const gchar *fmt, ...)
     if (fmt)
 #endif
     {
-
         /* check if message should be logged for the bug report */
         if (type & MT_BUGREPORT)
         {

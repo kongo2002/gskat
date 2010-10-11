@@ -375,7 +375,7 @@ gint rate_cards(player *player, GList *list)
  */
 gint get_best_suit(GList *list)
 {
-    gint i, max, ret = 0;
+    gint i, max = 0, ret = 0;
     gint rank_count[4];
     GList *ptr = NULL;
     card *card = NULL;
@@ -390,7 +390,6 @@ gint get_best_suit(GList *list)
             rank_count[(card->suit-20)/20-1] += 1;
     }
 
-    max = 0;
     for (i=0; i<4; ++i)
     {
         if (rank_count[i] >= max)
@@ -412,11 +411,11 @@ gint get_best_suit(GList *list)
  */
 gint get_max_reizwert(GList *list)
 {
-    gint suit = 0;
-    gint max = 0;
+    gint suit, max;
+
+    g_return_val_if_fail(list, 0);
 
     suit = get_best_suit(list);
-
     max = get_spitzen(list, suit);
 
     switch (suit)

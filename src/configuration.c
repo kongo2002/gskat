@@ -140,20 +140,17 @@ gboolean write_config(void)
 
     keys = g_key_file_new();
 
-    if (keys)
-    {
-        /* write player names into keyfile */
-        g_key_file_set_string_list(keys, "gskat", "player_names",
-                (const gchar **) gskat.conf.player_names, 3);
+    /* write player names into keyfile */
+    g_key_file_set_string_list(keys, "gskat", "player_names",
+            (const gchar **) gskat.conf.player_names, 3);
 
-        /* add all remaining config values to keyfile content */
-        for (i=0; config_values[i].name != NULL; ++i)
-            get_config_value(keys, (property *) &config_values[i]);
+    /* add all remaining config values to keyfile content */
+    for (i=0; config_values[i].name != NULL; ++i)
+        get_config_value(keys, (property *) &config_values[i]);
 
-        key_file_content = g_key_file_to_data(keys, &length, NULL);
+    key_file_content = g_key_file_to_data(keys, &length, NULL);
 
-        g_key_file_free(keys);
-    }
+    g_key_file_free(keys);
 
     if (key_file_content)
     {
@@ -186,8 +183,7 @@ gboolean write_config(void)
  */
 void get_config_value(GKeyFile *keyfile, property *prop)
 {
-    if (!prop)
-        return;
+    g_return_if_fail(prop);
 
     switch (prop->pval.type)
     {
@@ -225,8 +221,7 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
 {
     GError *error = NULL;
 
-    if (!prop)
-        return FALSE;
+    g_return_val_if_fail(prop, FALSE);
 
     switch (prop->pval.type)
     {
@@ -282,53 +277,50 @@ gboolean read_config(void)
 
     keyfile = g_key_file_new();
 
-    if (keyfile)
+    done = g_key_file_load_from_file(keyfile, filename,
+            G_KEY_FILE_NONE, &error);
+
+    if (error)
     {
-        done = g_key_file_load_from_file(keyfile, filename,
-                G_KEY_FILE_NONE, &error);
+        gskat_msg(MT_ERROR,
+                _("Failed to read configuration: %s\n"), error->message);
+        g_clear_error(&error);
 
-        if (error)
-        {
-            gskat_msg(MT_ERROR,
-                    _("Failed to read configuration: %s\n"), error->message);
-            g_clear_error(&error);
-
-            return FALSE;
-        }
-
-        /* read player names */
-        names = g_key_file_get_string_list(keyfile, "gskat", "player_names",
-                &length, &error);
-
-        if (error)
-        {
-            gskat_msg(MT_ERROR,
-                    _("Failed to read 'player_names' from config file.\n"));
-            failed = TRUE;
-            g_clear_error(&error);
-        }
-        else
-        {
-            g_strfreev(gskat.conf.player_names);
-            gskat.conf.player_names = names;
-        }
-
-        /* read all remaining config values */
-        for (i=0; config_values[i].name != NULL; ++i)
-        {
-            if (!set_config_value(keyfile, (property *) &config_values[i]))
-                failed = TRUE;
-        }
-
-        /* rewrite config if not all values could be read successfully */
-        if (!done || failed)
-        {
-            gskat_msg(MT_INFO, _("Rewriting config file.\n"));
-            write_config();
-        }
-
-        g_key_file_free(keyfile);
+        return FALSE;
     }
+
+    /* read player names */
+    names = g_key_file_get_string_list(keyfile, "gskat", "player_names",
+            &length, &error);
+
+    if (error)
+    {
+        gskat_msg(MT_ERROR,
+                _("Failed to read 'player_names' from config file.\n"));
+        failed = TRUE;
+        g_clear_error(&error);
+    }
+    else
+    {
+        g_strfreev(gskat.conf.player_names);
+        gskat.conf.player_names = names;
+    }
+
+    /* read all remaining config values */
+    for (i=0; config_values[i].name != NULL; ++i)
+    {
+        if (!set_config_value(keyfile, (property *) &config_values[i]))
+            failed = TRUE;
+    }
+
+    /* rewrite config if not all values could be read successfully */
+    if (!done || failed)
+    {
+        gskat_msg(MT_INFO, _("Rewriting config file.\n"));
+        write_config();
+    }
+
+    g_key_file_free(keyfile);
 
     return done;
 }
