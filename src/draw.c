@@ -415,6 +415,7 @@ void draw_area(void)
         }
     }
 
+    /* draw bid values during provoke phase only */
     if (gskat.state >= PROVOKE1 && gskat.state <= PROVOKE4)
         draw_provoke_value(cr);
 
@@ -444,7 +445,7 @@ void draw_provoke_value(cairo_t *cr)
     {
         player = gskat.players[i];
 
-        if (!player->does_bid)
+        if (!player->does_bid || !player->gereizt)
             continue;
 
         if (player->gereizt != -1)

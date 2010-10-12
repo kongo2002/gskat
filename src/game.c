@@ -491,6 +491,9 @@ void do_hoeren(player *player, gint value, gint sager)
     {
         max = get_max_reizwert(player->cards);
 
+        if (sager)
+            g_usleep(G_USEC_PER_SEC);
+
         /* draw player's bid on-screen */
         player->does_bid = TRUE;
         g_timeout_add(3000, (GSourceFunc) player_draw_bid, (gpointer) player);
@@ -566,9 +569,9 @@ void do_last_call(void)
 
             rem->gereizt = 18;
             gskat.bidden = 18;
-
-            start_bidding();
         }
+
+        start_bidding();
     }
     else
 #if GTK_CHECK_VERSION(2, 18, 0)
