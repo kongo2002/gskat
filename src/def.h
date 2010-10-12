@@ -357,7 +357,7 @@ typedef struct _app {
     gboolean null;
     msg_type log_level;
     GString *log;
-    config conf;
+    GHashTable *config;
 } app;
 
 /**

@@ -22,29 +22,111 @@
 #include "common.h"
 #include "configuration.h"
 
-/* convenience functions */
-#ifndef PROP_MACRO
-#define PROP_MACRO
-
-#define INT_PROP(address)    { .type = INT   , .ptr.i = &(address) }
-#define DOUBLE_PROP(address) { .type = DOUBLE, .ptr.d = &(address) }
-#define BOOL_PROP(address)   { .type = BOOL  , .ptr.b = &(address) }
-#define STR_PROP(address)    { .type = STR   , .ptr.s = &(address) }
-
-#endif
-
-/* configuration value table */
-static const property config_values[] = {
-    { "animation"         , BOOL_PROP(gskat.conf.animation) },
-    { "show_tricks"       , BOOL_PROP(gskat.conf.show_tricks) },
-    { "num_show_tricks"   , INT_PROP(gskat.conf.num_show_tricks) },
-    { "anim_duration"     , INT_PROP(gskat.conf.anim_duration) },
-    { "reaction"          , BOOL_PROP(gskat.conf.reaction) },
-    { "reaction_duration" , INT_PROP(gskat.conf.reaction_duration) },
-    { "show_poss_cards"   , BOOL_PROP(gskat.conf.show_poss_cards) },
-    { "debug"             , BOOL_PROP(gskat.conf.debug) },
-    { NULL                , { .type = INT, .ptr.i = NULL } }
+/* configuration initialization table */
+struct {
+    const gchar *name;
+    property_type t;
+    property_widget w;
+} config_values[] = {
+    { "animation"         , BOOL , TOGGLEBUTTON },
+    { "show_tricks"       , BOOL , TOGGLEBUTTON },
+    { "num_show_tricks"   , INT  , SPINBUTTON },
+    { "anim_duration"     , INT  , SPINBUTTON },
+    { "reaction"          , BOOL , TOGGLEBUTTON },
+    { "reaction_duration" , INT  , SPINBUTTON },
+    { "show_poss_cards"   , BOOL , TOGGLEBUTTON },
+    { "debug"             , BOOL , TOGGLEBUTTON },
+    { NULL                , 0    , 0 }
 };
+
+/**
+ * new_property:
+ * @name:   name of the property
+ * @type:   #property_type of the property
+ * @widget: #property_widget type of the property
+ *
+ * Create a new #property object
+ *
+ * Returns: a new #property object
+ */
+property *new_property(const gchar *name, property_type type,
+        property_widget widget)
+{
+    property *p = (property *) g_malloc0(sizeof(property));
+
+    p->name = g_strdup(name);
+    p->pval.type = type;
+    p->pval.wtype = widget;
+    p->widget = NULL;
+
+    return p;
+}
+
+void init_config(void)
+{
+    gint i;
+
+    /* TODO: probably we want to define a better
+     * value_destroy_func than g_free() */
+    gskat.config = g_hash_table_new_full(g_str_hash, g_str_equal,
+            g_free, g_free);
+
+    for (i=0; config_values[i].name; ++i)
+    {
+        g_hash_table_insert(gskat.config, (gpointer) config_values[i].name,
+                new_property(config_values[i].name, config_values[i].t,
+                    config_values[i].w));
+    }
+}
+
+gpointer get_prop(const gchar *name)
+{
+    property *p = g_hash_table_lookup(gskat.config, name);
+
+    g_return_val_if_fail(p, NULL);
+
+    switch (p->pval.type)
+    {
+        case INT:
+            return p->pval.ptr.i;
+        case BOOL:
+            return p->pval.ptr.b;
+        case DOUBLE:
+            return p->pval.ptr.d;
+        case STR:
+            return p->pval.ptr.s;
+        case STRV:
+            return p->pval.ptr.v;
+        default:
+            return NULL;
+    }
+}
+
+void set_prop(const gchar *name, gpointer value)
+{
+    property *p = g_hash_table_lookup(gskat.config, name);
+
+    g_return_if_fail(p);
+
+    switch (p->pval.type)
+    {
+        case INT:
+            p->pval.ptr.i = value;
+            break;
+        case BOOL:
+            p->pval.ptr.b = value;
+            break;
+        case DOUBLE:
+            p->pval.ptr.d = value;
+            break;
+        case STR:
+            p->pval.ptr.s = value;
+            break;
+        case STRV:
+            p->pval.ptr.v = value;
+            break;
+    }
+}
 
 /**
  * set_config_filename:
