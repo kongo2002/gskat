@@ -425,8 +425,7 @@ void draw_area(void)
 
 void draw_provoke_value(cairo_t *cr)
 {
-    gint i, len, card_w, card_h, x =0;
-    gint win_w = gskat.area->allocation.width;
+    gint i, card_h, win_w = gskat.area->allocation.width;
     gchar *caption;
     GList *ptr;
     player *player;
@@ -435,14 +434,11 @@ void draw_provoke_value(cairo_t *cr)
     /* obtain card dimensions */
     ptr = g_list_first(gskat.cards);
     card = ptr->data;
-
-    card_w = card->dim.w;
     card_h = card->dim.h;
 
     for (i=1; i<3; ++i)
     {
         player = gskat.players[i];
-        len = g_list_length(player->cards);
 
         if (!player->does_bid)
             continue;
@@ -457,24 +453,12 @@ void draw_provoke_value(cairo_t *cr)
         else
             caption = g_strdup_printf(_("No"));
 
-        /* calculate drawing position depending on player id */
-        switch (player->id)
-        {
-            case 1:
-                x = 5 + (len * 10) - 80;
-                break;
-
-            case 2:
-                x = win_w - (5 + (len * 10));
-                break;
-        }
-
         cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.5);
         cairo_select_font_face(cr, "sans-serif",
                 CAIRO_FONT_SLANT_NORMAL,
                 CAIRO_FONT_WEIGHT_BOLD);
         cairo_set_font_size(cr, 48);
-        cairo_move_to(cr, x, card_h / 2);
+        cairo_move_to(cr, (player->id == 1) ? 75 : win_w - 110, card_h / 2);
         cairo_show_text(cr, caption);
 
         g_free(caption);
