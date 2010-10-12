@@ -423,6 +423,12 @@ void draw_area(void)
     gdk_window_end_paint(gskat.area->window);
 }
 
+/**
+ * draw_provoke_value:
+ * @cr: #cairo_t drawing object
+ *
+ * Draw the player's bid values
+ */
 void draw_provoke_value(cairo_t *cr)
 {
     gint i, card_h, win_w = gskat.area->allocation.width;
