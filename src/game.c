@@ -503,7 +503,6 @@ void do_hoeren(player *player, gint value, gint sager)
             player->gereizt = value;
             gskat.hoerer = player->id;
 
-            /* refresh game area */
             draw_area();
 
             do_sagen(gskat.players[sager], player->id, next_reizwert(value));
@@ -613,6 +612,8 @@ void do_sagen(player *player, gint hoerer, gint value)
             player->gereizt = value;
             gskat.sager = player->id;
             gskat.bidden = value;
+
+            draw_area();
 
             /* ask the hearing player */
             do_hoeren(gskat.players[hoerer], value, player->id);
