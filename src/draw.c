@@ -433,14 +433,12 @@ void draw_provoke_value(cairo_t *cr)
 {
     gint i, card_h, win_w = gskat.area->allocation.width;
     gchar *caption;
-    GList *ptr;
     player *player;
-    card *card;
+    card *tmp;
 
     /* obtain card dimensions */
-    ptr = g_list_first(gskat.cards);
-    card = ptr->data;
-    card_h = card->dim.h;
+    tmp = (card *) g_list_nth_data(gskat.cards, 0);
+    card_h = tmp->dim.h;
 
     for (i=1; i<3; ++i)
     {
