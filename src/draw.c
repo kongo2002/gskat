@@ -445,7 +445,7 @@ void draw_provoke_value(cairo_t *cr)
         player = gskat.players[i];
         len = g_list_length(player->cards);
 
-        if (player->gereizt == -1)
+        if (!player->does_bid)
             continue;
 
         /* calculate drawing position depending on player id */
@@ -462,7 +462,10 @@ void draw_provoke_value(cairo_t *cr)
                 break;
         }
 
-        caption = g_strdup_printf(_("%d"), player->gereizt);
+        if (player->gereizt != -1)
+            caption = g_strdup_printf(_("%d"), player->gereizt);
+        else
+            caption = g_strdup_printf(_("Pass"));
 
         cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.5);
         cairo_select_font_face(cr, "sans-serif",

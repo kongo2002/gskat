@@ -784,4 +784,22 @@ void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data)
     do_player_bid(response, hoeren);
 }
 
+/**
+ * player_draw_bid:
+ * @data:  #player to draw the bidden value for
+ *
+ * Deactivate the drawn bid value and refresh the game area
+ *
+ * Returns: %FALSE to remove the timeout
+ */
+gboolean player_draw_bid(gpointer data)
+{
+    player *p = (player *) data;
+
+    p->does_bid = FALSE;
+    draw_area();
+
+    return FALSE;
+}
+
 /* vim:set et sw=4 sts=4 tw=80: */

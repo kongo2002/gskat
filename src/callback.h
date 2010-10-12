@@ -75,6 +75,8 @@ void save_game_cb(GtkMenuItem *menuitem, gpointer data);
 
 void infobar_bid_response(GtkInfoBar *ib, gint response, gpointer data);
 
+gboolean player_draw_bid(gpointer data);
+
 G_END_DECLS
 
 #endif /* __CALLBACK_H__ */

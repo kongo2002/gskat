@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "ai.h"
+#include "callback.h"
 #include "common.h"
 #include "draw.h"
 #include "game.h"
@@ -490,6 +491,10 @@ void do_hoeren(player *player, gint value, gint sager)
     {
         max = get_max_reizwert(player->cards);
 
+        /* draw player's bid on-screen */
+        player->does_bid = TRUE;
+        g_timeout_add(3000, (GSourceFunc) player_draw_bid, (gpointer) player);
+
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
             gskat_msg(MT_DEBUG | MT_BUGREPORT,
@@ -497,6 +502,9 @@ void do_hoeren(player *player, gint value, gint sager)
 
             player->gereizt = value;
             gskat.hoerer = player->id;
+
+            /* refresh game area */
+            draw_area();
 
             do_sagen(gskat.players[sager], player->id, next_reizwert(value));
         }
@@ -592,6 +600,10 @@ void do_sagen(player *player, gint hoerer, gint value)
     {
         max = get_max_reizwert(player->cards);
 
+        /* draw player's bid on-screen */
+        player->does_bid = TRUE;
+        g_timeout_add(3000, (GSourceFunc) player_draw_bid, (gpointer) player);
+
         /* check if player wants to bid (further) */
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
@@ -641,6 +653,9 @@ void start_bidding(void)
 {
     gint i;
     player *pptr;
+
+    /* refresh game area */
+    draw_area();
 
     /* first bidding phase */
     if (gskat.state == PROVOKE1)
