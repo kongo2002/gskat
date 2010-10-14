@@ -90,7 +90,19 @@ typedef struct _property {
     property_value pval;
 } property;
 
+void init_config(void);
+
 void load_config(void);
+
+void set_bool_val(const gchar *name, gboolean val);
+
+void set_int_val(const gchar *name, gint val);
+
+void set_prop(const gchar *name, gpointer value);
+
+void set_prop_widget(const gchar *name, GtkWidget *widget);
+
+void get_prop_widget_val(gpointer key, gpointer val, gpointer data);
 
 void get_config_value(gpointer key, gpointer val, gpointer data);
 

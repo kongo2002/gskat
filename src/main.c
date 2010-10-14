@@ -124,6 +124,7 @@ int main(int argc, const char *argv[])
         }
 
         /* initialize configuration */
+        init_config();
         set_default_config();
 
         /* load configuration */
@@ -131,7 +132,7 @@ int main(int argc, const char *argv[])
 
         /* disable card animation if desired */
         if (no_animation)
-            gskat.conf.animation = FALSE;
+            set_bool_val("animation", FALSE);
 
         /* set game icons */
         set_icons();

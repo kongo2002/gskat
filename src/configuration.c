@@ -346,8 +346,6 @@ void get_config_value(gpointer key, gpointer val, gpointer data)
             g_key_file_set_string(keyfile, "gskat", prop->name,
                     prop->pval.ptr.s);
             break;
-        default:
-            break;
     }
 }
 /**

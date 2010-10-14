@@ -331,7 +331,7 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
     /* deactivate button if on the first played stich of the round
      * or if the maximum number of viewable tricks is reached
      * according to the 'num_show_tricks' config value */
-    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= gskat.conf.num_show_tricks)
+    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= get_prop("num_show_tricks"))
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate next stich button */
@@ -391,6 +391,7 @@ gboolean save_config(GtkButton *button, gpointer data)
 
     gint i;
     const gchar *cptr = NULL;
+    gchar *filename = g_build_filename(get_config_dir(), "gskat.conf", NULL);
     GtkWidget *window = (GtkWidget *) data;
 
     /* change player names if differing */
@@ -408,36 +409,12 @@ gboolean save_config(GtkButton *button, gpointer data)
         }
     }
 
-    gskat.conf.animation = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[3]));
+    g_hash_table_foreach(gskat.config, get_prop_widget_val, NULL);
 
-    gskat.conf.anim_duration = gtk_spin_button_get_value_as_int(
-            GTK_SPIN_BUTTON(gskat.confwidgets[4]));
-
-    gskat.conf.debug = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[5]));
-
-    gskat.conf.show_tricks = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[6]));
-
-    gskat.conf.num_show_tricks = gtk_spin_button_get_value_as_int(
-            GTK_SPIN_BUTTON(gskat.confwidgets[7]));
-
-    gskat.conf.show_poss_cards = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[8]));
-
-    gskat.conf.reaction = gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(gskat.confwidgets[9]));
-
-    gskat.conf.reaction_duration = gtk_spin_button_get_value_as_int(
-            GTK_SPIN_BUTTON(gskat.confwidgets[10]));
-
-    write_config();
-
-    g_free(gskat.confwidgets);
-    gskat.confwidgets = NULL;
+    write_config(filename);
 
     gtk_widget_destroy(window);
+    g_free(filename);
 
     return TRUE;
 }
@@ -532,7 +509,7 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
     card *card;
 
     /* return if not enabled in configuration */
-    if (!gskat.conf.show_poss_cards)
+    if (!get_prop("show_poss_cards"))
         return FALSE;
 
     /* check if it's the player's turn */
@@ -628,7 +605,7 @@ gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
     /* right mouse button click */
     else if (event->button == 3)
         /* show last trick(s) if activated in configuration */
-        if (gskat.conf.show_tricks)
+        if (get_prop("show_tricks"))
             show_last_tricks();
 
     return found;

@@ -480,8 +480,8 @@ void show_last_tricks(void)
     /* deactivate previous button if the first stich is already shown
      * or if 'show_tricks' is turned off
      * or if 'num_show_tricks' == 1 */
-    if (cur == 0 || !gskat.conf.show_tricks ||
-            gskat.conf.num_show_tricks <= 1)
+    if (cur == 0 || !get_prop("show_tricks") ||
+            get_prop("num_show_tricks") <= 1)
         gtk_widget_set_sensitive(prev_button, FALSE);
 
     /* close/ok button */
@@ -623,7 +623,7 @@ void show_config_window(void)
 
     show_tricks_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_tricks_check),
-            gskat.conf.show_tricks);
+            get_prop("show_tricks"));
     g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
             G_CALLBACK(show_tricks_toggle), NULL);
 
@@ -640,8 +640,8 @@ void show_config_window(void)
     num_show_tricks = gtk_spin_button_new_with_range(1, 11, 1.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(num_show_tricks), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(num_show_tricks),
-            gskat.conf.num_show_tricks);
-    gtk_widget_set_sensitive(num_show_tricks, gskat.conf.show_tricks);
+            get_prop("num_show_tricks"));
+    gtk_widget_set_sensitive(num_show_tricks, get_prop("show_tricks"));
 
     gtk_table_attach(GTK_TABLE(rules_table),
             num_show_tricks_label,
@@ -655,7 +655,7 @@ void show_config_window(void)
 
     show_poss_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_poss_check),
-            gskat.conf.show_poss_cards);
+            get_prop("show_poss_cards"));
 
     gtk_table_attach(GTK_TABLE(rules_table),
             show_poss_label,
@@ -679,7 +679,7 @@ void show_config_window(void)
 
     animation_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_check),
-            gskat.conf.animation);
+            get_prop("animation"));
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -694,8 +694,8 @@ void show_config_window(void)
     animation_duration = gtk_spin_button_new_with_range(25, 5000, 10.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
-            gskat.conf.anim_duration);
-    gtk_widget_set_sensitive(animation_duration, gskat.conf.animation);
+            get_prop("anim_duration"));
+    gtk_widget_set_sensitive(animation_duration, get_prop("animation"));
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -712,7 +712,7 @@ void show_config_window(void)
 
     reaction_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reaction_check),
-            gskat.conf.reaction);
+            get_prop("reaction"));
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -730,8 +730,8 @@ void show_config_window(void)
     reaction_duration = gtk_spin_button_new_with_range(100, 5000, 20.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(reaction_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(reaction_duration),
-            gskat.conf.reaction_duration);
-    gtk_widget_set_sensitive(reaction_duration, gskat.conf.reaction);
+            get_prop("reaction_duration"));
+    gtk_widget_set_sensitive(reaction_duration, get_prop("reaction"));
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_duration,
             1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -745,7 +745,7 @@ void show_config_window(void)
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
-            gskat.conf.debug);
+            get_prop("debug"));
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
             1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -763,7 +763,7 @@ void show_config_window(void)
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_table, about_label);
     gtk_container_set_border_width(GTK_CONTAINER(about_table), 5);
 
-    about_entry_len = max_str_len(gskat.conf.filename, DATA_DIR,
+    about_entry_len = max_str_len(get_config_dir(), DATA_DIR,
             GSKAT_LOCALEDIR, NULL);
 
     config_loc_label = gtk_label_new(_("Configuration file location:"));
@@ -773,7 +773,7 @@ void show_config_window(void)
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     config_loc_entry = gtk_entry_new();
-    gtk_entry_set_text(GTK_ENTRY(config_loc_entry), gskat.conf.filename);
+    gtk_entry_set_text(GTK_ENTRY(config_loc_entry), get_config_dir());
     gtk_entry_set_width_chars(GTK_ENTRY(config_loc_entry), about_entry_len);
     gtk_widget_set_sensitive(config_loc_entry, FALSE);
     gtk_table_attach(GTK_TABLE(about_table),
@@ -830,14 +830,15 @@ void show_config_window(void)
     gskat.confwidgets[0] = player_entry[0];
     gskat.confwidgets[1] = player_entry[1];
     gskat.confwidgets[2] = player_entry[2];
-    gskat.confwidgets[3] = animation_check;
-    gskat.confwidgets[4] = animation_duration;
-    gskat.confwidgets[5] = debug_check;
-    gskat.confwidgets[6] = show_tricks_check;
-    gskat.confwidgets[7] = num_show_tricks;
-    gskat.confwidgets[8] = show_poss_check;
-    gskat.confwidgets[9] = reaction_check;
-    gskat.confwidgets[10] = reaction_duration;
+
+    set_prop_widget("animation", animation_check);
+    set_prop_widget("anim_duration", animation_duration);
+    set_prop_widget("debug", debug_check);
+    set_prop_widget("show_tricks", show_tricks_check);
+    set_prop_widget("num_show_tricks", num_show_tricks);
+    set_prop_widget("show_poss_cards", show_poss_check);
+    set_prop_widget("reaction", reaction_check);
+    set_prop_widget("reaction_duration", reaction_duration);
 
     g_signal_connect(G_OBJECT(window), "delete-event",
             G_CALLBACK(destroy_config), (gpointer) window);
@@ -1461,9 +1462,6 @@ void free_app(void)
     /* free player names */
     g_strfreev(gskat.player_names);
     gskat.player_names = NULL;
-
-    g_free(gskat.conf.filename);
-    gskat.conf.filename = NULL;
 
     /* free played stiche */
     for (i=0; i<10; ++i)
