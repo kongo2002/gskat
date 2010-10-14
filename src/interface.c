@@ -148,7 +148,7 @@ void alloc_app(void)
     gskat.players = (player **) g_malloc(sizeof(player *) * 3);
 
     for (i=0; i<3; ++i)
-        gskat.players[i] = init_player(i, gskat.conf.player_names[i],
+        gskat.players[i] = init_player(i, gskat.player_names[i],
                 i ? FALSE : TRUE);
 
     /* initialize played cards */
@@ -606,7 +606,7 @@ void show_config_window(void)
 
         player_entry[i] = gtk_entry_new();
         gtk_entry_set_text(GTK_ENTRY(player_entry[i]),
-                gskat.conf.player_names[i]);
+                gskat.player_names[i]);
         gtk_table_attach_defaults(GTK_TABLE(names_table),
                 player_entry[i],
                 1, 2, i, i+1);
@@ -1117,9 +1117,9 @@ void create_interface(void)
     gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
     gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-    lb_rank_p1_name = gtk_label_new(gskat.conf.player_names[0]);
-    lb_rank_p2_name = gtk_label_new(gskat.conf.player_names[1]);
-    lb_rank_p3_name = gtk_label_new(gskat.conf.player_names[2]);
+    lb_rank_p1_name = gtk_label_new(gskat.player_names[0]);
+    lb_rank_p2_name = gtk_label_new(gskat.player_names[1]);
+    lb_rank_p3_name = gtk_label_new(gskat.player_names[2]);
 
     gtk_table_attach_defaults(GTK_TABLE(table_rank),
             lb_rank_p1_name,
@@ -1459,8 +1459,8 @@ void free_app(void)
     gskat.played = NULL;
 
     /* free player names */
-    g_strfreev(gskat.conf.player_names);
-    gskat.conf.player_names = NULL;
+    g_strfreev(gskat.player_names);
+    gskat.player_names = NULL;
 
     g_free(gskat.conf.filename);
     gskat.conf.filename = NULL;

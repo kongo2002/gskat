@@ -238,12 +238,12 @@ void set_default_config(void)
     gskat.conf.filename = NULL;
 
     /* set player names */
-    gskat.conf.player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
+    gskat.player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
 
-    gskat.conf.player_names[0] = g_strdup(user_name ? user_name : "Player");
-    gskat.conf.player_names[1] = g_strdup("Cuyo");
-    gskat.conf.player_names[2] = g_strdup("Dozo");
-    gskat.conf.player_names[3] = NULL;
+    gskat.player_names[0] = g_strdup(user_name ? user_name : "Player");
+    gskat.player_names[1] = g_strdup("Cuyo");
+    gskat.player_names[2] = g_strdup("Dozo");
+    gskat.player_names[3] = NULL;
 }
 
 /**
@@ -427,8 +427,8 @@ gboolean read_config(void)
     }
     else
     {
-        g_strfreev(gskat.conf.player_names);
-        gskat.conf.player_names = names;
+        g_strfreev(gskat.player_names);
+        gskat.player_names = names;
     }
 
     /* read all remaining config values */

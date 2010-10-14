@@ -398,10 +398,10 @@ gboolean save_config(GtkButton *button, gpointer data)
     {
         cptr = gtk_entry_get_text(GTK_ENTRY(gskat.confwidgets[i]));
 
-        if (strcmp(gskat.conf.player_names[i], cptr))
+        if (strcmp(gskat.player_names[i], cptr))
         {
-            g_free(gskat.conf.player_names[i]);
-            gskat.conf.player_names[i] = g_strdup(cptr);
+            g_free(gskat.player_names[i]);
+            gskat.player_names[i] = g_strdup(cptr);
 
             /* refresh game area when a player name has changed */
             draw_area();
