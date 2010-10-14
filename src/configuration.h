@@ -92,15 +92,13 @@ typedef struct _property {
 
 void load_config(void);
 
-void set_config_filename(void);
+void get_config_value(gpointer key, gpointer val, gpointer data);
 
-void get_config_value(GKeyFile *keyfile, property *prop);
+void set_config_value(gpointer key, gpointer val, gpointer data);
 
-gboolean set_config_value(GKeyFile *keyfile, property *prop);
+gboolean read_config(const gchar *filename);
 
-gboolean write_config(void);
-
-gboolean read_config(void);
+gboolean read_config(const gchar *filename);
 
 void set_default_config(void);
 

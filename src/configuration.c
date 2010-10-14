@@ -172,19 +172,6 @@ void get_prop_widget_val(gpointer key, gpointer val, gpointer data)
 }
 
 /**
- * set_config_filename:
- *
- * Set the config filename string inside the global
- * configuration structure
- */
-void set_config_filename(void)
-{
-    const gchar *config_dir = get_config_dir();
-
-    gskat.conf.filename = g_build_filename(config_dir, "gskat.conf", NULL);
-}
-
-/**
  * load_config:
  *
  * Load the gskat configuration file
@@ -194,19 +181,14 @@ void set_config_filename(void)
  */
 void load_config(void)
 {
-    const gchar *filename;
-
-    if (!gskat.conf.filename)
-        set_config_filename();
-
-    filename = gskat.conf.filename;
+    gchar *filename = g_build_filename(get_config_dir(), "gskat.conf", NULL);
 
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
     {
         gskat_msg(MT_INFO, _("Found config file '%s'\n"), filename);
 
-        read_config();
+        read_config(filename);
     }
     else
     {
@@ -214,8 +196,40 @@ void load_config(void)
         gskat_msg(MT_ERROR, _("Using default settings instead.\n"));
 
         /* try to save config */
-        write_config();
+        write_config(filename);
     }
+
+    g_free(filename);
+}
+
+void set_bool_val(const gchar *name, gboolean val)
+{
+    gboolean *ptr;
+    property *p = (property *) g_hash_table_lookup(gskat.config, name);
+
+    g_return_if_fail(p);
+
+    ptr = p->pval.ptr.b;
+
+    if (!ptr)
+        ptr = g_malloc(sizeof(gboolean));
+
+    *ptr = val;
+}
+
+void set_int_val(const gchar *name, gint val)
+{
+    gint *ptr;
+    property *p = (property *) g_hash_table_lookup(gskat.config, name);
+
+    g_return_if_fail(p);
+
+    ptr = p->pval.ptr.i;
+
+    if (!ptr)
+        ptr = g_malloc(sizeof(gint));
+
+    *ptr = val;
 }
 
 /**
@@ -227,15 +241,14 @@ void set_default_config(void)
 {
     const gchar *user_name = g_getenv("USER");
 
-    gskat.conf.animation = TRUE;
-    gskat.conf.anim_duration = 200;
-    gskat.conf.reaction = TRUE;
-    gskat.conf.reaction_duration = 500;
-    gskat.conf.show_tricks = TRUE;
-    gskat.conf.num_show_tricks = 1;
-    gskat.conf.show_poss_cards = TRUE;
-    gskat.conf.debug = FALSE;
-    gskat.conf.filename = NULL;
+    set_bool_val("animation", TRUE);
+    set_int_val("anim_duration", 200);
+    set_bool_val("reaction", TRUE);
+    set_int_val("reaction_duration", 500);
+    set_bool_val("show_tricks", TRUE);
+    set_int_val("num_show_tricks", 1);
+    set_bool_val("show_poss_cards", TRUE);
+    set_bool_val("debug", FALSE);
 
     /* set player names */
     gskat.player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
@@ -253,11 +266,10 @@ void set_default_config(void)
  *
  * Returns: %TRUE on success, otherwise %FALSE
  */
-gboolean write_config(void)
+gboolean write_config(const gchar *filename)
 {
     gint i;
     gsize length;
-    gchar *filename = gskat.conf.filename;
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
     GKeyFile *keys = NULL;
@@ -267,11 +279,10 @@ gboolean write_config(void)
 
     /* write player names into keyfile */
     g_key_file_set_string_list(keys, "gskat", "player_names",
-            (const gchar **) gskat.conf.player_names, 3);
+            (const gchar **) gskat.player_names, 3);
 
     /* add all remaining config values to keyfile content */
-    for (i=0; config_values[i].name != NULL; ++i)
-        get_config_value(keys, (property *) &config_values[i]);
+    g_hash_table_foreach(gskat.config, get_config_value, keys);
 
     key_file_content = g_key_file_to_data(keys, &length, NULL);
 
@@ -306,9 +317,13 @@ gboolean write_config(void)
  * Write a configuration value in a keyfile in order to
  * write a new config file to disk
  */
-void get_config_value(GKeyFile *keyfile, property *prop)
+void get_config_value(gpointer key, gpointer val, gpointer data)
 {
+    property *prop = (property *) val;
+    GKeyFile *keyfile = (GKeyFile *) data;
+
     g_return_if_fail(prop);
+    g_return_if_fail(keyfile);
 
     switch (prop->pval.type)
     {
@@ -325,8 +340,11 @@ void get_config_value(GKeyFile *keyfile, property *prop)
                     *prop->pval.ptr.d);
             break;
         case STR:
+            if (prop->pval.ptr.s)
+                g_free(prop->pval.ptr.s);
+
             g_key_file_set_string(keyfile, "gskat", prop->name,
-                    *prop->pval.ptr.s);
+                    prop->pval.ptr.s);
             break;
         default:
             break;
@@ -342,11 +360,14 @@ void get_config_value(GKeyFile *keyfile, property *prop)
  *
  * Returns: %TRUE on success, otherwise %FALSE
  */
-gboolean set_config_value(GKeyFile *keyfile, property *prop)
+void set_config_value(gpointer key, gpointer val, gpointer data)
 {
+    property *prop = (property *) val;
+    GKeyFile *keyfile = (GKeyFile *) data;
     GError *error = NULL;
 
-    g_return_val_if_fail(prop, FALSE);
+    g_return_if_fail(prop);
+    g_return_if_fail(keyfile);
 
     switch (prop->pval.type)
     {
@@ -363,12 +384,9 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
                     prop->name, &error);
             break;
         case STR:
-            *prop->pval.ptr.s = g_key_file_get_string(keyfile, "gskat",
+            prop->pval.ptr.s = g_key_file_get_string(keyfile, "gskat",
                     prop->name, &error);
             break;
-        default:
-            return FALSE;
-
     }
 
     if (error)
@@ -376,11 +394,7 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
         gskat_msg(MT_ERROR,
                 _("Failed to read '%s' from config file.\n"), prop->name);
         g_clear_error(&error);
-
-        return FALSE;
     }
-
-    return TRUE;
 }
 
 /**
@@ -390,12 +404,11 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
  *
  * Returns: %TRUE on success, otherwise %FALSE
  */
-gboolean read_config(void)
+gboolean read_config(const gchar *filename)
 {
     gint i;
     gsize length;
     gchar **names = NULL;
-    gchar *filename = gskat.conf.filename;
     gboolean done = FALSE, failed = FALSE;
     GError *error = NULL;
     GKeyFile *keyfile = NULL;
@@ -432,17 +445,13 @@ gboolean read_config(void)
     }
 
     /* read all remaining config values */
-    for (i=0; config_values[i].name != NULL; ++i)
-    {
-        if (!set_config_value(keyfile, (property *) &config_values[i]))
-            failed = TRUE;
-    }
+    g_hash_table_foreach(gskat.config, set_config_value, keyfile);
 
     /* rewrite config if not all values could be read successfully */
     if (!done || failed)
     {
         gskat_msg(MT_INFO, _("Rewriting config file.\n"));
-        write_config();
+        write_config(filename);
     }
 
     g_key_file_free(keyfile);
