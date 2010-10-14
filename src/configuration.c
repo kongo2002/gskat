@@ -105,7 +105,6 @@ gpointer get_prop(const gchar *name)
 void set_prop(const gchar *name, gpointer value)
 {
     property *p = g_hash_table_lookup(gskat.config, name);
-
     g_return_if_fail(p);
 
     switch (p->pval.type)
@@ -126,6 +125,50 @@ void set_prop(const gchar *name, gpointer value)
             p->pval.ptr.v = value;
             break;
     }
+}
+
+void set_prop_widget(const gchar *name, GtkWidget *widget)
+{
+    property *p = g_hash_table_lookup(gskat.config, name);
+    g_return_if_fail(p);
+
+    p->widget = widget;
+}
+
+void get_prop_widget_val(gpointer key, gpointer val, gpointer data)
+{
+    const gchar *entry_val;
+    property *prop = (property *) val;
+
+    g_return_if_fail(prop);
+    g_return_if_fail(prop->widget);
+
+    switch (prop->pval.wtype)
+    {
+        case SPINBUTTON:
+            *prop->pval.ptr.i = gtk_spin_button_get_value_as_int(
+                    GTK_SPIN_BUTTON(prop->widget));
+            break;
+        case TOGGLEBUTTON:
+            *prop->pval.ptr.b = gtk_toggle_button_get_active(
+                    GTK_TOGGLE_BUTTON(prop->widget));
+            break;
+        case ENTRY:
+            entry_val = gtk_entry_get_text(GTK_ENTRY(prop->widget));
+
+            if (prop->pval.ptr.s)
+            {
+                if (strcmp(prop->pval.ptr.s, entry_val))
+                    g_free(prop->pval.ptr.s);
+                else
+                    break;
+            }
+            prop->pval.ptr.s = g_strdup(entry_val);
+            break;
+    }
+
+    /* reset widget pointer */
+    prop->widget = NULL;
 }
 
 /**
