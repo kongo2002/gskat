@@ -62,6 +62,11 @@ property *new_property(const gchar *name, property_type type,
     return p;
 }
 
+/**
+ * init_config:
+ *
+ * Initialize the configuration hash table
+ */
 void init_config(void)
 {
     gint i;
@@ -79,6 +84,14 @@ void init_config(void)
     }
 }
 
+/**
+ * get_prop:
+ * @name:  Name of the property
+ *
+ * Search for the given @name in the configuration hash table.
+ *
+ * Returns: a #gpointer to the property value or %NULL
+ */
 gpointer get_prop(const gchar *name)
 {
     property *p = g_hash_table_lookup(gskat.config, name);
@@ -102,6 +115,15 @@ gpointer get_prop(const gchar *name)
     }
 }
 
+/**
+ * get_prop_strv:
+ * @name:   Name of the property
+ * @index:  Index of the value to return
+ *
+ * Search for the value at @index inside a string array property
+ *
+ * Returns: the string at the given index or %NULL
+ */
 gchar *get_prop_strv(const gchar *name, gint index)
 {
     gint i;
@@ -120,6 +142,13 @@ gchar *get_prop_strv(const gchar *name, gint index)
     return p->pval.ptr.v[index];
 }
 
+/**
+ * set_prop:
+ * @name:   Name of the property
+ * @value:  #gpointer to the new value
+ *
+ * Set a new value of the given property.
+ */
 void set_prop(const gchar *name, gpointer value)
 {
     property *p = g_hash_table_lookup(gskat.config, name);
@@ -145,6 +174,13 @@ void set_prop(const gchar *name, gpointer value)
     }
 }
 
+/**
+ * set_prop_widget:
+ * @name:    Name of the property
+ * @widget:  #GtkWidget to be associated with the property
+ *
+ * Set the #GtkWidget of the given property.
+ */
 void set_prop_widget(const gchar *name, GtkWidget *widget)
 {
     property *p = g_hash_table_lookup(gskat.config, name);
@@ -153,6 +189,15 @@ void set_prop_widget(const gchar *name, GtkWidget *widget)
     p->widget = widget;
 }
 
+/**
+ * get_prop_widget_val:
+ * @key:   Key (name) of the property
+ * @val:   #property object
+ * @data:  arbitrary user data
+ *
+ * Set the property to the value of the associated #GtkWidget.
+ * This function is used with g_hash_table_foreach()
+ */
 void get_prop_widget_val(gpointer key, gpointer val, gpointer data)
 {
     UNUSED(key);
@@ -222,6 +267,13 @@ void load_config(void)
     g_free(filename);
 }
 
+/**
+ * set_bool_val:
+ * @name:  Name of the property
+ * @val:   #gboolean value
+ *
+ * Set a boolean property value
+ */
 void set_bool_val(const gchar *name, gboolean val)
 {
     gboolean **ptr;
@@ -237,6 +289,13 @@ void set_bool_val(const gchar *name, gboolean val)
     **ptr = val;
 }
 
+/**
+ * set_int_val:
+ * @name:  Name of the property
+ * @val:   #gint value
+ *
+ * Set an integer property value
+ */
 void set_int_val(const gchar *name, gint val)
 {
     gint **ptr;
@@ -281,6 +340,7 @@ void set_default_config(void)
 
 /**
  * write_config:
+ * @filename:  Filename of the configuration file
  *
  * Write the current configuration to the config file
  *
@@ -330,11 +390,13 @@ gboolean write_config(const gchar *filename)
 
 /**
  * get_config_value:
- * @keyfile:  #GKeyFile containing the new values
- * @prop:     property element of the config_values array
+ * @key:   Key (name) of the property
+ * @val:   #property object
+ * @data:  #GKeyFile
  *
- * Write a configuration value in a keyfile in order to
- * write a new config file to disk
+ * Write a configuration value into the given keyfile in order to
+ * write a new config file to disk.
+ * This function is used with g_hash_table_foreach()
  */
 void get_config_value(gpointer key, gpointer val, gpointer data)
 {
@@ -375,13 +437,13 @@ void get_config_value(gpointer key, gpointer val, gpointer data)
 }
 /**
  * set_config_value:
- * @keyfile:  #GKeyFile containing the parsed values
- * @prop:     property element of the config_values array
+ * @key:   Key (name) of the property
+ * @val:   #property object
+ * @data:  #GKeyFile
  *
- * Read a configuration value from @keyfile and apply
- * the new value to the global config structure
- *
- * Returns: %TRUE on success, otherwise %FALSE
+ * Read a configuration value from the given #GKeyFile and apply
+ * the new value to the property inside the configuration hash table.
+ * This function is used with g_hash_table_foreach()
  */
 void set_config_value(gpointer key, gpointer val, gpointer data)
 {
@@ -433,6 +495,7 @@ void set_config_value(gpointer key, gpointer val, gpointer data)
 
 /**
  * read_config:
+ * @filename:  Filename of the configuration file
  *
  * Read the configuration values from the config file
  *
