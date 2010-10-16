@@ -102,6 +102,8 @@ void set_prop(const gchar *name, gpointer value);
 
 void set_prop_widget(const gchar *name, GtkWidget *widget);
 
+gpointer get_prop(const gchar *name);
+
 void get_prop_widget_val(gpointer key, gpointer val, gpointer data);
 
 void get_config_value(gpointer key, gpointer val, gpointer data);
@@ -110,7 +112,7 @@ void set_config_value(gpointer key, gpointer val, gpointer data);
 
 gboolean read_config(const gchar *filename);
 
-gboolean read_config(const gchar *filename);
+gboolean write_config(const gchar *filename);
 
 void set_default_config(void);
 

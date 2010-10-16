@@ -64,7 +64,6 @@ static void initialize()
     gskat.bg            = NULL;
     gskat.area          = NULL;
     gskat.widgets       = NULL;
-    gskat.confwidgets   = NULL;
     gskat.state         = LOADING;
     gskat.re            = NULL;
     gskat.forehand      = 2;
@@ -81,6 +80,7 @@ static void initialize()
     gskat.pirate_cursor = NULL;
     gskat.log_level     = MT_INFO;
     gskat.log           = g_string_sized_new(256);
+    gskat.config        = NULL;
 }
 
 int main(int argc, const char *argv[])

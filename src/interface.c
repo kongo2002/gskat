@@ -626,9 +626,6 @@ void show_config_window(void)
     show_tricks_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_tricks_check),
             get_prop("show_tricks"));
-    g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
-            G_CALLBACK(show_tricks_toggle), NULL);
-
     gtk_table_attach(GTK_TABLE(rules_table),
             show_tricks_label,
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
@@ -651,6 +648,9 @@ void show_config_window(void)
     gtk_table_attach(GTK_TABLE(rules_table),
             num_show_tricks,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
+            G_CALLBACK(show_tricks_toggle), num_show_tricks);
 
     show_poss_label = gtk_label_new(_("Change mouse cursor for possible cards:"));
     gtk_misc_set_alignment(GTK_MISC(show_poss_label), 0, 0.5);
@@ -703,7 +703,7 @@ void show_config_window(void)
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     g_signal_connect(G_OBJECT(animation_check), "toggled",
-            G_CALLBACK(animation_toggle), NULL);
+            G_CALLBACK(animation_toggle), animation_duration);
 
     /* opponents reaction */
     reaction_label = gtk_label_new(_("Delay opponents reaction:"));
@@ -718,9 +718,6 @@ void show_config_window(void)
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
-
-    g_signal_connect(G_OBJECT(reaction_check), "toggled",
-            G_CALLBACK(reaction_toggle), NULL);
 
     /* reaction duration */
     reaction_dur_label = gtk_label_new(_("Reaction time (in ms):"));
@@ -737,6 +734,9 @@ void show_config_window(void)
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_duration,
             1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    g_signal_connect(G_OBJECT(reaction_check), "toggled",
+            G_CALLBACK(reaction_toggle), reaction_duration);
 
     /* debugging */
     debug_label = gtk_label_new(_("Print debug statements:"));

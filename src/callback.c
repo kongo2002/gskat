@@ -329,7 +329,7 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
     /* deactivate button if on the first played stich of the round
      * or if the maximum number of viewable tricks is reached
      * according to the 'num_show_tricks' config value */
-    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= get_prop("num_show_tricks"))
+    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= *((gint *) get_prop("num_show_tricks")))
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate next stich button */
@@ -620,11 +620,9 @@ gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
  */
 void animation_toggle(GtkToggleButton *tbutton, gpointer data)
 {
-    UNUSED(data);
-
     gboolean active = gtk_toggle_button_get_active(tbutton);
 
-    gtk_widget_set_sensitive(gskat.confwidgets[4], active);
+    gtk_widget_set_sensitive((GtkWidget *) data, active);
 }
 
 /**
@@ -637,11 +635,9 @@ void animation_toggle(GtkToggleButton *tbutton, gpointer data)
  */
 void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
 {
-    UNUSED(data);
-
     gboolean active = gtk_toggle_button_get_active(tbutton);
 
-    gtk_widget_set_sensitive(gskat.confwidgets[10], active);
+    gtk_widget_set_sensitive((GtkWidget *) data, active);
 }
 /**
  * show_tricks_toggle:
@@ -653,11 +649,9 @@ void reaction_toggle(GtkToggleButton *tbutton, gpointer data)
  */
 void show_tricks_toggle(GtkToggleButton *tbutton, gpointer data)
 {
-    UNUSED(data);
-
     gboolean active = gtk_toggle_button_get_active(tbutton);
 
-    gtk_widget_set_sensitive(gskat.confwidgets[7], active);
+    gtk_widget_set_sensitive((GtkWidget *) data, active);
 }
 
 /**
