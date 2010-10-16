@@ -276,6 +276,7 @@ typedef struct _player {
  * @played:        #GList of played cards of the current round
  * @stiche:        Played tricks of the current round
  * @players:       #player array of all three players
+ * @player_names:  Players' names
  * @icons:         #GdkPixbuf array of the four suits
  * @back:          Image of the back of the game cards
  * @bg:            Background image
@@ -283,7 +284,6 @@ typedef struct _player {
  * @hand_cursor:   Alternative cursor shape for allowed actions
  * @area:          Game drawing area
  * @widgets:       #GtkWidget array of all used gtk widgets
- * @confwidgets:   #GtkWidget array of all used configuration widgets
  * @state:         Current game state
  * @re:            Current re player
  * @forehand:      Current forehand player index
@@ -296,7 +296,9 @@ typedef struct _player {
  * @stich:         Current trick
  * @hand:          Current round a hand game?
  * @null:          Current round a null game?
- * @conf:          #config structure of all configuration values
+ * @log_level:     Current log level of type #msg_type
+ * @log:           #GString containing all bug report log messages
+ * @config:        #GHashTable containing all configuration properties
  *
  * Structure containing all game objects
  */
