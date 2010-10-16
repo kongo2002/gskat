@@ -224,32 +224,32 @@ void load_config(void)
 
 void set_bool_val(const gchar *name, gboolean val)
 {
-    gboolean *ptr;
+    gboolean **ptr;
     property *p = (property *) g_hash_table_lookup(gskat.config, name);
 
     g_return_if_fail(p);
 
-    ptr = p->pval.ptr.b;
+    ptr = &p->pval.ptr.b;
 
-    if (!ptr)
-        ptr = g_malloc(sizeof(gboolean));
+    if (!*ptr)
+        *ptr = g_malloc(sizeof(gboolean));
 
-    *ptr = val;
+    **ptr = val;
 }
 
 void set_int_val(const gchar *name, gint val)
 {
-    gint *ptr;
+    gint **ptr;
     property *p = (property *) g_hash_table_lookup(gskat.config, name);
 
     g_return_if_fail(p);
 
-    ptr = p->pval.ptr.i;
+    ptr = &p->pval.ptr.i;
 
-    if (!ptr)
-        ptr = g_malloc(sizeof(gint));
+    if (!*ptr)
+        *ptr = g_malloc(sizeof(gint));
 
-    *ptr = val;
+    **ptr = val;
 }
 
 /**
