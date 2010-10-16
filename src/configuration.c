@@ -525,20 +525,19 @@ gboolean read_config(const gchar *filename)
 {
     gsize length;
     gchar **names = NULL;
-    gboolean done = FALSE, failed = FALSE;
     GError *error = NULL;
     GKeyFile *keyfile = NULL;
 
     keyfile = g_key_file_new();
 
-    done = g_key_file_load_from_file(keyfile, filename,
-            G_KEY_FILE_NONE, &error);
+    g_key_file_load_from_file(keyfile, filename, G_KEY_FILE_NONE, &error);
 
     if (error)
     {
         gskat_msg(MT_ERROR,
                 _("Failed to read configuration: %s\n"), error->message);
         g_clear_error(&error);
+        g_key_file_free(keyfile);
 
         return FALSE;
     }
@@ -551,7 +550,6 @@ gboolean read_config(const gchar *filename)
     {
         gskat_msg(MT_ERROR,
                 _("Failed to read 'player_names' from config file.\n"));
-        failed = TRUE;
         g_clear_error(&error);
     }
     else
@@ -563,16 +561,13 @@ gboolean read_config(const gchar *filename)
     /* read all remaining config values */
     g_hash_table_foreach(gskat.config, set_config_value, keyfile);
 
-    /* rewrite config if not all values could be read successfully */
-    if (!done || failed)
-    {
-        gskat_msg(MT_INFO, _("Rewriting config file.\n"));
-        write_config(filename);
-    }
+    /* rewrite config file to make sure that
+     * all values are present in the file */
+    write_config(filename);
 
     g_key_file_free(keyfile);
 
-    return done;
+    return TRUE;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
