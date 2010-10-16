@@ -75,10 +75,29 @@ void free_property(gpointer data)
     property *p = (property *) data;
     g_return_if_fail(p);
 
-    if (p->pval.type == STR && p->pval.ptr.s)
-        g_free(p->pval.ptr.s);
-    else if (p->pval.type == STRV && p->pval.ptr.v)
-        g_strfreev(p->pval.ptr.v);
+    switch (p->pval.type)
+    {
+        case INT:
+            if (p->pval.ptr.i)
+                g_free(p->pval.ptr.i);
+            break;
+        case DOUBLE:
+            if (p->pval.ptr.d)
+                g_free(p->pval.ptr.d);
+            break;
+        case BOOL:
+            if (p->pval.ptr.b)
+                g_free(p->pval.ptr.b);
+            break;
+        case STR:
+            if (p->pval.ptr.s)
+                g_free(p->pval.ptr.s);
+            break;
+        case STRV:
+            if (p->pval.ptr.v)
+                g_strfreev(p->pval.ptr.v);
+            break;
+    }
 
     g_free((gpointer) p->name);
     g_free(p);
