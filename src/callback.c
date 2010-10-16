@@ -159,12 +159,10 @@ gboolean close_config(GtkButton *button, gpointer data)
 {
     UNUSED(button);
 
-    GtkWidget *window = (GtkWidget *) data;
+    GtkWidget **widgets = (GtkWidget **) data;
 
-    g_free(gskat.confwidgets);
-    gskat.confwidgets = NULL;
-
-    gtk_widget_destroy(window);
+    gtk_widget_destroy(widgets[3]);
+    g_free(widgets);
 
     return TRUE;
 }
@@ -376,7 +374,7 @@ gboolean next_stich_click(GtkButton *button, gpointer data)
 /**
  * save_config:
  * @button:  #GtkButton that was clicked
- * @data:    config dialog window widget
+ * @data:    config dialog widgets
  *
  * Callback function of the 'apply' button of the config dialog.
  *
@@ -392,12 +390,12 @@ gboolean save_config(GtkButton *button, gpointer data)
     gint i;
     const gchar *cptr = NULL;
     gchar *filename = g_build_filename(get_config_dir(), "gskat.conf", NULL);
-    GtkWidget *window = (GtkWidget *) data;
+    GtkWidget **widgets = (GtkWidget **) data;
 
     /* change player names if differing */
     for (i=0; i<3; ++i)
     {
-        cptr = gtk_entry_get_text(GTK_ENTRY(gskat.confwidgets[i]));
+        cptr = gtk_entry_get_text(GTK_ENTRY(widgets[i]));
 
         if (strcmp(gskat.player_names[i], cptr))
         {
@@ -413,8 +411,9 @@ gboolean save_config(GtkButton *button, gpointer data)
 
     write_config(filename);
 
-    gtk_widget_destroy(window);
+    gtk_widget_destroy(widgets[3]);
     g_free(filename);
+    g_free(widgets);
 
     return TRUE;
 }

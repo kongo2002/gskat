@@ -102,6 +102,24 @@ gpointer get_prop(const gchar *name)
     }
 }
 
+gchar *get_prop_strv(const gchar *name, gint index)
+{
+    gint i;
+    property *p = g_hash_table_lookup(gskat.config, name);
+
+    g_return_val_if_fail(p, NULL);
+    g_return_val_if_fail(p->pval.type == STRV, NULL);
+
+    /* check for out of bounds array index */
+    for (i=0; i<=index; ++i)
+    {
+        if (p->pval.ptr.v[i] == NULL)
+            return NULL;
+    }
+
+    return p->pval.ptr.v[index];
+}
+
 void set_prop(const gchar *name, gpointer value)
 {
     property *p = g_hash_table_lookup(gskat.config, name);

@@ -574,6 +574,8 @@ void show_config_window(void)
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
 
+    GtkWidget **confwidgets;
+
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
@@ -813,23 +815,20 @@ void show_config_window(void)
     gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, FALSE, 0);
 
     ok_button = gtk_button_new_from_stock(GTK_STOCK_APPLY);
-    g_signal_connect(G_OBJECT(ok_button), "clicked",
-            G_CALLBACK(save_config), (gpointer) window);
     gtk_box_pack_start(GTK_BOX(hbox_buttons), ok_button, FALSE, FALSE, 0);
 
     cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-    g_signal_connect(G_OBJECT(cancel_button), "clicked",
-            G_CALLBACK(close_config), (gpointer) window);
     gtk_box_pack_start(GTK_BOX(hbox_buttons), cancel_button, FALSE, FALSE, 0);
 
     /* allocate configuration widgets
      * this array is freed in either 'save_config', 'close_config'
      * or 'destroy_config' */
-    gskat.confwidgets = (GtkWidget **) g_malloc(11 * sizeof(GtkWidget *));
+    confwidgets = (GtkWidget **) g_malloc(4 * sizeof(GtkWidget *));
 
-    gskat.confwidgets[0] = player_entry[0];
-    gskat.confwidgets[1] = player_entry[1];
-    gskat.confwidgets[2] = player_entry[2];
+    confwidgets[0] = player_entry[0];
+    confwidgets[1] = player_entry[1];
+    confwidgets[2] = player_entry[2];
+    confwidgets[3] = window;
 
     set_prop_widget("animation", animation_check);
     set_prop_widget("anim_duration", animation_duration);
@@ -840,8 +839,12 @@ void show_config_window(void)
     set_prop_widget("reaction", reaction_check);
     set_prop_widget("reaction_duration", reaction_duration);
 
+    g_signal_connect(G_OBJECT(ok_button), "clicked",
+            G_CALLBACK(save_config), (gpointer) confwidgets);
+    g_signal_connect(G_OBJECT(cancel_button), "clicked",
+            G_CALLBACK(close_config), (gpointer) confwidgets);
     g_signal_connect(G_OBJECT(window), "delete-event",
-            G_CALLBACK(destroy_config), (gpointer) window);
+            G_CALLBACK(destroy_config), (gpointer) confwidgets);
 
     gtk_widget_show_all(window);
 }
