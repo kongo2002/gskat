@@ -232,7 +232,7 @@ void set_bool_val(const gchar *name, gboolean val)
     ptr = &p->pval.ptr.b;
 
     if (!*ptr)
-        *ptr = g_malloc(sizeof(gboolean));
+        *ptr = (gboolean *) g_malloc(sizeof(gboolean));
 
     **ptr = val;
 }
@@ -247,7 +247,7 @@ void set_int_val(const gchar *name, gint val)
     ptr = &p->pval.ptr.i;
 
     if (!*ptr)
-        *ptr = g_malloc(sizeof(gint));
+        *ptr = (gint *) g_malloc(sizeof(gint));
 
     **ptr = val;
 }
