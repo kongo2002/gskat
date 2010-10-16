@@ -80,6 +80,7 @@ void free_property(gpointer data)
     else if (p->pval.type == STRV && p->pval.ptr.v)
         g_strfreev(p->pval.ptr.v);
 
+    g_free((gpointer) p->name);
     g_free(p);
 }
 
