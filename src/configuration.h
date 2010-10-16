@@ -31,6 +31,7 @@ G_BEGIN_DECLS
  * @DOUBLE: #gdouble type
  * @BOOL:   #gboolean type
  * @STR:    #gchar type
+ * @STRV:   array of #gchar
  *
  * Enumeration of different configuration value types
  */
@@ -38,48 +39,93 @@ typedef enum {
     INT,
     DOUBLE,
     BOOL,
-    STR
+    STR,
+    STRV
 } property_type;
 
 /**
+ * property_widget:
+ * @TOGGLEBUTTON:  type of #GtkToggleButton
+ * @SPINBUTTON:    type of #GtkSpinButton
+ * @ENTRY:         type of #GtkEntry
+ *
+ * Enum defining the widget type of a configuration value
+ */
+typedef enum {
+    TOGGLEBUTTON,
+    SPINBUTTON,
+    ENTRY
+} property_widget;
+
+/**
  * property_value:
- * @type: #property_type structure
+ * @type:  #property_type structure
+ * @wtype: #property_widget type of the property
  *
  * Configuration value structure
  */
 typedef struct _property_value {
     property_type type;
+    property_widget wtype;
     union {
         gint *i;
         gdouble *d;
         gboolean *b;
-        gchar **s;
+        gchar *s;
+        gchar **v;
     } ptr;
 } property_value;
 
 /**
  * property:
- * @name: Name of the property
- * @pval: #property_value structure containing type and pointer of the property
+ * @name:   Name of the property
+ * @widget: Pointer to the #GtkWidget of the configuration value
+ * @pval:   #property_value structure containing type and pointer of the property
  *
  * Configuration element structure
  */
 typedef struct _property {
     const gchar *name;
+    GtkWidget *widget;
     property_value pval;
 } property;
 
+/* convenience macros for property access */
+#define get_prop_int(name) (*((gint *) get_prop(name)))
+#define get_prop_bool(name) (*((gboolean *) get_prop(name)))
+#define get_prop_double(name) (*((gdouble *) get_prop(name)))
+#define get_prop_str(name) (*((gchar *) get_prop(name)))
+
+property *new_property(const gchar *name, property_type type,
+        property_widget widget);
+
+void free_property(gpointer data);
+
+void init_config(void);
+
 void load_config(void);
 
-void set_config_filename(void);
+void set_bool_val(const gchar *name, gboolean val);
 
-void get_config_value(GKeyFile *keyfile, property *prop);
+void set_int_val(const gchar *name, gint val);
 
-gboolean set_config_value(GKeyFile *keyfile, property *prop);
+void set_prop(const gchar *name, gpointer value);
 
-gboolean write_config(void);
+void set_prop_widget(const gchar *name, GtkWidget *widget);
 
-gboolean read_config(void);
+gpointer get_prop(const gchar *name);
+
+gchar *get_prop_strv(const gchar *name, gint index);
+
+void get_prop_widget_val(gpointer key, gpointer val, gpointer data);
+
+void get_config_value(gpointer key, gpointer val, gpointer data);
+
+void set_config_value(gpointer key, gpointer val, gpointer data);
+
+gboolean read_config(const gchar *filename);
+
+gboolean write_config(const gchar *filename);
 
 void set_default_config(void);
 

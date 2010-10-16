@@ -269,34 +269,6 @@ typedef struct _player {
 } player;
 
 /**
- * config:
- * @player_names:      #gchar array of players' names
- * @animation:         Card movement animation
- * @anim_duration:     Card animation duration
- * @reaction:          Delay opponents reaction?
- * @reaction_duration: Reaction time
- * @show_tricks:       Show played tricks?
- * @num_show_tricks:   Number of showed tricks
- * @show_poss_cards:   Indicate possible cards by changing the mouse cursor shape
- * @debug:             Print debug statements
- * @filename:          Configuration filename
- *
- * Structure representing all configuration values
- */
-typedef struct _config {
-    gchar **player_names;
-    gboolean animation;
-    gint anim_duration;
-    gboolean reaction;
-    gint reaction_duration;
-    gboolean show_tricks;
-    gint num_show_tricks;
-    gboolean show_poss_cards;
-    gboolean debug;
-    gchar *filename;
-} config;
-
-/**
  * app:
  * @cards:         #GList of all game cards
  * @skat:          #GList of cards in the 'skat'
@@ -335,6 +307,7 @@ typedef struct _app {
     GList *played;
     card ***stiche;
     player **players;
+    gchar **player_names;
     GdkPixbuf **icons;
     cairo_surface_t *back;
     cairo_surface_t *bg;
@@ -342,7 +315,6 @@ typedef struct _app {
     GdkCursor *hand_cursor;
     GtkWidget *area;
     GtkWidget **widgets;
-    GtkWidget **confwidgets;
     gstate state;
     player *re;
     gint forehand;
@@ -357,7 +329,7 @@ typedef struct _app {
     gboolean null;
     msg_type log_level;
     GString *log;
-    config conf;
+    GHashTable *config;
 } app;
 
 /**

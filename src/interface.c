@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "callback.h"
+#include "configuration.h"
 #include "common.h"
 #include "draw.h"
 #include "interface.h"
@@ -148,7 +149,7 @@ void alloc_app(void)
     gskat.players = (player **) g_malloc(sizeof(player *) * 3);
 
     for (i=0; i<3; ++i)
-        gskat.players[i] = init_player(i, gskat.conf.player_names[i],
+        gskat.players[i] = init_player(i, gskat.player_names[i],
                 i ? FALSE : TRUE);
 
     /* initialize played cards */
@@ -480,8 +481,8 @@ void show_last_tricks(void)
     /* deactivate previous button if the first stich is already shown
      * or if 'show_tricks' is turned off
      * or if 'num_show_tricks' == 1 */
-    if (cur == 0 || !gskat.conf.show_tricks ||
-            gskat.conf.num_show_tricks <= 1)
+    if (cur == 0 || !get_prop_bool("show_tricks") ||
+            get_prop_int("num_show_tricks") <= 1)
         gtk_widget_set_sensitive(prev_button, FALSE);
 
     /* close/ok button */
@@ -574,6 +575,8 @@ void show_config_window(void)
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
 
+    GtkWidget **confwidgets;
+
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
@@ -606,7 +609,7 @@ void show_config_window(void)
 
         player_entry[i] = gtk_entry_new();
         gtk_entry_set_text(GTK_ENTRY(player_entry[i]),
-                gskat.conf.player_names[i]);
+                gskat.player_names[i]);
         gtk_table_attach_defaults(GTK_TABLE(names_table),
                 player_entry[i],
                 1, 2, i, i+1);
@@ -623,10 +626,7 @@ void show_config_window(void)
 
     show_tricks_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_tricks_check),
-            gskat.conf.show_tricks);
-    g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
-            G_CALLBACK(show_tricks_toggle), NULL);
-
+            get_prop_bool("show_tricks"));
     gtk_table_attach(GTK_TABLE(rules_table),
             show_tricks_label,
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
@@ -640,8 +640,8 @@ void show_config_window(void)
     num_show_tricks = gtk_spin_button_new_with_range(1, 11, 1.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(num_show_tricks), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(num_show_tricks),
-            gskat.conf.num_show_tricks);
-    gtk_widget_set_sensitive(num_show_tricks, gskat.conf.show_tricks);
+            get_prop_int("num_show_tricks"));
+    gtk_widget_set_sensitive(num_show_tricks, get_prop_bool("show_tricks"));
 
     gtk_table_attach(GTK_TABLE(rules_table),
             num_show_tricks_label,
@@ -650,12 +650,15 @@ void show_config_window(void)
             num_show_tricks,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
+    g_signal_connect(G_OBJECT(show_tricks_check), "toggled",
+            G_CALLBACK(show_tricks_toggle), num_show_tricks);
+
     show_poss_label = gtk_label_new(_("Change mouse cursor for possible cards:"));
     gtk_misc_set_alignment(GTK_MISC(show_poss_label), 0, 0.5);
 
     show_poss_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_poss_check),
-            gskat.conf.show_poss_cards);
+            get_prop_bool("show_poss_cards"));
 
     gtk_table_attach(GTK_TABLE(rules_table),
             show_poss_label,
@@ -679,7 +682,7 @@ void show_config_window(void)
 
     animation_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_check),
-            gskat.conf.animation);
+            get_prop_bool("animation"));
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -694,14 +697,14 @@ void show_config_window(void)
     animation_duration = gtk_spin_button_new_with_range(25, 5000, 10.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
-            gskat.conf.anim_duration);
-    gtk_widget_set_sensitive(animation_duration, gskat.conf.animation);
+            get_prop_int("anim_duration"));
+    gtk_widget_set_sensitive(animation_duration, get_prop_bool("animation"));
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     g_signal_connect(G_OBJECT(animation_check), "toggled",
-            G_CALLBACK(animation_toggle), NULL);
+            G_CALLBACK(animation_toggle), animation_duration);
 
     /* opponents reaction */
     reaction_label = gtk_label_new(_("Delay opponents reaction:"));
@@ -712,13 +715,10 @@ void show_config_window(void)
 
     reaction_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reaction_check),
-            gskat.conf.reaction);
+            get_prop_bool("reaction"));
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
-
-    g_signal_connect(G_OBJECT(reaction_check), "toggled",
-            G_CALLBACK(reaction_toggle), NULL);
 
     /* reaction duration */
     reaction_dur_label = gtk_label_new(_("Reaction time (in ms):"));
@@ -730,11 +730,14 @@ void show_config_window(void)
     reaction_duration = gtk_spin_button_new_with_range(100, 5000, 20.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(reaction_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(reaction_duration),
-            gskat.conf.reaction_duration);
-    gtk_widget_set_sensitive(reaction_duration, gskat.conf.reaction);
+            get_prop_int("reaction_duration"));
+    gtk_widget_set_sensitive(reaction_duration, get_prop_bool("reaction"));
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_duration,
             1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 10, 0);
+
+    g_signal_connect(G_OBJECT(reaction_check), "toggled",
+            G_CALLBACK(reaction_toggle), reaction_duration);
 
     /* debugging */
     debug_label = gtk_label_new(_("Print debug statements:"));
@@ -745,7 +748,7 @@ void show_config_window(void)
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
-            gskat.conf.debug);
+            get_prop_bool("debug"));
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
             1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -763,7 +766,7 @@ void show_config_window(void)
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), about_table, about_label);
     gtk_container_set_border_width(GTK_CONTAINER(about_table), 5);
 
-    about_entry_len = max_str_len(gskat.conf.filename, DATA_DIR,
+    about_entry_len = max_str_len(get_config_dir(), DATA_DIR,
             GSKAT_LOCALEDIR, NULL);
 
     config_loc_label = gtk_label_new(_("Configuration file location:"));
@@ -773,7 +776,7 @@ void show_config_window(void)
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     config_loc_entry = gtk_entry_new();
-    gtk_entry_set_text(GTK_ENTRY(config_loc_entry), gskat.conf.filename);
+    gtk_entry_set_text(GTK_ENTRY(config_loc_entry), get_config_dir());
     gtk_entry_set_width_chars(GTK_ENTRY(config_loc_entry), about_entry_len);
     gtk_widget_set_sensitive(config_loc_entry, FALSE);
     gtk_table_attach(GTK_TABLE(about_table),
@@ -813,34 +816,36 @@ void show_config_window(void)
     gtk_box_pack_start(GTK_BOX(vbox), hbox_buttons, FALSE, FALSE, 0);
 
     ok_button = gtk_button_new_from_stock(GTK_STOCK_APPLY);
-    g_signal_connect(G_OBJECT(ok_button), "clicked",
-            G_CALLBACK(save_config), (gpointer) window);
     gtk_box_pack_start(GTK_BOX(hbox_buttons), ok_button, FALSE, FALSE, 0);
 
     cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-    g_signal_connect(G_OBJECT(cancel_button), "clicked",
-            G_CALLBACK(close_config), (gpointer) window);
     gtk_box_pack_start(GTK_BOX(hbox_buttons), cancel_button, FALSE, FALSE, 0);
 
     /* allocate configuration widgets
      * this array is freed in either 'save_config', 'close_config'
      * or 'destroy_config' */
-    gskat.confwidgets = (GtkWidget **) g_malloc(11 * sizeof(GtkWidget *));
+    confwidgets = (GtkWidget **) g_malloc(4 * sizeof(GtkWidget *));
 
-    gskat.confwidgets[0] = player_entry[0];
-    gskat.confwidgets[1] = player_entry[1];
-    gskat.confwidgets[2] = player_entry[2];
-    gskat.confwidgets[3] = animation_check;
-    gskat.confwidgets[4] = animation_duration;
-    gskat.confwidgets[5] = debug_check;
-    gskat.confwidgets[6] = show_tricks_check;
-    gskat.confwidgets[7] = num_show_tricks;
-    gskat.confwidgets[8] = show_poss_check;
-    gskat.confwidgets[9] = reaction_check;
-    gskat.confwidgets[10] = reaction_duration;
+    confwidgets[0] = player_entry[0];
+    confwidgets[1] = player_entry[1];
+    confwidgets[2] = player_entry[2];
+    confwidgets[3] = window;
 
+    set_prop_widget("animation", animation_check);
+    set_prop_widget("anim_duration", animation_duration);
+    set_prop_widget("debug", debug_check);
+    set_prop_widget("show_tricks", show_tricks_check);
+    set_prop_widget("num_show_tricks", num_show_tricks);
+    set_prop_widget("show_poss_cards", show_poss_check);
+    set_prop_widget("reaction", reaction_check);
+    set_prop_widget("reaction_duration", reaction_duration);
+
+    g_signal_connect(G_OBJECT(ok_button), "clicked",
+            G_CALLBACK(save_config), (gpointer) confwidgets);
+    g_signal_connect(G_OBJECT(cancel_button), "clicked",
+            G_CALLBACK(close_config), (gpointer) confwidgets);
     g_signal_connect(G_OBJECT(window), "delete-event",
-            G_CALLBACK(destroy_config), (gpointer) window);
+            G_CALLBACK(destroy_config), (gpointer) confwidgets);
 
     gtk_widget_show_all(window);
 }
@@ -1117,9 +1122,9 @@ void create_interface(void)
     gtk_table_set_col_spacings(GTK_TABLE(table_rank), 10);
     gtk_table_set_row_spacings(GTK_TABLE(table_rank), 5);
 
-    lb_rank_p1_name = gtk_label_new(gskat.conf.player_names[0]);
-    lb_rank_p2_name = gtk_label_new(gskat.conf.player_names[1]);
-    lb_rank_p3_name = gtk_label_new(gskat.conf.player_names[2]);
+    lb_rank_p1_name = gtk_label_new(gskat.player_names[0]);
+    lb_rank_p2_name = gtk_label_new(gskat.player_names[1]);
+    lb_rank_p3_name = gtk_label_new(gskat.player_names[2]);
 
     gtk_table_attach_defaults(GTK_TABLE(table_rank),
             lb_rank_p1_name,
@@ -1459,11 +1464,8 @@ void free_app(void)
     gskat.played = NULL;
 
     /* free player names */
-    g_strfreev(gskat.conf.player_names);
-    gskat.conf.player_names = NULL;
-
-    g_free(gskat.conf.filename);
-    gskat.conf.filename = NULL;
+    g_strfreev(gskat.player_names);
+    gskat.player_names = NULL;
 
     /* free played stiche */
     for (i=0; i<10; ++i)
@@ -1503,6 +1505,9 @@ void free_app(void)
     gdk_cursor_unref(gskat.hand_cursor);
 
     g_free(gskat.widgets);
+
+    g_hash_table_destroy(gskat.config);
+    gskat.config = NULL;
 
     gskat_msg(MT_INFO, _("Quit gskat\n"));
 }

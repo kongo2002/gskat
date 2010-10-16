@@ -64,7 +64,6 @@ static void initialize()
     gskat.bg            = NULL;
     gskat.area          = NULL;
     gskat.widgets       = NULL;
-    gskat.confwidgets   = NULL;
     gskat.state         = LOADING;
     gskat.re            = NULL;
     gskat.forehand      = 2;
@@ -81,6 +80,7 @@ static void initialize()
     gskat.pirate_cursor = NULL;
     gskat.log_level     = MT_INFO;
     gskat.log           = g_string_sized_new(256);
+    gskat.config        = NULL;
 }
 
 int main(int argc, const char *argv[])
@@ -124,6 +124,7 @@ int main(int argc, const char *argv[])
         }
 
         /* initialize configuration */
+        init_config();
         set_default_config();
 
         /* load configuration */
@@ -131,7 +132,7 @@ int main(int argc, const char *argv[])
 
         /* disable card animation if desired */
         if (no_animation)
-            gskat.conf.animation = FALSE;
+            set_bool_val("animation", FALSE);
 
         /* set game icons */
         set_icons();

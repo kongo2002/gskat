@@ -21,6 +21,7 @@
 #include "def.h"
 #include "ai.h"
 #include "common.h"
+#include "configuration.h"
 #include "draw.h"
 #include "game.h"
 #include "interface.h"
@@ -1065,7 +1066,7 @@ gboolean throw_card(gpointer data)
     index = g_list_length(gskat.table) - 1;
     stich[index] = _card;
 
-    if (gskat.conf.animation)
+    if (get_prop_bool("animation"))
     {
         /* initiate card movement animation */
         _card->status = CS_MOVING;
@@ -1108,8 +1109,8 @@ void ai_play_card(player *player)
     g_list_free(ptr);
 
     /* delay the card throw if configured */
-    if (gskat.conf.reaction && gskat.conf.reaction_duration > 0)
-        g_timeout_add(gskat.conf.reaction_duration, (GSourceFunc) throw_card,
+    if (get_prop_bool("reaction") && get_prop_int("reaction_duration") > 0)
+        g_timeout_add(get_prop_int("reaction_duration"), (GSourceFunc) throw_card,
                 (gpointer) card);
     else
         throw_card((gpointer) card);

@@ -22,41 +22,238 @@
 #include "common.h"
 #include "configuration.h"
 
-/* convenience functions */
-#ifndef PROP_MACRO
-#define PROP_MACRO
-
-#define INT_PROP(address)    { .type = INT   , .ptr.i = &(address) }
-#define DOUBLE_PROP(address) { .type = DOUBLE, .ptr.d = &(address) }
-#define BOOL_PROP(address)   { .type = BOOL  , .ptr.b = &(address) }
-#define STR_PROP(address)    { .type = STR   , .ptr.s = &(address) }
-
-#endif
-
-/* configuration value table */
-static const property config_values[] = {
-    { "animation"         , BOOL_PROP(gskat.conf.animation) },
-    { "show_tricks"       , BOOL_PROP(gskat.conf.show_tricks) },
-    { "num_show_tricks"   , INT_PROP(gskat.conf.num_show_tricks) },
-    { "anim_duration"     , INT_PROP(gskat.conf.anim_duration) },
-    { "reaction"          , BOOL_PROP(gskat.conf.reaction) },
-    { "reaction_duration" , INT_PROP(gskat.conf.reaction_duration) },
-    { "show_poss_cards"   , BOOL_PROP(gskat.conf.show_poss_cards) },
-    { "debug"             , BOOL_PROP(gskat.conf.debug) },
-    { NULL                , { .type = INT, .ptr.i = NULL } }
+/* configuration initialization table */
+struct {
+    const gchar *name;
+    property_type t;
+    property_widget w;
+} config_values[] = {
+    { "animation"         , BOOL , TOGGLEBUTTON },
+    { "show_tricks"       , BOOL , TOGGLEBUTTON },
+    { "num_show_tricks"   , INT  , SPINBUTTON },
+    { "anim_duration"     , INT  , SPINBUTTON },
+    { "reaction"          , BOOL , TOGGLEBUTTON },
+    { "reaction_duration" , INT  , SPINBUTTON },
+    { "show_poss_cards"   , BOOL , TOGGLEBUTTON },
+    { "debug"             , BOOL , TOGGLEBUTTON },
+    { NULL                , 0    , 0 }
 };
 
 /**
- * set_config_filename:
+ * new_property:
+ * @name:   name of the property
+ * @type:   #property_type of the property
+ * @widget: #property_widget type of the property
  *
- * Set the config filename string inside the global
- * configuration structure
+ * Create a new #property object
+ *
+ * Returns: a new #property object
  */
-void set_config_filename(void)
+property *new_property(const gchar *name, property_type type,
+        property_widget widget)
 {
-    const gchar *config_dir = get_config_dir();
+    property *p = (property *) g_malloc0(sizeof(property));
 
-    gskat.conf.filename = g_build_filename(config_dir, "gskat.conf", NULL);
+    p->name = g_strdup(name);
+    p->pval.type = type;
+    p->pval.wtype = widget;
+    p->widget = NULL;
+
+    return p;
+}
+
+/**
+ * free_property:
+ * @data:  #property cast to a #gpointer
+ *
+ * Free the given #property.
+ * This function is used to free the properties inside the
+ * configuration hash table.
+ */
+void free_property(gpointer data)
+{
+    property *p = (property *) data;
+    g_return_if_fail(p);
+
+    if (p->pval.type == STR && p->pval.ptr.s)
+        g_free(p->pval.ptr.s);
+    else if (p->pval.type == STRV && p->pval.ptr.v)
+        g_strfreev(p->pval.ptr.v);
+
+    g_free((gpointer) p->name);
+    g_free(p);
+}
+
+/**
+ * init_config:
+ *
+ * Initialize the configuration hash table
+ */
+void init_config(void)
+{
+    gint i;
+
+    gskat.config = g_hash_table_new_full(g_str_hash, g_str_equal,
+            NULL, free_property);
+
+    for (i=0; config_values[i].name; ++i)
+    {
+        g_hash_table_insert(gskat.config, (gpointer) config_values[i].name,
+                new_property(config_values[i].name, config_values[i].t,
+                    config_values[i].w));
+    }
+}
+
+/**
+ * get_prop:
+ * @name:  Name of the property
+ *
+ * Search for the given @name in the configuration hash table.
+ *
+ * Returns: a #gpointer to the property value or %NULL
+ */
+gpointer get_prop(const gchar *name)
+{
+    property *p = g_hash_table_lookup(gskat.config, name);
+
+    g_return_val_if_fail(p, NULL);
+
+    switch (p->pval.type)
+    {
+        case INT:
+            return p->pval.ptr.i;
+        case BOOL:
+            return p->pval.ptr.b;
+        case DOUBLE:
+            return p->pval.ptr.d;
+        case STR:
+            return p->pval.ptr.s;
+        case STRV:
+            return p->pval.ptr.v;
+        default:
+            return NULL;
+    }
+}
+
+/**
+ * get_prop_strv:
+ * @name:   Name of the property
+ * @index:  Index of the value to return
+ *
+ * Search for the value at @index inside a string array property
+ *
+ * Returns: the string at the given index or %NULL
+ */
+gchar *get_prop_strv(const gchar *name, gint index)
+{
+    gint i;
+    property *p = g_hash_table_lookup(gskat.config, name);
+
+    g_return_val_if_fail(p, NULL);
+    g_return_val_if_fail(p->pval.type == STRV, NULL);
+
+    /* check for out of bounds array index */
+    for (i=0; i<=index; ++i)
+    {
+        if (p->pval.ptr.v[i] == NULL)
+            return NULL;
+    }
+
+    return p->pval.ptr.v[index];
+}
+
+/**
+ * set_prop:
+ * @name:   Name of the property
+ * @value:  #gpointer to the new value
+ *
+ * Set a new value of the given property.
+ */
+void set_prop(const gchar *name, gpointer value)
+{
+    property *p = g_hash_table_lookup(gskat.config, name);
+    g_return_if_fail(p);
+
+    switch (p->pval.type)
+    {
+        case INT:
+            p->pval.ptr.i = value;
+            break;
+        case BOOL:
+            p->pval.ptr.b = value;
+            break;
+        case DOUBLE:
+            p->pval.ptr.d = value;
+            break;
+        case STR:
+            p->pval.ptr.s = value;
+            break;
+        case STRV:
+            p->pval.ptr.v = value;
+            break;
+    }
+}
+
+/**
+ * set_prop_widget:
+ * @name:    Name of the property
+ * @widget:  #GtkWidget to be associated with the property
+ *
+ * Set the #GtkWidget of the given property.
+ */
+void set_prop_widget(const gchar *name, GtkWidget *widget)
+{
+    property *p = g_hash_table_lookup(gskat.config, name);
+    g_return_if_fail(p);
+
+    p->widget = widget;
+}
+
+/**
+ * get_prop_widget_val:
+ * @key:   Key (name) of the property
+ * @val:   #property object
+ * @data:  arbitrary user data
+ *
+ * Set the property to the value of the associated #GtkWidget.
+ * This function is used with g_hash_table_foreach()
+ */
+void get_prop_widget_val(gpointer key, gpointer val, gpointer data)
+{
+    UNUSED(key);
+    UNUSED(data);
+    const gchar *entry_val;
+    property *prop = (property *) val;
+
+    g_return_if_fail(prop);
+    g_return_if_fail(prop->widget);
+
+    switch (prop->pval.wtype)
+    {
+        case SPINBUTTON:
+            *prop->pval.ptr.i = gtk_spin_button_get_value_as_int(
+                    GTK_SPIN_BUTTON(prop->widget));
+            break;
+        case TOGGLEBUTTON:
+            *prop->pval.ptr.b = gtk_toggle_button_get_active(
+                    GTK_TOGGLE_BUTTON(prop->widget));
+            break;
+        case ENTRY:
+            entry_val = gtk_entry_get_text(GTK_ENTRY(prop->widget));
+
+            if (prop->pval.ptr.s)
+            {
+                if (strcmp(prop->pval.ptr.s, entry_val))
+                    g_free(prop->pval.ptr.s);
+                else
+                    break;
+            }
+            prop->pval.ptr.s = g_strdup(entry_val);
+            break;
+    }
+
+    /* reset widget pointer */
+    prop->widget = NULL;
 }
 
 /**
@@ -69,19 +266,14 @@ void set_config_filename(void)
  */
 void load_config(void)
 {
-    const gchar *filename;
-
-    if (!gskat.conf.filename)
-        set_config_filename();
-
-    filename = gskat.conf.filename;
+    gchar *filename = g_build_filename(get_config_dir(), "gskat.conf", NULL);
 
     /* try to find config file */
     if (filename && g_file_test(filename, G_FILE_TEST_EXISTS))
     {
         gskat_msg(MT_INFO, _("Found config file '%s'\n"), filename);
 
-        read_config();
+        read_config(filename);
     }
     else
     {
@@ -89,8 +281,54 @@ void load_config(void)
         gskat_msg(MT_ERROR, _("Using default settings instead.\n"));
 
         /* try to save config */
-        write_config();
+        write_config(filename);
     }
+
+    g_free(filename);
+}
+
+/**
+ * set_bool_val:
+ * @name:  Name of the property
+ * @val:   #gboolean value
+ *
+ * Set a boolean property value
+ */
+void set_bool_val(const gchar *name, gboolean val)
+{
+    gboolean **ptr;
+    property *p = (property *) g_hash_table_lookup(gskat.config, name);
+
+    g_return_if_fail(p);
+
+    ptr = &p->pval.ptr.b;
+
+    if (!*ptr)
+        *ptr = (gboolean *) g_malloc(sizeof(gboolean));
+
+    **ptr = val;
+}
+
+/**
+ * set_int_val:
+ * @name:  Name of the property
+ * @val:   #gint value
+ *
+ * Set an integer property value
+ */
+void set_int_val(const gchar *name, gint val)
+{
+    gint **ptr;
+    property *p = (property *) g_hash_table_lookup(gskat.config, name);
+
+    g_return_if_fail(p);
+
+    ptr = &p->pval.ptr.i;
+
+    if (!*ptr)
+        *ptr = (gint *) g_malloc(sizeof(gint));
+
+    **ptr = val;
 }
 
 /**
@@ -102,37 +340,35 @@ void set_default_config(void)
 {
     const gchar *user_name = g_getenv("USER");
 
-    gskat.conf.animation = TRUE;
-    gskat.conf.anim_duration = 200;
-    gskat.conf.reaction = TRUE;
-    gskat.conf.reaction_duration = 500;
-    gskat.conf.show_tricks = TRUE;
-    gskat.conf.num_show_tricks = 1;
-    gskat.conf.show_poss_cards = TRUE;
-    gskat.conf.debug = FALSE;
-    gskat.conf.filename = NULL;
+    set_bool_val("animation", TRUE);
+    set_int_val("anim_duration", 200);
+    set_bool_val("reaction", TRUE);
+    set_int_val("reaction_duration", 500);
+    set_bool_val("show_tricks", TRUE);
+    set_int_val("num_show_tricks", 1);
+    set_bool_val("show_poss_cards", TRUE);
+    set_bool_val("debug", FALSE);
 
     /* set player names */
-    gskat.conf.player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
+    gskat.player_names = (gchar **) g_malloc(sizeof(gchar *) * 4);
 
-    gskat.conf.player_names[0] = g_strdup(user_name ? user_name : "Player");
-    gskat.conf.player_names[1] = g_strdup("Cuyo");
-    gskat.conf.player_names[2] = g_strdup("Dozo");
-    gskat.conf.player_names[3] = NULL;
+    gskat.player_names[0] = g_strdup(user_name ? user_name : "Player");
+    gskat.player_names[1] = g_strdup("Cuyo");
+    gskat.player_names[2] = g_strdup("Dozo");
+    gskat.player_names[3] = NULL;
 }
 
 /**
  * write_config:
+ * @filename:  Filename of the configuration file
  *
  * Write the current configuration to the config file
  *
  * Returns: %TRUE on success, otherwise %FALSE
  */
-gboolean write_config(void)
+gboolean write_config(const gchar *filename)
 {
-    gint i;
     gsize length;
-    gchar *filename = gskat.conf.filename;
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
     GKeyFile *keys = NULL;
@@ -142,11 +378,10 @@ gboolean write_config(void)
 
     /* write player names into keyfile */
     g_key_file_set_string_list(keys, "gskat", "player_names",
-            (const gchar **) gskat.conf.player_names, 3);
+            (const gchar **) gskat.player_names, 3);
 
     /* add all remaining config values to keyfile content */
-    for (i=0; config_values[i].name != NULL; ++i)
-        get_config_value(keys, (property *) &config_values[i]);
+    g_hash_table_foreach(gskat.config, get_config_value, keys);
 
     key_file_content = g_key_file_to_data(keys, &length, NULL);
 
@@ -175,15 +410,23 @@ gboolean write_config(void)
 
 /**
  * get_config_value:
- * @keyfile:  #GKeyFile containing the new values
- * @prop:     property element of the config_values array
+ * @key:   Key (name) of the property
+ * @val:   #property object
+ * @data:  #GKeyFile
  *
- * Write a configuration value in a keyfile in order to
- * write a new config file to disk
+ * Write a configuration value into the given keyfile in order to
+ * write a new config file to disk.
+ * This function is used with g_hash_table_foreach()
  */
-void get_config_value(GKeyFile *keyfile, property *prop)
+void get_config_value(gpointer key, gpointer val, gpointer data)
 {
+    UNUSED(key);
+    gint i;
+    property *prop = (property *) val;
+    GKeyFile *keyfile = (GKeyFile *) data;
+
     g_return_if_fail(prop);
+    g_return_if_fail(keyfile);
 
     switch (prop->pval.type)
     {
@@ -201,27 +444,37 @@ void get_config_value(GKeyFile *keyfile, property *prop)
             break;
         case STR:
             g_key_file_set_string(keyfile, "gskat", prop->name,
-                    *prop->pval.ptr.s);
+                    prop->pval.ptr.s);
             break;
-        default:
+        case STRV:
+            /* get string array length */
+            for (i=0; prop->pval.ptr.v[i]; ++i);
+
+            g_key_file_set_string_list(keyfile, "gskat", prop->name,
+                    (const gchar **) prop->pval.ptr.v, i-1);
             break;
     }
 }
 /**
  * set_config_value:
- * @keyfile:  #GKeyFile containing the parsed values
- * @prop:     property element of the config_values array
+ * @key:   Key (name) of the property
+ * @val:   #property object
+ * @data:  #GKeyFile
  *
- * Read a configuration value from @keyfile and apply
- * the new value to the global config structure
- *
- * Returns: %TRUE on success, otherwise %FALSE
+ * Read a configuration value from the given #GKeyFile and apply
+ * the new value to the property inside the configuration hash table.
+ * This function is used with g_hash_table_foreach()
  */
-gboolean set_config_value(GKeyFile *keyfile, property *prop)
+void set_config_value(gpointer key, gpointer val, gpointer data)
 {
+    UNUSED(key);
+    property *prop = (property *) val;
+    gsize length;
+    GKeyFile *keyfile = (GKeyFile *) data;
     GError *error = NULL;
 
-    g_return_val_if_fail(prop, FALSE);
+    g_return_if_fail(prop);
+    g_return_if_fail(keyfile);
 
     switch (prop->pval.type)
     {
@@ -238,12 +491,18 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
                     prop->name, &error);
             break;
         case STR:
-            *prop->pval.ptr.s = g_key_file_get_string(keyfile, "gskat",
+            if (prop->pval.ptr.s)
+                g_free(prop->pval.ptr.s);
+
+            prop->pval.ptr.s = g_key_file_get_string(keyfile, "gskat",
                     prop->name, &error);
             break;
-        default:
-            return FALSE;
+        case STRV:
+            if (prop->pval.ptr.v)
+                g_strfreev(prop->pval.ptr.v);
 
+            prop->pval.ptr.v = g_key_file_get_string_list(keyfile, "gskat",
+                    prop->name, &length, &error);
     }
 
     if (error)
@@ -251,40 +510,34 @@ gboolean set_config_value(GKeyFile *keyfile, property *prop)
         gskat_msg(MT_ERROR,
                 _("Failed to read '%s' from config file.\n"), prop->name);
         g_clear_error(&error);
-
-        return FALSE;
     }
-
-    return TRUE;
 }
 
 /**
  * read_config:
+ * @filename:  Filename of the configuration file
  *
  * Read the configuration values from the config file
  *
  * Returns: %TRUE on success, otherwise %FALSE
  */
-gboolean read_config(void)
+gboolean read_config(const gchar *filename)
 {
-    gint i;
     gsize length;
     gchar **names = NULL;
-    gchar *filename = gskat.conf.filename;
-    gboolean done = FALSE, failed = FALSE;
     GError *error = NULL;
     GKeyFile *keyfile = NULL;
 
     keyfile = g_key_file_new();
 
-    done = g_key_file_load_from_file(keyfile, filename,
-            G_KEY_FILE_NONE, &error);
+    g_key_file_load_from_file(keyfile, filename, G_KEY_FILE_NONE, &error);
 
     if (error)
     {
         gskat_msg(MT_ERROR,
                 _("Failed to read configuration: %s\n"), error->message);
         g_clear_error(&error);
+        g_key_file_free(keyfile);
 
         return FALSE;
     }
@@ -297,32 +550,24 @@ gboolean read_config(void)
     {
         gskat_msg(MT_ERROR,
                 _("Failed to read 'player_names' from config file.\n"));
-        failed = TRUE;
         g_clear_error(&error);
     }
     else
     {
-        g_strfreev(gskat.conf.player_names);
-        gskat.conf.player_names = names;
+        g_strfreev(gskat.player_names);
+        gskat.player_names = names;
     }
 
     /* read all remaining config values */
-    for (i=0; config_values[i].name != NULL; ++i)
-    {
-        if (!set_config_value(keyfile, (property *) &config_values[i]))
-            failed = TRUE;
-    }
+    g_hash_table_foreach(gskat.config, set_config_value, keyfile);
 
-    /* rewrite config if not all values could be read successfully */
-    if (!done || failed)
-    {
-        gskat_msg(MT_INFO, _("Rewriting config file.\n"));
-        write_config();
-    }
+    /* rewrite config file to make sure that
+     * all values are present in the file */
+    write_config(filename);
 
     g_key_file_free(keyfile);
 
-    return done;
+    return TRUE;
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */
