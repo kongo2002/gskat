@@ -83,7 +83,7 @@ void calc_card_positions(void)
         }
 
         /* player 1 */
-        if ((player = gskat.players[1]))
+        if ((player = gskat.players[1]) && player->cards)
         {
             step = 10;
             y = 5;
@@ -93,7 +93,7 @@ void calc_card_positions(void)
         }
 
         /* player 2 */
-        if ((player = gskat.players[2]))
+        if ((player = gskat.players[2]) && player->cards)
         {
             step = -10;
             y = 5;
