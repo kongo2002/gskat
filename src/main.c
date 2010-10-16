@@ -58,7 +58,7 @@ static void initialize()
     gskat.table         = NULL;
     gskat.players       = NULL;
     gskat.stiche        = NULL;
-    gskat.players       = NULL;
+    gskat.player_names  = NULL;
     gskat.icons         = NULL;
     gskat.back          = NULL;
     gskat.bg            = NULL;
