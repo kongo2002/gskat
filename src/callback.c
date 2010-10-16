@@ -329,7 +329,7 @@ gboolean prev_stich_click(GtkButton *button, gpointer data)
     /* deactivate button if on the first played stich of the round
      * or if the maximum number of viewable tricks is reached
      * according to the 'num_show_tricks' config value */
-    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= *((gint *) get_prop("num_show_tricks")))
+    if (sv->cur <= 0 || (gskat.stich - sv->cur) >= get_prop_int("num_show_tricks"))
         gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
     /* activate next stich button */
@@ -508,7 +508,7 @@ gboolean mouse_move(GtkWidget *area, GdkEventMotion *event, gpointer data)
     card *card;
 
     /* return if not enabled in configuration */
-    if (!get_prop("show_poss_cards"))
+    if (!get_prop_bool("show_poss_cards"))
         return FALSE;
 
     /* check if it's the player's turn */
@@ -604,7 +604,7 @@ gboolean mouse_click(GtkWidget *area, GdkEventButton *event, gpointer data)
     /* right mouse button click */
     else if (event->button == 3)
         /* show last trick(s) if activated in configuration */
-        if (get_prop("show_tricks"))
+        if (get_prop_bool("show_tricks"))
             show_last_tricks();
 
     return found;

@@ -155,6 +155,8 @@ void set_prop_widget(const gchar *name, GtkWidget *widget)
 
 void get_prop_widget_val(gpointer key, gpointer val, gpointer data)
 {
+    UNUSED(key);
+    UNUSED(data);
     const gchar *entry_val;
     property *prop = (property *) val;
 
@@ -286,7 +288,6 @@ void set_default_config(void)
  */
 gboolean write_config(const gchar *filename)
 {
-    gint i;
     gsize length;
     gboolean done = FALSE;
     gchar *key_file_content = NULL;
@@ -337,6 +338,8 @@ gboolean write_config(const gchar *filename)
  */
 void get_config_value(gpointer key, gpointer val, gpointer data)
 {
+    UNUSED(key);
+    gint i;
     property *prop = (property *) val;
     GKeyFile *keyfile = (GKeyFile *) data;
 
@@ -358,11 +361,15 @@ void get_config_value(gpointer key, gpointer val, gpointer data)
                     *prop->pval.ptr.d);
             break;
         case STR:
-            if (prop->pval.ptr.s)
-                g_free(prop->pval.ptr.s);
-
             g_key_file_set_string(keyfile, "gskat", prop->name,
                     prop->pval.ptr.s);
+            break;
+        case STRV:
+            /* get string array length */
+            for (i=0; prop->pval.ptr.v[i]; ++i);
+
+            g_key_file_set_string_list(keyfile, "gskat", prop->name,
+                    (const gchar **) prop->pval.ptr.v, i-1);
             break;
     }
 }
@@ -378,7 +385,9 @@ void get_config_value(gpointer key, gpointer val, gpointer data)
  */
 void set_config_value(gpointer key, gpointer val, gpointer data)
 {
+    UNUSED(key);
     property *prop = (property *) val;
+    gsize length;
     GKeyFile *keyfile = (GKeyFile *) data;
     GError *error = NULL;
 
@@ -400,9 +409,18 @@ void set_config_value(gpointer key, gpointer val, gpointer data)
                     prop->name, &error);
             break;
         case STR:
+            if (prop->pval.ptr.s)
+                g_free(prop->pval.ptr.s);
+
             prop->pval.ptr.s = g_key_file_get_string(keyfile, "gskat",
                     prop->name, &error);
             break;
+        case STRV:
+            if (prop->pval.ptr.v)
+                g_strfreev(prop->pval.ptr.v);
+
+            prop->pval.ptr.v = g_key_file_get_string_list(keyfile, "gskat",
+                    prop->name, &length, &error);
     }
 
     if (error)
@@ -422,7 +440,6 @@ void set_config_value(gpointer key, gpointer val, gpointer data)
  */
 gboolean read_config(const gchar *filename)
 {
-    gint i;
     gsize length;
     gchar **names = NULL;
     gboolean done = FALSE, failed = FALSE;

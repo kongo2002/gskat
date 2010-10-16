@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "callback.h"
+#include "configuration.h"
 #include "common.h"
 #include "draw.h"
 #include "interface.h"
@@ -480,8 +481,8 @@ void show_last_tricks(void)
     /* deactivate previous button if the first stich is already shown
      * or if 'show_tricks' is turned off
      * or if 'num_show_tricks' == 1 */
-    if (cur == 0 || !get_prop("show_tricks") ||
-            get_prop("num_show_tricks") <= 1)
+    if (cur == 0 || !get_prop_bool("show_tricks") ||
+            get_prop_int("num_show_tricks") <= 1)
         gtk_widget_set_sensitive(prev_button, FALSE);
 
     /* close/ok button */
@@ -625,7 +626,7 @@ void show_config_window(void)
 
     show_tricks_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_tricks_check),
-            get_prop("show_tricks"));
+            get_prop_bool("show_tricks"));
     gtk_table_attach(GTK_TABLE(rules_table),
             show_tricks_label,
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
@@ -639,8 +640,8 @@ void show_config_window(void)
     num_show_tricks = gtk_spin_button_new_with_range(1, 11, 1.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(num_show_tricks), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(num_show_tricks),
-            get_prop("num_show_tricks"));
-    gtk_widget_set_sensitive(num_show_tricks, get_prop("show_tricks"));
+            get_prop_int("num_show_tricks"));
+    gtk_widget_set_sensitive(num_show_tricks, get_prop_bool("show_tricks"));
 
     gtk_table_attach(GTK_TABLE(rules_table),
             num_show_tricks_label,
@@ -657,7 +658,7 @@ void show_config_window(void)
 
     show_poss_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_poss_check),
-            get_prop("show_poss_cards"));
+            get_prop_bool("show_poss_cards"));
 
     gtk_table_attach(GTK_TABLE(rules_table),
             show_poss_label,
@@ -681,7 +682,7 @@ void show_config_window(void)
 
     animation_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_check),
-            get_prop("animation"));
+            get_prop_bool("animation"));
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -696,8 +697,8 @@ void show_config_window(void)
     animation_duration = gtk_spin_button_new_with_range(25, 5000, 10.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(animation_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
-            get_prop("anim_duration"));
-    gtk_widget_set_sensitive(animation_duration, get_prop("animation"));
+            get_prop_int("anim_duration"));
+    gtk_widget_set_sensitive(animation_duration, get_prop_bool("animation"));
     gtk_table_attach(GTK_TABLE(misc_table),
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -714,7 +715,7 @@ void show_config_window(void)
 
     reaction_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reaction_check),
-            get_prop("reaction"));
+            get_prop_bool("reaction"));
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -729,8 +730,8 @@ void show_config_window(void)
     reaction_duration = gtk_spin_button_new_with_range(100, 5000, 20.0);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(reaction_duration), 0);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(reaction_duration),
-            get_prop("reaction_duration"));
-    gtk_widget_set_sensitive(reaction_duration, get_prop("reaction"));
+            get_prop_int("reaction_duration"));
+    gtk_widget_set_sensitive(reaction_duration, get_prop_bool("reaction"));
     gtk_table_attach(GTK_TABLE(misc_table),
             reaction_duration,
             1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -747,7 +748,7 @@ void show_config_window(void)
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
-            get_prop("debug"));
+            get_prop_bool("debug"));
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
             1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 10, 0);

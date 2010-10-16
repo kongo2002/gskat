@@ -90,6 +90,13 @@ typedef struct _property {
     property_value pval;
 } property;
 
+#define get_prop_int(name) (*((gint *) get_prop(name)))
+
+#define get_prop_bool(name) (*((gboolean *) get_prop(name)))
+
+property *new_property(const gchar *name, property_type type,
+        property_widget widget);
+
 void init_config(void);
 
 void load_config(void);
@@ -103,6 +110,8 @@ void set_prop(const gchar *name, gpointer value);
 void set_prop_widget(const gchar *name, GtkWidget *widget);
 
 gpointer get_prop(const gchar *name);
+
+gchar *get_prop_strv(const gchar *name, gint index);
 
 void get_prop_widget_val(gpointer key, gpointer val, gpointer data);
 
