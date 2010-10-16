@@ -90,9 +90,11 @@ typedef struct _property {
     property_value pval;
 } property;
 
+/* convenience macros for property access */
 #define get_prop_int(name) (*((gint *) get_prop(name)))
-
 #define get_prop_bool(name) (*((gboolean *) get_prop(name)))
+#define get_prop_double(name) (*((gdouble *) get_prop(name)))
+#define get_prop_str(name) (*((gchar *) get_prop(name)))
 
 property *new_property(const gchar *name, property_type type,
         property_widget widget);
