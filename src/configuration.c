@@ -63,6 +63,27 @@ property *new_property(const gchar *name, property_type type,
 }
 
 /**
+ * free_property:
+ * @data:  #property cast to a #gpointer
+ *
+ * Free the given #property.
+ * This function is used to free the properties inside the
+ * configuration hash table.
+ */
+void free_property(gpointer data)
+{
+    property *p = (property *) data;
+    g_return_if_fail(p);
+
+    if (p->pval.type == STR && p->pval.ptr.s)
+        g_free(p->pval.ptr.s);
+    else if (p->pval.type == STRV && p->pval.ptr.v)
+        g_strfreev(p->pval.ptr.v);
+
+    g_free(p);
+}
+
+/**
  * init_config:
  *
  * Initialize the configuration hash table
@@ -71,10 +92,8 @@ void init_config(void)
 {
     gint i;
 
-    /* TODO: probably we want to define a better
-     * value_destroy_func than g_free() */
     gskat.config = g_hash_table_new_full(g_str_hash, g_str_equal,
-            g_free, g_free);
+            NULL, free_property);
 
     for (i=0; config_values[i].name; ++i)
     {

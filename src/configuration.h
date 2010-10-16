@@ -99,6 +99,8 @@ typedef struct _property {
 property *new_property(const gchar *name, property_type type,
         property_widget widget);
 
+void free_property(gpointer data);
+
 void init_config(void);
 
 void load_config(void);

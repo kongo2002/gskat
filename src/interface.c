@@ -1506,6 +1506,9 @@ void free_app(void)
 
     g_free(gskat.widgets);
 
+    g_hash_table_destroy(gskat.config);
+    gskat.config = NULL;
+
     gskat_msg(MT_INFO, _("Quit gskat\n"));
 }
 
