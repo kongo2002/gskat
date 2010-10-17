@@ -81,6 +81,20 @@ PKG_CHECK_MODULES([GTK], $GTK_VERSION)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
+# Build options
+
+AC_ARG_ENABLE(debug,
+    AS_HELP_STRING([--enable-debug],
+        [Enable debugging (default: disabled)]),
+    ENABLE_DEBUG=$enableval,
+    ENABLE_DEBUG=no)
+
+if test x$ENABLE_DEBUG = xno; then
+    AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
+else
+    AM_CPPFLAGS="$AM_CPPFLAGS -DDEBUG -g -O0"
+fi
+
 # Generate files
 AC_CONFIG_FILES([
     Makefile
