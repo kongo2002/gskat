@@ -95,6 +95,8 @@ else
     AM_CPPFLAGS="$AM_CPPFLAGS -DDEBUG -g -O0"
 fi
 
+AC_SUBST(AM_CPPFLAGS)
+
 # Generate files
 AC_CONFIG_FILES([
     Makefile
