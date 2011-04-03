@@ -887,11 +887,11 @@ static GtkWidget *create_menu(GtkWidget *window)
             G_CALLBACK(next_round), NULL);
     gameload_item = gtk_menu_item_new_with_label(_("Load game ..."));
     g_signal_connect(G_OBJECT(gameload_item), "activate",
-            G_CALLBACK(gameload_cb), window);
+            G_CALLBACK(gameload_cb), NULL);
     gamesave_item = gtk_menu_item_new_with_label(_("Save game ..."));
     gtk_widget_set_sensitive(gamesave_item, FALSE);
     g_signal_connect(G_OBJECT(gamesave_item), "activate",
-            G_CALLBACK(gamesave_cb), window);
+            G_CALLBACK(gamesave_cb), NULL);
     quickload_item = gtk_menu_item_new_with_label(_("Quick load"));
     g_signal_connect(G_OBJECT(quickload_item), "activate",
             G_CALLBACK(quickload_game_cb), NULL);

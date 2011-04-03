@@ -690,18 +690,19 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 /**
  * gameload_cb:
  * @menuitem:  #GtkMenuItem which received the signal
- * @data:      #GtkWindow of the main application
+ * @data:      arbitrary user data
  *
  * Load a saved game state
  */
 void gameload_cb(GtkMenuItem *menuitem, gpointer data)
 {
     UNUSED(menuitem);
+    UNUSED(data);
 
     gchar *file;
     GtkWidget *file_chooser = gtk_file_chooser_dialog_new(
             _("Load game"),
-            GTK_WINDOW(data),
+            GTK_WINDOW(gskat.window),
             GTK_FILE_CHOOSER_ACTION_OPEN,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
             GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -722,18 +723,19 @@ void gameload_cb(GtkMenuItem *menuitem, gpointer data)
 /**
  * gamesave_cb:
  * @menuitem:  #GtkMenuItem which received the signal
- * @data:      #GtkWindow of the main application
+ * @data:      arbitrary user data
  *
  * Save the current game state into a file
  */
 void gamesave_cb(GtkMenuItem *menuitem, gpointer data)
 {
     UNUSED(menuitem);
+    UNUSED(data);
 
     gchar *file;
     GtkWidget *file_chooser = gtk_file_chooser_dialog_new(
             _("Save game"),
-            GTK_WINDOW(data),
+            GTK_WINDOW(gskat.window),
             GTK_FILE_CHOOSER_ACTION_SAVE,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
             GTK_STOCK_OK, GTK_RESPONSE_OK,
