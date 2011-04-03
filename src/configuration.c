@@ -1,7 +1,7 @@
 /*
  *  This file is part of gskat.
  *
- *  Copyright (C) 2010 by Gregor Uhlenheuer
+ *  Copyright (C) 2010-2011 by Gregor Uhlenheuer
  *
  *  gskat is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ struct {
     { "reaction"          , BOOL , TOGGLEBUTTON },
     { "reaction_duration" , INT  , SPINBUTTON },
     { "show_poss_cards"   , BOOL , TOGGLEBUTTON },
+    { "provoke_values"    , BOOL , TOGGLEBUTTON },
     { "debug"             , BOOL , TOGGLEBUTTON },
     { NULL                , 0    , 0 }
 };
@@ -366,6 +367,7 @@ void set_default_config(void)
     set_bool_val("show_tricks", TRUE);
     set_int_val("num_show_tricks", 1);
     set_bool_val("show_poss_cards", TRUE);
+    set_bool_val("provoke_values", TRUE);
     set_bool_val("debug", FALSE);
 
     /* set player names */

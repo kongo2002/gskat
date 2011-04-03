@@ -555,6 +555,8 @@ void show_config_window(void)
     GtkWidget *reaction_check;
     GtkWidget *reaction_dur_label;
     GtkWidget *reaction_duration;
+    GtkWidget *provoke_values_label;
+    GtkWidget *provoke_values;
 
     GtkWidget *rules_label;
     GtkWidget *rules_table;
@@ -673,7 +675,7 @@ void show_config_window(void)
 
     /* GRAPHICS TABLE */
     graphics_label = gtk_label_new(_("Graphics"));
-    graphics_table = gtk_table_new(4, 2, FALSE);
+    graphics_table = gtk_table_new(5, 2, FALSE);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), graphics_table,
             graphics_label);
     gtk_container_set_border_width(GTK_CONTAINER(graphics_table), 5);
@@ -743,6 +745,20 @@ void show_config_window(void)
 
     g_signal_connect(G_OBJECT(reaction_check), "toggled",
             G_CALLBACK(reaction_toggle), reaction_duration);
+
+    /* provoke values */
+    provoke_values_label = gtk_label_new(_("Show players' provoke values:"));
+    gtk_misc_set_alignment(GTK_MISC(provoke_values_label), 0, 0.5);
+    gtk_table_attach(GTK_TABLE(graphics_table),
+            provoke_values_label,
+            0, 1, 4, 5, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+    provoke_values = gtk_check_button_new();
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(provoke_values),
+            get_prop_bool("provoke_values"));
+    gtk_table_attach(GTK_TABLE(graphics_table),
+            provoke_values,
+            1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* MISC TABLE */
     misc_label = gtk_label_new(_("Misc"));
@@ -851,6 +867,7 @@ void show_config_window(void)
     set_prop_widget("show_poss_cards", show_poss_check);
     set_prop_widget("reaction", reaction_check);
     set_prop_widget("reaction_duration", reaction_duration);
+    set_prop_widget("provoke_values", provoke_values);
 
     g_signal_connect(G_OBJECT(ok_button), "clicked",
             G_CALLBACK(save_config), (gpointer) confwidgets);
