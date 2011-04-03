@@ -248,6 +248,7 @@ typedef struct _br_group {
  * @name:         Player name
  * @human:        Human player?
  * @re:           Re player?
+ * @does_bid:     Is the player currently bidding?
  * @gereizt:      value the player bid
  * @points:       points of the current round
  * @round_points: points of each played round
@@ -261,6 +262,7 @@ typedef struct _player {
     gchar *name;
     gboolean human;
     gboolean re;
+    gboolean does_bid;
     gint gereizt;
     gint points;
     GList *round_points;

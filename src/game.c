@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "ai.h"
+#include "callback.h"
 #include "common.h"
 #include "configuration.h"
 #include "draw.h"
@@ -490,6 +491,13 @@ void do_hoeren(player *player, gint value, gint sager)
     {
         max = get_max_reizwert(player->cards);
 
+        if (sager)
+            g_usleep(G_USEC_PER_SEC);
+
+        /* draw player's bid on-screen */
+        player->does_bid = TRUE;
+        g_timeout_add(3000, (GSourceFunc) player_draw_bid, (gpointer) player);
+
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
             gskat_msg(MT_DEBUG | MT_BUGREPORT,
@@ -497,6 +505,8 @@ void do_hoeren(player *player, gint value, gint sager)
 
             player->gereizt = value;
             gskat.hoerer = player->id;
+
+            draw_area();
 
             do_sagen(gskat.players[sager], player->id, next_reizwert(value));
         }
@@ -559,9 +569,9 @@ void do_last_call(void)
 
             rem->gereizt = 18;
             gskat.bidden = 18;
-
-            start_bidding();
         }
+
+        start_bidding();
     }
     else
 #if GTK_CHECK_VERSION(2, 18, 0)
@@ -592,6 +602,10 @@ void do_sagen(player *player, gint hoerer, gint value)
     {
         max = get_max_reizwert(player->cards);
 
+        /* draw player's bid on-screen */
+        player->does_bid = TRUE;
+        g_timeout_add(3000, (GSourceFunc) player_draw_bid, (gpointer) player);
+
         /* check if player wants to bid (further) */
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {
@@ -601,6 +615,8 @@ void do_sagen(player *player, gint hoerer, gint value)
             player->gereizt = value;
             gskat.sager = player->id;
             gskat.bidden = value;
+
+            draw_area();
 
             /* ask the hearing player */
             do_hoeren(gskat.players[hoerer], value, player->id);
@@ -641,6 +657,9 @@ void start_bidding(void)
 {
     gint i;
     player *pptr;
+
+    /* refresh game area */
+    draw_area();
 
     /* first bidding phase */
     if (gskat.state == PROVOKE1)

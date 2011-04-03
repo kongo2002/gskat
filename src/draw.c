@@ -414,9 +414,59 @@ void draw_area(void)
         }
     }
 
+    /* draw bid values during provoke phase only */
+    if (gskat.state >= PROVOKE1 && gskat.state <= PROVOKE4)
+        draw_provoke_value(cr);
+
     cairo_destroy(cr);
 
     gdk_window_end_paint(gskat.area->window);
+}
+
+/**
+ * draw_provoke_value:
+ * @cr: #cairo_t drawing object
+ *
+ * Draw the player's bid values
+ */
+void draw_provoke_value(cairo_t *cr)
+{
+    gint i, card_h, win_w = gskat.area->allocation.width;
+    gchar *caption;
+    player *player;
+    card *tmp;
+
+    /* obtain card dimensions */
+    tmp = (card *) g_list_nth_data(gskat.cards, 0);
+    card_h = tmp->dim.h;
+
+    for (i=1; i<3; ++i)
+    {
+        player = gskat.players[i];
+
+        if (!player->does_bid || !player->gereizt)
+            continue;
+
+        if (player->gereizt != -1)
+        {
+            if (gskat.sager == player->id)
+                caption = g_strdup_printf(_("%d"), player->gereizt);
+            else
+                caption = g_strdup_printf(_("Yes"));
+        }
+        else
+            caption = g_strdup_printf(_("No"));
+
+        cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.5);
+        cairo_select_font_face(cr, "sans-serif",
+                CAIRO_FONT_SLANT_NORMAL,
+                CAIRO_FONT_WEIGHT_BOLD);
+        cairo_set_font_size(cr, 48);
+        cairo_move_to(cr, (player->id == 1) ? 75 : win_w - 110, card_h / 2);
+        cairo_show_text(cr, caption);
+
+        g_free(caption);
+    }
 }
 
 /**

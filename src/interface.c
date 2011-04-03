@@ -44,6 +44,7 @@ player *init_player(gint id, gchar *name, gboolean human)
     new->name = name;
     new->human = human;
     new->re = FALSE;
+    new->does_bid = FALSE;
     new->points = 0;
     new->sum_points = 0;
     new->round_points = NULL;
