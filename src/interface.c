@@ -852,7 +852,7 @@ void show_config_window(void)
 
 /**
  * create_menu:
- * @window:  main application window (#GtkWindow)
+ * @window:  main application #GtkWindow
  *
  * Create the main menu and populate it with the menu items
  *
