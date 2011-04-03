@@ -778,7 +778,7 @@ void show_config_window(void)
     config_loc_entry = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(config_loc_entry), get_config_dir());
     gtk_entry_set_width_chars(GTK_ENTRY(config_loc_entry), about_entry_len);
-    gtk_widget_set_sensitive(config_loc_entry, FALSE);
+    gtk_editable_set_editable(GTK_EDITABLE(config_loc_entry), FALSE);
     gtk_table_attach(GTK_TABLE(about_table),
             config_loc_entry,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -792,7 +792,7 @@ void show_config_window(void)
     data_loc_entry = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(data_loc_entry), DATA_DIR);
     gtk_entry_set_width_chars(GTK_ENTRY(data_loc_entry), about_entry_len);
-    gtk_widget_set_sensitive(data_loc_entry, FALSE);
+    gtk_editable_set_editable(GTK_EDITABLE(data_loc_entry), FALSE);
     gtk_table_attach(GTK_TABLE(about_table),
             data_loc_entry,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
@@ -806,7 +806,7 @@ void show_config_window(void)
     locale_loc_entry = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(locale_loc_entry), GSKAT_LOCALEDIR);
     gtk_entry_set_width_chars(GTK_ENTRY(locale_loc_entry), about_entry_len);
-    gtk_widget_set_sensitive(locale_loc_entry, FALSE);
+    gtk_editable_set_editable(GTK_EDITABLE(locale_loc_entry), FALSE);
     gtk_table_attach(GTK_TABLE(about_table),
             locale_loc_entry,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
