@@ -542,6 +542,11 @@ void show_config_window(void)
 
     GtkWidget *misc_label;
     GtkWidget *misc_table;
+    GtkWidget *debug_label;
+    GtkWidget *debug_check;
+
+    GtkWidget *graphics_label;
+    GtkWidget *graphics_table;
     GtkWidget *animation_label;
     GtkWidget *animation_check;
     GtkWidget *animation_dur_label;
@@ -550,8 +555,6 @@ void show_config_window(void)
     GtkWidget *reaction_check;
     GtkWidget *reaction_dur_label;
     GtkWidget *reaction_duration;
-    GtkWidget *debug_label;
-    GtkWidget *debug_check;
 
     GtkWidget *rules_label;
     GtkWidget *rules_table;
@@ -668,30 +671,31 @@ void show_config_window(void)
             show_poss_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
-    /* MISC TABLE */
-    misc_label = gtk_label_new(_("Misc"));
-    misc_table = gtk_table_new(5, 2, FALSE);
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table, misc_label);
-    gtk_container_set_border_width(GTK_CONTAINER(misc_table), 5);
+    /* GRAPHICS TABLE */
+    graphics_label = gtk_label_new(_("Graphics"));
+    graphics_table = gtk_table_new(4, 2, FALSE);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), graphics_table,
+            graphics_label);
+    gtk_container_set_border_width(GTK_CONTAINER(graphics_table), 5);
 
     /* animation */
     animation_label = gtk_label_new(_("Animate card movement:"));
     gtk_misc_set_alignment(GTK_MISC(animation_label), 0, 0.5);
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             animation_label,
             0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     animation_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_check),
             get_prop_bool("animation"));
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             animation_check,
             1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* animation duration */
     animation_dur_label = gtk_label_new(_("Animation duration (in ms):"));
     gtk_misc_set_alignment(GTK_MISC(animation_dur_label), 0, 0.5);
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             animation_dur_label,
             0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
@@ -700,7 +704,7 @@ void show_config_window(void)
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(animation_duration),
             get_prop_int("anim_duration"));
     gtk_widget_set_sensitive(animation_duration, get_prop_bool("animation"));
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             animation_duration,
             1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
@@ -710,21 +714,21 @@ void show_config_window(void)
     /* opponents reaction */
     reaction_label = gtk_label_new(_("Delay opponents reaction:"));
     gtk_misc_set_alignment(GTK_MISC(reaction_label), 0, 0.5);
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             reaction_label,
             0, 1, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     reaction_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reaction_check),
             get_prop_bool("reaction"));
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             reaction_check,
             1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     /* reaction duration */
     reaction_dur_label = gtk_label_new(_("Reaction time (in ms):"));
     gtk_misc_set_alignment(GTK_MISC(reaction_dur_label), 0, 0.5);
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             reaction_dur_label,
             0, 1, 3, 4, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
@@ -733,26 +737,33 @@ void show_config_window(void)
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(reaction_duration),
             get_prop_int("reaction_duration"));
     gtk_widget_set_sensitive(reaction_duration, get_prop_bool("reaction"));
-    gtk_table_attach(GTK_TABLE(misc_table),
+    gtk_table_attach(GTK_TABLE(graphics_table),
             reaction_duration,
             1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
     g_signal_connect(G_OBJECT(reaction_check), "toggled",
             G_CALLBACK(reaction_toggle), reaction_duration);
 
+    /* MISC TABLE */
+    misc_label = gtk_label_new(_("Misc"));
+    misc_table = gtk_table_new(1, 2, FALSE);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), misc_table,
+            misc_label);
+    gtk_container_set_border_width(GTK_CONTAINER(misc_table), 5);
+
     /* debugging */
     debug_label = gtk_label_new(_("Print debug statements:"));
     gtk_misc_set_alignment(GTK_MISC(debug_label), 0, 0.5);
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_label,
-            0, 1, 4, 5, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+            0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
     debug_check = gtk_check_button_new();
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check),
             get_prop_bool("debug"));
     gtk_table_attach(GTK_TABLE(misc_table),
             debug_check,
-            1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 10, 0);
+            1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 10, 0);
 
 #ifdef DEBUG
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(debug_check), TRUE);
