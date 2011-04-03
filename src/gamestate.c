@@ -778,9 +778,9 @@ void load_game(gchar *filename)
         play_stich();
 
         /* activate the quicksave, bugreport and gamesave menu items */
-        gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
-        gtk_widget_set_sensitive(gskat.widgets[16], TRUE);
-        gtk_widget_set_sensitive(gskat.widgets[18], TRUE);
+        gtk_widget_set_sensitive(get_widget("mi_quicksave"), TRUE);
+        gtk_widget_set_sensitive(get_widget("mi_bugreport"), TRUE);
+        gtk_widget_set_sensitive(get_widget("mi_gamesave"), TRUE);
     }
 }
 

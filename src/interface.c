@@ -180,7 +180,7 @@ void update_sb(const gchar *fmt, va_list args)
 {
     guint i;
     gchar *msg = NULL;
-    GtkStatusbar *sb = (GtkStatusbar *) gskat.widgets[14];
+    GtkStatusbar *sb = (GtkStatusbar *) get_widget("statusbar");
 
     if (sb && fmt)
     {
@@ -219,7 +219,7 @@ void show_dialog(GtkMessageType type, GtkButtonsType buttons,
     GtkWidget *dialog;
     gchar *msg = g_strdup_vprintf(fmt, args);
 
-    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
+    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.window),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 type,
                 buttons,
@@ -290,7 +290,7 @@ void show_file_bugreport(void)
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     gtk_window_set_transient_for(GTK_WINDOW(window),
-            GTK_WINDOW(gskat.widgets[0]));
+            GTK_WINDOW(gskat.window));
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
@@ -415,7 +415,7 @@ void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
     content = gtk_info_bar_get_content_area(GTK_INFO_BAR(infobar));
     gtk_container_add(GTK_CONTAINER(content), message);
 
-    gtk_table_attach_defaults(GTK_TABLE(gskat.widgets[17]),
+    gtk_table_attach_defaults(GTK_TABLE(get_widget("vtable")),
             infobar,
             0, 1, 0, 1);
 
@@ -457,7 +457,7 @@ void show_last_tricks(void)
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     gtk_window_set_transient_for(GTK_WINDOW(window),
-            GTK_WINDOW(gskat.widgets[0]));
+            GTK_WINDOW(gskat.window));
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -581,7 +581,7 @@ void show_config_window(void)
     gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_transient_for(GTK_WINDOW(window),
-            GTK_WINDOW(gskat.widgets[0]));
+            GTK_WINDOW(gskat.window));
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -958,9 +958,10 @@ static GtkWidget *create_menu(GtkWidget *window)
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), help);
 
-    gskat.widgets[15] = quicksave_item;
-    gskat.widgets[16] = bugreport_item;
-    gskat.widgets[18] = gamesave_item;
+    /* add necessary menu item widgets to hash table */
+    g_hash_table_insert(gskat.widgets, "mi_quicksave", quicksave_item);
+    g_hash_table_insert(gskat.widgets, "mi_bugreport", bugreport_item);
+    g_hash_table_insert(gskat.widgets, "mi_gamesave", gamesave_item);
 
     return menu;
 }
@@ -1008,7 +1009,7 @@ void create_interface(void)
 
     g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 19);
+    gskat.widgets = g_hash_table_new(g_str_hash, g_str_equal);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "gskat");
@@ -1184,23 +1185,25 @@ void create_interface(void)
 
     /* set game object pointers */
     gskat.area = area;
+    gskat.window = window;
 
-    gskat.widgets[0] = window;
-    gskat.widgets[1] = button;
-    gskat.widgets[2] = lb_game_stich_right;
-    gskat.widgets[3] = lb_game_re_right;
-    gskat.widgets[4] = lb_game_spiel_right;
-    gskat.widgets[5] = lb_game_gereizt_right;
-    gskat.widgets[6] = lb_rank_p1;
-    gskat.widgets[7] = lb_rank_p2;
-    gskat.widgets[8] = lb_rank_p3;
-    gskat.widgets[9] = frame_game;
-    gskat.widgets[10] = table_rank;
-    gskat.widgets[11] = lb_rank_p1_name;
-    gskat.widgets[12] = lb_rank_p2_name;
-    gskat.widgets[13] = lb_rank_p3_name;
-    gskat.widgets[14] = statusbar;
-    gskat.widgets[17] = vtable;
+    /* fill widgets hash table */
+    g_hash_table_insert(gskat.widgets, "window", window);
+    g_hash_table_insert(gskat.widgets, "button", button);
+    g_hash_table_insert(gskat.widgets, "lb_stich", lb_game_stich_right);
+    g_hash_table_insert(gskat.widgets, "lb_re", lb_game_re_right);
+    g_hash_table_insert(gskat.widgets, "lb_spiel", lb_game_spiel_right);
+    g_hash_table_insert(gskat.widgets, "lb_gereizt", lb_game_gereizt_right);
+    g_hash_table_insert(gskat.widgets, "lb_rank_p1", lb_rank_p1);
+    g_hash_table_insert(gskat.widgets, "lb_rank_p2", lb_rank_p2);
+    g_hash_table_insert(gskat.widgets, "lb_rank_p3", lb_rank_p3);
+    g_hash_table_insert(gskat.widgets, "frame_game", frame_game);
+    g_hash_table_insert(gskat.widgets, "table_rank", table_rank);
+    g_hash_table_insert(gskat.widgets, "lb_p1_name", lb_rank_p1_name);
+    g_hash_table_insert(gskat.widgets, "lb_p2_name", lb_rank_p2_name);
+    g_hash_table_insert(gskat.widgets, "lb_p3_name", lb_rank_p3_name);
+    g_hash_table_insert(gskat.widgets, "statusbar", statusbar);
+    g_hash_table_insert(gskat.widgets, "vtable", vtable);
 
     /* attach signals */
     g_signal_connect(G_OBJECT(window), "destroy",
@@ -1237,27 +1240,27 @@ void update_interface(void)
 
     /* current trick label */
     g_snprintf(text, len-1, "%d", gskat.stich);
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[2]), text);
+    gtk_label_set_text(GTK_LABEL(get_widget("lb_stich")), text);
 
     /* re player label */
     g_snprintf(text, len-1, "%s", (gskat.re) ? gskat.re->name : "-");
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[3]), text);
+    gtk_label_set_text(GTK_LABEL(get_widget("lb_re")), text);
 
     /* current game/trump label */
     g_snprintf(text, len-1, "%s", (gskat.trump != -1) ?
             suit_name(gskat.trump) : "-");
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[4]), text);
+    gtk_label_set_text(GTK_LABEL(get_widget("lb_spiel")), text);
 
     /* bidden value */
     if (gskat.re)
         g_snprintf(text, len-1, "%d", gskat.re->gereizt);
     else
         g_snprintf(text, len-1, "-");
-    gtk_label_set_text(GTK_LABEL(gskat.widgets[5]), text);
+    gtk_label_set_text(GTK_LABEL(get_widget("lb_gereizt")), text);
 
     /* current round label */
     g_snprintf(text, len-1, _("Round %d"), gskat.round);
-    gtk_frame_set_label(GTK_FRAME(gskat.widgets[9]), text);
+    gtk_frame_set_label(GTK_FRAME(get_widget("frame_game")), text);
 
     g_free(text);
 }
@@ -1276,15 +1279,15 @@ void update_rank_interface(void)
     gchar msg[32];
     player *cur;
     GtkWidget *rank_label;
-    GtkTable *table = GTK_TABLE(gskat.widgets[10]);
+    GtkTable *table = GTK_TABLE(get_widget("table_rank"));
 
     /* update sum of points */
     g_sprintf(msg, "<b>%d</b>", gskat.players[0]->sum_points);
-    gtk_label_set_markup(GTK_LABEL(gskat.widgets[6]), msg);
+    gtk_label_set_markup(GTK_LABEL(get_widget("lb_rank_p1")), msg);
     g_sprintf(msg, "<b>%d</b>", gskat.players[1]->sum_points);
-    gtk_label_set_markup(GTK_LABEL(gskat.widgets[7]), msg);
+    gtk_label_set_markup(GTK_LABEL(get_widget("lb_rank_p2")), msg);
     g_sprintf(msg, "<b>%d</b>", gskat.players[2]->sum_points);
-    gtk_label_set_markup(GTK_LABEL(gskat.widgets[8]), msg);
+    gtk_label_set_markup(GTK_LABEL(get_widget("lb_rank_p3")), msg);
 
     /* get the number of rows */
     g_object_get(G_OBJECT(table), "n-rows", &len, NULL);
@@ -1441,6 +1444,21 @@ cairo_surface_t *load_image(gchar *filename)
 }
 
 /**
+ * get_widget:
+ * @name:  Key of the widget the return
+ *
+ * Returns the #GtkWidget with the unique key given by @name
+ */
+GtkWidget *get_widget(const gchar *name)
+{
+    GtkWidget *widget = g_hash_table_lookup(gskat.widgets, name);
+
+    g_warn_if_fail(widget != NULL);
+
+    return widget;
+}
+
+/**
  * free_app:
  *
  * Free all allocated in-game memory
@@ -1518,9 +1536,9 @@ void free_app(void)
     gdk_cursor_unref(gskat.pirate_cursor);
     gdk_cursor_unref(gskat.hand_cursor);
 
-    g_free(gskat.widgets);
-
     g_hash_table_destroy(gskat.config);
+    g_hash_table_destroy(gskat.widgets);
+
     gskat.config = NULL;
 
     gskat_msg(MT_INFO, _("Quit gskat\n"));

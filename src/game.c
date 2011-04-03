@@ -240,7 +240,7 @@ void get_bid_response(gint value, gchar *msg, gboolean hoeren)
     g_sprintf(caption, "%d", value);
 
     GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Bidding"),
-            GTK_WINDOW(gskat.widgets[0]),
+            GTK_WINDOW(gskat.window),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             (hoeren) ? _("Yes") : caption, value,
             (hoeren) ? _("No") : _("Pass"), 0,
@@ -651,7 +651,7 @@ void start_bidding(void)
         gskat.bidden = 0;
 
         /* disable 'new round' button */
-        gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
+        gtk_widget_set_sensitive(get_widget("button"), FALSE);
 
         /* reset all player values */
         for (i=0; i<3; ++i)
@@ -698,8 +698,8 @@ void start_bidding(void)
             gskat.re->re = TRUE;
 
             /* update interface */
-            gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
-            gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]),
+            gtk_widget_set_sensitive(get_widget("button"), TRUE);
+            gtk_button_set_label(GTK_BUTTON(get_widget("button")),
                     _("Pronounce a game"));
 
             update_interface();
@@ -878,7 +878,7 @@ void take_skat(void)
         do
         {
             GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Play hand game?"),
-                    GTK_WINDOW(gskat.widgets[0]),
+                    GTK_WINDOW(gskat.window),
                     GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                     _("Yes"), 1,
                     _("No"), 0,
@@ -984,7 +984,7 @@ void spiel_ansagen(void)
          * i.e. grand, null */
         gskat.trump = get_best_suit(gskat.re->cards);
 
-        dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
+        dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.window),
                 GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO,
                 GTK_BUTTONS_CLOSE,
@@ -1001,10 +1001,11 @@ void spiel_ansagen(void)
 
     /* print game to label */
     update_interface();
-    gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
-    gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
-    gtk_widget_set_sensitive(gskat.widgets[16], TRUE);
-    gtk_widget_set_sensitive(gskat.widgets[18], TRUE);
+
+    gtk_widget_set_sensitive(get_widget("button"), FALSE);
+    gtk_widget_set_sensitive(get_widget("mi_quicksave"), TRUE);
+    gtk_widget_set_sensitive(get_widget("mi_bugreport"), TRUE);
+    gtk_widget_set_sensitive(get_widget("mi_gamesave"), TRUE);
 
     /* hide skat & redraw screen */
     for (list = g_list_first(gskat.skat); list; list = list->next)
@@ -1338,9 +1339,9 @@ void end_round(finish_type ft)
     update_rank_interface();
     update_interface();
 
-    gtk_widget_set_sensitive(gskat.widgets[15], FALSE);
-    gtk_widget_set_sensitive(gskat.widgets[16], FALSE);
-    gtk_widget_set_sensitive(gskat.widgets[18], FALSE);
+    gtk_widget_set_sensitive(get_widget("mi_quicksave"), FALSE);
+    gtk_widget_set_sensitive(get_widget("mi_bugreport"), FALSE);
+    gtk_widget_set_sensitive(get_widget("mi_gamesave"), FALSE);
 
     /* reset game values */
     reset_game();
@@ -1395,7 +1396,7 @@ gboolean game_abort(void)
     gint response;
     GtkWidget *dialog;
 
-    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.widgets[0]),
+    dialog = gtk_message_dialog_new(GTK_WINDOW(gskat.window),
             GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_INFO,
             GTK_BUTTONS_YES_NO,
@@ -1499,8 +1500,8 @@ void reset_game(void)
 
     /* update interface */
     update_interface();
-    gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
-    gtk_button_set_label(GTK_BUTTON(gskat.widgets[1]), _("New round"));
+    gtk_widget_set_sensitive(get_widget("button"), TRUE);
+    gtk_button_set_label(GTK_BUTTON(get_widget("button")), _("New round"));
 }
 
 /**
@@ -1524,7 +1525,7 @@ void game_start(void)
     gskat.re = NULL;
 
     /* activate button */
-    gtk_widget_set_sensitive(gskat.widgets[1], TRUE);
+    gtk_widget_set_sensitive(get_widget("button"), TRUE);
 
     gskat_msg(MT_STATUSBAR, _("New round started"));
 }

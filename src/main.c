@@ -1,7 +1,7 @@
 /*
  *  This file is part of gskat.
  *
- *  Copyright (C) 2010 by Gregor Uhlenheuer
+ *  Copyright (C) 2010-2011 by Gregor Uhlenheuer
  *
  *  gskat is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ static void initialize()
     gskat.back          = NULL;
     gskat.bg            = NULL;
     gskat.area          = NULL;
+    gskat.window        = NULL;
     gskat.widgets       = NULL;
     gskat.state         = LOADING;
     gskat.re            = NULL;
@@ -143,7 +144,7 @@ int main(int argc, const char *argv[])
         /* show all widgets after being initialized */
         if (gskat.widgets != NULL)
         {
-            gtk_widget_show_all(gskat.widgets[0]);
+            gtk_widget_show_all(gskat.window);
             gtk_main();
 
             free_app();

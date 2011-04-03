@@ -1,7 +1,7 @@
 /*
  *  This file is part of gskat.
  *
- *  Copyright (C) 2010 by Gregor Uhlenheuer
+ *  Copyright (C) 2010-2011 by Gregor Uhlenheuer
  *
  *  gskat is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,6 +63,8 @@ void load_card(GList **list, const gchar *file, gint rank, gint suit);
 cairo_surface_t *load_image(gchar *filename);
 
 gboolean load_cards(const gchar **paths);
+
+GtkWidget *get_widget(const gchar *name);
 
 void free_app(void);
 

@@ -107,7 +107,7 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
         NULL
     };
 
-    gtk_show_about_dialog(GTK_WINDOW(gskat.widgets[0]),
+    gtk_show_about_dialog(GTK_WINDOW(gskat.window),
             "program_name", _("gskat"),
             "comments", _("Gtk Skat game written in C"),
             "authors", authors,
