@@ -116,7 +116,7 @@ void show_about_window(GtkMenuItem *menuitem, gpointer data)
             "license", license_string,
             "logo", pixbuf,
             "website", "http://kongo2002.github.com",
-            "copyright", "Copyright © 2010 Gregor Uhlenheuer.\n"
+            "copyright", "Copyright © 2010-2011 Gregor Uhlenheuer.\n"
                 "All Rights Reserved.",
             NULL);
 
