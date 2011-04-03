@@ -863,8 +863,8 @@ static GtkWidget *create_menu(void)
     GtkWidget *gmenu;        /* game submenu */
     GtkWidget *game;
     GtkWidget *new_item;
-    GtkWidget *load_item;
-    GtkWidget *save_item;
+    GtkWidget *quickload_item;
+    GtkWidget *quicksave_item;
     GtkWidget *quit_item;
     GtkWidget *cmenu;        /* configuration submenu */
     GtkWidget *config;
@@ -882,21 +882,21 @@ static GtkWidget *create_menu(void)
     new_item = gtk_menu_item_new_with_label(_("New round"));
     g_signal_connect(G_OBJECT(new_item), "activate",
             G_CALLBACK(next_round), NULL);
-    load_item = gtk_menu_item_new_with_label(_("Load game state"));
-    g_signal_connect(G_OBJECT(load_item), "activate",
-            G_CALLBACK(load_game_cb), NULL);
-    save_item = gtk_menu_item_new_with_label(_("Save current game state"));
-    gtk_widget_set_sensitive(save_item, FALSE);
-    g_signal_connect(G_OBJECT(save_item), "activate",
-            G_CALLBACK(save_game_cb), NULL);
+    quickload_item = gtk_menu_item_new_with_label(_("Quick load"));
+    g_signal_connect(G_OBJECT(quickload_item), "activate",
+            G_CALLBACK(quickload_game_cb), NULL);
+    quicksave_item = gtk_menu_item_new_with_label(_("Quick save"));
+    gtk_widget_set_sensitive(quicksave_item, FALSE);
+    g_signal_connect(G_OBJECT(quicksave_item), "activate",
+            G_CALLBACK(quicksave_game_cb), NULL);
     quit_item = gtk_menu_item_new_with_label(_("Quit"));
     g_signal_connect(G_OBJECT(quit_item), "activate", G_CALLBACK(quit), NULL);
 
     gmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gtk_separator_menu_item_new());
-    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), load_item);
-    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), save_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quickload_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quicksave_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quit_item);
 
@@ -945,7 +945,7 @@ static GtkWidget *create_menu(void)
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), help);
 
-    gskat.widgets[15] = save_item;
+    gskat.widgets[15] = quicksave_item;
     gskat.widgets[16] = bugreport_item;
 
     return menu;

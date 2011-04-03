@@ -688,13 +688,13 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 }
 
 /**
- * load_game_cb:
+ * quickload_game_cb:
  * @menuitem:  #GtkMenuItem which received the signal
  * @data:      arbitrary user data
  *
  * Load a saved game state
  */
-void load_game_cb(GtkMenuItem *menuitem, gpointer data)
+void quickload_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
     UNUSED(menuitem);
     UNUSED(data);
@@ -719,13 +719,13 @@ void load_game_cb(GtkMenuItem *menuitem, gpointer data)
 }
 
 /**
- * save_game_cb:
+ * quicksave_game_cb:
  * @menuitem:  #GtkMenuItem which received the signal
  * @data:      arbitrary user data
  *
  * Save the current game state
  */
-void save_game_cb(GtkMenuItem *menuitem, gpointer data)
+void quicksave_game_cb(GtkMenuItem *menuitem, gpointer data)
 {
     UNUSED(menuitem);
     UNUSED(data);
