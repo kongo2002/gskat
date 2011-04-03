@@ -494,9 +494,12 @@ void do_hoeren(player *player, gint value, gint sager)
         if (sager)
             g_usleep(G_USEC_PER_SEC);
 
-        /* draw player's bid on-screen */
         player->does_bid = TRUE;
-        g_timeout_add(3000, (GSourceFunc) player_draw_bid, (gpointer) player);
+
+        /* draw player's bid on-screen if configured */
+        if (get_prop_bool("provoke_values"))
+            g_timeout_add(3000, (GSourceFunc) player_draw_bid,
+                    (gpointer) player);
 
         if (rate_cards(player, player->cards) >= 7 && value <= max)
         {

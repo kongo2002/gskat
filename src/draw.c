@@ -1,7 +1,7 @@
 /*
  *  This file is part of gskat.
  *
- *  Copyright (C) 2010 by Gregor Uhlenheuer
+ *  Copyright (C) 2010-2011 by Gregor Uhlenheuer
  *
  *  gskat is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  */
 
 #include "def.h"
+#include "configuration.h"
 #include "draw.h"
 #include "utils.h"
 
@@ -415,7 +416,8 @@ void draw_area(void)
     }
 
     /* draw bid values during provoke phase only */
-    if (gskat.state >= PROVOKE1 && gskat.state <= PROVOKE4)
+    if (gskat.state >= PROVOKE1 && gskat.state <= PROVOKE4 &&
+            get_prop_bool("provoke_values"))
         draw_provoke_value(cr);
 
     cairo_destroy(cr);
