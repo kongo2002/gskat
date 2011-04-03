@@ -864,7 +864,9 @@ static GtkWidget *create_menu()
     GtkWidget *game;
     GtkWidget *new_item;
     GtkWidget *gameload_item;
+    GtkWidget *gameload_image;
     GtkWidget *gamesave_item;
+    GtkWidget *gamesave_image;
     GtkWidget *quickload_item;
     GtkWidget *quicksave_item;
     GtkWidget *quit_item;
@@ -884,13 +886,24 @@ static GtkWidget *create_menu()
     new_item = gtk_menu_item_new_with_label(_("New round"));
     g_signal_connect(G_OBJECT(new_item), "activate",
             G_CALLBACK(next_round), NULL);
-    gameload_item = gtk_menu_item_new_with_label(_("Load game ..."));
+
+    gameload_item = gtk_image_menu_item_new_with_label(_("Load game ..."));
+    gameload_image = gtk_image_new_from_stock(GTK_STOCK_OPEN,
+            GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gameload_item),
+            gameload_image);
     g_signal_connect(G_OBJECT(gameload_item), "activate",
             G_CALLBACK(gameload_cb), NULL);
-    gamesave_item = gtk_menu_item_new_with_label(_("Save game ..."));
+
+    gamesave_item = gtk_image_menu_item_new_with_label(_("Save game ..."));
+    gamesave_image = gtk_image_new_from_stock(GTK_STOCK_SAVE,
+            GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gamesave_item),
+            gamesave_image);
     gtk_widget_set_sensitive(gamesave_item, FALSE);
     g_signal_connect(G_OBJECT(gamesave_item), "activate",
             G_CALLBACK(gamesave_cb), NULL);
+
     quickload_item = gtk_menu_item_new_with_label(_("Quick load"));
     g_signal_connect(G_OBJECT(quickload_item), "activate",
             G_CALLBACK(quickload_game_cb), NULL);
@@ -918,7 +931,7 @@ static GtkWidget *create_menu()
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), game);
 
     /* configuration submenu */
-    options_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PROPERTIES, NULL);
+    options_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PREFERENCES, NULL);
     g_signal_connect(G_OBJECT(options_item), "activate",
             G_CALLBACK(show_config_window), NULL);
 
