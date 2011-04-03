@@ -852,13 +852,12 @@ void show_config_window(void)
 
 /**
  * create_menu:
- * @window:  main application #GtkWindow
  *
  * Create the main menu and populate it with the menu items
  *
  * Returns: (transfer full): the new main menu #GtkWidget
  */
-static GtkWidget *create_menu(GtkWidget *window)
+static GtkWidget *create_menu()
 {
     GtkWidget *menu;         /* main menu */
     GtkWidget *gmenu;        /* game submenu */
