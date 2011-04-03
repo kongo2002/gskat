@@ -20,16 +20,17 @@ MAJOR FEATURES
 MINOR POINTS
 
 * show point distribution graph dialog
-* slow down bidding process between computer players
 * integrate optional pre-round random seed definition for card
   distribution
 * add an option to automatically begin the next trick (i.e. timeout)
 * add tooltips to GUI elements
+* show a detailled score resolution at the end of a round
 * make game rule 'play with spitzen' configurable
 * implement a game mode (+ configuration option) for the official Skat
   Order (standard rules of D.S.K.V. and I.S.P.A.)
 * bug reports should work in loaded games as well
   (i.e. save bug report log in game state)
+* slow down bidding process between computer players                        DONE
 * use XDG base directory specification for config/data files                DONE
 * improve game summary display                                              DONE
 * connect review of played trick(s) with a configuration rule/setting       DONE
