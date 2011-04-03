@@ -898,7 +898,7 @@ static GtkWidget *create_menu()
     gtk_widget_set_sensitive(quicksave_item, FALSE);
     g_signal_connect(G_OBJECT(quicksave_item), "activate",
             G_CALLBACK(quicksave_game_cb), NULL);
-    quit_item = gtk_menu_item_new_with_label(_("Quit"));
+    quit_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_QUIT, NULL);
     g_signal_connect(G_OBJECT(quit_item), "activate", G_CALLBACK(quit), NULL);
 
     gmenu = gtk_menu_new();
@@ -918,7 +918,7 @@ static GtkWidget *create_menu()
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), game);
 
     /* configuration submenu */
-    options_item = gtk_menu_item_new_with_label(_("Options"));
+    options_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PROPERTIES, NULL);
     g_signal_connect(G_OBJECT(options_item), "activate",
             G_CALLBACK(show_config_window), NULL);
 
@@ -945,7 +945,7 @@ static GtkWidget *create_menu()
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), bugreport);
 
     /* help submenu */
-    about_item = gtk_menu_item_new_with_label(_("About"));
+    about_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, NULL);
     g_signal_connect(G_OBJECT(about_item), "activate",
             G_CALLBACK(show_about_window), NULL);
 
