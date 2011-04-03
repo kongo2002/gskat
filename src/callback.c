@@ -688,6 +688,70 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data)
 }
 
 /**
+ * gameload_cb:
+ * @menuitem:  #GtkMenuItem which received the signal
+ * @data:      #GtkWindow of the main application
+ *
+ * Load a saved game state
+ */
+void gameload_cb(GtkMenuItem *menuitem, gpointer data)
+{
+    UNUSED(menuitem);
+
+    gchar *file;
+    GtkWidget *file_chooser = gtk_file_chooser_dialog_new(
+            _("Load game"),
+            GTK_WINDOW(data),
+            GTK_FILE_CHOOSER_ACTION_OPEN,
+            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+            GTK_STOCK_OK, GTK_RESPONSE_OK,
+            NULL);
+
+    if (gtk_dialog_run(GTK_DIALOG(file_chooser)) == GTK_RESPONSE_OK)
+    {
+        file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser));
+
+        load_game(file);
+
+        g_free(file);
+    }
+
+    gtk_widget_destroy(file_chooser);
+}
+
+/**
+ * gamesave_cb:
+ * @menuitem:  #GtkMenuItem which received the signal
+ * @data:      #GtkWindow of the main application
+ *
+ * Save the current game state into a file
+ */
+void gamesave_cb(GtkMenuItem *menuitem, gpointer data)
+{
+    UNUSED(menuitem);
+
+    gchar *file;
+    GtkWidget *file_chooser = gtk_file_chooser_dialog_new(
+            _("Save game"),
+            GTK_WINDOW(data),
+            GTK_FILE_CHOOSER_ACTION_SAVE,
+            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+            GTK_STOCK_OK, GTK_RESPONSE_OK,
+            NULL);
+
+    if (gtk_dialog_run(GTK_DIALOG(file_chooser)) == GTK_RESPONSE_OK)
+    {
+        file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser));
+
+        save_state_to_file(file);
+
+        g_free(file);
+    }
+
+    gtk_widget_destroy(file_chooser);
+}
+
+/**
  * quickload_game_cb:
  * @menuitem:  #GtkMenuItem which received the signal
  * @data:      arbitrary user data
@@ -701,19 +765,7 @@ void quickload_game_cb(GtkMenuItem *menuitem, gpointer data)
 
     gchar *filename = g_build_filename(get_data_dir(), "gamestate", NULL);
 
-    if (read_state_from_file(filename))
-    {
-        gskat.state = PLAYING;
-
-        update_interface();
-        calc_card_positions();
-        draw_area();
-
-        play_stich();
-
-        gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
-        gtk_widget_set_sensitive(gskat.widgets[16], TRUE);
-    }
+    load_game(filename);
 
     g_free(filename);
 }

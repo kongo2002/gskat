@@ -69,6 +69,10 @@ void refresh_tricks(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
 void refresh(GtkWidget *area, GdkEventExpose *event, gpointer data);
 
+void gameload_cb(GtkMenuItem *menuitem, gpointer data);
+
+void gamesave_cb(GtkMenuItem *menuitem, gpointer data);
+
 void quickload_game_cb(GtkMenuItem *menuitem, gpointer data);
 
 void quicksave_game_cb(GtkMenuItem *menuitem, gpointer data);

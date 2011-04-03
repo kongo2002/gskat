@@ -20,8 +20,10 @@
 
 #include "def.h"
 #include "common.h"
+#include "draw.h"
 #include "game.h"
 #include "gamestate.h"
+#include "interface.h"
 #include "utils.h"
 
 /**
@@ -754,6 +756,32 @@ void apply_states(state_group *sg)
 
     g_free(sg->pcards);
     g_free(sg);
+}
+
+/**
+ * load_game:
+ * @filename:  File name of the saved game
+ *
+ * Try to load the game state saved in the given file name
+ * and update the game state appropriately.
+ */
+void load_game(gchar *filename)
+{
+    if (read_state_from_file(filename))
+    {
+        gskat.state = PLAYING;
+
+        update_interface();
+        calc_card_positions();
+        draw_area();
+
+        play_stich();
+
+        /* activate the quicksave, bugreport and gamesave menu items */
+        gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
+        gtk_widget_set_sensitive(gskat.widgets[16], TRUE);
+        gtk_widget_set_sensitive(gskat.widgets[18], TRUE);
+    }
 }
 
 /* vim:set et sw=4 sts=4 tw=80: */

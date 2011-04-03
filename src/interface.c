@@ -852,17 +852,20 @@ void show_config_window(void)
 
 /**
  * create_menu:
+ * @window:  main application window (#GtkWindow)
  *
  * Create the main menu and populate it with the menu items
  *
  * Returns: (transfer full): the new main menu #GtkWidget
  */
-static GtkWidget *create_menu(void)
+static GtkWidget *create_menu(GtkWidget *window)
 {
     GtkWidget *menu;         /* main menu */
     GtkWidget *gmenu;        /* game submenu */
     GtkWidget *game;
     GtkWidget *new_item;
+    GtkWidget *gameload_item;
+    GtkWidget *gamesave_item;
     GtkWidget *quickload_item;
     GtkWidget *quicksave_item;
     GtkWidget *quit_item;
@@ -882,6 +885,13 @@ static GtkWidget *create_menu(void)
     new_item = gtk_menu_item_new_with_label(_("New round"));
     g_signal_connect(G_OBJECT(new_item), "activate",
             G_CALLBACK(next_round), NULL);
+    gameload_item = gtk_menu_item_new_with_label(_("Load game ..."));
+    g_signal_connect(G_OBJECT(gameload_item), "activate",
+            G_CALLBACK(gameload_cb), window);
+    gamesave_item = gtk_menu_item_new_with_label(_("Save game ..."));
+    gtk_widget_set_sensitive(gamesave_item, FALSE);
+    g_signal_connect(G_OBJECT(gamesave_item), "activate",
+            G_CALLBACK(gamesave_cb), window);
     quickload_item = gtk_menu_item_new_with_label(_("Quick load"));
     g_signal_connect(G_OBJECT(quickload_item), "activate",
             G_CALLBACK(quickload_game_cb), NULL);
@@ -894,6 +904,9 @@ static GtkWidget *create_menu(void)
 
     gmenu = gtk_menu_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), new_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gameload_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gamesave_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quickload_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(gmenu), quicksave_item);
@@ -947,6 +960,7 @@ static GtkWidget *create_menu(void)
 
     gskat.widgets[15] = quicksave_item;
     gskat.widgets[16] = bugreport_item;
+    gskat.widgets[18] = gamesave_item;
 
     return menu;
 }
@@ -994,7 +1008,7 @@ void create_interface(void)
 
     g_sprintf(iconfile, "%s/gskat.png", DATA_DIR);
 
-    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 18);
+    gskat.widgets = (GtkWidget **) g_malloc(sizeof(GtkWidget *) * 19);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "gskat");
@@ -1007,7 +1021,7 @@ void create_interface(void)
     vboxmenu = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vboxmenu);
 
-    mainmenu = create_menu();
+    mainmenu = create_menu(window);
     if (mainmenu)
         gtk_box_pack_start(GTK_BOX(vboxmenu), mainmenu, FALSE, FALSE, 0);
 

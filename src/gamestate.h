@@ -144,6 +144,8 @@ gboolean read_state_from_file(const gchar *filename);
 
 void apply_states(state_group *sg);
 
+void load_game(gchar *filename);
+
 G_END_DECLS
 
 #endif /* __GAMESTATE_H__ */

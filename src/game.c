@@ -1004,6 +1004,7 @@ void spiel_ansagen(void)
     gtk_widget_set_sensitive(gskat.widgets[1], FALSE);
     gtk_widget_set_sensitive(gskat.widgets[15], TRUE);
     gtk_widget_set_sensitive(gskat.widgets[16], TRUE);
+    gtk_widget_set_sensitive(gskat.widgets[18], TRUE);
 
     /* hide skat & redraw screen */
     for (list = g_list_first(gskat.skat); list; list = list->next)
@@ -1339,6 +1340,7 @@ void end_round(finish_type ft)
 
     gtk_widget_set_sensitive(gskat.widgets[15], FALSE);
     gtk_widget_set_sensitive(gskat.widgets[16], FALSE);
+    gtk_widget_set_sensitive(gskat.widgets[18], FALSE);
 
     /* reset game values */
     reset_game();
