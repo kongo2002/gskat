@@ -622,7 +622,7 @@ void show_config_window(void)
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), rules_table, rules_label);
     gtk_container_set_border_width(GTK_CONTAINER(rules_table), 5);
 
-    show_tricks_label = gtk_label_new(_("Show previous trick:"));
+    show_tricks_label = gtk_label_new(_("Show previous trick(s):"));
     gtk_misc_set_alignment(GTK_MISC(show_tricks_label), 0, 0.5);
 
     show_tricks_check = gtk_check_button_new();
