@@ -27,6 +27,8 @@ G_BEGIN_DECLS
 
 gboolean quit(GtkWidget *window, gpointer data);
 
+gboolean window_close(GtkButton *button, gpointer data);
+
 gboolean destroy_bugreport(GtkWidget *widget, GdkEvent *event, gpointer data);
 
 gboolean save_bugreport(GtkButton *button, gpointer data);

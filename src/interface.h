@@ -48,6 +48,10 @@ void show_dialog_error(const gchar *fmt, va_list args);
 
 void show_bid_infobar(gint value, gchar *msg, gboolean hoeren);
 
+void add_summary_row(GtkTreeStore **tree, const char *key, const char *value);
+
+GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree);
+
 void show_last_tricks(void);
 
 void show_config_window(void);

@@ -418,7 +418,7 @@ gint get_max_reizwert(GList *list)
     g_return_val_if_fail(list, 0);
 
     suit = get_best_suit(list);
-    max = get_spitzen(list, suit);
+    max = get_spitzen(list, suit, NULL);
 
     switch (suit)
     {
@@ -1234,6 +1234,9 @@ void set_round_points(gint winner, gint points)
 void end_round(finish_type ft)
 {
     gint rank, game;
+    GtkTreeStore *tree;
+    GString *summary;
+    GtkWidget *sum;
     GList *ptr;
     card *card;
     player *player = gskat.re;
@@ -1241,11 +1244,16 @@ void end_round(finish_type ft)
     /* increase round counter */
     gskat.round += 1;
 
-    rank = get_game_multiplier();
+    /* initialize summary window */
+    sum = create_game_summary("game description", &tree);
+    add_summary_row(&tree, "foo", "bar");
+    add_summary_row(&tree, "foo1", "bar1");
+
+    rank = get_game_multiplier(&summary);
 
     if (!gskat.null)
     {
-        game = get_game_base_value(player);
+        game = get_game_base_value(player, &summary);
 
         /* add points of cards in skat */
         for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
@@ -1275,22 +1283,24 @@ void end_round(finish_type ft)
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
                         _("%s has overbid.\nBidden: %d\n"
-                        "Game value: %d\n\t%d"),
+                        "Game value: %d\n\t%d\n\n%s"),
                         player->name,
                         player->gereizt,
                         game,
-                        game * -2);
+                        game * -2,
+                        summary->str);
 
                 game *= -2;
             }
             else
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
-                        _("%s wins with %d against %d points\n\t+%d"),
+                        _("%s wins with %d against %d points\n\t+%d\n\n%s"),
                         player->name,
                         player->points,
                         (120 - player->points),
-                        game);
+                        game,
+                        summary->str);
             }
         }
         /* player has lost */
@@ -1306,11 +1316,12 @@ void end_round(finish_type ft)
             game = game * rank * -2;
 
             gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
-                    _("%s lost with %d against %d points\n\t%d"),
+                    _("%s lost with %d against %d points\n\t%d\n\n%s"),
                     player->name,
                     player->points,
                     (120 - player->points),
-                    game);
+                    game,
+                    summary->str);
         }
     }
     /* null game */
@@ -1353,6 +1364,8 @@ void end_round(finish_type ft)
         }
 
     }
+
+    gtk_widget_show_all(sum);
 
     /* refresh the players' new points */
     set_round_points(player->id, game);

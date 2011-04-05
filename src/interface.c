@@ -423,6 +423,88 @@ void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
     gtk_widget_show_all(infobar);
 }
 
+void add_summary_row(GtkTreeStore **tree, const char *key, const char *value)
+{
+    GtkTreeIter child;
+
+    gtk_tree_store_append(*tree, &child, NULL);
+    gtk_tree_store_set(*tree, &child,
+            0, key, 1, value, -1);
+}
+
+GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree)
+{
+    GtkWidget *window;
+    GtkWidget *vbox;
+    GtkWidget *label;
+    GtkWidget *button;
+
+    GtkTreeViewColumn *column;
+    GtkCellRenderer *renderer;
+    GtkWidget *view;
+    GtkTreeModel *model;
+
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), _("Game summary"));
+    gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_window_set_transient_for(GTK_WINDOW(window),
+            GTK_WINDOW(gskat.window));
+
+    vbox = gtk_vbox_new(FALSE, 5);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+
+    label = gtk_label_new(description);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
+
+    /* CREATE TREE VIEW */
+    view = gtk_tree_view_new();
+
+    /* first column */
+    column = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(GTK_TREE_VIEW(view), column);
+
+    renderer = gtk_cell_renderer_text_new();
+
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+
+    gtk_tree_view_column_add_attribute(column, renderer, "text", 0);
+
+    /* first column in bold font */
+    g_object_set(renderer,
+            "weight", PANGO_WEIGHT_BOLD,
+            "weight-set", TRUE,
+            NULL);
+
+    /* second column */
+    column = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(GTK_TREE_VIEW(view), column);
+
+    renderer = gtk_cell_renderer_text_new();
+
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+
+    gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
+
+    /* CREATE THE TREE MODEL */
+    *tree = gtk_tree_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+
+    model = GTK_TREE_MODEL(*tree);
+    gtk_tree_view_set_model(GTK_TREE_VIEW(view), model);
+    gtk_tree_selection_set_mode(gtk_tree_view_get_selection(
+                GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
+
+    gtk_box_pack_start(GTK_BOX(vbox), view, TRUE, TRUE, 2);
+
+    button = gtk_button_new_from_stock(GTK_STOCK_OK);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 2);
+
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(window_close),
+            window);
+
+    return window;
+}
+
 /**
  * show_last_tricks:
  *

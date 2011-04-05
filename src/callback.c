@@ -85,6 +85,15 @@ gboolean realization(GtkWidget *area, gpointer data)
     return FALSE;
 }
 
+gboolean window_close(GtkButton *button, gpointer data)
+{
+    UNUSED(button);
+
+    gtk_widget_destroy((GtkWidget *) data);
+
+    return TRUE;
+}
+
 /**
  * show_about_window:
  * @menuitem:  #GtkMenuItem emitting the signal

@@ -1,7 +1,7 @@
 /*
  *  This file is part of gskat.
  *
- *  Copyright (C) 2010 by Gregor Uhlenheuer
+ *  Copyright (C) 2010-2011 by Gregor Uhlenheuer
  *
  *  gskat is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -507,23 +507,41 @@ gint get_table_winner(void)
  *
  * Returns: the game value/multiplier of the current/last game
  */
-gint get_game_multiplier(void)
+gint get_game_multiplier(GString **summary)
 {
+    gint multiplier = 0;
+
     switch (gskat.trump)
     {
         case KARO:
-            return 9;
+            *summary = g_string_new(_("Diamonds:"));
+            multiplier = 9;
+            break;
         case HERZ:
-            return 10;
+            *summary = g_string_new(_("Hearts:"));
+            multiplier = 10;
+            break;
         case PIK:
-            return 11;
+            *summary = g_string_new(_("Spades:"));
+            multiplier = 11;
+            break;
         case KREUZ:
-            return 12;
+            *summary = g_string_new(_("Clubs:"));
+            multiplier = 12;
+            break;
         case 0:
-            return 24;
+            *summary = g_string_new(_("Grand:"));
+            multiplier = 24;
+            break;
+        default:
+            *summary = g_string_new(_("Null:"));
+            multiplier = 0;
+            break;
     }
 
-    return 0;
+    g_string_append_printf(*summary, "\t\t%d\n", multiplier);
+
+    return multiplier;
 }
 
 /**
@@ -535,7 +553,7 @@ gint get_game_multiplier(void)
  *
  * Returns: the base game value of the current game
  */
-gint get_game_base_value(player *re)
+gint get_game_base_value(player *re, GString **summary)
 {
     gint game;
     GList *ptr, *list = NULL;
@@ -550,7 +568,8 @@ gint get_game_base_value(player *re)
             list = g_list_prepend(list, card);
     }
 
-    game = get_spitzen(list, gskat.trump);
+    game = get_spitzen(list, gskat.trump, summary);
+    g_string_append_printf(*summary, "\t\t* %d\n", game);
 
     g_list_free(list);
 
@@ -566,7 +585,7 @@ gint get_game_base_value(player *re)
  *
  * Returns: 'spitzen' value
  */
-gint get_spitzen(GList *list, gint suit)
+gint get_spitzen(GList *list, gint suit, GString **summary)
 {
     gint i = 0, max = 0, back = 0;
     GList *ptr = NULL, *cards = NULL, *pcards = NULL;
@@ -610,6 +629,12 @@ gint get_spitzen(GList *list, gint suit)
 
     if (pcards)
         g_list_free(pcards);
+
+    if (summary != NULL && *summary != NULL)
+    {
+        g_string_append(*summary, mit == TRUE ? _("With ") : _("Without "));
+        g_string_append_printf(*summary, "%d\nGame %d\n", max, max + 1);
+    }
 
     /* restore trump */
     gskat.trump = back;

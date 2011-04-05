@@ -1,7 +1,7 @@
 /*
  *  This file is part of gskat.
  *
- *  Copyright (C) 2010 by Gregor Uhlenheuer
+ *  Copyright (C) 2010-2011 by Gregor Uhlenheuer
  *
  *  gskat is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,11 +49,11 @@ gint get_trick_winner(card **trick);
 
 gint get_table_winner(void);
 
-gint get_game_multiplier(void);
+gint get_game_multiplier(GString **summary);
 
-gint get_game_base_value(player *re);
+gint get_game_base_value(player *re, GString **summary);
 
-gint get_spitzen(GList *list, gint suit);
+gint get_spitzen(GList *list, gint suit, GString **summary);
 
 gboolean is_trump(card *card);
 
