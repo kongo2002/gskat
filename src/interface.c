@@ -591,7 +591,11 @@ GtkWidget *create_game_summary(GtkTreeStore **tree)
     gtk_tree_selection_set_mode(gtk_tree_view_get_selection(
                 GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
+    /* SCROLLED WINDOW */
     scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+            GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+
     gtk_container_add(GTK_CONTAINER(scrolledwin), view);
 
     gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 2);
