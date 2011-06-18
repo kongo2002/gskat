@@ -1246,7 +1246,7 @@ void end_round(finish_type ft)
     /* initialize summary window */
     sum = create_game_summary("Game summary", &tree);
 
-    rank = get_game_multiplier(&tree);
+    rank = get_game_multiplier();
 
     if (!gskat.null)
     {
@@ -1284,6 +1284,8 @@ void end_round(finish_type ft)
                 add_summary_row_int(&tree, _("Schwarz"), game);
             }
 
+            add_summary_row_int(&tree, get_game_name(), rank);
+
             game *= rank;
 
             if (player->gereizt > game)
@@ -1309,7 +1311,7 @@ void end_round(finish_type ft)
                         (120 - player->points),
                         game);
 
-                add_summary_row_int(&tree, _("Sum"), game);
+                add_summary_row_int(&tree, _("Won"), game);
             }
         }
         /* player has lost */
@@ -1329,6 +1331,8 @@ void end_round(finish_type ft)
                 add_summary_row_int(&tree, _("Schwarz"), game);
             }
 
+            add_summary_row_int(&tree, get_game_name(), rank);
+
             game = game * rank * -2;
 
             gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
@@ -1338,16 +1342,24 @@ void end_round(finish_type ft)
                     (120 - player->points),
                     game);
 
-            add_summary_row_int(&tree, _("Sum"), game);
+            add_summary_row_int(&tree, _("Lost"), game);
         }
     }
     /* null game */
     else
     {
+        game = 1;
+
         if (gskat.hand)
-            game = 35;
+        {
+            rank = 35;
+            add_summary_row_int(&tree, _("Null hand"), game);
+        }
         else
-            game = 23;
+        {
+            rank = 23;
+            add_summary_row_int(&tree, _("Null"), game);
+        }
 
         /* player has lost 'null' game */
         if (ft == FT_LOST)
@@ -1356,6 +1368,8 @@ void end_round(finish_type ft)
 
             gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
                     _("%s lost the null game\n\t%d"), player->name, game);
+
+            add_summary_row_int(&tree, _("Lost"), game);
         }
         else
         {
@@ -1371,12 +1385,16 @@ void end_round(finish_type ft)
                         game * -2);
 
                 game *= -2;
+
+                add_summary_row_int(&tree, _("Lost"), game);
             }
             /* player has won the 'null' game */
             else
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG,
                         _("%s won the null game\n\t%d"), player->name, game);
+
+                add_summary_row_int(&tree, _("Won"), game);
             }
         }
 

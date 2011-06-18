@@ -502,15 +502,29 @@ gint get_table_winner(void)
 }
 
 /**
+ * get_game_name:
+ *
+ * Get the name of the current/finished game
+ *
+ * Returns: #gchar of the game name
+ */
+gchar *get_game_name(void)
+{
+    if (gskat.null)
+        return _("Null");
+
+    return suit_name(gskat.trump);
+}
+
+/**
  * get_game_multiplier:
  *
  * Get the value/multiplier of the current game
  *
  * Returns: the game value/multiplier of the current/last game
  */
-gint get_game_multiplier(GtkTreeStore **tree)
+gint get_game_multiplier(void)
 {
-    gchar *str;
     gint multiplier = 0;
 
     switch (gskat.trump)
@@ -535,15 +549,6 @@ gint get_game_multiplier(GtkTreeStore **tree)
             break;
     }
 
-    if (tree != NULL && *tree != NULL)
-    {
-        str = g_strdup_printf("%d", multiplier);
-
-        add_summary_row(tree, suit_name(gskat.trump), str);
-
-        g_free(str);
-    }
-
     return multiplier;
 }
 
@@ -559,7 +564,6 @@ gint get_game_multiplier(GtkTreeStore **tree)
 gint get_game_base_value(player *re, GtkTreeStore **tree)
 {
     gint game;
-    gchar *str;
     GList *ptr, *list = NULL;
     card *card;
 
@@ -573,15 +577,6 @@ gint get_game_base_value(player *re, GtkTreeStore **tree)
     }
 
     game = get_spitzen(list, gskat.trump, tree);
-
-    if (tree != NULL && *tree != NULL)
-    {
-        str = g_strdup_printf("* %d", game);
-
-        add_summary_row(tree, "", str);
-
-        g_free(str);
-    }
 
     g_list_free(list);
 

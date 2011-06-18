@@ -49,7 +49,9 @@ gint get_trick_winner(card **trick);
 
 gint get_table_winner(void);
 
-gint get_game_multiplier(GtkTreeStore **tree);
+gchar *get_game_name(void);
+
+gint get_game_multiplier(void);
 
 gint get_game_base_value(player *re, GtkTreeStore **tree);
 
