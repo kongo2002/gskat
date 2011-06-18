@@ -467,6 +467,7 @@ GtkWidget *create_game_summary(GtkTreeStore **tree)
     GtkWidget *game_value;
     GtkWidget *points;
     GtkWidget *points_value;
+    GtkWidget *scrolledwin;
 
     GtkTreeViewColumn *column;
     GtkCellRenderer *renderer;
@@ -590,7 +591,10 @@ GtkWidget *create_game_summary(GtkTreeStore **tree)
     gtk_tree_selection_set_mode(gtk_tree_view_get_selection(
                 GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
-    gtk_box_pack_start(GTK_BOX(vbox), view, TRUE, TRUE, 2);
+    scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_add(GTK_CONTAINER(scrolledwin), view);
+
+    gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 2);
 
     button = gtk_button_new_from_stock(GTK_STOCK_OK);
     gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 2);
