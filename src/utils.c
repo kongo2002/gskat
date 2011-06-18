@@ -20,6 +20,7 @@
 
 #include "def.h"
 #include "common.h"
+#include "interface.h"
 #include "utils.h"
 
 /**
@@ -507,39 +508,41 @@ gint get_table_winner(void)
  *
  * Returns: the game value/multiplier of the current/last game
  */
-gint get_game_multiplier(GString **summary)
+gint get_game_multiplier(GtkTreeStore **tree)
 {
+    gchar *str;
     gint multiplier = 0;
 
     switch (gskat.trump)
     {
         case KARO:
-            *summary = g_string_new(_("Diamonds:"));
             multiplier = 9;
             break;
         case HERZ:
-            *summary = g_string_new(_("Hearts:"));
             multiplier = 10;
             break;
         case PIK:
-            *summary = g_string_new(_("Spades:"));
             multiplier = 11;
             break;
         case KREUZ:
-            *summary = g_string_new(_("Clubs:"));
             multiplier = 12;
             break;
         case 0:
-            *summary = g_string_new(_("Grand:"));
             multiplier = 24;
             break;
         default:
-            *summary = g_string_new(_("Null:"));
             multiplier = 0;
             break;
     }
 
-    g_string_append_printf(*summary, "\t\t%d\n", multiplier);
+    if (tree != NULL && *tree != NULL)
+    {
+        str = g_strdup_printf("%d", multiplier);
+
+        add_summary_row(tree, suit_name(gskat.trump), str);
+
+        g_free(str);
+    }
 
     return multiplier;
 }
@@ -553,9 +556,10 @@ gint get_game_multiplier(GString **summary)
  *
  * Returns: the base game value of the current game
  */
-gint get_game_base_value(player *re, GString **summary)
+gint get_game_base_value(player *re, GtkTreeStore **tree)
 {
     gint game;
+    gchar *str;
     GList *ptr, *list = NULL;
     card *card;
 
@@ -568,8 +572,16 @@ gint get_game_base_value(player *re, GString **summary)
             list = g_list_prepend(list, card);
     }
 
-    game = get_spitzen(list, gskat.trump, summary);
-    g_string_append_printf(*summary, "\t\t* %d\n", game);
+    game = get_spitzen(list, gskat.trump, tree);
+
+    if (tree != NULL && *tree != NULL)
+    {
+        str = g_strdup_printf("* %d", game);
+
+        add_summary_row(tree, "", str);
+
+        g_free(str);
+    }
 
     g_list_free(list);
 
@@ -585,9 +597,10 @@ gint get_game_base_value(player *re, GString **summary)
  *
  * Returns: 'spitzen' value
  */
-gint get_spitzen(GList *list, gint suit, GString **summary)
+gint get_spitzen(GList *list, gint suit, GtkTreeStore **tree)
 {
     gint i = 0, max = 0, back = 0;
+    gchar str[8];
     GList *ptr = NULL, *cards = NULL, *pcards = NULL;
     gboolean mit = FALSE;
     card *card = NULL, *cmp = NULL;
@@ -630,10 +643,13 @@ gint get_spitzen(GList *list, gint suit, GString **summary)
     if (pcards)
         g_list_free(pcards);
 
-    if (summary != NULL && *summary != NULL)
+    if (tree != NULL && *tree != NULL)
     {
-        g_string_append(*summary, mit == TRUE ? _("With ") : _("Without "));
-        g_string_append_printf(*summary, "%d\nGame %d\n", max, max + 1);
+        g_snprintf(str, 8, "%d", max);
+        add_summary_row(tree, mit == TRUE ? _("With ") : _("Without "), str);
+
+        g_snprintf(str, 8, "%d", max+1);
+        add_summary_row(tree, _("Game"), str);
     }
 
     /* restore trump */

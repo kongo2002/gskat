@@ -48,7 +48,9 @@ void show_dialog_error(const gchar *fmt, va_list args);
 
 void show_bid_infobar(gint value, gchar *msg, gboolean hoeren);
 
-void add_summary_row(GtkTreeStore **tree, const char *key, const char *value);
+void add_summary_row(GtkTreeStore **tree, const char *name, const char *value);
+
+void add_summary_row_int(GtkTreeStore **tree, const char *name, gint value);
 
 GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree);
 

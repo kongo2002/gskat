@@ -1235,7 +1235,6 @@ void end_round(finish_type ft)
 {
     gint rank, game;
     GtkTreeStore *tree;
-    GString *summary;
     GtkWidget *sum;
     GList *ptr;
     card *card;
@@ -1245,15 +1244,13 @@ void end_round(finish_type ft)
     gskat.round += 1;
 
     /* initialize summary window */
-    sum = create_game_summary("game description", &tree);
-    add_summary_row(&tree, "foo", "bar");
-    add_summary_row(&tree, "foo1", "bar1");
+    sum = create_game_summary("Game summary", &tree);
 
-    rank = get_game_multiplier(&summary);
+    rank = get_game_multiplier(&tree);
 
     if (!gskat.null)
     {
-        game = get_game_base_value(player, &summary);
+        game = get_game_base_value(player, &tree);
 
         /* add points of cards in skat */
         for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
@@ -1265,17 +1262,27 @@ void end_round(finish_type ft)
 
         /* hand game */
         if (gskat.hand)
+        {
             game += 1;
+            add_summary_row_int(&tree, _("Hand"), game);
+        }
 
         /* player has won */
         if (player->points > 60)
         {
+            /* player won 'schneider' */
+            if (player->points >= 90)
+            {
+                game += 1;
+                add_summary_row_int(&tree, _("Schneider"), game);
+            }
+
             /* player won 'schwarz' */
             if (player->points == 120)
-                game += 2;
-            /* player won 'schneider' */
-            else if (player->points >= 90)
+            {
                 game += 1;
+                add_summary_row_int(&tree, _("Schwarz"), game);
+            }
 
             game *= rank;
 
@@ -1283,45 +1290,55 @@ void end_round(finish_type ft)
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
                         _("%s has overbid.\nBidden: %d\n"
-                        "Game value: %d\n\t%d\n\n%s"),
+                        "Game value: %d\n\t%d"),
                         player->name,
                         player->gereizt,
                         game,
-                        game * -2,
-                        summary->str);
+                        game * -2);
 
                 game *= -2;
+
+                add_summary_row_int(&tree, _("Overbid"), game);
             }
             else
             {
                 gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
-                        _("%s wins with %d against %d points\n\t+%d\n\n%s"),
+                        _("%s wins with %d against %d points\n\t+%d"),
                         player->name,
                         player->points,
                         (120 - player->points),
-                        game,
-                        summary->str);
+                        game);
+
+                add_summary_row_int(&tree, _("Sum"), game);
             }
         }
         /* player has lost */
         else
         {
+            /* player lost 'schneider' */
+            if (player->points <= 30)
+            {
+                game += 1;
+                add_summary_row_int(&tree, _("Schneider"), game);
+            }
+
             /* player lost 'schwarz' */
             if (player->points == 0)
-                game += 2;
-            /* player lost 'schneider' */
-            else if (player->points <= 30)
+            {
                 game += 1;
+                add_summary_row_int(&tree, _("Schwarz"), game);
+            }
 
             game = game * rank * -2;
 
             gskat_msg(MT_GAME | MT_INFO | MT_DIALOG | MT_BUGREPORT,
-                    _("%s lost with %d against %d points\n\t%d\n\n%s"),
+                    _("%s lost with %d against %d points\n\t%d"),
                     player->name,
                     player->points,
                     (120 - player->points),
-                    game,
-                    summary->str);
+                    game);
+
+            add_summary_row_int(&tree, _("Sum"), game);
         }
     }
     /* null game */

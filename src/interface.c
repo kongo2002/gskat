@@ -423,13 +423,32 @@ void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
     gtk_widget_show_all(infobar);
 }
 
-void add_summary_row(GtkTreeStore **tree, const char *key, const char *value)
+static void add_summary(GtkTreeStore **tree, const char *name, const char *value)
 {
     GtkTreeIter child;
 
+    /* add a new row to the tree view */
     gtk_tree_store_append(*tree, &child, NULL);
+
+    /* set the new rows' values */
     gtk_tree_store_set(*tree, &child,
-            0, key, 1, value, -1);
+            0, name, 1, value, -1);
+}
+
+void add_summary_row(GtkTreeStore **tree, const char *name, const char *value)
+{
+    add_summary(tree, name, value);
+}
+
+void add_summary_row_int(GtkTreeStore **tree, const char *name, gint value)
+{
+    gchar *string;
+
+    string = g_strdup_printf("%d", value);
+
+    add_summary(tree, name, string);
+
+    g_free(string);
 }
 
 GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree)
@@ -450,6 +469,7 @@ GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree)
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     gtk_window_set_transient_for(GTK_WINDOW(window),
             GTK_WINDOW(gskat.window));
+    gtk_widget_set_size_request(window, 300, 200);
 
     vbox = gtk_vbox_new(FALSE, 5);
     gtk_container_add(GTK_CONTAINER(window), vbox);

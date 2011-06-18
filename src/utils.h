@@ -49,11 +49,11 @@ gint get_trick_winner(card **trick);
 
 gint get_table_winner(void);
 
-gint get_game_multiplier(GString **summary);
+gint get_game_multiplier(GtkTreeStore **tree);
 
-gint get_game_base_value(player *re, GString **summary);
+gint get_game_base_value(player *re, GtkTreeStore **tree);
 
-gint get_spitzen(GList *list, gint suit, GString **summary);
+gint get_spitzen(GList *list, gint suit, GtkTreeStore **tree);
 
 gboolean is_trump(card *card);
 
