@@ -523,31 +523,28 @@ gchar *get_game_name(void)
  */
 gint get_game_multiplier(void)
 {
-    gint multiplier = 0;
+    if (gskat.null)
+    {
+        if (gskat.hand)
+            return 35;
+        return 23;
+    }
 
     switch (gskat.trump)
     {
         case KARO:
-            multiplier = 9;
-            break;
+            return 9;
         case HERZ:
-            multiplier = 10;
-            break;
+            return 10;
         case PIK:
-            multiplier = 11;
-            break;
+            return 11;
         case KREUZ:
-            multiplier = 12;
-            break;
+            return 12;
         case 0:
-            multiplier = 24;
-            break;
-        default:
-            multiplier = 0;
-            break;
+            return 24;
     }
 
-    return multiplier;
+    return 0;
 }
 
 /**
