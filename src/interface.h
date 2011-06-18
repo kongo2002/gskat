@@ -52,7 +52,7 @@ void add_summary_row(GtkTreeStore **tree, const char *name, const char *value);
 
 void add_summary_row_int(GtkTreeStore **tree, const char *name, gint value);
 
-GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree);
+GtkWidget *create_game_summary(GtkTreeStore **tree);
 
 void show_last_tricks(void);
 

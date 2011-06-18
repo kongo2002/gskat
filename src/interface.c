@@ -451,12 +451,22 @@ void add_summary_row_int(GtkTreeStore **tree, const char *name, gint value)
     g_free(string);
 }
 
-GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree)
+GtkWidget *create_game_summary(GtkTreeStore **tree)
 {
+    gchar str[64];
+
     GtkWidget *window;
     GtkWidget *vbox;
-    GtkWidget *label;
+    GtkWidget *table;
     GtkWidget *button;
+    GtkWidget *player_name;
+    GtkWidget *player_name_value;
+    GtkWidget *bidden;
+    GtkWidget *bidden_value;
+    GtkWidget *game;
+    GtkWidget *game_value;
+    GtkWidget *points;
+    GtkWidget *points_value;
 
     GtkTreeViewColumn *column;
     GtkCellRenderer *renderer;
@@ -469,13 +479,79 @@ GtkWidget *create_game_summary(const gchar *description, GtkTreeStore **tree)
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     gtk_window_set_transient_for(GTK_WINDOW(window),
             GTK_WINDOW(gskat.window));
-    gtk_widget_set_size_request(window, 300, 200);
+    gtk_widget_set_size_request(window, 300, 300);
 
     vbox = gtk_vbox_new(FALSE, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
-    label = gtk_label_new(description);
-    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
+    /* CREATE TABLE HEADER */
+    table = gtk_table_new(4, 2, TRUE);
+    gtk_container_set_border_width(GTK_CONTAINER(table), 5);
+
+    /* player name */
+    player_name = gtk_label_new(_("Player:"));
+    player_name_value = gtk_label_new(gskat.re->name);
+
+    gtk_misc_set_alignment(GTK_MISC(player_name), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            player_name,
+            0, 1, 0, 1);
+
+    gtk_misc_set_alignment(GTK_MISC(player_name_value), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            player_name_value,
+            1, 2, 0, 1);
+
+    /* bidden value */
+    bidden = gtk_label_new(_("Bid value:"));
+
+    g_snprintf(str, 64, "%d", gskat.bidden);
+    bidden_value = gtk_label_new(str);
+
+    gtk_misc_set_alignment(GTK_MISC(bidden), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            bidden,
+            0, 1, 1, 2);
+
+    gtk_misc_set_alignment(GTK_MISC(bidden_value), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            bidden_value,
+            1, 2, 1, 2);
+
+    /* game name */
+    game = gtk_label_new(_("Game:"));
+    game_value = gtk_label_new(get_game_name());
+
+    gtk_misc_set_alignment(GTK_MISC(game), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            game,
+            0, 1, 2, 3);
+
+    gtk_misc_set_alignment(GTK_MISC(game_value), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            game_value,
+            1, 2, 2, 3);
+
+    /* player's points */
+    points = gtk_label_new(_("Points:"));
+    points_value = gtk_label_new(NULL);
+
+    g_snprintf(str, 64, "<span font_weight=\"bold\">%d</span> of 120 points",
+            gskat.re->points);
+    gtk_label_set_markup(GTK_LABEL(points_value), str);
+
+    gtk_misc_set_alignment(GTK_MISC(points), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            points,
+            0, 1, 3, 4);
+
+    gtk_misc_set_alignment(GTK_MISC(points_value), 0, 0.5);
+    gtk_table_attach_defaults(GTK_TABLE(table),
+            points_value,
+            1, 2, 3, 4);
+
+    gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 2);
 
     /* CREATE TREE VIEW */
     view = gtk_tree_view_new();

@@ -1243,22 +1243,22 @@ void end_round(finish_type ft)
     /* increase round counter */
     gskat.round += 1;
 
-    /* initialize summary window */
-    sum = create_game_summary("Game summary", &tree);
+    /* add points of cards in skat */
+    for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
+    {
+        card = ptr->data;
+        player->points += card->points;
+    }
 
+    /* initialize summary window */
+    sum = create_game_summary(&tree);
+
+    /* determine game type multiplier */
     rank = get_game_multiplier();
 
     if (!gskat.null)
     {
         game = get_game_base_value(player, &tree);
-
-        /* add points of cards in skat */
-        for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
-        {
-            card = ptr->data;
-
-            player->points += card->points;
-        }
 
         /* hand game */
         if (gskat.hand)
