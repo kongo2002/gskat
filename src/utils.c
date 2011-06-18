@@ -554,10 +554,11 @@ gint get_game_multiplier(void)
 
 /**
  * get_game_base_value:
- * @re: Re #player
+ * @re:     Re #player
+ * @tree:   #GtkTreeStore that contains the game summary information
  *
- * Get the base game value of the current/last game.
- * Like 'with 3 -> game 4'
+ * Get the base game value of the current/last game (i.e. 'with 3 -> game 4').
+ * @tree may be %NULL.
  *
  * Returns: the base game value of the current game
  */
@@ -587,8 +588,10 @@ gint get_game_base_value(player *re, GtkTreeStore **tree)
  * get_spitzen:
  * @list:  #GList of cards to parse
  * @suit:  Suit to search for
+ * @tree:  #GtkTreeStore that contains the game summary information
  *
- * Calculate the 'spitzen' for a given #GList of cards and suit
+ * Calculate the 'spitzen' for a given #GList of cards and suit. @tree may be
+ * %NULL.
  *
  * Returns: 'spitzen' value
  */
@@ -638,6 +641,7 @@ gint get_spitzen(GList *list, gint suit, GtkTreeStore **tree)
     if (pcards)
         g_list_free(pcards);
 
+    /* add the information to the game summary if given */
     if (tree != NULL && *tree != NULL)
     {
         g_snprintf(str, 8, "%d", max);
