@@ -249,8 +249,6 @@ gchar *get_card_name(card *card)
                 case KOENIG:
                     return _("King of Clubs");
             }
-        default:
-            return "";
     }
 
     return "";
