@@ -423,6 +423,14 @@ void show_bid_infobar(gint value, gchar *msg, gboolean hoeren)
     gtk_widget_show_all(infobar);
 }
 
+/**
+ * add_summary:
+ * @tree:   #GtkTreeStore that contains the game summary information
+ * @name:   name of the new row (first column)
+ * @value:  value of the new row (second column)
+ *
+ * Append a new line into the game summary tree view.
+ */
 static void add_summary(GtkTreeStore **tree, const char *name, const char *value)
 {
     GtkTreeIter child;
@@ -435,11 +443,27 @@ static void add_summary(GtkTreeStore **tree, const char *name, const char *value
             0, name, 1, value, -1);
 }
 
+/**
+ * add_summary_row:
+ * @tree:   #GtkTreeStore that contains the game summary information
+ * @name:   name of the new row (first column)
+ * @value:  value of the new row (second column)
+ *
+ * Append a new line into the game summary tree view.
+ */
 void add_summary_row(GtkTreeStore **tree, const char *name, const char *value)
 {
     add_summary(tree, name, value);
 }
 
+/**
+ * add_summary_row_int:
+ * @tree:   #GtkTreeStore that contains the game summary information
+ * @name:   name of the new row (first column)
+ * @value:  integer value of the new row (second column)
+ *
+ * Append a new line into the game summary tree view.
+ */
 void add_summary_row_int(GtkTreeStore **tree, const char *name, gint value)
 {
     gchar *string;
@@ -451,6 +475,16 @@ void add_summary_row_int(GtkTreeStore **tree, const char *name, gint value)
     g_free(string);
 }
 
+/**
+ * create_game_summary:
+ * @tree:   #GtkTreeStore object that (will) contains the information
+ *
+ * Create a game summary dialog window and display all statistics of the
+ * finished round.
+ *
+ * Returns: (transfer full): a new #GtkWindow instance that contains the
+ * newly created game summary
+ */
 GtkWidget *create_game_summary(GtkTreeStore **tree)
 {
     gchar str[64];
