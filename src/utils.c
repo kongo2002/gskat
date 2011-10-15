@@ -478,7 +478,7 @@ gint get_trick_winner(card **trick)
 }
 
 /**
- * get_trick_winner:
+ * get_table_winner:
  *
  * Calculate the winner of the current trick on the table.
  * Wrapper around the get_trick_winner() function.

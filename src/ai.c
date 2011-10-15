@@ -780,22 +780,27 @@ card *abwerfen(player *player, GList *list)
 gboolean hat_gestochen(player *player, gint suit)
 {
     gint i, j;
-    card **stich = NULL;
+    card *card = NULL;
+    trick *stich = NULL;
 
     for (i = 0; i < 10; ++i)
     {
         if ((stich = gskat.stiche[i]) == NULL)
             break;
 
+        card = *stich->cards;
+
         /* first card must not be trump or one of player's cards */
-        if ((*stich)->suit != suit || (*stich)->owner == player->id
-                    || is_trump(*stich))
+        if (card->suit != suit || card->owner == player->id
+                    || is_trump(card))
             continue;
 
         for (j = 1; j < 3; ++j)
         {
-            if (stich[j] && stich[j]->owner == player->id &&
-                    (stich[j]->suit != suit || is_trump(stich[j])))
+            card = stich->cards[j];
+
+            if (card && card->owner == player->id &&
+                    (card->suit != suit || is_trump(card)))
             {
                 gskat_msg(MT_DEBUG | MT_BUGREPORT,
                         _("%s trumped %s\n"), player->name, suit_name(suit));

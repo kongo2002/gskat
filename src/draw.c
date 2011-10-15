@@ -483,7 +483,8 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     gint i, x, y, winner;
     gchar *caption = NULL;
     cairo_t *cr;
-    card **stich = sv->stich;
+    trick *stich = sv->stich;
+    card **cards = stich->cards;
 
     GdkRectangle rect =
     {
@@ -515,21 +516,21 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
     /* draw cards of the given stich */
     x = 5;
     y = 40;
-    winner = get_trick_winner(stich);
+    winner = get_trick_winner(cards);
 
     for (i=0; i<3; ++i)
     {
-        if (stich[i])
+        if (cards[i])
         {
             /* draw card image */
-            cairo_set_source_surface(cr, stich[i]->img, x, y);
+            cairo_set_source_surface(cr, cards[i]->img, x, y);
             cairo_paint(cr);
 
             /* darken the non-winning cards */
-            if (stich[i]->owner != winner)
+            if (cards[i]->owner != winner)
             {
                 cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.2);
-                cairo_rectangle(cr, x, y, stich[i]->dim.w, stich[i]->dim.h);
+                cairo_rectangle(cr, x, y, cards[i]->dim.w, cards[i]->dim.h);
                 cairo_fill(cr);
             }
 
@@ -539,10 +540,10 @@ void draw_tricks_area(GtkWidget *area, stich_view *sv)
                     CAIRO_FONT_SLANT_NORMAL,
                     CAIRO_FONT_WEIGHT_BOLD);
             cairo_set_font_size(cr, 12);
-            cairo_move_to(cr, x, y + stich[i]->dim.h + 15);
-            cairo_show_text(cr, gskat.players[stich[i]->owner]->name);
+            cairo_move_to(cr, x, y + cards[i]->dim.h + 15);
+            cairo_show_text(cr, gskat.players[cards[i]->owner]->name);
 
-            x += stich[i]->dim.w + 5;
+            x += cards[i]->dim.w + 5;
         }
     }
 

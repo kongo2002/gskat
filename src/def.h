@@ -208,41 +208,6 @@ typedef struct _card_move {
 } card_move;
 
 /**
- * stich_view:
- * @cur:    Index of the currently viewed trick
- * @stich:  #card array of the current trick
- * @window: Dialog window widget
- * @area:   #GtkDrawingArea widget where the cards are drawn on
- * @prevb:  Previous #GtkButton
- * @nextb:  Next #GtkButton
- *
- * Structure containing stich view information
- */
-typedef struct _stich_view {
-    gint cur;
-    card **stich;
-    GtkWidget *window;
-    GtkWidget *area;
-    GtkWidget *prevb;
-    GtkWidget *nextb;
-} stich_view;
-
-/**
- * br_group:
- * @window:       #GtkWindow of the bug report dialog
- * @file_chooser: File chooser widget of the bug report dialog
- * @text_buffer:  #GtkTextBuffer containing the user-defined
- * description of the bug
- *
- * Structure containing the main widgets of the bug report dialog
- */
-typedef struct _br_group {
-    GtkWidget *window;
-    GtkWidget *file_chooser;
-    GtkTextBuffer *text_buffer;
-} br_group;
-
-/**
  * player:
  * @id:           Player id
  * @name:         Player name
@@ -269,6 +234,56 @@ typedef struct _player {
     gint sum_points;
     GList *cards;
 } player;
+
+/**
+ * trick:
+ * @cards:   Cards participating in the trick
+ * @points:  Sum all the cards' points
+ * @winner:  Player that won the trick
+ *
+ * Structure containing information about a trick
+ */
+typedef struct _trick {
+    card **cards;
+    gint points;
+    player *winner;
+} trick;
+
+/**
+ * stich_view:
+ * @cur:    Index of the currently viewed trick
+ * @stich:  Current trick
+ * @window: Dialog window widget
+ * @area:   #GtkDrawingArea widget where the cards are drawn on
+ * @prevb:  Previous #GtkButton
+ * @nextb:  Next #GtkButton
+ *
+ * Structure containing stich view information
+ */
+typedef struct _stich_view {
+    gint cur;
+    trick *stich;
+    GtkWidget *window;
+    GtkWidget *area;
+    GtkWidget *prevb;
+    GtkWidget *nextb;
+} stich_view;
+
+
+/**
+ * br_group:
+ * @window:       #GtkWindow of the bug report dialog
+ * @file_chooser: File chooser widget of the bug report dialog
+ * @text_buffer:  #GtkTextBuffer containing the user-defined
+ * description of the bug
+ *
+ * Structure containing the main widgets of the bug report dialog
+ */
+typedef struct _br_group {
+    GtkWidget *window;
+    GtkWidget *file_chooser;
+    GtkTextBuffer *text_buffer;
+} br_group;
 
 /**
  * app:
@@ -310,7 +325,7 @@ typedef struct _app {
     GList *skat;
     GList *table;
     GList *played;
-    card ***stiche;
+    trick **stiche;
     player **players;
     gchar **player_names;
     GdkPixbuf **icons;

@@ -33,6 +33,8 @@ gboolean play_card(GdkEventButton *event);
 
 gboolean click_skat(GdkEventButton *event);
 
+trick *trick_new(void);
+
 card *click_card(GdkEventButton *event, GList *list);
 
 void card_to_player(player *player, card *card);

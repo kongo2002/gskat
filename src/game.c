@@ -1053,6 +1053,18 @@ void spiel_ansagen(void)
     play_stich();
 }
 
+trick *trick_new(void)
+{
+    trick *tmp = (trick *) g_malloc(sizeof(trick));
+    card **cards = (card **) g_malloc0(sizeof(card *) * 3);
+
+    tmp->cards = cards;
+    tmp->points = 0;
+    tmp->winner = NULL;
+
+    return tmp;
+}
+
 /**
  * throw_card:
  * @data:  #card to throw on the table (cast to #gpointer)
@@ -1063,9 +1075,9 @@ void spiel_ansagen(void)
  */
 gboolean throw_card(gpointer data)
 {
-    gint i, index;
+    gint index;
     card *_card = (card *) data;
-    card **stich = gskat.stiche[gskat.stich-1];
+    trick *trick = gskat.stiche[gskat.stich-1];
     card_move *cm = NULL;
 
     player *player = gskat.players[_card->owner];
@@ -1081,17 +1093,14 @@ gboolean throw_card(gpointer data)
     player->cards = g_list_remove(player->cards, _card);
 
     /* keep record of played cards */
-    if (stich == NULL)
+    if (trick == NULL)
     {
-        stich = (card **) g_malloc(sizeof(card *) * 3);
-        gskat.stiche[gskat.stich-1] = stich;
-
-        for (i=0; i<3; ++i)
-            stich[i] = NULL;
+        trick = trick_new();
+        gskat.stiche[gskat.stich-1] = trick;
     }
 
     index = g_list_length(gskat.table) - 1;
-    stich[index] = _card;
+    trick->cards[index] = _card;
 
     if (get_prop_bool("animation"))
     {
