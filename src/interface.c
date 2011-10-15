@@ -105,6 +105,7 @@ void set_icons(void)
 
 /**
  * load_suit_icons:
+ * @paths:  several possible paths to search the suit icon files in
  *
  * Try to load the icons of the four suits
  */
