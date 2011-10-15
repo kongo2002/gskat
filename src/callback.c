@@ -91,6 +91,10 @@ gboolean realization(GtkWidget *area, gpointer data)
         for (i=0; dirs[i]; i++)
             g_printerr("- %s\n", dirs[i]);
 
+        if (!use_custom)
+            g_printerr("You may want to use the '--data' command line argument "
+                "to specify the directory where the card images are located.\n");
+
         g_printerr("Quit gskat.\n");
 
         exit(EXIT_FAILURE);
