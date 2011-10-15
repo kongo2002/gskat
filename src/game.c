@@ -971,13 +971,16 @@ void spiel_ansagen(void)
         {
             dialog = gtk_dialog_new();
 
-            /* add buttons with suit images */
+            /* add buttons */
             for (i=0; i<4; ++i)
             {
                 button = gtk_dialog_add_button(GTK_DIALOG(dialog),
                         suit_name(SUITS[i]), SUITS[i]);
-                gtk_button_set_image(GTK_BUTTON(button),
-                        gtk_image_new_from_pixbuf(gskat.icons[i]));
+
+                /* add suit images if available */
+                if (gskat.icons[i])
+                    gtk_button_set_image(GTK_BUTTON(button),
+                            gtk_image_new_from_pixbuf(gskat.icons[i]));
             }
 
             gtk_dialog_add_button(GTK_DIALOG(dialog), "Grand", 200);
