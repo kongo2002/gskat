@@ -130,12 +130,10 @@ int main(int argc, const char *argv[])
             return 0;
         }
 
-        if (data_dir != NULL)
-            gskat.datadir = data_dir;
-
         /* initialize configuration */
         init_config();
         set_default_config();
+        gskat.datadir = data_dir;
 
         /* load configuration */
         load_config();
