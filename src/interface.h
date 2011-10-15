@@ -29,7 +29,7 @@ G_BEGIN_DECLS
 
 player *init_player(gint id, gchar *name, gboolean human);
 
-void load_suit_icons(void);
+void load_suit_icons(const gchar **paths);
 
 void set_icons(void);
 

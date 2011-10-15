@@ -75,6 +75,9 @@ gboolean realization(GtkWidget *area, gpointer data)
     /* determine which directories to search in */
     dirs = use_custom ? custom_dir : default_dirs;
 
+    /* load suit icons */
+    load_suit_icons(dirs);
+
     /* load card images */
     cards_loaded = load_cards(dirs);
 

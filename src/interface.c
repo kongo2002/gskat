@@ -108,29 +108,34 @@ void set_icons(void)
  *
  * Try to load the icons of the four suits
  */
-void load_suit_icons(void)
+void load_suit_icons(const gchar **paths)
 {
-    gint i;
+    gint i, j;
+    gint maxlen = max_str_lenv(paths);
     gchar *suits[] = { "club", "spade", "heart", "diamond" };
     gchar *filename;
 
-    filename = (gchar *) g_malloc(sizeof(gchar) * (strlen(DATA_DIR) + 20));
+    filename = (gchar *) g_malloc(sizeof(gchar) * (maxlen + 20));
 
     gskat.icons = (GdkPixbuf **) g_malloc(sizeof(GdkPixbuf *) * 4);
 
     for (i=0; i<4; i++)
     {
-        g_sprintf(filename, "%s/icon-%s.xpm", DATA_DIR, suits[i]);
+        for (j=0; paths[j]; ++j)
+        {
+            g_sprintf(filename, "%s/icon-%s.xpm", paths[j], suits[i]);
 
-        if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
-        {
-            gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), filename);
-            gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
-        }
-        else
-        {
-            gskat_msg(MT_ERROR, _("Failed to load icon '%s'\n"), filename);
-            gskat.icons[i] = NULL;
+            if (g_file_test(filename, G_FILE_TEST_EXISTS) == TRUE)
+            {
+                gskat_msg(MT_INFO, _("Loading '%s' ... OK\n"), filename);
+                gskat.icons[i] = gdk_pixbuf_new_from_file(filename, NULL);
+                break;
+            }
+            else
+            {
+                gskat_msg(MT_ERROR, _("Failed to load icon '%s'\n"), filename);
+                gskat.icons[i] = NULL;
+            }
         }
     }
 
@@ -158,9 +163,6 @@ void alloc_app(void)
 
     for (i=0; i<10; ++i)
         gskat.stiche[i] = NULL;
-
-    /* initialize suit icons */
-    load_suit_icons();
 
     /* initialize alternative cursor shapes */
     gskat.pirate_cursor = gdk_cursor_new(GDK_PIRATE);
