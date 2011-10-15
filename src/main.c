@@ -28,9 +28,14 @@ app gskat;
 static gboolean debug        = FALSE;
 static gboolean no_animation = FALSE;
 static gboolean version_only = FALSE;
+static gchar *data_dir = NULL;
 
 static GOptionEntry arguments[] =
 {
+    {
+        "data", 0, 0, G_OPTION_ARG_FILENAME, &data_dir,
+        N_("card/image directory"), NULL
+    },
     {
         "debug", 0, 0, G_OPTION_ARG_NONE, &debug,
         N_("toggle debug mode (for developing)"), NULL
@@ -81,6 +86,7 @@ static void initialize()
     gskat.pirate_cursor = NULL;
     gskat.log_level     = MT_INFO;
     gskat.log           = g_string_sized_new(256);
+    gskat.datadir       = NULL;
     gskat.config        = NULL;
 }
 
@@ -123,6 +129,9 @@ int main(int argc, const char *argv[])
             g_print(_("gskat %s\n"), VERSION);
             return 0;
         }
+
+        if (data_dir != NULL)
+            gskat.datadir = data_dir;
 
         /* initialize configuration */
         init_config();

@@ -301,6 +301,7 @@ typedef struct _player {
  * @log_level:     Current log level of type #msg_type
  * @log:           #GString containing all bug report log messages
  * @config:        #GHashTable containing all configuration properties
+ * @datadir:       Optional data directory
  *
  * Structure containing all game objects
  */
@@ -335,6 +336,7 @@ typedef struct _app {
     msg_type log_level;
     GString *log;
     GHashTable *config;
+    gchar *datadir;
 } app;
 
 /**
