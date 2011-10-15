@@ -1775,8 +1775,11 @@ void free_app(void)
     {
         for (i=0; i<4; i++)
         {
-            g_object_unref(gskat.icons[i]);
-            gskat.icons[i] = NULL;
+            if (gskat.icons[i])
+            {
+                g_object_unref(gskat.icons[i]);
+                gskat.icons[i] = NULL;
+            }
         }
         g_free(gskat.icons);
     }
@@ -1799,6 +1802,9 @@ void free_app(void)
 
     g_hash_table_destroy(gskat.config);
     g_hash_table_destroy(gskat.widgets);
+
+    if (gskat.datadir)
+        g_free(gskat.datadir);
 
     gskat.config = NULL;
 
