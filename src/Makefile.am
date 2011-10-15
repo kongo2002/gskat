@@ -7,7 +7,6 @@ LIBS = $(GTK_LIBS)
 
 gskat_CPPFLAGS=$(AM_CPPFLAGS) \
 	       -Wall -Wextra -Wmissing-prototypes \
-	       -DG_DISABLE_DEPRECATED \
 	       -DG_DISABLE_SINGLE_INCLUDES \
 	       -DGTK_DISABLE_DEPRECATED \
 	       -DGTK_DISABLE_SINGLE_INCLUDES \
