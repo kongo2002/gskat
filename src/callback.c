@@ -62,7 +62,7 @@ gboolean realization(GtkWidget *area, gpointer data)
     UNUSED(area);
     UNUSED(data);
     gint i;
-    const gchar *dirs[] = { "img", "cards", DATA_DIR, NULL };
+    const gchar *dirs[] = { "img", "cards", "data", DATA_DIR, NULL };
 
     /* allocate memory for application lists */
     alloc_app();
