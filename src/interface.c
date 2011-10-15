@@ -160,7 +160,7 @@ void alloc_app(void)
                 i ? FALSE : TRUE);
 
     /* initialize played cards */
-    gskat.stiche = (card ***) g_malloc(sizeof(card **) * 10);
+    gskat.stiche = (trick **) g_malloc(sizeof(trick *) * 10);
 
     for (i=0; i<10; ++i)
         gskat.stiche[i] = NULL;
@@ -662,7 +662,7 @@ void show_last_tricks(void)
     GtkWidget *prev_button;
     GtkWidget *next_button;
     GtkWidget *button;
-    card **stich;
+    trick *stich;
     stich_view *sv = NULL;
 
     cur = gskat.stich - 2;
@@ -672,8 +672,8 @@ void show_last_tricks(void)
         return;
 
     /* get minimal drawing area size to request */
-    x = ((*gskat.stiche[0])->dim.w + 5) * 3 + 5;
-    y = (*gskat.stiche[0])->dim.h + 80;
+    x = ((gskat.stiche[0]->cards[0])->dim.w + 5) * 3 + 5;
+    y = (gskat.stiche[0]->cards[0])->dim.h + 80;
 
     /* dialog window widgets */
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -1767,8 +1767,12 @@ void free_app(void)
     for (i=0; i<10; ++i)
     {
         if (gskat.stiche[i])
+        {
+            g_free(gskat.stiche[i]->cards);
             g_free(gskat.stiche[i]);
-        gskat.stiche[i] = NULL;
+
+            gskat.stiche[i] = NULL;
+        }
     }
     g_free(gskat.stiche);
     gskat.stiche = NULL;

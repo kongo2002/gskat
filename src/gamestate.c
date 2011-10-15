@@ -697,24 +697,22 @@ void apply_states(state_group *sg)
     /* fill stiche array */
     for (i=0; i<sg->gs->num_stich-1; ++i)
     {
-        gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
+        gskat.stiche[i] = trick_new();
 
         for (j=0; j<3; ++j)
-            gskat.stiche[i][j] = get_card_by_id(sg->pc[i*3+j]);
+            gskat.stiche[i]->cards[j] = get_card_by_id(sg->pc[i*3+j]);
     }
 
     /* add cards on the table to the stiche array */
     if (sg->gs->num_table)
     {
         i = sg->gs->num_stich - 1;
-        gskat.stiche[i] = (card **) g_malloc(sizeof(card *) * 3);
+        gskat.stiche[i] = trick_new();
 
         for (j=0; j<3; ++j)
         {
             if (j < sg->gs->num_table)
-                gskat.stiche[i][j] = get_card_by_id(sg->table[j]);
-            else
-                gskat.stiche[i][j] = NULL;
+                gskat.stiche[i]->cards[j] = get_card_by_id(sg->table[j]);
         }
     }
 
