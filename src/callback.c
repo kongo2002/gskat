@@ -63,13 +63,20 @@ gboolean realization(GtkWidget *area, gpointer data)
     UNUSED(data);
     gint i;
     gboolean cards_loaded = FALSE;
-    const gchar *dirs[] = { "img", "cards", "data", DATA_DIR, NULL };
+    gboolean use_custom = gskat.datadir != NULL;
+
+    const gchar **dirs = NULL;
+    const gchar *default_dirs[] = { "img", "cards", "data", DATA_DIR, NULL };
     const gchar *custom_dir[] = { gskat.datadir };
 
     /* allocate memory for application lists */
     alloc_app();
 
-    cards_loaded = load_cards((gskat.datadir != NULL) ? custom_dir : dirs);
+    /* determine which directories to search in */
+    dirs = use_custom ? custom_dir : default_dirs;
+
+    /* load card images */
+    cards_loaded = load_cards(dirs);
 
     if (cards_loaded)
         game_start();
