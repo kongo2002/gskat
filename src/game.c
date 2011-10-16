@@ -1159,10 +1159,7 @@ void ai_play_card(player *player)
  */
 void calculate_stich(void)
 {
-    gint winner;
-    gint points = 0;
-    GList *ptr = NULL;
-    card *crd = NULL;
+    gint winner, points;
 
     /* get the player that won the trick */
     winner = get_table_winner();
@@ -1172,13 +1169,7 @@ void calculate_stich(void)
             gskat.players[winner]->name);
 
     /* calculate points of stich */
-    for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
-    {
-        crd = ptr->data;
-        points += crd->points;
-
-        crd->draw = FALSE;
-    }
+    points = points_on_table();
 
     gskat.players[winner]->points += points;
     gskat.cplayer = winner;

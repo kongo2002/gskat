@@ -85,7 +85,7 @@ gboolean kontra_stich_sicher(player *player);
 
 gint len_spitzen(player *player, GList *list, gint suit);
 
-gint punkte_auf_tisch(void);
+gint points_on_table(void);
 
 gint num_of_trump(GList *list);
 

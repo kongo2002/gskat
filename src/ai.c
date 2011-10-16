@@ -374,7 +374,7 @@ card *ai_kontra_hinten(player *player, GList *list)
     if (kontra_stich_sicher(player))
         return ai_kontra_schmieren(player, list);
     /* trump only if enough points on the table */
-    else if (muss_bedienen(player) || punkte_auf_tisch() > 2)
+    else if (muss_bedienen(player) || points_on_table() > 2)
         card = knapp_trumpfen(player, list);
 
     if (!card)
@@ -1259,13 +1259,13 @@ GList *cards_out(void)
 }
 
 /**
- * punkte_auf_tisch:
+ * points_on_table:
  *
  * Return the card values currently on the table
  *
  * Returns: sum of all card values currently on the table
  */
-gint punkte_auf_tisch(void)
+gint points_on_table(void)
 {
     gint points = 0;
     GList *ptr = NULL;
