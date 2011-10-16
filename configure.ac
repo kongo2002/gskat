@@ -92,6 +92,8 @@ AC_ARG_ENABLE(debug,
 if test x$ENABLE_DEBUG = xno; then
     AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
 else
+    AC_SUBST(CFLAGS, [ ])
+    AC_SUBST(CXXFLAGS, [ ])
     AM_CPPFLAGS="$AM_CPPFLAGS -DDEBUG -g -O0"
 fi
 
