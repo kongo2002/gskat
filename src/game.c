@@ -1164,7 +1164,9 @@ void calculate_stich(void)
     GList *ptr = NULL;
     card *crd = NULL;
 
+    /* get the player that won the trick */
     winner = get_table_winner();
+    gskat.stiche[gskat.stich-1]->winner = gskat.players[winner];
 
     gskat_msg(MT_STATUSBAR, _("%s won the trick."),
             gskat.players[winner]->name);
