@@ -87,6 +87,10 @@ gint len_spitzen(player *player, GList *list, gint suit);
 
 gint points_on_table(void);
 
+gint points_in_skat(void);
+
+gint card_points(GList *cards);
+
 gint num_of_trump(GList *list);
 
 gint num_of_suit(GList *list, gint suit);

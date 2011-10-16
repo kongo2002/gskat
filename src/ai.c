@@ -1263,18 +1263,42 @@ GList *cards_out(void)
  *
  * Return the card values currently on the table
  *
- * Returns: sum of all card values currently on the table
+ * Returns: Sum of all card values currently on the table
  */
 gint points_on_table(void)
 {
-    gint points = 0;
-    GList *ptr = NULL;
-    card *card = NULL;
+    return card_points(gskat.table);
+}
 
-    for (ptr = g_list_first(gskat.table); ptr; ptr = ptr->next)
+/**
+ * points_in_skat:
+ *
+ * Return the card values currently in the skat
+ *
+ * Returns: Sum of all card values currently in the skat
+ */
+gint points_in_skat(void)
+{
+    return card_points(gskat.skat);
+}
+
+/**
+ * card_points:
+ * @cards:  #GList of cards to calculate the points of
+ *
+ * Get the sum of card points of the given #card list
+ *
+ * Returns: Points of the given cards
+ */
+gint card_points(GList *cards)
+{
+    gint points = 0;
+    card *card;
+    GList *ptr = NULL;
+
+    for (ptr = g_list_first(cards); ptr; ptr = ptr->next)
     {
         card = ptr->data;
-
         points += card->points;
     }
 

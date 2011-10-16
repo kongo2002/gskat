@@ -1241,19 +1241,13 @@ void end_round(finish_type ft)
     gint rank, game;
     GtkTreeStore *tree;
     GtkWidget *sum;
-    GList *ptr;
-    card *card;
     player *player = gskat.re;
 
     /* increase round counter */
     gskat.round += 1;
 
     /* add points of cards in skat */
-    for (ptr = g_list_first(gskat.skat); ptr; ptr = ptr->next)
-    {
-        card = ptr->data;
-        player->points += card->points;
-    }
+    player->points += points_in_skat();
 
     /* initialize summary window */
     sum = create_game_summary(&tree);
