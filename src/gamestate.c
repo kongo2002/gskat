@@ -226,6 +226,10 @@ gboolean save_tricks_state(FILE *output)
 {
     gint i, j;
     card *card;
+
+    /* each played trick is represented by an array of four integers
+     * where the first 3 numbers are the cards' ids and the last
+     * number is the id of the player that won the trick */
     gint *cards = (gint *) g_malloc0(sizeof(gint) * 4);
 
     for (i=0; gskat.stiche[i]; i++)
@@ -520,11 +524,11 @@ gboolean read_tricks_state(FILE *input, state_group *sg, guint num_cards)
 
     for (i=0;i<num_tricks; i++)
     {
+        /* initialize an array of four integers for each played trick */
         cards = (gint *) g_malloc(sizeof(gint) * 4);
 
         if (fread(cards, sizeof(gint), 4, input) != 4)
         {
-
             for (j=0; j<i; j++)
                 g_free(sg->tricks[j]);
             g_free(cards);
