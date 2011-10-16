@@ -109,6 +109,7 @@ typedef struct _state_group {
     global_state *gs;
     card_state *cs;
     gint *pc;
+    gint **tricks;
     gint **pcards;
     gint *table;
 } state_group;
@@ -122,6 +123,8 @@ gboolean save_global_state(FILE *output);
 gboolean save_card_states(FILE *output);
 
 gboolean save_played_card_states(FILE *output);
+
+gboolean save_tricks_state(FILE *output);
 
 gboolean save_players_cards_state(FILE *output);
 
@@ -137,6 +140,8 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards);
 
 gboolean read_players_cards_state(FILE *input, state_group *sg,
         global_state *gs);
+
+gboolean read_tricks_state(FILE *input, state_group *sg, guint num_cards);
 
 gboolean read_table_state(FILE *input, state_group *sg, guint num_table);
 

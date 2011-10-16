@@ -202,7 +202,7 @@ gboolean save_played_card_states(FILE *output)
 
         if (fwrite(card_ids, sizeof(gint), num_cards, output) != num_cards)
         {
-            gskat_msg(MT_ERROR, _("Error on writing trick states.\n"));
+            gskat_msg(MT_ERROR, _("Error on writing played cards states.\n"));
 
             g_free(card_ids);
             return FALSE;
@@ -211,6 +211,50 @@ gboolean save_played_card_states(FILE *output)
         g_free(card_ids);
     }
 
+    return TRUE;
+}
+
+/**
+ * save_tricks_state:
+ * @output:  output file stream
+ *
+ * Write tricks' information into file buffer
+ *
+ * Returns: %TRUE on success, otherwise %FALSE
+ */
+gboolean save_tricks_state(FILE *output)
+{
+    gint i, j;
+    card *card;
+    gint *cards = (gint *) g_malloc0(sizeof(gint) * 4);
+
+    for (i=0; gskat.stiche[i]; i++)
+    {
+        /* save three card ids */
+        for (j=0; j<3; j++)
+        {
+            card = gskat.stiche[i]->cards[j];
+
+            if (card)
+                cards[j] = card->suit + card->rank;
+        }
+
+        /* save trick winner's id */
+        if (gskat.stiche[i]->winner)
+            cards[3] = gskat.stiche[i]->winner->id;
+        else
+            cards[3] = -1;
+
+        if (fwrite(cards, sizeof(gint), 4, output) != 4)
+        {
+            gskat_msg(MT_ERROR, _("Error on writing trick states.\n"));
+
+            g_free(cards);
+            return FALSE;
+        }
+    }
+
+    g_free(cards);
     return TRUE;
 }
 
@@ -326,6 +370,9 @@ gboolean save_state_to_file(const gchar *filename)
         goto save_state_error;
 
     if (!save_played_card_states(output))
+        goto save_state_error;
+
+    if (!save_tricks_state(output))
         goto save_state_error;
 
     if (!save_players_cards_state(output))
@@ -448,6 +495,36 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards)
         gskat_msg(MT_DEBUG, "PLAYED_CARDS (%d):\n", num_cards);
         for (i=0; i<num_cards; ++i)
             gskat_msg(MT_DEBUG, "%d\n", sg->pc[i]);
+    }
+
+    return TRUE;
+}
+
+/**
+ * read_tricks_state:
+ * @input:      input file stream
+ * @sg:         #state_group object
+ * @num_cards:  number of played cards
+ *
+ * Read the played tricks information
+ *
+ * Returns: %TRUE on success, otherwise %FALSE
+ */
+gboolean read_tricks_state(FILE *input, state_group *sg, guint num_cards)
+{
+    gint i;
+    gint num_tricks = num_cards / 3 + (num_cards % 3 ? 0 : 1);
+
+    sg->tricks = (gint **) g_malloc(sizeof(gint *) * num_tricks);
+
+    for (i=0;i<num_tricks; i++)
+    {
+        gint *cards = (gint *) g_malloc(sizeof(gint) * 4);
+
+        if (fread(cards, sizeof(gint), 4, input) != 4)
+        {
+            sg->tricks[i] = cards;
+        }
     }
 
     return TRUE;
@@ -609,6 +686,9 @@ gboolean read_state_from_file(const gchar *filename)
     if (!read_played_cards_state(input, sg, state->num_played))
         goto read_state_error;
 
+    if (!read_tricks_state(input, sg, state->num_played))
+        goto read_state_error;
+
     /* get players' cards */
     if (!read_players_cards_state(input, sg, state))
         goto read_state_error;
@@ -648,7 +728,7 @@ read_state_error:
  */
 void apply_states(state_group *sg)
 {
-    gint i, j;
+    gint i, j, sum;
     card *crd;
     card_state *cs;
     player *pptr;
@@ -697,10 +777,21 @@ void apply_states(state_group *sg)
     /* fill stiche array */
     for (i=0; i<sg->gs->num_stich-1; ++i)
     {
+        sum = 0;
         gskat.stiche[i] = trick_new();
 
         for (j=0; j<3; ++j)
-            gskat.stiche[i]->cards[j] = get_card_by_id(sg->pc[i*3+j]);
+        {
+            if (sg->tricks[i][j])
+            {
+                crd = get_card_by_id(sg->tricks[i][j]);
+                gskat.stiche[i]->cards[j] = crd;
+                sum += crd->points;
+            }
+        }
+
+        gskat.stiche[i]->points = sum;
+        gskat.stiche[i]->winner = gskat.players[sg->tricks[i][3]];
     }
 
     /* add cards on the table to the stiche array */
