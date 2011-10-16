@@ -841,6 +841,16 @@ void apply_states(state_group *sg)
     if (sg->table)
         g_free(sg->table);
 
+    if (sg->tricks)
+    {
+        for (i=0; i<num_tricks; ++i)
+        {
+            if (sg->tricks[i])
+                g_free(sg->tricks[i]);
+        }
+        g_free(sg->tricks);
+    }
+
     for (i=0; i<3; ++i)
     {
         if (sg->pcards[i])
