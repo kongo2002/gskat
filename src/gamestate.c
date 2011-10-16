@@ -512,7 +512,7 @@ gboolean read_played_cards_state(FILE *input, state_group *sg, guint num_cards)
  */
 gboolean read_tricks_state(FILE *input, state_group *sg, guint num_cards)
 {
-    gint i;
+    gint i, j;
     gint *cards;
     gint num_tricks = num_cards / 3 + (num_cards % 3 ? 1 : 0);
 
@@ -524,7 +524,9 @@ gboolean read_tricks_state(FILE *input, state_group *sg, guint num_cards)
 
         if (fread(cards, sizeof(gint), 4, input) != 4)
         {
-            /* TODO: possible mem leak */
+
+            for (j=0; j<i; j++)
+                g_free(sg->tricks[j]);
             g_free(cards);
             g_free(sg->tricks);
 
