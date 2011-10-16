@@ -523,7 +523,15 @@ gboolean read_tricks_state(FILE *input, state_group *sg, guint num_cards)
         cards = (gint *) g_malloc(sizeof(gint) * 4);
 
         if (fread(cards, sizeof(gint), 4, input) != 4)
-            sg->tricks[i] = cards;
+        {
+            /* TODO: possible mem leak */
+            g_free(cards);
+            g_free(sg->tricks);
+
+            return FALSE;
+        }
+
+        sg->tricks[i] = cards;
     }
 
     return TRUE;
@@ -727,7 +735,7 @@ read_state_error:
  */
 void apply_states(state_group *sg)
 {
-    gint i, j, sum;
+    gint i, j, sum, num_tricks;
     card *crd;
     card_state *cs;
     player *pptr;
@@ -773,8 +781,10 @@ void apply_states(state_group *sg)
     for (i=0; i<sg->gs->num_played; ++i)
         gskat.played = g_list_append(gskat.played, get_card_by_id(sg->pc[i]));
 
+    num_tricks = sg->gs->num_played / 3 + (sg->gs->num_played % 3 ? 1 : 0);
+
     /* fill stiche array */
-    for (i=0; sg->tricks[i]; ++i)
+    for (i=0; i<num_tricks; ++i)
     {
         sum = 0;
         gskat.stiche[i] = trick_new();
@@ -790,7 +800,9 @@ void apply_states(state_group *sg)
         }
 
         gskat.stiche[i]->points = sum;
-        gskat.stiche[i]->winner = gskat.players[sg->tricks[i][3]];
+
+        if (sg->tricks[i][3] != -1)
+            gskat.stiche[i]->winner = gskat.players[sg->tricks[i][3]];
     }
 
     /* populate players' cards list */
